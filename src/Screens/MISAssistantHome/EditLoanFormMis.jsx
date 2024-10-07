@@ -1,5 +1,6 @@
 import React, { useEffect, useState, useRef } from "react"
 import "../LoanForm/LoanForm.css"
+import "./EditLoanFormMisStyles.css"
 import { useParams } from "react-router"
 import BtnComp from "../../Components/BtnComp"
 import VError from "../../Components/VError"
@@ -19,6 +20,7 @@ import {
 	FilePdfOutlined,
 	MinusCircleOutlined,
 	ClockCircleOutlined,
+	ArrowLeftOutlined,
 	ArrowRightOutlined,
 } from "@ant-design/icons"
 import FormHeader from "../../Components/FormHeader"
@@ -33,6 +35,9 @@ import { Stepper } from "primereact/stepper"
 import { StepperPanel } from "primereact/stepperpanel"
 import { Button } from "primereact/button"
 import BasicDetailsForm from "../Forms/BasicDetailsForm"
+import OccupationDetailsForm from "../Forms/OccupationDetailsForm"
+import HouseholdDetailsForm from "../Forms/HouseholdDetailsForm"
+import FamilyMemberDetailsForm from "../Forms/FamilyMemberDetailsForm"
 
 const MAX_FILE_SIZE = 200000
 
@@ -177,11 +182,7 @@ function EditLoanFormMis() {
 		formik.handleChange(event)
 		console.log(event)
 		console.log(event.target.files[0])
-		// selectedFiles.push({
-		// 	name: formik.values.l_documents[index].l_file_name,
-		// 	file: event.target.files[0],
-		// })
-		// setSelectedFile(selectedFiles)
+
 		setSelectedFile(...selectedFiles, {
 			name: formik.values.l_documents[index].l_file_name,
 			file: event.target.files[0],
@@ -199,61 +200,20 @@ function EditLoanFormMis() {
 		console.log("iurhgbvfvfrr================", pdfFilteredFiles)
 
 		setSinglePdfFile(event.currentTarget.files[0])
-		// const newFiles = Array.from(pdfFilteredFiles)
-		// setPdfFiles([...pdfFiles, ...newFiles])
 
 		fileList.push({ file: event.currentTarget.files }) // Store the selected files in state
 		setPdfFiles(fileList)
 
 		console.log("+===========================++++++++", fileList)
-		// setPdfFiles(event.currentTarget.files) // Store the selected files in state
-		// setFieldValue("files", files) // Set Formik value
 
 		console.log("iurhgbvfvfrr================++++", pdfFiles)
-		// setValues({...prev, l_documents: [
-		// 	{ sl_no: 0, l_file_name: "", l_file:  }
-		// ]})
-
-		// setValues({
-		// 	...formValues,
-		// 	l_documents: [
-		// 		{
-		// 			sl_no: 0,
-		// 			l_file_name: event.currentTarget.files[0].name,
-		// 			l_file: event.currentTarget.files[0],
-		// 		},
-		// 	],
-		// })
 
 		console.log("LLLLL", formValues.l_documents)
 	}
 
-	// const handleFilesChange = (event) => {
-	// 	formik.handleChange(event) // Handle formik change if needed
-
-	// 	const files = event.currentTarget.files
-	// 	const pdfFilteredFiles = Array.from(files)?.filter(
-	// 		(file) => getExtension(file?.name) === "pdf" // Filter only PDF files
-	// 	)
-
-	// 	// Log selected files
-	// 	console.log("All Files:", files)
-	// 	console.log("Filtered PDF Files:", pdfFilteredFiles)
-
-	// 	// Handle single file selection (if required)
-	// 	setSinglePdfFile(files[0]) // Set the first file for single selection
-
-	// 	// Update the list of files in state (appending new files to the existing list)
-	// 	setPdfFiles((prevFiles) => [...prevFiles, ...pdfFilteredFiles])
-
-	// 	// Optionally, you can set Formik field value if needed
-	// 	// formik.setFieldValue("files", [...prevFiles, ...pdfFilteredFiles]);
-	// }
-
 	const handleRemove = (index, setFieldValue) => {
 		const updatedFiles = pdfFiles.filter((_, i) => i !== index) // Remove file by index
 		setPdfFiles(updatedFiles)
-		// setFieldValue('files', updatedFiles);  // Update Formik field value after removal
 	}
 
 	useEffect(() => {
@@ -620,7 +580,7 @@ function EditLoanFormMis() {
 				{/* {JSON.stringify(loanAppData)} */}
 				<div className=" bg-white p-5 w-4/5 min-h-screen rounded-3xl">
 					<div className="w-auto mx-14 my-4">
-						<FormHeader text="Pending Application Preview & Edit" mode={1} />
+						<FormHeader text="Pending GRT Preview & Edit" mode={1} />
 					</div>
 					<Spin
 						indicator={<LoadingOutlined spin />}
@@ -633,21 +593,16 @@ function EditLoanFormMis() {
 								ref={stepperRef}
 								style={{ flexBasis: "50rem" }}
 								orientation="vertical"
+								linear={true}
+								className="mx-14"
 							>
 								<StepperPanel header="Basic Details">
 									<div className="flex flex-column">
-										<div className="border-2 mx-14 border-dashed rounded-3xl surface-border border-round surface-ground flex-auto flex justify-center align-items-center font-medium">
+										<div className="border-2 p-5 border-dashed rounded-3xl surface-border border-round surface-ground flex-auto font-medium">
 											<BasicDetailsForm />
 										</div>
 									</div>
 									<div className="flex py-4">
-										{/* <Button
-											label="Next"
-											icon="pi pi-arrow-right"
-											iconPos="right"
-											onClick={() => stepperRef.current.nextCallback()}
-										/> */}
-
 										<Button
 											className="rounded-full p-5 text-white bg-blue-800 border-blue-800 gap-2 ring-blue-500"
 											onClick={() => stepperRef.current.nextCallback()}
@@ -658,59 +613,59 @@ function EditLoanFormMis() {
 								</StepperPanel>
 								<StepperPanel header="Occupation Details">
 									<div className="flex flex-column h-12rem">
-										<div className="border-2 border-dashed surface-border border-round surface-ground flex-auto flex justify-content-center align-items-center font-medium">
-											Content II
+										<div className="border-2 p-5 border-dashed rounded-3xl surface-border border-round surface-ground flex-auto font-medium">
+											<OccupationDetailsForm />
 										</div>
 									</div>
 									<div className="flex py-4 gap-2">
 										<Button
-											label="Back"
-											severity="secondary"
-											icon="pi pi-arrow-left"
+											className="rounded-full p-5 text-white bg-red-800 border-red-800 gap-2 ring-red-500"
 											onClick={() => stepperRef.current.prevCallback()}
-										/>
+										>
+											<ArrowLeftOutlined />
+										</Button>
 										<Button
-											label="Next"
-											icon="pi pi-arrow-right"
-											iconPos="right"
+											className="rounded-full p-5 text-white bg-blue-800 border-blue-800 gap-2 ring-blue-500"
 											onClick={() => stepperRef.current.nextCallback()}
-										/>
+										>
+											<ArrowRightOutlined />
+										</Button>
 									</div>
 								</StepperPanel>
 								<StepperPanel header="Household Details">
 									<div className="flex flex-column h-12rem">
-										<div className="border-2 border-dashed surface-border border-round surface-ground flex-auto flex justify-content-center align-items-center font-medium">
-											Content III
+										<div className="border-2 p-5 border-dashed rounded-3xl surface-border border-round surface-ground flex-auto font-medium">
+											<HouseholdDetailsForm />
 										</div>
 									</div>
 									<div className="flex py-4 gap-2">
 										<Button
-											label="Back"
-											severity="secondary"
-											icon="pi pi-arrow-left"
+											className="rounded-full p-5 text-white bg-red-800 border-red-800 gap-2 ring-red-500"
 											onClick={() => stepperRef.current.prevCallback()}
-										/>
+										>
+											<ArrowLeftOutlined />
+										</Button>
 										<Button
-											label="Next"
-											icon="pi pi-arrow-right"
-											iconPos="right"
+											className="rounded-full p-5 text-white bg-blue-800 border-blue-800 gap-2 ring-blue-500"
 											onClick={() => stepperRef.current.nextCallback()}
-										/>
+										>
+											<ArrowRightOutlined />
+										</Button>
 									</div>
 								</StepperPanel>
 								<StepperPanel header="Family Member Details">
 									<div className="flex flex-column h-12rem">
-										<div className="border-2 border-dashed surface-border border-round surface-ground flex-auto flex justify-content-center align-items-center font-medium">
-											Content III
+										<div className="border-2 p-5 border-dashed rounded-3xl surface-border border-round surface-ground flex-auto font-medium">
+											<FamilyMemberDetailsForm />
 										</div>
 									</div>
 									<div className="flex py-4">
 										<Button
-											label="Back"
-											severity="secondary"
-											icon="pi pi-arrow-left"
+											className="rounded-full p-5 text-white bg-red-800 border-red-800 gap-2 ring-red-500"
 											onClick={() => stepperRef.current.prevCallback()}
-										/>
+										>
+											<ArrowLeftOutlined />
+										</Button>
 									</div>
 								</StepperPanel>
 							</Stepper>

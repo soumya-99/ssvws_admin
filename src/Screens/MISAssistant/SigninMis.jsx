@@ -4,7 +4,7 @@ import { Link } from "react-router-dom"
 import { useFormik } from "formik"
 import { useNavigate } from "react-router-dom"
 import IMG from "../../Assets/Images/sign_in.png"
-import LOGO from "../../Assets/Images/purdcs.png"
+import LOGO from "../../Assets/Images/ssvws_logo.jpg"
 import { routePaths } from "../../Assets/Data/Routes"
 import VError from "../../Components/VError"
 import TDInputTemplate from "../../Components/TDInputTemplate"
@@ -22,7 +22,7 @@ function SigninMis() {
 	// const [loginUserDetails, setLoginUserDetails] = useState(() => "")
 
 	const initialValues = {
-		email: "",
+		user_id: "",
 		password: "",
 	}
 
@@ -31,19 +31,19 @@ function SigninMis() {
 		console.log(values)
 
 		const creds = {
-			mng_email: values?.email,
-			pass: values?.password,
+			emp_id: values?.user_id,
+			password: "1234",
 		}
 
 		await axios
-			.post(`${url}/brn/brn_manager_login`, creds)
+			.post(`${url}/login_app`, creds)
 			.then((res) => {
 				if (res?.data?.suc === 1) {
 					Message("success", res?.data?.msg)
 					// setLoginUserDetails()
 
 					localStorage.setItem(
-						"br_mgr_details",
+						"user_details",
 						JSON.stringify(res?.data?.user_dtls)
 					)
 
@@ -55,15 +55,14 @@ function SigninMis() {
 				}
 			})
 			.catch((err) => {
+				console.log("PPPPPPPPP", err)
 				Message("error", "Some error on server while logging in...")
 			})
 
 		setLoading(false)
 	}
 	const validationSchema = Yup.object({
-		email: Yup.string()
-			.required("Email is required")
-			.email("Not a correct a email format"),
+		user_id: Yup.string().required("User ID is required"),
 		password: Yup.string().required("Password is required"),
 	})
 
@@ -121,18 +120,18 @@ function SigninMis() {
 						>
 							<div className="pt-1 block ">
 								<TDInputTemplateBr
-									placeholder="youremail@gmail.com"
-									type="email"
-									label="Your email"
-									name="email"
-									formControlName={formik.values.email}
+									placeholder="Type employee id..."
+									type="text"
+									label="Employee ID"
+									name="user_id"
+									formControlName={formik.values.user_id}
 									handleChange={formik.handleChange}
 									handleBlur={formik.handleBlur}
 									mode={1}
 								/>
 
-								{formik.errors.email && formik.touched.email ? (
-									<VError title={formik.errors.email} />
+								{formik.errors.user_id && formik.touched.user_id ? (
+									<VError title={formik.errors.user_id} />
 								) : null}
 							</div>
 							<div className="pt-6 block">
@@ -168,7 +167,7 @@ function SigninMis() {
 									<button
 										disabled={!formik.isValid}
 										type="submit"
-										className="bg-blue-800 hover:duration-500 w-full hover:scale-105  text-white p-3 rounded-full"
+										className="bg-blue-800 hover:duration-500 w-full hover:scale-105 text-white p-3 rounded-full"
 									>
 										Login to your account
 									</button>
@@ -214,18 +213,18 @@ function SigninMis() {
 					>
 						<div className="pt-1 block ">
 							<TDInputTemplate
-								placeholder="youremail@gmail.com"
-								type="email"
-								label="Your email"
-								name="email"
-								formControlName={formik.values.email}
+								placeholder="user id"
+								type="text"
+								label="Your User ID"
+								name="user_id"
+								formControlName={formik.values.user_id}
 								handleChange={formik.handleChange}
 								handleBlur={formik.handleBlur}
 								mode={1}
 							/>
 
-							{formik.errors.email && formik.touched.email ? (
-								<VError title={formik.errors.email} />
+							{formik.errors.user_id && formik.touched.user_id ? (
+								<VError title={formik.errors.user_id} />
 							) : null}
 						</div>
 						<div className="pt-6 block">

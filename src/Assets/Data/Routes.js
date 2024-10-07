@@ -21,7 +21,7 @@ export const routePaths = {
 	// CEO_HOME: "/ceo/homeceo/",
 	// CEO_EDIT_APPLICATION: "/ceo/homeceo/editloanform/",
 
-	MIS_ASSISTANT_LOGIN: "/misassistant/",
-	MIS_ASSISTANT_HOME: "/misassistant/homemis/",
+	// MIS_ASSISTANT_LOGIN: "/",
+	MIS_ASSISTANT_HOME: "/homemis/",
 	MIS_ASSISTANT_EDIT_APPLICATION: "/misassistant/homemis/editloanform/",
 }

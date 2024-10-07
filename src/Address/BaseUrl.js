@@ -5,4 +5,5 @@
 // export const url = "http://192.168.1.239:3000"
 // export const url = "http://202.21.38.178:3012"
 
-export const url = "https://efilebk.purdcs.com"
+// export const url = "https://efilebk.purdcs.com"
+export const url = "http://202.21.38.178:3014"

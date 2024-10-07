@@ -32,7 +32,7 @@ function MenusBr({ theme }) {
 		{
 			key: "sub1",
 			icon: <ImportOutlined />,
-			label: <Link to={"/branchmanager/homebr"}>Applications</Link>,
+			label: <Link to={"/misassistant/homemis/"}>Applications</Link>,
 		},
 		// {
 		// 	key: "sub2",

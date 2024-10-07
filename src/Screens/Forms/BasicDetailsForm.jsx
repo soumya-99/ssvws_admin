@@ -136,19 +136,19 @@ function BasicDetailsForm() {
 
 		const data = {}
 
-		await axios
-			.post(`${url}/sql/insert_loan_dtls`, data)
-			.then((res) => {
-				console.log("API RESPONSE", res)
+		// await axios
+		// 	.post(`${url}/sql/insert_loan_dtls`, data)
+		// 	.then((res) => {
+		// 		console.log("API RESPONSE", res)
 
-				if (res?.data?.suc === 1) {
-					Message("success", res?.data?.msg)
-					navigate(routePaths.MIS_ASSISTANT_HOME)
-				}
-			})
-			.catch((err) => {
-				console.log("EERRRRRRRRRR", err)
-			})
+		// 		if (res?.data?.suc === 1) {
+		// 			Message("success", res?.data?.msg)
+		// 			navigate(routePaths.MIS_ASSISTANT_HOME)
+		// 		}
+		// 	})
+		// 	.catch((err) => {
+		// 		console.log("EERRRRRRRRRR", err)
+		// 	})
 
 		setLoading(false)
 	}
@@ -252,7 +252,7 @@ function BasicDetailsForm() {
 						touched,
 					}) => ( */}
 				<form onSubmit={formik.handleSubmit}>
-					<div className="card flex flex-col justify-center px-16 py-5">
+					<div className="">
 						<div className="mb-4">
 							<TDInputTemplateBr
 								placeholder="Form Number"
@@ -535,21 +535,21 @@ function BasicDetailsForm() {
 							</div>
 						</div>
 
-						{/* {loanApproveStatus !== "A" && loanApproveStatus !== "R" ? (
-							<div className="mt-10">
-								<BtnComp
-									mode="S"
-									rejectBtn={true}
-									onReject={() => {
-										setVisibleModal2(true)
-									}}
-									sendToText="Credit Manager"
-									onSendTo={() => setVisibleModal(true)}
-									condition={fetchedFileDetails?.length > 0}
-									showSave
-								/>
-							</div>
-						) : loanApproveStatus === "A" ? (
+						{/* {loanApproveStatus !== "A" && loanApproveStatus !== "R" ? ( */}
+						<div className="mt-10">
+							<BtnComp
+								mode="A"
+								rejectBtn={true}
+								onReject={() => {
+									setVisibleModal2(true)
+								}}
+								sendToText="Credit Manager"
+								onSendTo={() => setVisibleModal(true)}
+								// condition={fetchedFileDetails?.length > 0}
+								// showSave
+							/>
+						</div>
+						{/* ) : loanApproveStatus === "A" ? (
 							<Tag
 								color="purple"
 								className="mt-10 p-5 rounded-lg text-xl font-bold self-center"
@@ -573,10 +573,6 @@ function BasicDetailsForm() {
 						)} */}
 					</div>
 				</form>
-				{/* )}
-				</Formik> */}
-
-				{/* </form> */}
 			</Spin>
 
 			{/* <DialogBox
@@ -614,8 +610,8 @@ function BasicDetailsForm() {
 					setVisibleModal2(!visibleModal2)
 					Message("warning", "User cancelled operation.")
 				}}
-			/> */}
-			{/* <DialogBox
+			/>
+			<DialogBox
 				flag={4}
 				onPress={() => setVisibleModal2(!visibleModal2)}
 				visible={visibleModal2}

@@ -94,11 +94,11 @@ const UserChoose = lazy(() => import("./Screens/Choose/UserChoose"))
 
 const root = ReactDOM.createRoot(document.getElementById("root"))
 
-window.addEventListener("beforeunload", (ev) => {
-	ev.preventDefault()
+// window.addEventListener("beforeunload", (ev) => {
+// 	ev.preventDefault()
 
-	localStorage.clear()
-})
+// 	localStorage.clear()
+// })
 
 const router = createBrowserRouter([
 	{
@@ -107,185 +107,105 @@ const router = createBrowserRouter([
 		children: [
 			{
 				path: "",
-				element: <ChooseComp />,
+				element: <AuthMis />,
 				children: [
 					{
 						path: "",
-						element: <UserChoose />,
+						element: <SigninMis />,
 					},
-					// {
-					// 	path: "loan",
-					// 	element: <LoanComp />,
-					// 	children: [
-					// 		{
-					// 			path: "loanview",
-					// 			element: <LoanView />,
-					// 		},
-					// 		{
-					// 			path: "loanform/:id",
-					// 			element: <LoanForm />,
-					// 		},
-					// 	],
-					// },
-					// {
-					// 	path: "appraiser",
-					// 	element: <Auth />,
-					// 	children: [
-					// 		{
-					// 			path: "",
-					// 			element: <Signin />,
-					// 		},
-					// 		{
-					// 			path: "signup",
-					// 			element: <Signup />,
-					// 		},
-					// 		{
-					// 			path: "forgotpassword",
-					// 			element: <ForgotPass />,
-					// 		},
-					// 		{
-					// 			path: "home",
-					// 			element: <Home />,
-					// 			children: [
-					// 				{
-					// 					path: "",
-					// 					element: <HomeScreen />,
-					// 				},
-					// 				{
-					// 					path: "editloanform/:id",
-					// 					element: <EditLoanForm />,
-					// 				},
-					// 				// {
-					// 				// 	path: "fwdapplication",
-					// 				// 	element: <FwdLoanApplications />,
-					// 				// },
-					// 				// {
-					// 				// 	path: "fwdapplication/editloanform/:id",
-					// 				// 	element: <EditLoanFormFwd />,
-					// 				// },
-					// 			],
-					// 		},
-					// 	],
-					// },
 					{
-						path: "misassistant",
-						element: <AuthMis />,
+						path: "signup",
+						element: <SignupMis />,
+					},
+					{
+						path: "forgotpassword",
+						element: <ForgotPassMis />,
+					},
+					{
+						path: "homemis",
+						element: <HomeMis />,
 						children: [
 							{
 								path: "",
-								element: <SigninMis />,
+								element: <HomeScreenMis />,
 							},
 							{
-								path: "signup",
-								element: <SignupMis />,
-							},
-							{
-								path: "forgotpassword",
-								element: <ForgotPassMis />,
-							},
-							{
-								path: "homemis",
-								element: <HomeMis />,
-								children: [
-									{
-										path: "",
-										element: <HomeScreenMis />,
-									},
-									{
-										path: "editloanform/:id",
-										element: <EditLoanFormMis />,
-									},
-									// {
-									// 	path: "fwdapplication",
-									// 	element: <FwdLoanApplicationsBr />,
-									// },
-									// {
-									// 	path: "fwdapplication/editloanform/:id",
-									// 	element: <EditLoanFormFwdBr />,
-									// },
-									// {
-									// 	path: "rejectapplication",
-									// 	element: <RejectLoanApplicationsBr />,
-									// },
-									// {
-									// 	path: "rejectapplication/editloanform/:id",
-									// 	element: <EditRejectLoanApplicationBr />,
-									// },
-								],
+								path: "editloanform/:id",
+								element: <EditLoanFormMis />,
 							},
 						],
 					},
-					// {
-					// 	path: "creditmanager",
-					// 	element: <AuthCr />,
-					// 	children: [
-					// 		{
-					// 			path: "",
-					// 			element: <SigninCr />,
-					// 		},
-					// 		{
-					// 			path: "signup",
-					// 			element: <SignupCr />,
-					// 		},
-					// 		{
-					// 			path: "forgotpassword",
-					// 			element: <ForgotPassCr />,
-					// 		},
-					// 		{
-					// 			path: "homecr",
-					// 			element: <HomeCr />,
-					// 			children: [
-					// 				{
-					// 					path: "",
-					// 					element: <HomeScreenCr />,
-					// 				},
-					// 				{
-					// 					path: "editloanform/:id",
-					// 					element: <EditLoanFormCr />,
-					// 				},
-					// 			],
-					// 		},
-					// 	],
-					// },
-					// {
-					// 	path: "ceo",
-					// 	element: <AuthCeo />,
-					// 	children: [
-					// 		{
-					// 			path: "",
-					// 			element: <SigninCeo />,
-					// 		},
-					// 		{
-					// 			path: "signup",
-					// 			element: <SignupCeo />,
-					// 		},
-					// 		{
-					// 			path: "forgotpassword",
-					// 			element: <ForgotPassCeo />,
-					// 		},
-					// 		{
-					// 			path: "homeceo",
-					// 			element: <HomeCeo />,
-					// 			children: [
-					// 				{
-					// 					path: "",
-					// 					element: <HomeScreenCeo />,
-					// 				},
-					// 				{
-					// 					path: "editloanform/:id",
-					// 					element: <EditLoanFormCeo />,
-					// 				},
-					// 			],
-					// 		},
-					// 	],
-					// },
-
-					// {
-					// 	path: "forgotpassword",
-					// 	element: <ForgotPass />,
-					// },
 				],
 			},
+			// {
+			// 	path: "creditmanager",
+			// 	element: <AuthCr />,
+			// 	children: [
+			// 		{
+			// 			path: "",
+			// 			element: <SigninCr />,
+			// 		},
+			// 		{
+			// 			path: "signup",
+			// 			element: <SignupCr />,
+			// 		},
+			// 		{
+			// 			path: "forgotpassword",
+			// 			element: <ForgotPassCr />,
+			// 		},
+			// 		{
+			// 			path: "homecr",
+			// 			element: <HomeCr />,
+			// 			children: [
+			// 				{
+			// 					path: "",
+			// 					element: <HomeScreenCr />,
+			// 				},
+			// 				{
+			// 					path: "editloanform/:id",
+			// 					element: <EditLoanFormCr />,
+			// 				},
+			// 			],
+			// 		},
+			// 	],
+			// },
+			// {
+			// 	path: "ceo",
+			// 	element: <AuthCeo />,
+			// 	children: [
+			// 		{
+			// 			path: "",
+			// 			element: <SigninCeo />,
+			// 		},
+			// 		{
+			// 			path: "signup",
+			// 			element: <SignupCeo />,
+			// 		},
+			// 		{
+			// 			path: "forgotpassword",
+			// 			element: <ForgotPassCeo />,
+			// 		},
+			// 		{
+			// 			path: "homeceo",
+			// 			element: <HomeCeo />,
+			// 			children: [
+			// 				{
+			// 					path: "",
+			// 					element: <HomeScreenCeo />,
+			// 				},
+			// 				{
+			// 					path: "editloanform/:id",
+			// 					element: <EditLoanFormCeo />,
+			// 				},
+			// 			],
+			// 		},
+			// 	],
+			// },
+
+			// {
+			// 	path: "forgotpassword",
+			// 	element: <ForgotPass />,
+			// },
 		],
 	},
 	{
