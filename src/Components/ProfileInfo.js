@@ -1,57 +1,66 @@
 import React from "react"
-import { Descriptions } from "antd"
+import { Descriptions, Button } from "antd"
+import { EditOutlined } from "@ant-design/icons"
+
 const ProfileInfo = () => {
+	const userDetails = JSON.parse(localStorage.getItem("user_details"))
+
 	const items = [
 		{
 			key: "1",
 			label: "Name",
-			children: <p>{localStorage.getItem("user_name")}</p>,
+			children: <p>{userDetails?.emp_name}</p>,
 		},
 		{
 			key: "2",
 			label: "Phone",
-			children: <p>{localStorage.getItem("user_phone")}</p>,
+			children: <p>{userDetails?.phone_mobile}</p>,
 		},
 		{
 			key: "3",
 			label: "Email",
-			children: <p>{localStorage.getItem("email")}</p>,
+			children: <p>{userDetails?.email || ""}</p>,
 		},
 		{
 			key: "4",
-			label: "Department",
-			children: <p>{localStorage.getItem("dept_name")}</p>,
+			label: "Branch",
+			children: <p>{userDetails?.branch_name}</p>,
 		},
 		{
 			key: "5",
-			label: "Designation",
-			children: <p>{localStorage.getItem("desig_name")}</p>,
+			label: "User Type",
+			children: <p>{userDetails?.user_type}</p>,
 		},
 		{
 			key: "6",
-			label: "Type",
+			label: "Gender",
 			children: (
 				<p>
-					{localStorage.getItem("user_type") == "AD"
-						? "Admin"
-						: localStorage.getItem("user_type") == "PM"
-						? "Purchase Manager"
-						: localStorage.getItem("user_type") == "PuM"
-						? "Purchase Manager"
-						: localStorage.getItem("user_type") == "WM"
-						? "Warehouse Manager"
-						: "General User"}
+					{userDetails?.gender === "M"
+						? "Male"
+						: userDetails?.gender === "F"
+						? "Female"
+						: userDetails?.gender === "O"
+						? "Others"
+						: "Error"}
 				</p>
 			),
 		},
 	]
+
+	console.log("KKKKKKKKKKKKKKKKKK", localStorage.getItem("emp_name"))
 	return (
 		<>
 			<Descriptions
 				title="Your profile"
-				labelStyle={{ color: "#014737", fontWeight: "bold" }}
+				labelStyle={{ color: "#1e429f", fontWeight: "bold" }}
 				items={items}
 			/>
+			{/* <Button
+				className="rounded-full bg-blue-800 text-white mt-10 float-right"
+				onClick={() => onEditPress()}
+				icon={<EditOutlined />}
+			></Button> */}
 		</>
 	)
 }

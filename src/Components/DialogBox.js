@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react"
 import { Dialog } from "primereact/dialog"
 import { useNavigate } from "react-router-dom"
-import { Tabs } from "antd"
+import { Tabs, Button } from "antd"
 import ProfileInfo from "./ProfileInfo"
 import PasswordComp from "./PasswordComp"
 import { routePaths } from "../Assets/Data/Routes"
@@ -14,7 +14,18 @@ import ProdInfo from "./ProdInfo"
 import PoPreview from "./Steps/PoPreview"
 import TDInputTemplate from "./TDInputTemplate"
 import AmendPreview from "./AmendPreview"
-const DialogBox = ({ visible, flag, onPress, data, onPressNo, onPressYes }) => {
+import { EditOutlined } from "@ant-design/icons"
+import UserProfileUpdateForm from "../Screens/Forms/UserProfileUpdateForm"
+
+const DialogBox = ({
+	visible,
+	flag,
+	onPress,
+	data,
+	onPressNo,
+	onPressYes,
+	onEditPress,
+}) => {
 	const navigate = useNavigate()
 	const [po_no, setPoNo] = useState("")
 	useEffect(() => {
@@ -28,7 +39,19 @@ const DialogBox = ({ visible, flag, onPress, data, onPressNo, onPressYes }) => {
 		{
 			key: "1",
 			label: "User profile",
-			children: <ProfileInfo flag={flag} />,
+			children: (
+				<>
+					{/* <ProfileInfo flag={flag} /> */}
+
+					<UserProfileUpdateForm />
+
+					{/* <Button
+						className="rounded-full bg-blue-800 text-white mt-10 float-right"
+						onClick={() => onEditPress()}
+						icon={<EditOutlined />}
+					></Button> */}
+				</>
+			),
 		},
 		{
 			key: "2",

@@ -1,12 +1,10 @@
 import React, { useEffect, useState } from "react"
 import { useLocation } from "react-router-dom"
 import LOGO from "../Assets/Images/inverted.png"
-import Menus from "./Menus"
 import { Divider } from "@mui/material"
 import { Drawer } from "antd"
 import { motion } from "framer-motion"
 import MenusBr from "./MenusBr"
-import MenusCr from "./MenusCr"
 
 function Sidebar({ mode = 0 }) {
 	const location = useLocation()
@@ -63,7 +61,7 @@ function Sidebar({ mode = 0 }) {
 				key={"left"}
 			>
 				<Divider />
-				<Menus mode={"vertical"} theme={"light"} />
+				<MenusBr mode={"vertical"} theme={"light"} />
 
 				<Divider />
 			</Drawer>
@@ -91,7 +89,7 @@ function Sidebar({ mode = 0 }) {
 							alt="Flowbite Logo"
 						/>
 					</div> */}
-					{mode === 0 ? <Menus /> : mode === 1 ? <MenusBr /> : <MenusCr />}
+					<MenusBr />
 					{/* <img className='absolute bottom-0 h-40 blur-1' src={sidebar2} alt="Flowbite Logo" /> */}
 				</div>
 				{/* <motion.img initial={{opacity:0}} animate={{opacity:1}} transition={{delay:0.5, type:'spring'
