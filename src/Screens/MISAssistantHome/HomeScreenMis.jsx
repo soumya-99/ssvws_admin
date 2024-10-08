@@ -8,18 +8,18 @@ import { LoadingOutlined } from "@ant-design/icons"
 import LoanApplicationsTableViewBr from "../../Components/LoanApplicationsTableViewBr"
 
 function HomeScreenMis() {
+	const userDetails = JSON.parse(localStorage.getItem("user_details")) || ""
 	const [loading, setLoading] = useState(false)
 	const [loanApplications, setLoanApplications] = useState(() => [])
 	const [copyLoanApplications, setCopyLoanApplications] = useState(() => [])
 
 	const fetchLoanApplications = async () => {
 		setLoading(true)
+		// const creds = {
+		// 	"": "",
+		// }
 		await axios
-			.get(
-				`${url}/brn/fetch_brn_pen_dtls?user_id=${+JSON.parse(
-					localStorage.getItem("br_mgr_details")
-				)?.id}`
-			)
+			.get(`${url}/admin/fetch_bmfwd_dtls_web`)
 			.then((res) => {
 				if (res?.data?.suc === 1) {
 					setLoanApplications(res?.data?.msg)
@@ -32,6 +32,7 @@ function HomeScreenMis() {
 			})
 			.catch((err) => {
 				Message("error", "Some error occurred while fetching loans!")
+				console.log("ERRR", err)
 			})
 		setLoading(false)
 	}
@@ -45,11 +46,11 @@ function HomeScreenMis() {
 			copyLoanApplications?.filter(
 				(e) =>
 					e?.sl_no?.toString()?.toLowerCase().includes(word?.toLowerCase()) ||
-					e?.application_no
+					e?.group_name
 						?.toString()
 						?.toLowerCase()
 						?.includes(word?.toLowerCase()) ||
-					e?.member_name
+					e?.prov_grp_code
 						?.toString()
 						?.toLowerCase()
 						?.includes(word?.toLowerCase())
@@ -69,7 +70,7 @@ function HomeScreenMis() {
 				<main className="px-4 h-auto my-10 mx-32">
 					<LoanApplicationsTableViewBr
 						loanAppData={loanApplications}
-						title="Pending Applications"
+						title="Pending Groups"
 						setSearch={(data) => setSearch(data)}
 					/>
 					{/* <DialogBox

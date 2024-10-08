@@ -36,11 +36,7 @@ function HouseholdDetailsForm() {
 	const { loanAppData } = location.state || {}
 	const navigate = useNavigate()
 
-	const [branches, setBranches] = useState(() => [])
 	const [loanTypes, setLoanTypes] = useState(() => [])
-	const [fileArray, setFileArray] = useState(() => [])
-	const [visibleModal, setVisibleModal] = useState(() => false)
-	const [visibleModal2, setVisibleModal2] = useState(() => false)
 
 	console.log(params, "params")
 	console.log(location, "location")

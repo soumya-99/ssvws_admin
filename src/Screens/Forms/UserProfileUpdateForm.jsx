@@ -36,7 +36,7 @@ const UserProfileUpdateForm = ({ mode }) => {
 			emp_id: "",
 		}
 		await axios
-			.post(`${url}/save_profile_web`, creds)
+			.post(`${url}/admin/save_profile_web`, creds)
 			.then((res) => {
 				console.log(res.data)
 				Message("success", "Profile updated successfully!")

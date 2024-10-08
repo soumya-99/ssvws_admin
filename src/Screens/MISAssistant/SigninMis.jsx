@@ -102,7 +102,7 @@ function SigninMis() {
 								animate={{ opacity: 0, y: -20 }}
 								transition={{ delay: 4, type: "tween" }}
 							>
-								Welcome Back MIS Assistant!
+								Welcome Back!
 							</motion.h2>
 							<motion.img
 								initial={{ opacity: 0 }}

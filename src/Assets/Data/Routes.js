@@ -23,5 +23,6 @@ export const routePaths = {
 
 	// MIS_ASSISTANT_LOGIN: "/",
 	MIS_ASSISTANT_HOME: "/homemis/",
-	MIS_ASSISTANT_EDIT_APPLICATION: "/misassistant/homemis/editloanform/",
+	MIS_ASSISTANT_EDIT_GRT: "/homemis/editgrtform/",
+	MIS_ASSISTANT_EDIT_GROUP: "/homemis/editgroupform/",
 }

@@ -18,7 +18,8 @@ import SignupMis from "./Screens/MISAssistant/SignupMis"
 import ForgotPassMis from "./Screens/MISAssistant/ForgotPassMis"
 import HomeMis from "./Screens/MISAssistantHome/HomeMis"
 import HomeScreenMis from "./Screens/MISAssistantHome/HomeScreenMis"
-import EditLoanFormMis from "./Screens/MISAssistantHome/EditLoanFormMis"
+import EditGRTFormMis from "./Screens/MISAssistantHome/EditGRTFormMis"
+import EditGroupForm from "./Screens/MISAssistantHome/EditGroupForm"
 // import FwdLoanApplications from "./Screens/AppraiserHome/FwdLoanApplications"
 // import EditLoanFormFwd from "./Screens/AppraiserHome/EditLoanFormFwd"
 
@@ -130,8 +131,12 @@ const router = createBrowserRouter([
 								element: <HomeScreenMis />,
 							},
 							{
-								path: "editloanform/:id",
-								element: <EditLoanFormMis />,
+								path: "editgroupform/:id",
+								element: <EditGroupForm />,
+							},
+							{
+								path: "editgrtform/:id",
+								element: <EditGRTFormMis />,
 							},
 						],
 					},

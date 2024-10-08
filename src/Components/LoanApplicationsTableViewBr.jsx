@@ -107,13 +107,13 @@ function LoanApplicationsTableViewBr({
 								#
 							</th> */}
 							<th scope="col" className="p-4">
-								Form No.
-							</th>
-							<th scope="col" className="p-4">
-								Date
+								Group Code
 							</th>
 							<th scope="col" className="p-4">
 								Name
+							</th>
+							<th scope="col" className="p-4">
+								Type
 							</th>
 							{/* <th scope="col" className="p-4">
 								Status
@@ -147,13 +147,15 @@ function LoanApplicationsTableViewBr({
 									>
 										{item.sl_no}
 									</th> */}
+									<td className="px-6 py-4">{item.prov_grp_code || "-----"}</td>
+									<td className="px-6 py-4">{item.group_name}</td>
 									<td className="px-6 py-4">
-										{item.application_no || "-----"}
+										{item.group_type === "J"
+											? "JLG"
+											: item.group_type === "S"
+											? "SHG"
+											: "!(J/S)"}
 									</td>
-									<td className="px-6 py-4">
-										{new Date(item.last_fwd_dt).toLocaleString("en-GB")}
-									</td>
-									<td className="px-6 py-4">{item.member_name}</td>
 									{/* <td className="px-6 py-4">{item.member_name}</td> */}
 									{/* <td className="px-6 py-4">
 										{item.branch_name}
@@ -169,8 +171,8 @@ function LoanApplicationsTableViewBr({
 												// 		  item?.application_no
 												// 		:
 
-												routePaths.MIS_ASSISTANT_EDIT_APPLICATION +
-												item?.application_no
+												routePaths.MIS_ASSISTANT_EDIT_GROUP +
+												item?.prov_grp_code
 												// : routePaths.BR_EDIT_APPLICATION_REJECT +
 												//   item?.application_no
 											}
