@@ -32,7 +32,7 @@ function SigninMis() {
 
 		const creds = {
 			emp_id: values?.user_id,
-			password: "1234",
+			password: values?.password,
 		}
 
 		await axios
