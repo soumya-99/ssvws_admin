@@ -1,4 +1,4 @@
-import React, { useState } from "react"
+import React, { useEffect, useState } from "react"
 import { routePaths } from "../../Assets/Data/Routes"
 import { useNavigate } from "react-router-dom"
 import TDInputTemplateBr from "../../Components/TDInputTemplateBr"
@@ -9,12 +9,13 @@ import { Message } from "../../Components/Message"
 const UserProfileUpdateForm = ({ mode }) => {
 	const navigate = useNavigate()
 	const userDetails = JSON.parse(localStorage.getItem("user_details")) || ""
+	const [branches, setBranches] = useState(() => [])
 
 	const [formData, setFormData] = useState({
 		u_name: "",
 		u_phone: "",
 		u_email: "",
-		u_branch_name: "",
+		u_branch_code: "",
 		u_gender: "",
 	})
 
@@ -25,15 +26,30 @@ const UserProfileUpdateForm = ({ mode }) => {
 		}))
 	}
 
+	const handleFetchBranches = async () => {
+		await axios
+			.get(`${url}/admin/fetch_branch`)
+			.then((res) => {
+				setBranches(res?.data?.msg)
+			})
+			.catch((err) => {
+				console.log("Some error")
+			})
+	}
+
+	useEffect(() => {
+		handleFetchBranches()
+	}, [])
+
 	const handleUpdateProfile = async () => {
 		const creds = {
 			emp_name: formData.u_name,
-			branch_id: "",
-			phone_home: "",
-			phone_mobile: "",
-			email: "",
-			gender: "",
-			emp_id: "",
+			branch_id: formData.u_branch_code,
+			// phone_home: formData.u_phone,
+			phone_mobile: formData.u_phone,
+			email: formData.u_email,
+			gender: formData.u_gender,
+			emp_id: userDetails?.emp_id,
 		}
 		await axios
 			.post(`${url}/admin/save_profile_web`, creds)
@@ -62,17 +78,34 @@ const UserProfileUpdateForm = ({ mode }) => {
 					/>
 				</div>
 				<div>
-					<TDInputTemplateBr
+					{/* <TDInputTemplateBr
 						placeholder="Branch Name"
 						type="text"
 						label="Branch Name"
 						name="u_branch_name"
-						formControlName={formData.u_branch_name || userDetails?.branch_name}
+						formControlName={formData.u_branch_code || userDetails?.brn_code}
 						handleChange={(e) =>
-							handleFormChange("u_branch_name", e.target.value)
+							handleFormChange("u_branch_code", e.target.value)
 						}
 						// handleBlur={""}
 						mode={1}
+					/> */}
+
+					<TDInputTemplateBr
+						placeholder="Branch Code..."
+						type="text"
+						label="Branch Code"
+						name="u_branch_code"
+						formControlName={formData.u_gender || userDetails?.brn_code}
+						handleChange={(e) =>
+							handleFormChange("u_branch_code", e.target.value)
+						}
+						// handleBlur={""}
+						data={branches?.map((item, i) => ({
+							code: item?.branch_code,
+							name: item?.branch_name,
+						}))}
+						mode={2}
 					/>
 				</div>
 				<div>
@@ -121,7 +154,7 @@ const UserProfileUpdateForm = ({ mode }) => {
 
 			<div className="flex justify-between">
 				<button
-					onClick={() => console.log("Update profile")}
+					onClick={() => handleUpdateProfile()}
 					className="text-white bg-blue-900 hover:bg-
       blue-900 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-full text-sm w-full sm:w-full px-5 py-2.5 text-center dark:bg-blue-500 dark:hover:bg-blue-700 dark:focus:ring-blue-800 disabled:bg-blue-400"
 				>
