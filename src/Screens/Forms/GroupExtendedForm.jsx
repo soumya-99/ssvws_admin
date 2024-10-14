@@ -434,8 +434,9 @@ function GroupExtendedForm({}) {
 								<Tag
 									key={i}
 									icon={<UserOutlined />}
-									color="purple"
-									className="text-lg cursor-pointer mb-5"
+									color="geekblue"
+									className="text-lg cursor-pointer mb-5 rounded-3xl
+									"
 									onClick={() =>
 										navigate(`/homemis/editgrtform/${item?.form_no}`, {
 											state: item,

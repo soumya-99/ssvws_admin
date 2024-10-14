@@ -2,32 +2,15 @@ import React, { useEffect, useState } from "react"
 import "../LoanForm/LoanForm.css"
 import { useParams } from "react-router"
 import BtnComp from "../../Components/BtnComp"
-import VError from "../../Components/VError"
-import TDInputTemplate from "../../Components/TDInputTemplate"
 import { useNavigate } from "react-router-dom"
-import { FieldArray, Formik, useFormik } from "formik"
-import * as Yup from "yup"
 import axios from "axios"
 import { Message } from "../../Components/Message"
 import { url } from "../../Address/BaseUrl"
-import { Spin, Button, Popconfirm, Tag, Timeline } from "antd"
-import {
-	LoadingOutlined,
-	DeleteOutlined,
-	PlusOutlined,
-	MinusOutlined,
-	FilePdfOutlined,
-	MinusCircleOutlined,
-	ClockCircleOutlined,
-	ArrowRightOutlined,
-} from "@ant-design/icons"
-import FormHeader from "../../Components/FormHeader"
-import { routePaths } from "../../Assets/Data/Routes"
+import { Spin, Button } from "antd"
+import { LoadingOutlined, PlusOutlined, MinusOutlined } from "@ant-design/icons"
 import { useLocation } from "react-router"
-import Sidebar from "../../Components/Sidebar"
 import DialogBox from "../../Components/DialogBox"
 import TDInputTemplateBr from "../../Components/TDInputTemplateBr"
-import TimelineComp from "../../Components/TimelineComp"
 
 function FamilyMemberDetailsForm() {
 	const params = useParams()
@@ -35,9 +18,10 @@ function FamilyMemberDetailsForm() {
 	const location = useLocation()
 	const { loanAppData } = location.state || {}
 	const navigate = useNavigate()
+	const userDetails = JSON.parse(localStorage.getItem("user_details"))
 
 	const [educations, setEducations] = useState(() => [])
-	const [visibleModal, setVisibleModal] = useState(() => false)
+	const [visible, setVisible] = useState(() => false)
 
 	console.log(params, "params")
 	console.log(location, "location")
@@ -45,13 +29,13 @@ function FamilyMemberDetailsForm() {
 	const [formArray, setFormArray] = useState([
 		{
 			sl_no: 0,
-			f_name: "",
-			f_relation: "",
-			f_age: "",
-			f_sex: "",
-			f_education: "",
-			f_studying_or_working: "",
-			f_monthly_income: "",
+			name: "",
+			relation: "",
+			age: "",
+			sex: "",
+			education: "",
+			studyingOrWorking: "",
+			monthlyIncome: "",
 		},
 	])
 
@@ -60,13 +44,13 @@ function FamilyMemberDetailsForm() {
 			...prev,
 			{
 				sl_no: 0,
-				f_name: "",
-				f_relation: "",
-				f_age: "",
-				f_sex: "",
-				f_education: "",
-				f_studying_or_working: "",
-				f_monthly_income: "",
+				name: "",
+				relation: "",
+				age: "",
+				sex: "",
+				education: "",
+				studyingOrWorking: "",
+				monthlyIncome: "",
 			},
 		])
 	}
@@ -88,10 +72,15 @@ function FamilyMemberDetailsForm() {
 	}
 
 	const handleFetchEducations = async () => {
-		await axios.get(`${url}/get_education`).then((res) => {
-			console.log("EDUCATIONSSSSSS====", res?.data)
-			setEducations(res?.data)
-		})
+		await axios
+			.get(`${url}/get_education`)
+			.then((res) => {
+				console.log("EDUCATIONSSSSSS====", res?.data)
+				setEducations(res?.data)
+			})
+			.catch((err) => {
+				console.log("Some error educations", err)
+			})
 	}
 
 	useEffect(() => {
@@ -99,6 +88,7 @@ function FamilyMemberDetailsForm() {
 	}, [])
 
 	const fetchFamilyMemberDetails = async () => {
+		setLoading(true)
 		await axios
 			.get(`${url}/admin/fetch_family_dt_web?form_no=${params?.id}`)
 			.then((res) => {
@@ -109,13 +99,13 @@ function FamilyMemberDetailsForm() {
 					if (familyDetailsArray?.length > 0) {
 						const transformedData = familyDetailsArray.map((member, index) => ({
 							sl_no: member.sl_no || index + 1,
-							f_name: member.name || "",
-							f_relation: member.relation || "",
-							f_age: member.age?.toString() || "",
-							f_sex: member.sex || "",
-							f_education: member.education || "",
-							f_studying_or_working: member.studyingOrWorking || "",
-							f_monthly_income: member.monthlyIncome?.toString() || "",
+							name: member.name || "",
+							relation: member.relation || "",
+							age: member.age?.toString() || "",
+							sex: member.sex || "",
+							education: member.education || "",
+							studyingOrWorking: member.studyingOrWorking || "",
+							monthlyIncome: member.monthlyIncome?.toString() || "",
 						}))
 						setFormArray(transformedData)
 					}
@@ -124,6 +114,7 @@ function FamilyMemberDetailsForm() {
 			.catch((err) => {
 				console.log("FAMILYY ERRR", err)
 			})
+		setLoading(false)
 	}
 
 	useEffect(() => {
@@ -134,23 +125,29 @@ function FamilyMemberDetailsForm() {
 		console.log("onsubmit called")
 		console.log(values, "onsubmit vendor")
 		setLoading(true)
+		setVisible(true)
+		setLoading(false)
+	}
 
-		const data = {}
-
-		// await axios
-		// 	.post(`${url}/sql/insert_loan_dtls`, data)
-		// 	.then((res) => {
-		// 		console.log("API RESPONSE", res)
-
-		// 		if (res?.data?.suc === 1) {
-		// 			Message("success", res?.data?.msg)
-		// 			navigate(routePaths.MIS_ASSISTANT_HOME)
-		// 		}
-		// 	})
-		// 	.catch((err) => {
-		// 		console.log("EERRRRRRRRRR", err)
-		// 	})
-
+	const editFamilyMemberDetails = async () => {
+		setLoading(true)
+		const creds = {
+			form_no: params?.id,
+			branch_code: userDetails?.brn_code,
+			created_by: userDetails?.emp_name,
+			modified_by: userDetails?.emp_name,
+			memberdtls: formArray,
+		}
+		await axios
+			.post(`${url}/admin/edit_family_dtls_web`, creds)
+			.then((res) => {
+				console.log("FAMILYYYY DTTT", res?.data)
+				Message("success", "Updated successfully.")
+			})
+			.catch((err) => {
+				console.log("FAMILYTY ERRR", err)
+				Message("error", "Some error occurred while submitting family details.")
+			})
 		setLoading(false)
 	}
 
@@ -176,10 +173,10 @@ function FamilyMemberDetailsForm() {
 											placeholder="Name"
 											type="text"
 											label="Name"
-											name={`${item?.f_name}_${i}`}
-											formControlName={item?.f_name}
+											name={`${item?.name}_${i}`}
+											formControlName={item?.name}
 											handleChange={(txt) =>
-												handleInputChange(i, "f_name", txt.target.value)
+												handleInputChange(i, "name", txt.target.value)
 											}
 											mode={1}
 										/>
@@ -189,10 +186,10 @@ function FamilyMemberDetailsForm() {
 											placeholder="Relation"
 											type="text"
 											label="Relation"
-											name={`${item?.f_relation}_${i}`}
-											formControlName={item?.f_relation}
+											name={`${item?.relation}_${i}`}
+											formControlName={item?.relation}
 											handleChange={(txt) =>
-												handleInputChange(i, "f_relation", txt.target.value)
+												handleInputChange(i, "relation", txt.target.value)
 											}
 											mode={1}
 										/>
@@ -202,10 +199,10 @@ function FamilyMemberDetailsForm() {
 											placeholder="Age"
 											type="number"
 											label="Age"
-											name={`${item?.f_age}_${i}`}
-											formControlName={item?.f_age}
+											name={`${item?.age}_${i}`}
+											formControlName={item?.age}
 											handleChange={(txt) =>
-												handleInputChange(i, "f_age", txt.target.value)
+												handleInputChange(i, "age", txt.target.value)
 											}
 											mode={1}
 										/>
@@ -215,10 +212,10 @@ function FamilyMemberDetailsForm() {
 											placeholder="Choose Gender"
 											type="text"
 											label="Choose Gender"
-											name={`${item?.f_sex}_${i}`}
-											formControlName={item?.f_sex}
+											name={`${item?.sex}_${i}`}
+											formControlName={item?.sex}
 											handleChange={(txt) =>
-												handleInputChange(i, "f_sex", txt.target.value)
+												handleInputChange(i, "sex", txt.target.value)
 											}
 											data={[
 												{
@@ -242,10 +239,10 @@ function FamilyMemberDetailsForm() {
 											placeholder="Choose Education"
 											type="text"
 											label="Choose Education"
-											name={`${item?.f_education}_${i}`}
-											formControlName={item?.f_education}
+											name={`${item?.education}_${i}`}
+											formControlName={item?.education}
 											handleChange={(txt) =>
-												handleInputChange(i, "f_education", txt.target.value)
+												handleInputChange(i, "education", txt.target.value)
 											}
 											data={educations?.map((edu) => ({
 												code: edu?.id,
@@ -259,12 +256,12 @@ function FamilyMemberDetailsForm() {
 											placeholder="Study/Work"
 											type="text"
 											label="Study/Work"
-											name={`${item?.f_studying_or_working}_${i}`}
-											formControlName={item?.f_studying_or_working}
+											name={`${item?.studyingOrWorking}_${i}`}
+											formControlName={item?.studyingOrWorking}
 											handleChange={(txt) =>
 												handleInputChange(
 													i,
-													"f_studying_or_working",
+													"studyingOrWorking",
 													txt.target.value
 												)
 											}
@@ -286,14 +283,10 @@ function FamilyMemberDetailsForm() {
 											placeholder="Monthly Income"
 											type="number"
 											label="Monthly Income"
-											name={`${item?.f_monthly_income}_${i}`}
-											formControlName={item?.f_monthly_income}
+											name={`${item?.monthlyIncome}_${i}`}
+											formControlName={item?.monthlyIncome}
 											handleChange={(txt) =>
-												handleInputChange(
-													i,
-													"f_monthly_income",
-													txt.target.value
-												)
+												handleInputChange(i, "monthlyIncome", txt.target.value)
 											}
 											mode={1}
 										/>
@@ -322,15 +315,24 @@ function FamilyMemberDetailsForm() {
 
 						<div className="mt-10">
 							<BtnComp
-								mode="A"
-								// rejectBtn={true}
-								// onReject={() => {
-								// 	setVisibleModal2(true)
-								// }}
-								// sendToText="Credit Manager"
-								onSendTo={() => setVisibleModal(true)}
-								// condition={fetchedFileDetails?.length > 0}
-								// showSave
+								mode="B"
+								onPressSubmit={() => {
+									setVisible(!visible)
+								}}
+								onReset={() => {
+									setFormArray([
+										{
+											sl_no: 0,
+											f_name: "",
+											f_relation: "",
+											f_age: "",
+											f_sex: "",
+											f_education: "",
+											f_studying_or_working: "",
+											f_monthly_income: "",
+										},
+									])
+								}}
 							/>
 						</div>
 
@@ -373,6 +375,17 @@ function FamilyMemberDetailsForm() {
 					</div>
 				</form>
 			</Spin>
+
+			<DialogBox
+				flag={4}
+				onPress={() => setVisible(!visible)}
+				visible={visible}
+				onPressYes={() => {
+					editFamilyMemberDetails()
+					setVisible(!visible)
+				}}
+				onPressNo={() => setVisible(!visible)}
+			/>
 		</>
 	)
 }

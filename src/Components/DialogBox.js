@@ -67,8 +67,8 @@ const DialogBox = ({
 				<div
 					className={
 						flag != 1
-							? "text-red-800  font-bold"
-							: "text-red-800  font-bold w-20"
+							? "text-blue-800  font-bold"
+							: "text-blue-800  font-bold w-20"
 					}
 				>
 					{flag != 2 &&
@@ -145,7 +145,7 @@ const DialogBox = ({
 						<button
 							type="button"
 							onClick={onPressYes}
-							className="inline-flex bg-green-700 items-center px-5 py-2.5 mt-4 sm:mt-6 text-sm font-medium text-center text-white rounded-full focus:ring-4 focus:ring-primary-200 dark:focus:ring-primary-900 hover:bg-primary-800"
+							className="inline-flex bg-purple-800 items-center px-5 py-2.5 mt-4 sm:mt-6 text-sm font-medium text-center text-white rounded-full focus:ring-4 focus:ring-primary-200 dark:focus:ring-primary-900 hover:bg-primary-800"
 						>
 							Yes
 						</button>
