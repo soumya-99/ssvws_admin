@@ -36,7 +36,7 @@ function HouseholdDetailsForm() {
 	const { loanAppData } = location.state || {}
 	const navigate = useNavigate()
 
-	const [loanTypes, setLoanTypes] = useState(() => [])
+	const [visibleModal, setVisibleModal] = useState(() => false)
 
 	console.log(params, "params")
 	console.log(location, "location")
@@ -54,6 +54,7 @@ function HouseholdDetailsForm() {
 		h_fridge: "",
 		h_washing_machine: "",
 	}
+
 	const [formValues, setValues] = useState({
 		h_no_of_rooms: "",
 		h_parental_address: "",
@@ -67,14 +68,6 @@ function HouseholdDetailsForm() {
 		h_fridge: "",
 		h_washing_machine: "",
 	})
-
-	const getExtension = (fileName) => {
-		if (!fileName) return ""
-		const lastDotIndex = fileName.lastIndexOf(".")
-		return lastDotIndex !== -1
-			? fileName.slice(lastDotIndex + 1).toLowerCase()
-			: ""
-	}
 
 	const validationSchema = Yup.object({
 		h_no_of_rooms: Yup.string().optional(),
@@ -90,10 +83,33 @@ function HouseholdDetailsForm() {
 		h_washing_machine: Yup.string().optional(),
 	})
 
+	const fetchHouseholdDetails = async () => {
+		await axios
+			.get(`${url}/admin/fetch_household_dt_web?form_no=${params?.id}`)
+			.then((res) => {
+				console.log("HOuSEHOLD DAT", res?.data)
+				setValues({
+					h_no_of_rooms: res?.data?.msg[0]?.no_of_rooms,
+					h_parental_address: res?.data?.msg[0]?.parental_addr,
+					h_parental_phone: res?.data?.msg[0]?.parental_phone,
+					h_house_type: res?.data?.msg[0]?.house_type,
+					h_own_rent: res?.data?.msg[0]?.own_rent,
+					h_total_land: res?.data?.msg[0]?.land,
+					h_politically_active: res?.data?.msg[0]?.poltical_flag,
+					h_tv: res?.data?.msg[0]?.tv_flag,
+					h_bike: res?.data?.msg[0]?.bike_flag,
+					h_fridge: res?.data?.msg[0]?.fridge_flag,
+					h_washing_machine: res?.data?.msg[0]?.wm_flag,
+				})
+			})
+			.catch((err) => {
+				console.log("ERRR HOUSEHOLD", err)
+			})
+	}
+
 	useEffect(() => {
-		// fetchBranches()
-		// fetchLoanTypes()
-		// fetchCreditManagers()
+		console.log("KKKKKKKKKKKKKKKKKKKKKKKKK")
+		fetchHouseholdDetails()
 	}, [])
 
 	const onSubmit = async (values) => {
@@ -119,68 +135,6 @@ function HouseholdDetailsForm() {
 
 		setLoading(false)
 	}
-
-	const fetchApplicationDetails = async () => {
-		setLoading(true)
-		await axios
-			.get(
-				`${url}/brn/fetch_brn_pen_dtls?user_id=${+JSON.parse(
-					localStorage.getItem("br_mgr_details")
-				)?.id}&application_no=${params?.id}`
-			)
-			.then((res) => {
-				if (res?.data?.suc === 1) {
-					setValues({
-						// l_member_id: res?.data?.msg[0]?.pending_dtls[0]?.member_id,
-						// l_membership_date:
-						// 	new Date(res?.data?.msg[0]?.pending_dtls[0]?.member_dt)
-						// 		?.toISOString()
-						// 		?.split("T")[0] || "",
-						// l_name: res?.data?.msg[0]?.pending_dtls[0]?.member_name,
-						// l_father_husband_name:
-						// 	res?.data?.msg[0]?.pending_dtls[0]?.father_name,
-						// l_gender: res?.data?.msg[0]?.pending_dtls[0]?.gender,
-						// l_dob:
-						// 	new Date(res?.data?.msg[0]?.pending_dtls[0]?.dob)
-						// 		?.toISOString()
-						// 		?.split("T")[0] || "",
-						// l_email: res?.data?.msg[0]?.pending_dtls[0]?.email,
-						// l_mobile_no: res?.data?.msg[0]?.pending_dtls[0]?.mobile_no,
-						// l_address: res?.data?.msg[0]?.pending_dtls[0]?.memb_address,
-						// l_loan_through_branch:
-						// 	res?.data?.msg[0]?.pending_dtls[0]?.branch_code,
-						// l_applied_for: res?.data?.msg[0]?.pending_dtls[0]?.loan_type,
-						// l_loan_amount: res?.data?.msg[0]?.pending_dtls[0]?.loan_amt,
-						// l_duration: res?.data?.msg[0]?.pending_dtls[0]?.loan_period,
-						// l_documents: [{ l_file_name: "", l_file: "" }],
-					})
-
-					// console.log("BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB", res?.data)
-					// setAppraiserForwardedDate(
-					// 	res?.data?.msg[0]?.pending_dtls[0]?.forwarded_dt
-					// )
-					// setFetchedRemarks(res?.data?.msg[0]?.pending_dtls[0]?.remarks)
-					// // setForwardedByName(res?.data?.msg[0]?.forward_appr_name)
-					// setLoanApproveStatus(
-					// 	res?.data?.msg[0]?.pending_dtls[0]?.application_status
-					// )
-					// setForwardedById(res?.data?.msg[0]?.pending_dtls[0]?.forwarded_by)
-					// setRejectReasonsArray(res?.data?.msg[0]?.reject_dt)
-				} else {
-					Message("warning", "No data found!")
-				}
-			})
-			.catch((err) => {
-				console.log("Error loan", err)
-				Message("error", "Some error occurred while fetching loan details.")
-			})
-		// await fetchUploadedFiles()
-		setLoading(false)
-	}
-
-	useEffect(() => {
-		fetchApplicationDetails()
-	}, [])
 
 	const formik = useFormik({
 		initialValues: formValues,
@@ -256,10 +210,20 @@ function HouseholdDetailsForm() {
 									formControlName={formik.values.h_house_type}
 									handleChange={formik.handleChange}
 									handleBlur={formik.handleBlur}
-									data={loanTypes?.map((loan) => ({
-										code: loan?.sl_no,
-										name: loan?.loan_type,
-									}))}
+									data={[
+										{
+											code: "Abestor",
+											name: "Asbestos",
+										},
+										{
+											code: "Concrete Roof",
+											name: "Concrete Roof",
+										},
+										{
+											code: "Kaccha",
+											name: "Kaccha",
+										},
+									]}
 									mode={2}
 								/>
 								{formik.errors.h_house_type && formik.touched.h_house_type ? (
@@ -434,6 +398,20 @@ function HouseholdDetailsForm() {
 									<VError title={formik.errors.h_washing_machine} />
 								) : null}
 							</div>
+						</div>
+
+						<div className="mt-10">
+							<BtnComp
+								mode="A"
+								// rejectBtn={true}
+								// onReject={() => {
+								// 	setVisibleModal2(true)
+								// }}
+								// sendToText="Credit Manager"
+								onSendTo={() => setVisibleModal(true)}
+								// condition={fetchedFileDetails?.length > 0}
+								// showSave
+							/>
 						</div>
 
 						{/* {loanApproveStatus !== "A" && loanApproveStatus !== "R" ? (

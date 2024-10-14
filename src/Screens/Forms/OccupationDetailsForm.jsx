@@ -1,33 +1,18 @@
 import React, { useEffect, useState } from "react"
 import "../LoanForm/LoanForm.css"
 import { useParams } from "react-router"
-import BtnComp from "../../Components/BtnComp"
 import VError from "../../Components/VError"
-import TDInputTemplate from "../../Components/TDInputTemplate"
 import { useNavigate } from "react-router-dom"
-import { FieldArray, Formik, useFormik } from "formik"
+import { useFormik } from "formik"
 import * as Yup from "yup"
 import axios from "axios"
 import { Message } from "../../Components/Message"
 import { url } from "../../Address/BaseUrl"
-import { Spin, Button, Popconfirm, Tag, Timeline } from "antd"
-import {
-	LoadingOutlined,
-	DeleteOutlined,
-	PlusOutlined,
-	MinusOutlined,
-	FilePdfOutlined,
-	MinusCircleOutlined,
-	ClockCircleOutlined,
-	ArrowRightOutlined,
-} from "@ant-design/icons"
-import FormHeader from "../../Components/FormHeader"
-import { routePaths } from "../../Assets/Data/Routes"
+import { Spin } from "antd"
+import { LoadingOutlined } from "@ant-design/icons"
 import { useLocation } from "react-router"
-import Sidebar from "../../Components/Sidebar"
-import DialogBox from "../../Components/DialogBox"
 import TDInputTemplateBr from "../../Components/TDInputTemplateBr"
-import TimelineComp from "../../Components/TimelineComp"
+import BtnComp from "../../Components/BtnComp"
 
 function OccupationDetailsForm() {
 	const params = useParams()
@@ -35,12 +20,10 @@ function OccupationDetailsForm() {
 	const location = useLocation()
 	const { loanAppData } = location.state || {}
 	const navigate = useNavigate()
-
-	const [branches, setBranches] = useState(() => [])
-	const [loanTypes, setLoanTypes] = useState(() => [])
-	const [fileArray, setFileArray] = useState(() => [])
 	const [visibleModal, setVisibleModal] = useState(() => false)
-	const [visibleModal2, setVisibleModal2] = useState(() => false)
+
+	const [purposeOfLoan, setPurposeOfLoan] = useState(() => [])
+	const [subPurposeOfLoan, setSubPurposeOfLoan] = useState(() => [])
 
 	console.log(params, "params")
 	console.log(location, "location")
@@ -57,6 +40,7 @@ function OccupationDetailsForm() {
 		o_other_loan_amount: "",
 		o_monthly_emi: "",
 	}
+
 	const [formValues, setValues] = useState({
 		o_self_occupation: "",
 		o_self_monthly_income: "",
@@ -70,14 +54,6 @@ function OccupationDetailsForm() {
 		o_monthly_emi: "",
 	})
 
-	const getExtension = (fileName) => {
-		if (!fileName) return ""
-		const lastDotIndex = fileName.lastIndexOf(".")
-		return lastDotIndex !== -1
-			? fileName.slice(lastDotIndex + 1).toLowerCase()
-			: ""
-	}
-
 	const validationSchema = Yup.object({
 		o_self_occupation: Yup.string().required("Required"),
 		o_self_monthly_income: Yup.string().required("Required"),
@@ -90,12 +66,6 @@ function OccupationDetailsForm() {
 		o_other_loan_amount: Yup.string().optional(),
 		o_monthly_emi: Yup.string().optional(),
 	})
-
-	useEffect(() => {
-		// fetchBranches()
-		// fetchLoanTypes()
-		// fetchCreditManagers()
-	}, [])
 
 	const onSubmit = async (values) => {
 		console.log("onsubmit called")
@@ -121,66 +91,31 @@ function OccupationDetailsForm() {
 		setLoading(false)
 	}
 
-	const fetchApplicationDetails = async () => {
-		setLoading(true)
+	const fetchOccupDetails = async () => {
 		await axios
-			.get(
-				`${url}/brn/fetch_brn_pen_dtls?user_id=${+JSON.parse(
-					localStorage.getItem("br_mgr_details")
-				)?.id}&application_no=${params?.id}`
-			)
+			.get(`${url}/admin/fetch_occup_dt_web?form_no=${params?.id}`)
 			.then((res) => {
-				if (res?.data?.suc === 1) {
-					setValues({
-						// l_member_id: res?.data?.msg[0]?.pending_dtls[0]?.member_id,
-						// l_membership_date:
-						// 	new Date(res?.data?.msg[0]?.pending_dtls[0]?.member_dt)
-						// 		?.toISOString()
-						// 		?.split("T")[0] || "",
-						// l_name: res?.data?.msg[0]?.pending_dtls[0]?.member_name,
-						// l_father_husband_name:
-						// 	res?.data?.msg[0]?.pending_dtls[0]?.father_name,
-						// l_gender: res?.data?.msg[0]?.pending_dtls[0]?.gender,
-						// l_dob:
-						// 	new Date(res?.data?.msg[0]?.pending_dtls[0]?.dob)
-						// 		?.toISOString()
-						// 		?.split("T")[0] || "",
-						// l_email: res?.data?.msg[0]?.pending_dtls[0]?.email,
-						// l_mobile_no: res?.data?.msg[0]?.pending_dtls[0]?.mobile_no,
-						// l_address: res?.data?.msg[0]?.pending_dtls[0]?.memb_address,
-						// l_loan_through_branch:
-						// 	res?.data?.msg[0]?.pending_dtls[0]?.branch_code,
-						// l_applied_for: res?.data?.msg[0]?.pending_dtls[0]?.loan_type,
-						// l_loan_amount: res?.data?.msg[0]?.pending_dtls[0]?.loan_amt,
-						// l_duration: res?.data?.msg[0]?.pending_dtls[0]?.loan_period,
-						// l_documents: [{ l_file_name: "", l_file: "" }],
-					})
-
-					// console.log("BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB", res?.data)
-					// setAppraiserForwardedDate(
-					// 	res?.data?.msg[0]?.pending_dtls[0]?.forwarded_dt
-					// )
-					// setFetchedRemarks(res?.data?.msg[0]?.pending_dtls[0]?.remarks)
-					// // setForwardedByName(res?.data?.msg[0]?.forward_appr_name)
-					// setLoanApproveStatus(
-					// 	res?.data?.msg[0]?.pending_dtls[0]?.application_status
-					// )
-					// setForwardedById(res?.data?.msg[0]?.pending_dtls[0]?.forwarded_by)
-					// setRejectReasonsArray(res?.data?.msg[0]?.reject_dt)
-				} else {
-					Message("warning", "No data found!")
-				}
+				console.log("PPPPPPPPPPPPPPPPPP", res?.data)
+				setValues({
+					o_self_occupation: res?.data?.msg[0]?.self_occu,
+					o_self_monthly_income: res?.data?.msg[0]?.self_income,
+					o_spouse_occupation: res?.data?.msg[0]?.spouse_occu,
+					o_spouse_monthly_income: res?.data?.msg[0]?.spouse_income,
+					o_purpose_of_loan: res?.data?.msg[0]?.loan_purpose,
+					o_sub_purpose_of_loan: res?.data?.msg[0]?.sub_pupose,
+					o_amount_applied: res?.data?.msg[0]?.applied_amt,
+					o_other_loans: res?.data?.msg[0]?.other_loan_flag,
+					o_other_loan_amount: res?.data?.msg[0]?.other_loan_amt,
+					o_monthly_emi: res?.data?.msg[0]?.other_loan_emi,
+				})
 			})
 			.catch((err) => {
-				console.log("Error loan", err)
-				Message("error", "Some error occurred while fetching loan details.")
+				console.log("ERRRR", err)
 			})
-		// await fetchUploadedFiles()
-		setLoading(false)
 	}
 
 	useEffect(() => {
-		fetchApplicationDetails()
+		fetchOccupDetails()
 	}, [])
 
 	const formik = useFormik({
@@ -192,6 +127,40 @@ function OccupationDetailsForm() {
 		enableReinitialize: true,
 		validateOnMount: true,
 	})
+
+	const getPurposeOfLoan = async () => {
+		await axios
+			.get(`${url}/get_purpose`)
+			.then((res) => {
+				console.log("------------", res?.data)
+				setPurposeOfLoan(res?.data?.msg)
+			})
+			.catch((err) => {
+				console.log("+==========+", err)
+			})
+	}
+
+	useEffect(() => {
+		getPurposeOfLoan()
+	}, [])
+
+	const getSubPurposeOfLoan = async (purpId) => {
+		setLoading(true)
+		await axios
+			.get(`${url}/get_sub_purpose?purp_id=${purpId}`)
+			.then((res) => {
+				console.log("------------", res?.data)
+				setSubPurposeOfLoan(res?.data?.msg)
+			})
+			.catch((err) => {
+				console.log("+==========+", err)
+			})
+		setLoading(false)
+	}
+
+	useEffect(() => {
+		getSubPurposeOfLoan(formik.values.o_purpose_of_loan)
+	}, [formik.values.o_purpose_of_loan])
 
 	// console.log("======================================", +branchIdForForwarding)
 
@@ -283,9 +252,9 @@ function OccupationDetailsForm() {
 									formControlName={formik.values.o_purpose_of_loan}
 									handleChange={formik.handleChange}
 									handleBlur={formik.handleBlur}
-									data={loanTypes?.map((loan) => ({
-										code: loan?.sl_no,
-										name: loan?.loan_type,
+									data={purposeOfLoan?.map((loan) => ({
+										code: loan?.purp_id,
+										name: loan?.purpose_id,
 									}))}
 									mode={2}
 								/>
@@ -304,9 +273,9 @@ function OccupationDetailsForm() {
 									formControlName={formik.values.o_sub_purpose_of_loan}
 									handleChange={formik.handleChange}
 									handleBlur={formik.handleBlur}
-									data={loanTypes?.map((loan) => ({
-										code: loan?.sl_no,
-										name: loan?.loan_type,
+									data={subPurposeOfLoan?.map((loan) => ({
+										code: loan?.sub_purp_id,
+										name: loan?.sub_purp_name,
 									}))}
 									mode={2}
 								/>
@@ -357,33 +326,52 @@ function OccupationDetailsForm() {
 								) : null}
 							</div>
 
-							<div>
-								<TDInputTemplateBr
-									placeholder="Other loan amount"
-									type="number"
-									label="Other Loan Amount"
-									name="o_other_loan_amount"
-									formControlName={formik.values.o_other_loan_amount}
-									mode={1}
-								/>
-								{formik.errors.o_other_loan_amount &&
-								formik.touched.o_other_loan_amount ? (
-									<VError title={formik.errors.o_other_loan_amount} />
-								) : null}
-							</div>
-							<div>
-								<TDInputTemplateBr
-									placeholder="Other loan EMI"
-									type="number"
-									label="Other loan EMI"
-									name="o_monthly_emi"
-									formControlName={formik.values.o_monthly_emi}
-									mode={1}
-								/>
-								{formik.errors.o_monthly_emi && formik.touched.o_monthly_emi ? (
-									<VError title={formik.errors.o_monthly_emi} />
-								) : null}
-							</div>
+							{formik.values.o_other_loans === "Y" && (
+								<>
+									<div>
+										<TDInputTemplateBr
+											placeholder="Other loan amount"
+											type="number"
+											label="Other Loan Amount"
+											name="o_other_loan_amount"
+											formControlName={formik.values.o_other_loan_amount}
+											mode={1}
+										/>
+										{formik.errors.o_other_loan_amount &&
+										formik.touched.o_other_loan_amount ? (
+											<VError title={formik.errors.o_other_loan_amount} />
+										) : null}
+									</div>
+									<div>
+										<TDInputTemplateBr
+											placeholder="Other loan EMI"
+											type="number"
+											label="Other loan EMI"
+											name="o_monthly_emi"
+											formControlName={formik.values.o_monthly_emi}
+											mode={1}
+										/>
+										{formik.errors.o_monthly_emi &&
+										formik.touched.o_monthly_emi ? (
+											<VError title={formik.errors.o_monthly_emi} />
+										) : null}
+									</div>
+								</>
+							)}
+						</div>
+
+						<div className="mt-10">
+							<BtnComp
+								mode="A"
+								// rejectBtn={true}
+								// onReject={() => {
+								// 	setVisibleModal2(true)
+								// }}
+								// sendToText="Credit Manager"
+								onSendTo={() => setVisibleModal(true)}
+								// condition={fetchedFileDetails?.length > 0}
+								// showSave
+							/>
 						</div>
 
 						{/* {loanApproveStatus !== "A" && loanApproveStatus !== "R" ? (

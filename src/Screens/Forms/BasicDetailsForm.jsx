@@ -72,14 +72,6 @@ function BasicDetailsForm({ memberDetails }) {
 		b_dob: "",
 	})
 
-	const getExtension = (fileName) => {
-		if (!fileName) return ""
-		const lastDotIndex = fileName.lastIndexOf(".")
-		return lastDotIndex !== -1
-			? fileName.slice(lastDotIndex + 1).toLowerCase()
-			: ""
-	}
-
 	const validationSchema = Yup.object({
 		b_clientName: Yup.string().required("Client name is required"),
 		b_clientGender: Yup.string().required("Gender is required"),
@@ -114,12 +106,6 @@ function BasicDetailsForm({ memberDetails }) {
 		b_groupCode: Yup.string().required("Group code is required"),
 		b_dob: Yup.string().required("DOB is required"),
 	})
-
-	useEffect(() => {
-		// fetchBranches()
-		// fetchLoanTypes()
-		// fetchCreditManagers()
-	}, [])
 
 	const onSubmit = async (values) => {
 		console.log("onsubmit called")
@@ -523,11 +509,11 @@ function BasicDetailsForm({ memberDetails }) {
 						<div className="mt-10">
 							<BtnComp
 								mode="A"
-								rejectBtn={true}
-								onReject={() => {
-									setVisibleModal2(true)
-								}}
-								sendToText="Credit Manager"
+								// rejectBtn={true}
+								// onReject={() => {
+								// 	setVisibleModal2(true)
+								// }}
+								// sendToText="Credit Manager"
 								onSendTo={() => setVisibleModal(true)}
 								// condition={fetchedFileDetails?.length > 0}
 								// showSave

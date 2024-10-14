@@ -36,6 +36,9 @@ function FamilyMemberDetailsForm() {
 	const { loanAppData } = location.state || {}
 	const navigate = useNavigate()
 
+	const [educations, setEducations] = useState(() => [])
+	const [visibleModal, setVisibleModal] = useState(() => false)
+
 	console.log(params, "params")
 	console.log(location, "location")
 
@@ -84,6 +87,49 @@ function FamilyMemberDetailsForm() {
 		}
 	}
 
+	const handleFetchEducations = async () => {
+		await axios.get(`${url}/get_education`).then((res) => {
+			console.log("EDUCATIONSSSSSS====", res?.data)
+			setEducations(res?.data)
+		})
+	}
+
+	useEffect(() => {
+		handleFetchEducations()
+	}, [])
+
+	const fetchFamilyMemberDetails = async () => {
+		await axios
+			.get(`${url}/admin/fetch_family_dt_web?form_no=${params?.id}`)
+			.then((res) => {
+				console.log("FAMILYYYY DATT", res?.data)
+				if (res?.data?.suc === 1) {
+					let familyDetailsArray = res?.data?.msg || []
+
+					if (familyDetailsArray?.length > 0) {
+						const transformedData = familyDetailsArray.map((member, index) => ({
+							sl_no: member.sl_no || index + 1,
+							f_name: member.name || "",
+							f_relation: member.relation || "",
+							f_age: member.age?.toString() || "",
+							f_sex: member.sex || "",
+							f_education: member.education || "",
+							f_studying_or_working: member.studyingOrWorking || "",
+							f_monthly_income: member.monthlyIncome?.toString() || "",
+						}))
+						setFormArray(transformedData)
+					}
+				}
+			})
+			.catch((err) => {
+				console.log("FAMILYY ERRR", err)
+			})
+	}
+
+	useEffect(() => {
+		fetchFamilyMemberDetails()
+	}, [])
+
 	const onSubmit = async (values) => {
 		console.log("onsubmit called")
 		console.log(values, "onsubmit vendor")
@@ -107,68 +153,6 @@ function FamilyMemberDetailsForm() {
 
 		setLoading(false)
 	}
-
-	// const fetchApplicationDetails = async () => {
-	// 	setLoading(true)
-	// 	await axios
-	// 		.get(
-	// 			`${url}/brn/fetch_brn_pen_dtls?user_id=${+JSON.parse(
-	// 				localStorage.getItem("br_mgr_details")
-	// 			)?.id}&application_no=${params?.id}`
-	// 		)
-	// 		.then((res) => {
-	// 			if (res?.data?.suc === 1) {
-	// 				setValues({
-	// 					// l_member_id: res?.data?.msg[0]?.pending_dtls[0]?.member_id,
-	// 					// l_membership_date:
-	// 					// 	new Date(res?.data?.msg[0]?.pending_dtls[0]?.member_dt)
-	// 					// 		?.toISOString()
-	// 					// 		?.split("T")[0] || "",
-	// 					// l_name: res?.data?.msg[0]?.pending_dtls[0]?.member_name,
-	// 					// l_father_husband_name:
-	// 					// 	res?.data?.msg[0]?.pending_dtls[0]?.father_name,
-	// 					// l_gender: res?.data?.msg[0]?.pending_dtls[0]?.gender,
-	// 					// l_dob:
-	// 					// 	new Date(res?.data?.msg[0]?.pending_dtls[0]?.dob)
-	// 					// 		?.toISOString()
-	// 					// 		?.split("T")[0] || "",
-	// 					// l_email: res?.data?.msg[0]?.pending_dtls[0]?.email,
-	// 					// l_mobile_no: res?.data?.msg[0]?.pending_dtls[0]?.mobile_no,
-	// 					// l_address: res?.data?.msg[0]?.pending_dtls[0]?.memb_address,
-	// 					// l_loan_through_branch:
-	// 					// 	res?.data?.msg[0]?.pending_dtls[0]?.branch_code,
-	// 					// l_applied_for: res?.data?.msg[0]?.pending_dtls[0]?.loan_type,
-	// 					// l_loan_amount: res?.data?.msg[0]?.pending_dtls[0]?.loan_amt,
-	// 					// l_duration: res?.data?.msg[0]?.pending_dtls[0]?.loan_period,
-	// 					// l_documents: [{ l_file_name: "", l_file: "" }],
-	// 				})
-
-	// 				// console.log("BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB", res?.data)
-	// 				// setAppraiserForwardedDate(
-	// 				// 	res?.data?.msg[0]?.pending_dtls[0]?.forwarded_dt
-	// 				// )
-	// 				// setFetchedRemarks(res?.data?.msg[0]?.pending_dtls[0]?.remarks)
-	// 				// // setForwardedByName(res?.data?.msg[0]?.forward_appr_name)
-	// 				// setLoanApproveStatus(
-	// 				// 	res?.data?.msg[0]?.pending_dtls[0]?.application_status
-	// 				// )
-	// 				// setForwardedById(res?.data?.msg[0]?.pending_dtls[0]?.forwarded_by)
-	// 				// setRejectReasonsArray(res?.data?.msg[0]?.reject_dt)
-	// 			} else {
-	// 				Message("warning", "No data found!")
-	// 			}
-	// 		})
-	// 		.catch((err) => {
-	// 			console.log("Error loan", err)
-	// 			Message("error", "Some error occurred while fetching loan details.")
-	// 		})
-	// 	// await fetchUploadedFiles()
-	// 	setLoading(false)
-	// }
-
-	// useEffect(() => {
-	// 	fetchApplicationDetails()
-	// }, [])
 
 	const handleSubmit = (e) => {
 		e.preventDefault()
@@ -263,20 +247,10 @@ function FamilyMemberDetailsForm() {
 											handleChange={(txt) =>
 												handleInputChange(i, "f_education", txt.target.value)
 											}
-											data={[
-												{
-													code: "M",
-													name: "MALE",
-												},
-												{
-													code: "F",
-													name: "FEMALE",
-												},
-												{
-													code: "O",
-													name: "OTHERS",
-												},
-											]}
+											data={educations?.map((edu) => ({
+												code: edu?.id,
+												name: edu?.name,
+											}))}
 											mode={2}
 										/>
 									</div>
@@ -296,11 +270,11 @@ function FamilyMemberDetailsForm() {
 											}
 											data={[
 												{
-													code: "S",
+													code: "Studying",
 													name: "STUDYING",
 												},
 												{
-													code: "W",
+													code: "Working",
 													name: "WORKING",
 												},
 											]}
@@ -344,6 +318,20 @@ function FamilyMemberDetailsForm() {
 								onClick={handleFormAdd}
 								icon={<PlusOutlined />}
 							></Button>
+						</div>
+
+						<div className="mt-10">
+							<BtnComp
+								mode="A"
+								// rejectBtn={true}
+								// onReject={() => {
+								// 	setVisibleModal2(true)
+								// }}
+								// sendToText="Credit Manager"
+								onSendTo={() => setVisibleModal(true)}
+								// condition={fetchedFileDetails?.length > 0}
+								// showSave
+							/>
 						</div>
 
 						{/* {loanApproveStatus !== "A" && loanApproveStatus !== "R" ? (
