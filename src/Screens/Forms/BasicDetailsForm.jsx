@@ -14,6 +14,7 @@ import { LoadingOutlined } from "@ant-design/icons"
 import { useLocation } from "react-router"
 import TDInputTemplateBr from "../../Components/TDInputTemplateBr"
 import { formatDateToYYYYMMDD } from "../../Utils/formateDate"
+import DialogBox from "../../Components/DialogBox"
 
 function BasicDetailsForm({ memberDetails }) {
 	const params = useParams()
@@ -21,12 +22,13 @@ function BasicDetailsForm({ memberDetails }) {
 	const location = useLocation()
 	// const { loanAppData } = location.state || {}
 	const navigate = useNavigate()
+	const userDetails = JSON.parse(localStorage.getItem("user_details"))
 
 	const [branches, setBranches] = useState(() => [])
 	const [loanTypes, setLoanTypes] = useState(() => [])
-	const [visibleModal, setVisibleModal] = useState(() => false)
-	const [visibleModal2, setVisibleModal2] = useState(() => false)
+	const [visible, setVisible] = useState(() => false)
 
+	const [groups, setGroups] = useState(() => [])
 	const [religions, setReligions] = useState(() => [])
 	const [castes, setCastes] = useState(() => [])
 	const [educations, setEducations] = useState(() => [])
@@ -112,21 +114,7 @@ function BasicDetailsForm({ memberDetails }) {
 		console.log(values, "onsubmit vendor")
 		setLoading(true)
 
-		const data = {}
-
-		// await axios
-		// 	.post(`${url}/sql/insert_loan_dtls`, data)
-		// 	.then((res) => {
-		// 		console.log("API RESPONSE", res)
-
-		// 		if (res?.data?.suc === 1) {
-		// 			Message("success", res?.data?.msg)
-		// 			navigate(routePaths.MIS_ASSISTANT_HOME)
-		// 		}
-		// 	})
-		// 	.catch((err) => {
-		// 		console.log("EERRRRRRRRRR", err)
-		// 	})
+		setVisible(true)
 
 		setLoading(false)
 	}
@@ -141,28 +129,112 @@ function BasicDetailsForm({ memberDetails }) {
 		validateOnMount: true,
 	})
 
-	const handleFetchReligions = async () => {
-		await axios.get(`${url}/get_religion`).then((res) => {
-			console.log("RELIIGIONSSSS====", res?.data)
-			setReligions(res?.data)
+	useEffect(() => {
+		setValues({
+			b_clientName: memberDetails?.client_name,
+			b_clientGender: memberDetails?.gender,
+			b_clientMobile: memberDetails?.client_mobile,
+			b_guardianName: memberDetails?.gurd_name,
+			b_guardianMobile: memberDetails?.gurd_mobile,
+			b_clientAddress: memberDetails?.client_addr,
+			b_clientPin: memberDetails?.pin_no,
+			b_aadhaarNumber: memberDetails?.aadhar_no,
+			b_panNumber: memberDetails?.pan_no,
+			b_religion: memberDetails?.religion,
+			b_caste: memberDetails?.caste,
+			b_education: memberDetails?.education,
+			b_groupCode: memberDetails?.prov_grp_code,
+			b_groupCodeName: "",
+			b_dob: formatDateToYYYYMMDD(memberDetails?.dob),
 		})
+	}, [])
+
+	const updateBasicDetails = async () => {
+		setLoading(true)
+		const creds = {
+			form_no: params?.id,
+			branch_code: userDetails?.brn_code,
+			prov_grp_code: memberDetails?.prov_grp_code,
+			gender: formik.values.b_clientGender,
+			client_name: formik.values.b_clientName,
+			client_mobile: formik.values.b_clientMobile,
+			gurd_name: formik.values.b_guardianName,
+			gurd_mobile: formik.values.b_guardianMobile,
+			client_addr: formik.values.b_clientAddress,
+			pin_no: formik.values.b_clientPin,
+			aadhar_no: formik.values.b_aadhaarNumber,
+			pan_no: formik.values.b_panNumber,
+			religion: formik.values.b_religion,
+			caste: formik.values.b_caste,
+			education: formik.values.b_education,
+			dob: formik.values.b_dob,
+			bm_lat_val: memberDetails?.co_lat_val,
+			bm_long_val: memberDetails?.co_long_val,
+			bm_gps_address: memberDetails?.co_gps_address,
+			modified_by: userDetails?.emp_name,
+		}
+		await axios
+			.post(`${url}/admin/edit_basic_dtls_web`, creds)
+			.then((res) => {
+				console.log("*******************", res?.data)
+				Message("success", "Updated Successfully.")
+			})
+			.catch((err) => {
+				console.log("BASIC ERRRRRRR", err)
+			})
+		setLoading(false)
+	}
+
+	const handleFetchGroups = async () => {
+		await axios
+			.get(`${url}/get_group?branch_code=${userDetails?.brn_code}`)
+			.then((res) => {
+				console.log("GROUPSSSS====", res?.data)
+				setGroups(res?.data?.msg)
+			})
+			.catch((err) => {
+				console.log("Some err")
+			})
+	}
+
+	const handleFetchReligions = async () => {
+		await axios
+			.get(`${url}/get_religion`)
+			.then((res) => {
+				console.log("RELIIGIONSSSS====", res?.data)
+				setReligions(res?.data)
+			})
+			.catch((err) => {
+				console.log("Some err")
+			})
 	}
 
 	const handleFetchCastes = async () => {
-		await axios.get(`${url}/get_caste`).then((res) => {
-			console.log("CASETEEEEEEWSSSSS====", res?.data)
-			setCastes(res?.data)
-		})
+		await axios
+			.get(`${url}/get_caste`)
+			.then((res) => {
+				console.log("CASETEEEEEEWSSSSS====", res?.data)
+				setCastes(res?.data)
+			})
+			.catch((err) => {
+				console.log("Some err")
+			})
 	}
 
 	const handleFetchEducations = async () => {
-		await axios.get(`${url}/get_education`).then((res) => {
-			console.log("EDUCATIONSSSSSS====", res?.data)
-			setEducations(res?.data)
-		})
+		await axios
+			.get(`${url}/get_education`)
+			.then((res) => {
+				console.log("EDUCATIONSSSSSS====", res?.data)
+				setEducations(res?.data)
+			})
+			.catch((err) => {
+				console.log("Some err")
+			})
 	}
 
 	useEffect(() => {
+		handleFetchGroups()
 		handleFetchReligions()
 		handleFetchCastes()
 		handleFetchEducations()
@@ -212,17 +284,15 @@ function BasicDetailsForm({ memberDetails }) {
 									type="text"
 									label="Member Code"
 									name="mem_code"
-									formControlName={
-										formik.values.l_member_id || memberDetails?.member_code
-									}
+									formControlName={memberDetails?.member_code}
 									handleChange={formik.handleChange}
 									handleBlur={formik.handleBlur}
 									mode={1}
 									disabled
 								/>
-								{formik.errors.l_member_id && formik.touched.l_member_id ? (
+								{/* {formik.errors.l_member_id && formik.touched.l_member_id ? (
 									<VError title={formik.errors.l_member_id} />
-								) : null}
+								) : null} */}
 							</div>
 
 							<div>
@@ -234,9 +304,9 @@ function BasicDetailsForm({ memberDetails }) {
 									formControlName={formik.values.b_groupCode}
 									handleChange={formik.handleChange}
 									handleBlur={formik.handleBlur}
-									data={loanTypes?.map((loan) => ({
-										code: loan?.sl_no,
-										name: loan?.loan_type,
+									data={groups?.map((grp) => ({
+										code: grp?.group_code,
+										name: grp?.group_name,
 									}))}
 									mode={2}
 								/>
@@ -251,9 +321,7 @@ function BasicDetailsForm({ memberDetails }) {
 									type="text"
 									label="Member Name"
 									name="b_clientName"
-									formControlName={
-										formik.values.b_clientName || memberDetails?.client_name
-									}
+									formControlName={formik.values.b_clientName}
 									handleChange={formik.handleChange}
 									handleBlur={formik.handleBlur}
 									mode={1}
@@ -268,10 +336,7 @@ function BasicDetailsForm({ memberDetails }) {
 									type="date"
 									label="Date of Birth"
 									name="b_dob"
-									formControlName={
-										formik.values.b_dob ||
-										formatDateToYYYYMMDD(memberDetails?.dob)
-									}
+									formControlName={formik.values.b_dob}
 									handleChange={formik.handleChange}
 									handleBlur={formik.handleBlur}
 									min={"1900-12-31"}
@@ -290,9 +355,7 @@ function BasicDetailsForm({ memberDetails }) {
 									type="text"
 									label="Gender"
 									name="b_clientGender"
-									formControlName={
-										formik.values.b_clientGender || memberDetails?.gender
-									}
+									formControlName={formik.values.b_clientGender}
 									handleChange={formik.handleChange}
 									handleBlur={formik.handleBlur}
 									data={[
@@ -314,9 +377,7 @@ function BasicDetailsForm({ memberDetails }) {
 									type="text"
 									label={`Member Address`}
 									name="b_clientAddress"
-									formControlName={
-										formik.values.b_clientAddress || memberDetails?.client_addr
-									}
+									formControlName={formik.values.b_clientAddress}
 									handleChange={formik.handleChange}
 									handleBlur={formik.handleBlur}
 									mode={3}
@@ -333,9 +394,7 @@ function BasicDetailsForm({ memberDetails }) {
 									type="number"
 									label="PIN No."
 									name="b_clientPin"
-									formControlName={
-										formik.values.b_clientPin || memberDetails?.pin_no
-									}
+									formControlName={formik.values.b_clientPin}
 									handleChange={formik.handleChange}
 									handleBlur={formik.handleBlur}
 									mode={1}
@@ -351,9 +410,7 @@ function BasicDetailsForm({ memberDetails }) {
 									type="number"
 									label="Member Mobile Number"
 									name="b_clientMobile"
-									formControlName={
-										formik.values.b_clientMobile || memberDetails?.client_mobile
-									}
+									formControlName={formik.values.b_clientMobile}
 									handleChange={formik.handleChange}
 									handleBlur={formik.handleBlur}
 									mode={1}
@@ -370,9 +427,7 @@ function BasicDetailsForm({ memberDetails }) {
 									type="text"
 									label="Guardian's Name"
 									name="b_guardianName"
-									formControlName={
-										formik.values.b_guardianName || memberDetails?.gurd_name
-									}
+									formControlName={formik.values.b_guardianName}
 									handleChange={formik.handleChange}
 									handleBlur={formik.handleBlur}
 									mode={1}
@@ -389,9 +444,7 @@ function BasicDetailsForm({ memberDetails }) {
 									type="number"
 									label="Guardian Mobile Number"
 									name="b_guardianMobile"
-									formControlName={
-										formik.values.b_guardianMobile || memberDetails?.gurd_mobile
-									}
+									formControlName={formik.values.b_guardianMobile}
 									handleChange={formik.handleChange}
 									handleBlur={formik.handleBlur}
 									mode={1}
@@ -408,9 +461,7 @@ function BasicDetailsForm({ memberDetails }) {
 									type="number"
 									label="Aadhaar No."
 									name="b_aadhaarNumber"
-									formControlName={
-										formik.values.b_aadhaarNumber || memberDetails?.aadhar_no
-									}
+									formControlName={formik.values.b_aadhaarNumber}
 									handleChange={formik.handleChange}
 									handleBlur={formik.handleBlur}
 									mode={1}
@@ -426,9 +477,7 @@ function BasicDetailsForm({ memberDetails }) {
 									type="text"
 									label="PAN No."
 									name="b_panNumber"
-									formControlName={
-										formik.values.b_panNumber || memberDetails?.pan_no
-									}
+									formControlName={formik.values.b_panNumber}
 									handleChange={formik.handleChange}
 									handleBlur={formik.handleBlur}
 									mode={1}
@@ -444,9 +493,7 @@ function BasicDetailsForm({ memberDetails }) {
 									type="text"
 									label="Religion"
 									name="b_religion"
-									formControlName={
-										formik.values.b_religion || memberDetails?.religion
-									}
+									formControlName={formik.values.b_religion}
 									handleChange={formik.handleChange}
 									handleBlur={formik.handleBlur}
 									data={religions?.map((religion) => ({
@@ -466,9 +513,7 @@ function BasicDetailsForm({ memberDetails }) {
 									type="text"
 									label="Caste"
 									name="b_caste"
-									formControlName={
-										formik.values.b_caste || memberDetails?.caste
-									}
+									formControlName={formik.values.b_caste}
 									handleChange={formik.handleChange}
 									handleBlur={formik.handleBlur}
 									data={castes?.map((caste) => ({
@@ -488,9 +533,7 @@ function BasicDetailsForm({ memberDetails }) {
 									type="text"
 									label="Education"
 									name="b_education"
-									formControlName={
-										formik.values.b_education || memberDetails?.education
-									}
+									formControlName={formik.values.b_education}
 									handleChange={formik.handleChange}
 									handleBlur={formik.handleBlur}
 									data={educations?.map((edu) => ({
@@ -507,17 +550,7 @@ function BasicDetailsForm({ memberDetails }) {
 
 						{/* {loanApproveStatus !== "A" && loanApproveStatus !== "R" ? ( */}
 						<div className="mt-10">
-							<BtnComp
-								mode="A"
-								// rejectBtn={true}
-								// onReject={() => {
-								// 	setVisibleModal2(true)
-								// }}
-								// sendToText="Credit Manager"
-								onSendTo={() => setVisibleModal(true)}
-								// condition={fetchedFileDetails?.length > 0}
-								// showSave
-							/>
+							<BtnComp mode="A" onReset={formik.resetForm} />
 						</div>
 						{/* ) : loanApproveStatus === "A" ? (
 							<Tag
@@ -545,53 +578,17 @@ function BasicDetailsForm({ memberDetails }) {
 				</form>
 			</Spin>
 
-			{/* <DialogBox
-				flag={4}
-				onPress={() => setVisibleModal(!visibleModal)}
-				visible={visibleModal}
-				onPressYes={() => {
-					if (commentsBranchManager) {
-						setVisibleModal(!visibleModal)
-					} else {
-						Message("error", "Write Comments.")
-						setVisibleModal(!visibleModal)
-					}
-				}}
-				onPressNo={() => {
-					setVisibleModal(!visibleModal)
-					Message("warning", "User cancelled operation.")
-				}}
-			/>
-
 			<DialogBox
 				flag={4}
-				onPress={() => setVisibleModal2(!visibleModal2)}
-				visible={visibleModal2}
-				onPressYes={(e) => {
-					if (commentsBranchManager && creditManagerId) {
-						setVisibleModal2(!visibleModal2)
-						// handleReject("R", e)
-					} else {
-						Message("error", "Write Comments.")
-						setVisibleModal2(!visibleModal2)
-					}
-				}}
-				onPressNo={() => {
-					setVisibleModal2(!visibleModal2)
-					Message("warning", "User cancelled operation.")
-				}}
-			/>
-			<DialogBox
-				flag={4}
-				onPress={() => setVisibleModal2(!visibleModal2)}
-				visible={visibleModal2}
+				onPress={() => setVisible(!visible)}
+				visible={visible}
 				onPressYes={() => {
-					setVisibleModal2(!visibleModal2)
+					// editGroup()
+					updateBasicDetails()
+					setVisible(!visible)
 				}}
-				onPressNo={() => {
-					setVisibleModal2(!visibleModal2)
-				}}
-			/> */}
+				onPressNo={() => setVisible(!visible)}
+			/>
 		</>
 	)
 }
