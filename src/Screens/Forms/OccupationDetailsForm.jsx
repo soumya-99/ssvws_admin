@@ -13,6 +13,7 @@ import { LoadingOutlined } from "@ant-design/icons"
 import { useLocation } from "react-router"
 import TDInputTemplateBr from "../../Components/TDInputTemplateBr"
 import BtnComp from "../../Components/BtnComp"
+import DialogBox from "../../Components/DialogBox"
 
 function OccupationDetailsForm() {
 	const params = useParams()
@@ -20,7 +21,8 @@ function OccupationDetailsForm() {
 	const location = useLocation()
 	const { loanAppData } = location.state || {}
 	const navigate = useNavigate()
-	const [visibleModal, setVisibleModal] = useState(() => false)
+	const userDetails = JSON.parse(localStorage.getItem("user_details"))
+	const [visible, setVisible] = useState(() => false)
 
 	const [purposeOfLoan, setPurposeOfLoan] = useState(() => [])
 	const [subPurposeOfLoan, setSubPurposeOfLoan] = useState(() => [])
@@ -67,30 +69,6 @@ function OccupationDetailsForm() {
 		o_monthly_emi: Yup.string().optional(),
 	})
 
-	const onSubmit = async (values) => {
-		console.log("onsubmit called")
-		console.log(values, "onsubmit vendor")
-		setLoading(true)
-
-		const data = {}
-
-		// await axios
-		// 	.post(`${url}/sql/insert_loan_dtls`, data)
-		// 	.then((res) => {
-		// 		console.log("API RESPONSE", res)
-
-		// 		if (res?.data?.suc === 1) {
-		// 			Message("success", res?.data?.msg)
-		// 			navigate(routePaths.MIS_ASSISTANT_HOME)
-		// 		}
-		// 	})
-		// 	.catch((err) => {
-		// 		console.log("EERRRRRRRRRR", err)
-		// 	})
-
-		setLoading(false)
-	}
-
 	const fetchOccupDetails = async () => {
 		await axios
 			.get(`${url}/admin/fetch_occup_dt_web?form_no=${params?.id}`)
@@ -118,6 +96,16 @@ function OccupationDetailsForm() {
 		fetchOccupDetails()
 	}, [])
 
+	const onSubmit = async (values) => {
+		console.log("onsubmit called")
+		console.log(values, "onsubmit vendor")
+		setLoading(true)
+
+		setVisible(true)
+
+		setLoading(false)
+	}
+
 	const formik = useFormik({
 		initialValues: formValues,
 		onSubmit,
@@ -127,6 +115,35 @@ function OccupationDetailsForm() {
 		enableReinitialize: true,
 		validateOnMount: true,
 	})
+
+	const editOccupDetails = async () => {
+		setLoading(true)
+		const creds = {
+			form_no: params?.id,
+			branch_code: userDetails?.brn_code,
+			self_occu: formik.values.o_self_occupation,
+			self_income: formik.values.o_self_monthly_income,
+			spouse_occu: formik.values.o_spouse_occupation,
+			spouse_income: formik.values.o_spouse_monthly_income,
+			loan_purpose: formik.values.o_purpose_of_loan,
+			sub_pupose: formik.values.o_sub_purpose_of_loan,
+			applied_amt: formik.values.o_amount_applied,
+			other_loan_flag: formik.values.o_other_loans,
+			other_loan_amt: formik.values.o_other_loan_amount,
+			other_loan_emi: formik.values.o_monthly_emi,
+			modified_by: userDetails?.emp_name,
+		}
+		await axios
+			.post(`${url}/admin/edit_occup_dtls_web`, creds)
+			.then((res) => {
+				console.log("OCCU DATYTYT", res?.data)
+				Message("success", "Updated Successfully")
+			})
+			.catch((err) => {
+				console.log("OCUU ERRRR", err)
+			})
+		setLoading(false)
+	}
 
 	const getPurposeOfLoan = async () => {
 		await axios
@@ -193,6 +210,7 @@ function OccupationDetailsForm() {
 									label="Self Occupation"
 									name="o_self_occupation"
 									formControlName={formik.values.o_self_occupation}
+									handleChange={formik.handleChange}
 									mode={1}
 								/>
 								{formik.errors.o_self_occupation &&
@@ -207,6 +225,7 @@ function OccupationDetailsForm() {
 									label="Monthly Income"
 									name="o_self_monthly_income"
 									formControlName={formik.values.o_self_monthly_income}
+									handleChange={formik.handleChange}
 									mode={1}
 								/>
 								{formik.errors.o_self_monthly_income &&
@@ -217,10 +236,11 @@ function OccupationDetailsForm() {
 							<div>
 								<TDInputTemplateBr
 									placeholder="Type spouse occupation..."
-									type="number"
+									type="text"
 									label="Spouse Occupation"
 									name="o_spouse_occupation"
 									formControlName={formik.values.o_spouse_occupation}
+									handleChange={formik.handleChange}
 									mode={1}
 								/>
 								{formik.errors.o_spouse_occupation &&
@@ -235,6 +255,7 @@ function OccupationDetailsForm() {
 									label="Spouse Monthly Income"
 									name="o_spouse_monthly_income"
 									formControlName={formik.values.o_spouse_monthly_income}
+									handleChange={formik.handleChange}
 									mode={1}
 								/>
 								{formik.errors.o_spouse_monthly_income &&
@@ -292,6 +313,7 @@ function OccupationDetailsForm() {
 									label="Amount Applied"
 									name="o_amount_applied"
 									formControlName={formik.values.o_amount_applied}
+									handleChange={formik.handleChange}
 									mode={1}
 								/>
 								{formik.errors.o_amount_applied &&
@@ -335,6 +357,7 @@ function OccupationDetailsForm() {
 											label="Other Loan Amount"
 											name="o_other_loan_amount"
 											formControlName={formik.values.o_other_loan_amount}
+											handleChange={formik.handleChange}
 											mode={1}
 										/>
 										{formik.errors.o_other_loan_amount &&
@@ -349,6 +372,7 @@ function OccupationDetailsForm() {
 											label="Other loan EMI"
 											name="o_monthly_emi"
 											formControlName={formik.values.o_monthly_emi}
+											handleChange={formik.handleChange}
 											mode={1}
 										/>
 										{formik.errors.o_monthly_emi &&
@@ -361,17 +385,7 @@ function OccupationDetailsForm() {
 						</div>
 
 						<div className="mt-10">
-							<BtnComp
-								mode="A"
-								// rejectBtn={true}
-								// onReject={() => {
-								// 	setVisibleModal2(true)
-								// }}
-								// sendToText="Credit Manager"
-								onSendTo={() => setVisibleModal(true)}
-								// condition={fetchedFileDetails?.length > 0}
-								// showSave
-							/>
+							<BtnComp mode="A" onReset={formik.resetForm} />
 						</div>
 
 						{/* {loanApproveStatus !== "A" && loanApproveStatus !== "R" ? (
@@ -413,6 +427,17 @@ function OccupationDetailsForm() {
 					</div>
 				</form>
 			</Spin>
+
+			<DialogBox
+				flag={4}
+				onPress={() => setVisible(!visible)}
+				visible={visible}
+				onPressYes={() => {
+					editOccupDetails()
+					setVisible(!visible)
+				}}
+				onPressNo={() => setVisible(!visible)}
+			/>
 		</>
 	)
 }
