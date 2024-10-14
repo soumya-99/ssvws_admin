@@ -36,8 +36,11 @@ function GroupExtendedForm({}) {
 	const location = useLocation()
 	const { loanAppData } = location.state || {}
 	const navigate = useNavigate()
+	const userDetails = JSON.parse(localStorage.getItem("user_details"))
 
+	const [groupDetails, setGroupDetails] = useState(() => [])
 	const [memberDetails, setMemberDetails] = useState(() => [])
+	const [visible, setVisible] = useState(() => false)
 
 	console.log(params, "paramsssssssssssssss")
 	console.log(location, "location")
@@ -92,30 +95,6 @@ function GroupExtendedForm({}) {
 		g_acc2: Yup.string().optional(),
 	})
 
-	const onSubmit = async (values) => {
-		console.log("onsubmit called")
-		console.log(values, "onsubmit vendor")
-		setLoading(true)
-
-		const data = {}
-
-		// await axios
-		// 	.post(`${url}/sql/insert_loan_dtls`, data)
-		// 	.then((res) => {
-		// 		console.log("API RESPONSE", res)
-
-		// 		if (res?.data?.suc === 1) {
-		// 			Message("success", res?.data?.msg)
-		// 			navigate(routePaths.MIS_ASSISTANT_HOME)
-		// 		}
-		// 	})
-		// 	.catch((err) => {
-		// 		console.log("EERRRRRRRRRR", err)
-		// 	})
-
-		setLoading(false)
-	}
-
 	const fetchGroupAndMembersDetails = async () => {
 		setLoading(true)
 		await axios
@@ -138,7 +117,7 @@ function GroupExtendedForm({}) {
 					g_acc1: res?.data?.msg[0]?.acc_no1,
 					g_acc2: res?.data?.msg[0]?.acc_no2,
 				})
-
+				setGroupDetails(res?.data?.msg[0])
 				setMemberDetails(res?.data?.msg[0]?.memb_dt)
 			})
 			.catch((err) => {
@@ -151,6 +130,16 @@ function GroupExtendedForm({}) {
 		fetchGroupAndMembersDetails()
 	}, [])
 
+	const onSubmit = async (values) => {
+		console.log("onsubmit called")
+		console.log(values, "onsubmit vendor")
+		setLoading(true)
+
+		setVisible(true)
+
+		setLoading(false)
+	}
+
 	const formik = useFormik({
 		initialValues: formValues,
 		onSubmit,
@@ -160,6 +149,44 @@ function GroupExtendedForm({}) {
 		enableReinitialize: true,
 		validateOnMount: true,
 	})
+
+	const editGroup = async () => {
+		setLoading(true)
+		const creds = {
+			branch_code: userDetails?.brn_code,
+			group_name: formik.values.g_group_name,
+			group_type: formik.values.g_group_type,
+			co_id: userDetails?.id,
+			phone1: formik.values.g_phone1,
+			phone2: formik.values.g_phone2,
+			email_id: formik.values.g_email,
+			grp_addr: formik.values.g_address,
+			disctrict: groupDetails?.disctrict,
+			block: formik.values.g_group_block,
+			pin_no: formik.values.g_pin,
+			bank_name: formik.values.g_bank_name,
+			branch_name: formik.values.g_bank_branch,
+			ifsc: formik.values.g_ifsc,
+			micr: formik.values.g_micr,
+			acc_no1: formik.values.g_acc1,
+			acc_no2: formik.values.g_acc2,
+			modified_by: formik.values.g_group_name,
+			// modified_at: formik.values.g_group_name,
+			group_code: groupDetails?.prov_grp_code,
+		}
+		await axios
+			.post(`${url}/admin/edit_group_web`, creds)
+			.then((res) => {
+				Message("success", "Updated successfully.")
+				console.log("IIIIIIIIIIIIIIIIIIIIIII", res?.data)
+			})
+			.catch((err) => {
+				Message("error", "Some error occurred while updating.")
+				console.log("LLLLLLLLLLLLLLLLLLLLLLLL", err)
+			})
+		console.log("VVVVVVVVVVVVVVVVVVVVVVVV", creds)
+		setLoading(false)
+	}
 
 	return (
 		<>
@@ -427,13 +454,24 @@ function GroupExtendedForm({}) {
 						// 	setVisibleModal(false)
 						// }}
 						onReset={formik.resetForm}
-						sendToText="Credit Manager"
-						onSendTo={() => console.log("dsaf")}
+						// sendToText="Credit Manager"
+						// onSendTo={() => console.log("dsaf")}
 						// condition={fetchedFileDetails?.length > 0}
 						// showSave
 					/>
 				</form>
 			</Spin>
+
+			<DialogBox
+				flag={4}
+				onPress={() => setVisible(!visible)}
+				visible={visible}
+				onPressYes={() => {
+					editGroup()
+					setVisible(!visible)
+				}}
+				onPressNo={() => setVisible(!visible)}
+			/>
 		</>
 	)
 }
