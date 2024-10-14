@@ -123,7 +123,9 @@ function EditGRTFormMis() {
 								<StepperPanel header="Family Member Details">
 									<div className="flex flex-column h-12rem">
 										<div className="border-2 p-5 border-dashed rounded-3xl surface-border border-round surface-ground flex-auto font-medium">
-											<FamilyMemberDetailsForm />
+											<FamilyMemberDetailsForm
+												memberDetails={memberDetailsData}
+											/>
 										</div>
 									</div>
 									<div className="flex py-4">

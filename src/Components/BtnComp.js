@@ -18,6 +18,8 @@ function BtnComp({
 	onSendTo,
 	condition,
 	showSave,
+	onRejectApplication,
+	showReject = false,
 }) {
 	return (
 		<div className="flex justify-center">
@@ -42,6 +44,16 @@ function BtnComp({
 			)}
 			{mode == "B" && (
 				<>
+					{showReject && (
+						<button
+							type="button"
+							className="inline-flex items-center px-5 py-2.5 mt-4 mr-2 sm:mt-6 text-sm font-medium text-center text-white border border-red-800 bg-red-800 transition ease-in-out hover:bg-red-700 duration-300 rounded-full  dark:focus:ring-primary-900"
+							onClick={onRejectApplication}
+						>
+							<CloseOutlined className="mr-2" />
+							Reject Application
+						</button>
+					)}
 					<button
 						type="button"
 						className="inline-flex items-center px-5 py-2.5 mt-4 mr-2 sm:mt-6 text-sm font-medium text-center text-gray-800 border border-yellow-300 bg-yellow-300 transition ease-in-out hover:bg-yellow-200 duration-300 rounded-full  dark:focus:ring-primary-900"

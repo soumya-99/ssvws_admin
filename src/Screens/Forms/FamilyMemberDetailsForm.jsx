@@ -11,8 +11,9 @@ import { LoadingOutlined, PlusOutlined, MinusOutlined } from "@ant-design/icons"
 import { useLocation } from "react-router"
 import DialogBox from "../../Components/DialogBox"
 import TDInputTemplateBr from "../../Components/TDInputTemplateBr"
+import { routePaths } from "../../Assets/Data/Routes"
 
-function FamilyMemberDetailsForm() {
+function FamilyMemberDetailsForm({ memberDetails }) {
 	const params = useParams()
 	const [loading, setLoading] = useState(false)
 	const location = useLocation()
@@ -20,11 +21,14 @@ function FamilyMemberDetailsForm() {
 	const navigate = useNavigate()
 	const userDetails = JSON.parse(localStorage.getItem("user_details"))
 
+	const [remarks, setRemarks] = useState(() => "")
 	const [educations, setEducations] = useState(() => [])
 	const [visible, setVisible] = useState(() => false)
+	const [visible2, setVisible2] = useState(() => false)
 
 	console.log(params, "params")
 	console.log(location, "location")
+	console.log(memberDetails, "memberDetails")
 
 	const [formArray, setFormArray] = useState([
 		{
@@ -153,6 +157,27 @@ function FamilyMemberDetailsForm() {
 
 	const handleSubmit = (e) => {
 		e.preventDefault()
+	}
+
+	const handleRejectApplication = async () => {
+		setLoading(true)
+		const creds = {
+			approval_status: "R",
+			form_no: params?.id,
+			remarks: remarks,
+			member_code: memberDetails?.member_code,
+			rejected_by: userDetails?.emp_name,
+		}
+		await axios
+			.post(`${url}/admin/delete_member_mis`, creds)
+			.then((res) => {
+				Message("success", "Application rejected!")
+				navigate(routePaths.MIS_ASSISTANT_HOME)
+			})
+			.catch((err) => {
+				Message("error", "Some error occurred while rejecting application.")
+			})
+		setLoading(false)
 	}
 
 	return (
@@ -314,6 +339,18 @@ function FamilyMemberDetailsForm() {
 						</div>
 
 						<div className="mt-10">
+							<TDInputTemplateBr
+								placeholder="Type Remarks..."
+								type="text"
+								label={`Remarks`}
+								name="remarks"
+								formControlName={remarks}
+								handleChange={(e) => setRemarks(e.target.value)}
+								mode={3}
+							/>
+						</div>
+
+						<div className="mt-10">
 							<BtnComp
 								mode="B"
 								onPressSubmit={() => {
@@ -333,6 +370,8 @@ function FamilyMemberDetailsForm() {
 										},
 									])
 								}}
+								showReject={true}
+								onRejectApplication={() => setVisible2(true)}
 							/>
 						</div>
 
@@ -375,6 +414,22 @@ function FamilyMemberDetailsForm() {
 					</div>
 				</form>
 			</Spin>
+
+			<DialogBox
+				flag={4}
+				onPress={() => setVisible2(!visible2)}
+				visible={visible2}
+				onPressYes={() => {
+					if (!remarks) {
+						Message("error", "Please write remarks!")
+						setVisible2(!visible2)
+						return
+					}
+					setVisible2(!visible2)
+					handleRejectApplication()
+				}}
+				onPressNo={() => setVisible2(!visible2)}
+			/>
 
 			<DialogBox
 				flag={4}
