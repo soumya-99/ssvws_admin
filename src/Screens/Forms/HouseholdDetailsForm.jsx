@@ -35,8 +35,8 @@ function HouseholdDetailsForm() {
 	const location = useLocation()
 	const { loanAppData } = location.state || {}
 	const navigate = useNavigate()
-
-	const [visibleModal, setVisibleModal] = useState(() => false)
+	const userDetails = JSON.parse(localStorage.getItem("user_details"))
+	const [visible, setVisible] = useState(() => false)
 
 	console.log(params, "params")
 	console.log(location, "location")
@@ -117,21 +117,7 @@ function HouseholdDetailsForm() {
 		console.log(values, "onsubmit vendor")
 		setLoading(true)
 
-		const data = {}
-
-		// await axios
-		// 	.post(`${url}/sql/insert_loan_dtls`, data)
-		// 	.then((res) => {
-		// 		console.log("API RESPONSE", res)
-
-		// 		if (res?.data?.suc === 1) {
-		// 			Message("success", res?.data?.msg)
-		// 			navigate(routePaths.MIS_ASSISTANT_HOME)
-		// 		}
-		// 	})
-		// 	.catch((err) => {
-		// 		console.log("EERRRRRRRRRR", err)
-		// 	})
+		setVisible(true)
 
 		setLoading(false)
 	}
@@ -145,6 +131,35 @@ function HouseholdDetailsForm() {
 		enableReinitialize: true,
 		validateOnMount: true,
 	})
+
+	const editHouseholdDetails = async () => {
+		setLoading(true)
+		const creds = {
+			form_no: params?.id,
+			house_type: formik.values.h_house_type,
+			own_rent: formik.values.h_own_rent,
+			no_of_rooms: formik.values.h_no_of_rooms,
+			land: formik.values.h_total_land,
+			tv_flag: formik.values.h_tv,
+			bike_flag: formik.values.h_bike,
+			fridge_flag: formik.values.h_fridge,
+			wm_flag: formik.values.h_washing_machine,
+			poltical_flag: formik.values.h_politically_active,
+			parental_addr: formik.values.h_parental_address,
+			parental_phone: formik.values.h_parental_phone,
+			modified_by: userDetails?.emp_name,
+		}
+		await axios
+			.post(`${url}/admin/edit_household_dtls_web`, creds)
+			.then((res) => {
+				console.log("HOUSEE DDTTTTTTD", res?.data)
+				Message("success", "Updated successfully.")
+			})
+			.catch((err) => {
+				console.log("HOUSEEE ERRRR", err)
+			})
+		setLoading(false)
+	}
 
 	// console.log("======================================", +branchIdForForwarding)
 
@@ -401,17 +416,7 @@ function HouseholdDetailsForm() {
 						</div>
 
 						<div className="mt-10">
-							<BtnComp
-								mode="A"
-								// rejectBtn={true}
-								// onReject={() => {
-								// 	setVisibleModal2(true)
-								// }}
-								// sendToText="Credit Manager"
-								onSendTo={() => setVisibleModal(true)}
-								// condition={fetchedFileDetails?.length > 0}
-								// showSave
-							/>
+							<BtnComp mode="A" onReset={formik.resetForm} />
 						</div>
 
 						{/* {loanApproveStatus !== "A" && loanApproveStatus !== "R" ? (
@@ -453,6 +458,17 @@ function HouseholdDetailsForm() {
 					</div>
 				</form>
 			</Spin>
+
+			<DialogBox
+				flag={4}
+				onPress={() => setVisible(!visible)}
+				visible={visible}
+				onPressYes={() => {
+					editHouseholdDetails()
+					setVisible(!visible)
+				}}
+				onPressNo={() => setVisible(!visible)}
+			/>
 		</>
 	)
 }
