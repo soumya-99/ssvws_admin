@@ -83,11 +83,11 @@ function App() {
 							colorPrimary: "#A31E21",
 							colorPrimaryHover: "#A31E21",
 						},
-						Checkbox: {
-							colorPrimary: "#A31E21",
-							colorText: "#A31E21",
-							colorPrimaryHover: "#A31E21",
-						},
+						// Checkbox: {
+						// 	colorPrimary: "#A31E21",
+						// 	colorText: "#A31E21",
+						// 	colorPrimaryHover: "#A31E21",
+						// },
 						Descriptions: {
 							titleColor: "#A31E21",
 							colorTextLabel: "#A31E21",

@@ -9,7 +9,7 @@ import * as Yup from "yup"
 import axios from "axios"
 import { Message } from "../../Components/Message"
 import { url } from "../../Address/BaseUrl"
-import { Spin } from "antd"
+import { Checkbox, Spin } from "antd"
 import { LoadingOutlined } from "@ant-design/icons"
 import { useLocation } from "react-router"
 import TDInputTemplateBr from "../../Components/TDInputTemplateBr"
@@ -27,6 +27,7 @@ function BasicDetailsForm({ memberDetails }) {
 	const [branches, setBranches] = useState(() => [])
 	const [loanTypes, setLoanTypes] = useState(() => [])
 	const [visible, setVisible] = useState(() => false)
+	const [visible2, setVisible2] = useState(() => false)
 
 	const [groups, setGroups] = useState(() => [])
 	const [religions, setReligions] = useState(() => [])
@@ -239,6 +240,43 @@ function BasicDetailsForm({ memberDetails }) {
 		handleFetchCastes()
 		handleFetchEducations()
 	}, [])
+
+	const handleVerification = async () => {
+		const creds = {
+			flag: "",
+			verify_value: "",
+			form_no: "",
+			member_id: "",
+		}
+
+		await axios
+			.post(`${url}/admin/verify_by_mis`, creds)
+			.then((res) => {
+				Message("success", "Verification checked.")
+			})
+			.catch((err) => {
+				Message("error", "Verification failed.")
+			})
+	}
+
+	const onChangeCheck1 = (e) => {
+		console.log(`checked 1 = ${e.target.checked}`)
+		if (e.target.checked) {
+			console.log("vAL: === ", e.target.value)
+		}
+	}
+	const onChangeCheck2 = (e) => {
+		console.log(`checked 1 = ${e.target.checked}`)
+		if (e.target.checked) {
+			console.log("vAL: === ", e.target.value)
+		}
+	}
+	const onChangeCheck3 = (e) => {
+		console.log(`checked 1 = ${e.target.checked}`)
+		if (e.target.checked) {
+			console.log("vAL: === ", e.target.value)
+		}
+	}
 
 	return (
 		<>
@@ -546,6 +584,51 @@ function BasicDetailsForm({ memberDetails }) {
 									<VError title={formik.errors.b_education} />
 								) : null}
 							</div>
+							<div>
+								{/* <TDInputTemplateBr
+									placeholder="Choose Education..."
+									type="text"
+									label="Education"
+									name="b_education"
+									formControlName={formik.values.b_education}
+									handleChange={formik.handleChange}
+									handleBlur={formik.handleBlur}
+									data={educations?.map((edu) => ({
+										code: edu?.id,
+										name: edu?.name,
+									}))}
+									mode={2}
+								/>
+								{formik.errors.b_education && formik.touched.b_education ? (
+									<VError title={formik.errors.b_education} />
+								) : null} */}
+								<div className="block mb-2 text-sm capitalize font-bold text-blue-800 dark:text-gray-100">
+									Verification
+								</div>
+								<div className="flex justify-between gap-5">
+									<Checkbox
+										className="text-lg uppercase text-slate-800"
+										onChange={onChangeCheck1}
+										value={"PH"}
+									>
+										Mobile Number
+									</Checkbox>
+									<Checkbox
+										className="text-lg uppercase text-slate-800"
+										onChange={onChangeCheck2}
+										value={"A"}
+									>
+										Aadhaar Card
+									</Checkbox>
+									<Checkbox
+										className="text-lg uppercase text-slate-800"
+										onChange={onChangeCheck3}
+										value={"P"}
+									>
+										PAN Card
+									</Checkbox>
+								</div>
+							</div>
 						</div>
 
 						{/* {loanApproveStatus !== "A" && loanApproveStatus !== "R" ? ( */}
@@ -589,6 +672,18 @@ function BasicDetailsForm({ memberDetails }) {
 				}}
 				onPressNo={() => setVisible(!visible)}
 			/>
+
+			{/* <DialogBox
+				flag={4}
+				onPress={() => setVisible2(!visible2)}
+				visible={visible2}
+				onPressYes={() => {
+					// editGroup()
+					onChangeCheck1()
+					setVisible2(!visible2)
+				}}
+				onPressNo={() => setVisible2(!visible2)}
+			/> */}
 		</>
 	)
 }
