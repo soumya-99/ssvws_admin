@@ -241,40 +241,54 @@ function BasicDetailsForm({ memberDetails }) {
 		handleFetchEducations()
 	}, [])
 
-	const handleVerification = async () => {
+	const handleVerification = async (flag, val) => {
+		setLoading(true)
 		const creds = {
-			flag: "",
-			verify_value: "",
-			form_no: "",
-			member_id: "",
+			flag: flag,
+			verify_value: val,
+			form_no: params?.id,
+			member_id: memberDetails?.member_code,
 		}
 
 		await axios
 			.post(`${url}/admin/verify_by_mis`, creds)
 			.then((res) => {
 				Message("success", "Verification checked.")
+				console.log(">>>>>>>>>>>", res?.data)
 			})
 			.catch((err) => {
 				Message("error", "Verification failed.")
+				console.log("MMMMMMMMM", err)
 			})
+		setLoading(false)
 	}
 
-	const onChangeCheck1 = (e) => {
+	const onChangeCheck1 = async (e) => {
 		console.log(`checked 1 = ${e.target.checked}`)
 		if (e.target.checked) {
 			console.log("vAL: === ", e.target.value)
+			await handleVerification("PH", "Y")
+		} else {
+			await handleVerification("PH", "N")
 		}
 	}
-	const onChangeCheck2 = (e) => {
+
+	const onChangeCheck2 = async (e) => {
 		console.log(`checked 1 = ${e.target.checked}`)
 		if (e.target.checked) {
 			console.log("vAL: === ", e.target.value)
+			await handleVerification("A", "Y")
+		} else {
+			await handleVerification("A", "N")
 		}
 	}
-	const onChangeCheck3 = (e) => {
+	const onChangeCheck3 = async (e) => {
 		console.log(`checked 1 = ${e.target.checked}`)
 		if (e.target.checked) {
 			console.log("vAL: === ", e.target.value)
+			await handleVerification("P", "Y")
+		} else {
+			await handleVerification("P", "N")
 		}
 	}
 
