@@ -282,6 +282,7 @@ function BasicDetailsForm({ memberDetails }) {
 			await handleVerification("A", "N")
 		}
 	}
+
 	const onChangeCheck3 = async (e) => {
 		console.log(`checked 1 = ${e.target.checked}`)
 		if (e.target.checked) {
