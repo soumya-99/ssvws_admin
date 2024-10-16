@@ -25,6 +25,7 @@ function FamilyMemberDetailsForm({ memberDetails }) {
 	const [educations, setEducations] = useState(() => [])
 	const [visible, setVisible] = useState(() => false)
 	const [visible2, setVisible2] = useState(() => false)
+	const [visible3, setVisible3] = useState(() => false)
 
 	console.log(params, "params")
 	console.log(location, "location")
@@ -125,14 +126,6 @@ function FamilyMemberDetailsForm({ memberDetails }) {
 		fetchFamilyMemberDetails()
 	}, [])
 
-	const onSubmit = async (values) => {
-		console.log("onsubmit called")
-		console.log(values, "onsubmit vendor")
-		setLoading(true)
-		setVisible(true)
-		setLoading(false)
-	}
-
 	const editFamilyMemberDetails = async () => {
 		setLoading(true)
 		const creds = {
@@ -176,6 +169,27 @@ function FamilyMemberDetailsForm({ memberDetails }) {
 			})
 			.catch((err) => {
 				Message("error", "Some error occurred while rejecting application.")
+			})
+		setLoading(false)
+	}
+
+	const handleForwardApplication = async () => {
+		setLoading(true)
+		await editFamilyMemberDetails()
+		const creds = {
+			form_no: params?.id,
+			approved_by: userDetails?.emp_name,
+			remarks: remarks,
+			member_id: memberDetails?.member_code,
+		}
+		await axios
+			.post(`${url}/admin/forward_mis_asst`, creds)
+			.then((res) => {
+				Message("success", "Application forwarded!")
+				navigate(routePaths.MIS_ASSISTANT_HOME)
+			})
+			.catch((err) => {
+				Message("error", "Some error occurred while forwarding application.")
 			})
 		setLoading(false)
 	}
@@ -372,6 +386,8 @@ function FamilyMemberDetailsForm({ memberDetails }) {
 								}}
 								showReject={true}
 								onRejectApplication={() => setVisible2(true)}
+								showForward={true}
+								onForwardApplication={() => setVisible3(true)}
 							/>
 						</div>
 
@@ -414,6 +430,21 @@ function FamilyMemberDetailsForm({ memberDetails }) {
 					</div>
 				</form>
 			</Spin>
+			<DialogBox
+				flag={4}
+				onPress={() => setVisible3(!visible3)}
+				visible={visible3}
+				onPressYes={() => {
+					if (!remarks) {
+						Message("error", "Please write remarks!")
+						setVisible3(!visible3)
+						return
+					}
+					setVisible3(!visible3)
+					handleForwardApplication()
+				}}
+				onPressNo={() => setVisible3(!visible3)}
+			/>
 
 			<DialogBox
 				flag={4}

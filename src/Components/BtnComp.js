@@ -5,6 +5,7 @@ import {
 	ReloadOutlined,
 	CloseOutlined,
 	ArrowRightOutlined,
+	CheckOutlined,
 } from "@ant-design/icons"
 
 function BtnComp({
@@ -20,6 +21,8 @@ function BtnComp({
 	showSave,
 	onRejectApplication,
 	showReject = false,
+	showForward = false,
+	onForwardApplication,
 }) {
 	return (
 		<div className="flex justify-center">
@@ -70,6 +73,16 @@ function BtnComp({
 						<SaveOutlined className="mr-2" />
 						Update
 					</button>
+					{showForward && (
+						<button
+							type="button"
+							className="inline-flex items-center px-5 py-2.5 mt-4 ml-2 sm:mt-6 text-sm font-medium text-center text-white border border-blue-800 bg-blue-800 transition ease-in-out hover:bg-blue-700 duration-300 rounded-full  dark:focus:ring-primary-900"
+							onClick={onForwardApplication}
+						>
+							<CheckOutlined className="mr-2" />
+							Forward Application
+						</button>
+					)}
 				</>
 			)}
 			{mode == "E" && (
