@@ -7,7 +7,7 @@ import { Spin } from "antd"
 import { LoadingOutlined } from "@ant-design/icons"
 import LoanApplicationsTableViewBr from "../../Components/LoanApplicationsTableViewBr"
 
-function HomeScreenMis() {
+function HomeScreenBM() {
 	const userDetails = JSON.parse(localStorage.getItem("user_details")) || ""
 	const [loading, setLoading] = useState(false)
 	const [loanApplications, setLoanApplications] = useState(() => [])
@@ -15,6 +15,7 @@ function HomeScreenMis() {
 
 	const fetchLoanApplications = async () => {
 		setLoading(true)
+
 		const creds = {
 			prov_grp_code: 0,
 			user_type: userDetails?.id,
@@ -24,6 +25,7 @@ function HomeScreenMis() {
 		await axios
 			.post(`${url}/admin/fetch_bmfwd_dtls_web`, creds)
 			.then((res) => {
+				console.log("PPPPPPPPPPPPPPPPPPPP", res?.data)
 				if (res?.data?.suc === 1) {
 					setLoanApplications(res?.data?.msg)
 					setCopyLoanApplications(res?.data?.msg)
@@ -63,7 +65,7 @@ function HomeScreenMis() {
 
 	return (
 		<div>
-			<Sidebar mode={1} />
+			<Sidebar mode={2} />
 			<Spin
 				indicator={<LoadingOutlined spin />}
 				size="large"
@@ -72,7 +74,7 @@ function HomeScreenMis() {
 			>
 				<main className="px-4 h-auto my-10 mx-32">
 					<LoanApplicationsTableViewBr
-						flag="MIS"
+						flag="BM"
 						loanAppData={loanApplications}
 						title="Pending Groups"
 						setSearch={(data) => setSearch(data)}
@@ -88,4 +90,4 @@ function HomeScreenMis() {
 	)
 }
 
-export default HomeScreenMis
+export default HomeScreenBM

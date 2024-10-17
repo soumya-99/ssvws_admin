@@ -1,10 +1,13 @@
 import React from "react"
 function TDInputTemplateBr(props) {
+	const userDetails = JSON.parse(localStorage.getItem("user_details")) || ""
 	return (
 		<>
 			<label
 				htmlFor={props.name}
-				className="block mb-2 text-sm capitalize font-bold text-blue-800 dark:text-gray-100"
+				className={`block mb-2 text-sm capitalize font-bold ${
+					userDetails?.id == 3 ? "text-blue-800" : "text-stone-800"
+				} dark:text-gray-100`}
 			>
 				{/* <div class="relative">
     <input type="text" id="floating_outlined" class="block px-2.5 pb-2.5 pt-4 w-full text-sm text-gray-900 bg-transparent rounded-lg border-1 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer" placeholder=" " />
@@ -24,7 +27,11 @@ function TDInputTemplateBr(props) {
 					min={props.min}
 					accept={props.accept}
 					max={props.max}
-					className="bg-white border-gray-400 text-gray-800 text-sm rounded-md  focus:border-blue-800 active:border-blue-600 focus:ring-blue-600 focus:border-1 duration-500 block w-full p-2 dark:bg-bg-white dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
+					className={`bg-white border-gray-400 text-gray-800 text-sm rounded-md ${
+						userDetails?.id == 3
+							? "focus:border-blue-800 active:border-blue-600 focus:ring-blue-600"
+							: "focus:border-stone-800 active:border-stone-600 focus:ring-stone-600"
+					} focus:border-1 duration-500 block w-full p-2 dark:bg-bg-white dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500`}
 					placeholder={props.placeholder}
 					onChange={props.handleChange}
 					onBlur={props.handleBlur}
@@ -57,7 +64,11 @@ function TDInputTemplateBr(props) {
 				// />
 				<select
 					id="countries"
-					className="bg-white border-1 border-gray-400 text-gray-800 text-sm rounded-lg  focus:border-blue-800 active:border-blue-600 focus:ring-blue-600 focus:border-1 duration-500 block w-full p-2 dark:bg-bg-white dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
+					className={`bg-white border-1 border-gray-400 text-gray-800 text-sm rounded-lg ${
+						userDetails?.id == 3
+							? "active:border-blue-600 focus:ring-blue-600 focus:border-blue-800"
+							: "active:border-stone-600 focus:ring-stone-600 focus:border-stone-800"
+					} focus:border-1 duration-500 block w-full p-2 dark:bg-bg-white dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500`}
 					value={props.formControlName}
 					onChange={props.handleChange}
 					name={props.name}
@@ -77,7 +88,11 @@ function TDInputTemplateBr(props) {
 			{props.mode == 3 && (
 				<textarea
 					rows="4"
-					className="bg-white border-1 border-gray-400 text-sm rounded-lg  focus:border-blue-800 active:border-blue-600 focus:ring-blue-600 focus:border-1 duration-500 block w-full p-2 dark:bg-bg-white dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
+					className={`bg-white border-1 border-gray-400 text-sm rounded-lg ${
+						userDetails?.id == 3
+							? "focus:border-blue-800 active:border-blue-600 focus:ring-blue-600"
+							: "focus:border-stone-800 active:border-stone-600 focus:ring-stone-600"
+					} focus:border-1 duration-500 block w-full p-2 dark:bg-bg-white dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500`}
 					name={props.name}
 					value={props.formControlName}
 					placeholder={props.placeholder}

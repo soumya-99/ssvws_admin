@@ -19,6 +19,7 @@ import { useNavigate } from "react-router-dom"
 import DialogBox from "./DialogBox"
 
 function MenusBr({ theme }) {
+	const userDetails = JSON.parse(localStorage.getItem("user_details"))
 	const [current, setCurrent] = React.useState("sub1")
 	const [visibleModal, setVisibleModal] = useState(() => false)
 	const [visibleModal2, setVisibleModal2] = useState(() => false)
@@ -53,13 +54,26 @@ function MenusBr({ theme }) {
 		},
 	]
 
+	const itemsBM = [
+		{
+			key: "sub1",
+			icon: <ImportOutlined />,
+			label: <Link to={"/homebm/"}>Applications</Link>,
+		},
+		{
+			label: "Reports",
+			key: "sub6",
+			icon: <BarsOutlined />,
+		},
+	]
+
 	return (
 		<div className="bg-[#EEEEEE44] flex justify-between align-middle gap-4 rounded-full">
 			<img src={IMG} className="w-14 h-14 p-2 -mr-6" alt="Flowbite Logo" />
 			<Menu
 				onClick={onClick}
 				selectedKeys={[current]}
-				items={items}
+				items={userDetails?.id === 3 ? items : itemsBM}
 				mode="horizontal"
 				style={{
 					width: 1000,

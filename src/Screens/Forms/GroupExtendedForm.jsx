@@ -79,26 +79,31 @@ function GroupExtendedForm({}) {
 	})
 
 	const validationSchema = Yup.object({
-		g_group_name: Yup.string().optional(),
-		g_group_type: Yup.string().optional(),
-		g_address: Yup.string().optional(),
-		g_pin: Yup.string().optional(),
-		g_group_block: Yup.string().optional(),
-		g_phone1: Yup.string().optional(),
-		g_phone2: Yup.string().optional(),
-		g_email: Yup.string().optional(),
-		g_bank_name: Yup.string().optional(),
-		g_bank_branch: Yup.string().optional(),
-		g_ifsc: Yup.string().optional(),
-		g_micr: Yup.string().optional(),
-		g_acc1: Yup.string().optional(),
-		g_acc2: Yup.string().optional(),
+		// g_group_name: Yup.string().optional(),
+		// g_group_type: Yup.string().optional(),
+		// g_address: Yup.string().optional(),
+		// g_pin: Yup.string().optional(),
+		// g_group_block: Yup.string().optional(),
+		// g_phone1: Yup.string().optional(),
+		// g_phone2: Yup.string().optional(),
+		// g_email: Yup.string().optional(),
+		// g_bank_name: Yup.string().optional(),
+		// g_bank_branch: Yup.string().optional(),
+		// g_ifsc: Yup.string().optional(),
+		// g_micr: Yup.string().optional(),
+		// g_acc1: Yup.string().optional(),
+		// g_acc2: Yup.string().optional(),
 	})
 
 	const fetchGroupAndMembersDetails = async () => {
 		setLoading(true)
+		const creds = {
+			prov_grp_code: params?.id,
+			user_type: userDetails?.id,
+			branch_code: userDetails?.brn_code,
+		}
 		await axios
-			.get(`${url}/admin/fetch_bmfwd_dtls_web?prov_grp_code=${params?.id}`)
+			.post(`${url}/admin/fetch_bmfwd_dtls_web`, creds)
 			.then((res) => {
 				console.log("TETETETETTETETETTETE", res?.data)
 				setValues({
@@ -437,10 +442,16 @@ function GroupExtendedForm({}) {
 									color="geekblue"
 									className="text-lg cursor-pointer mb-5 rounded-3xl
 									"
-									onClick={() =>
-										navigate(`/homemis/editgrtform/${item?.form_no}`, {
-											state: item,
-										})
+									onClick={
+										userDetails?.id == 3
+											? () =>
+													navigate(`/homemis/editgrtform/${item?.form_no}`, {
+														state: item,
+													})
+											: () =>
+													navigate(`/homebm/editgrtform/${item?.form_no}`, {
+														state: item,
+													})
 									}
 								>
 									{item?.client_name}

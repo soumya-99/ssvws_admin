@@ -14,8 +14,9 @@ import { useLocation } from "react-router"
 import TDInputTemplateBr from "../../Components/TDInputTemplateBr"
 import BtnComp from "../../Components/BtnComp"
 import DialogBox from "../../Components/DialogBox"
+import { disableInputArray } from "./disableInputArray"
 
-function OccupationDetailsForm() {
+function OccupationDetailsForm({ memberDetails }) {
 	const params = useParams()
 	const [loading, setLoading] = useState(false)
 	const location = useLocation()
@@ -212,6 +213,9 @@ function OccupationDetailsForm() {
 									formControlName={formik.values.o_self_occupation}
 									handleChange={formik.handleChange}
 									mode={1}
+									disabled={disableInputArray.includes(
+										memberDetails?.approval_status
+									)}
 								/>
 								{formik.errors.o_self_occupation &&
 								formik.touched.o_self_occupation ? (
@@ -227,6 +231,9 @@ function OccupationDetailsForm() {
 									formControlName={formik.values.o_self_monthly_income}
 									handleChange={formik.handleChange}
 									mode={1}
+									disabled={disableInputArray.includes(
+										memberDetails?.approval_status
+									)}
 								/>
 								{formik.errors.o_self_monthly_income &&
 								formik.touched.o_self_monthly_income ? (
@@ -242,6 +249,9 @@ function OccupationDetailsForm() {
 									formControlName={formik.values.o_spouse_occupation}
 									handleChange={formik.handleChange}
 									mode={1}
+									disabled={disableInputArray.includes(
+										memberDetails?.approval_status
+									)}
 								/>
 								{formik.errors.o_spouse_occupation &&
 								formik.touched.o_spouse_occupation ? (
@@ -257,6 +267,9 @@ function OccupationDetailsForm() {
 									formControlName={formik.values.o_spouse_monthly_income}
 									handleChange={formik.handleChange}
 									mode={1}
+									disabled={disableInputArray.includes(
+										memberDetails?.approval_status
+									)}
 								/>
 								{formik.errors.o_spouse_monthly_income &&
 								formik.touched.o_spouse_monthly_income ? (
@@ -278,6 +291,9 @@ function OccupationDetailsForm() {
 										name: loan?.purpose_id,
 									}))}
 									mode={2}
+									disabled={disableInputArray.includes(
+										memberDetails?.approval_status
+									)}
 								/>
 								{formik.errors.o_purpose_of_loan &&
 								formik.touched.o_purpose_of_loan ? (
@@ -299,6 +315,9 @@ function OccupationDetailsForm() {
 										name: loan?.sub_purp_name,
 									}))}
 									mode={2}
+									disabled={disableInputArray.includes(
+										memberDetails?.approval_status
+									)}
 								/>
 								{formik.errors.o_sub_purpose_of_loan &&
 								formik.touched.o_sub_purpose_of_loan ? (
@@ -315,6 +334,9 @@ function OccupationDetailsForm() {
 									formControlName={formik.values.o_amount_applied}
 									handleChange={formik.handleChange}
 									mode={1}
+									disabled={disableInputArray.includes(
+										memberDetails?.approval_status
+									)}
 								/>
 								{formik.errors.o_amount_applied &&
 								formik.touched.o_amount_applied ? (
@@ -342,6 +364,9 @@ function OccupationDetailsForm() {
 										},
 									]}
 									mode={2}
+									disabled={disableInputArray.includes(
+										memberDetails?.approval_status
+									)}
 								/>
 								{formik.errors.o_other_loans && formik.touched.o_other_loans ? (
 									<VError title={formik.errors.o_other_loans} />
@@ -359,6 +384,9 @@ function OccupationDetailsForm() {
 											formControlName={formik.values.o_other_loan_amount}
 											handleChange={formik.handleChange}
 											mode={1}
+											disabled={disableInputArray.includes(
+												memberDetails?.approval_status
+											)}
 										/>
 										{formik.errors.o_other_loan_amount &&
 										formik.touched.o_other_loan_amount ? (
@@ -374,6 +402,9 @@ function OccupationDetailsForm() {
 											formControlName={formik.values.o_monthly_emi}
 											handleChange={formik.handleChange}
 											mode={1}
+											disabled={disableInputArray.includes(
+												memberDetails?.approval_status
+											)}
 										/>
 										{formik.errors.o_monthly_emi &&
 										formik.touched.o_monthly_emi ? (
@@ -384,9 +415,11 @@ function OccupationDetailsForm() {
 							)}
 						</div>
 
-						<div className="mt-10">
-							<BtnComp mode="A" onReset={formik.resetForm} />
-						</div>
+						{!disableInputArray.includes(memberDetails?.approval_status) && (
+							<div className="mt-10">
+								<BtnComp mode="A" onReset={formik.resetForm} />
+							</div>
+						)}
 
 						{/* {loanApproveStatus !== "A" && loanApproveStatus !== "R" ? (
 							<div className="mt-10">

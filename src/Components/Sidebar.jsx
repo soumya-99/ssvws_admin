@@ -73,7 +73,7 @@ function Sidebar({ mode = 0 }) {
 						: mode === 1
 						? "fixed top-0 z-10 left-0 w-full h-auto transition-transform -translate-x-full sm:translate-x-0 p-4 justify-center bg-blue-800"
 						: mode === 2
-						? "fixed top-0 z-10 left-0 w-full h-auto transition-transform -translate-x-full sm:translate-x-0 p-4 justify-center bg-teal-800"
+						? "fixed top-0 z-10 left-0 w-full h-auto transition-transform -translate-x-full sm:translate-x-0 p-4 justify-center bg-stone-800"
 						: "fixed top-0 z-10 left-0 w-full h-auto transition-transform -translate-x-full sm:translate-x-0 p-4 justify-center bg-slate-800"
 				}
 				aria-label="Sidebar"

@@ -6,12 +6,13 @@ import { useNavigate } from "react-router-dom"
 import axios from "axios"
 import { Message } from "../../Components/Message"
 import { url } from "../../Address/BaseUrl"
-import { Spin, Button } from "antd"
+import { Spin, Button, Tag } from "antd"
 import { LoadingOutlined, PlusOutlined, MinusOutlined } from "@ant-design/icons"
 import { useLocation } from "react-router"
 import DialogBox from "../../Components/DialogBox"
 import TDInputTemplateBr from "../../Components/TDInputTemplateBr"
 import { routePaths } from "../../Assets/Data/Routes"
+import { disableInputArray } from "./disableInputArray"
 
 function FamilyMemberDetailsForm({ memberDetails }) {
 	const params = useParams()
@@ -218,6 +219,9 @@ function FamilyMemberDetailsForm({ memberDetails }) {
 												handleInputChange(i, "name", txt.target.value)
 											}
 											mode={1}
+											disabled={disableInputArray.includes(
+												memberDetails?.approval_status
+											)}
 										/>
 									</div>
 									<div>
@@ -231,6 +235,9 @@ function FamilyMemberDetailsForm({ memberDetails }) {
 												handleInputChange(i, "relation", txt.target.value)
 											}
 											mode={1}
+											disabled={disableInputArray.includes(
+												memberDetails?.approval_status
+											)}
 										/>
 									</div>
 									<div>
@@ -244,6 +251,9 @@ function FamilyMemberDetailsForm({ memberDetails }) {
 												handleInputChange(i, "age", txt.target.value)
 											}
 											mode={1}
+											disabled={disableInputArray.includes(
+												memberDetails?.approval_status
+											)}
 										/>
 									</div>
 									<div>
@@ -271,6 +281,9 @@ function FamilyMemberDetailsForm({ memberDetails }) {
 												},
 											]}
 											mode={2}
+											disabled={disableInputArray.includes(
+												memberDetails?.approval_status
+											)}
 										/>
 									</div>
 									<div>
@@ -288,6 +301,9 @@ function FamilyMemberDetailsForm({ memberDetails }) {
 												name: edu?.name,
 											}))}
 											mode={2}
+											disabled={disableInputArray.includes(
+												memberDetails?.approval_status
+											)}
 										/>
 									</div>
 									<div>
@@ -315,6 +331,9 @@ function FamilyMemberDetailsForm({ memberDetails }) {
 												},
 											]}
 											mode={2}
+											disabled={disableInputArray.includes(
+												memberDetails?.approval_status
+											)}
 										/>
 									</div>
 									<div>
@@ -328,12 +347,18 @@ function FamilyMemberDetailsForm({ memberDetails }) {
 												handleInputChange(i, "monthlyIncome", txt.target.value)
 											}
 											mode={1}
+											disabled={disableInputArray.includes(
+												memberDetails?.approval_status
+											)}
 										/>
 									</div>
 								</div>
 								{formArray.length > 1 && (
 									<div>
 										<Button
+											disabled={disableInputArray.includes(
+												memberDetails?.approval_status
+											)}
 											className="rounded-full bg-red-700 text-white"
 											onClick={() => handleFormRemove(i)}
 											icon={<MinusOutlined />}
@@ -346,6 +371,9 @@ function FamilyMemberDetailsForm({ memberDetails }) {
 
 						<div className="pt-1">
 							<Button
+								disabled={disableInputArray.includes(
+									memberDetails?.approval_status
+								)}
 								className="rounded-full bg-yellow-400 text-white"
 								onClick={handleFormAdd}
 								icon={<PlusOutlined />}
@@ -361,72 +389,67 @@ function FamilyMemberDetailsForm({ memberDetails }) {
 								formControlName={remarks}
 								handleChange={(e) => setRemarks(e.target.value)}
 								mode={3}
+								disabled={disableInputArray.includes(
+									memberDetails?.approval_status
+								)}
 							/>
 						</div>
 
-						<div className="mt-10">
-							<BtnComp
-								mode="B"
-								onPressSubmit={() => {
-									setVisible(!visible)
-								}}
-								onReset={() => {
-									setFormArray([
-										{
-											sl_no: 0,
-											f_name: "",
-											f_relation: "",
-											f_age: "",
-											f_sex: "",
-											f_education: "",
-											f_studying_or_working: "",
-											f_monthly_income: "",
-										},
-									])
-								}}
-								showReject={true}
-								onRejectApplication={() => setVisible2(true)}
-								showForward={true}
-								onForwardApplication={() => setVisible3(true)}
-							/>
-						</div>
-
-						{/* {loanApproveStatus !== "A" && loanApproveStatus !== "R" ? (
+						{!disableInputArray.includes(memberDetails?.approval_status) && (
 							<div className="mt-10">
 								<BtnComp
-									mode="S"
-									rejectBtn={true}
-									onReject={() => {
-										setVisibleModal2(true)
+									mode="B"
+									onPressSubmit={() => {
+										setVisible(!visible)
 									}}
-									sendToText="Credit Manager"
-									onSendTo={() => setVisibleModal(true)}
-									condition={fetchedFileDetails?.length > 0}
-									showSave
+									onReset={() => {
+										setFormArray([
+											{
+												sl_no: 0,
+												f_name: "",
+												f_relation: "",
+												f_age: "",
+												f_sex: "",
+												f_education: "",
+												f_studying_or_working: "",
+												f_monthly_income: "",
+											},
+										])
+									}}
+									showReject={true}
+									onRejectApplication={() => setVisible2(true)}
+									showForward={true}
+									onForwardApplication={() => setVisible3(true)}
 								/>
 							</div>
-						) : loanApproveStatus === "A" ? (
+						)}
+
+						{memberDetails?.approval_status === "S" && (
 							<Tag
-								color="purple"
+								color="blue"
 								className="mt-10 p-5 rounded-lg text-xl font-bold self-center"
 							>
-								E-Files forwarded to Credit Manager.
+								GRT forwarded to MIS Assistant.
 							</Tag>
-						) : loanApproveStatus === "R" ? (
-							<Tag
-								color="orange"
-								className="mt-10 p-5 rounded-lg text-xl font-bold self-center"
-							>
-								E-Files rejected and sent to Loan Appraiser.
-							</Tag>
-						) : (
+						)}
+
+						{memberDetails?.approval_status === "R" && (
 							<Tag
 								color="red"
 								className="mt-10 p-5 rounded-lg text-xl font-bold self-center"
 							>
-								Some error occurred. [Status is not b/w P/A/R]
+								GRT Rejected.
 							</Tag>
-						)} */}
+						)}
+
+						{memberDetails?.approval_status === "A" && (
+							<Tag
+								color="red"
+								className="mt-10 p-5 rounded-lg text-xl font-bold self-center"
+							>
+								GRT Approved.
+							</Tag>
+						)}
 					</div>
 				</form>
 			</Spin>

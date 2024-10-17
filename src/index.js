@@ -20,78 +20,12 @@ import HomeMis from "./Screens/MISAssistantHome/HomeMis"
 import HomeScreenMis from "./Screens/MISAssistantHome/HomeScreenMis"
 import EditGRTFormMis from "./Screens/MISAssistantHome/EditGRTFormMis"
 import EditGroupForm from "./Screens/MISAssistantHome/EditGroupForm"
-// import FwdLoanApplications from "./Screens/AppraiserHome/FwdLoanApplications"
-// import EditLoanFormFwd from "./Screens/AppraiserHome/EditLoanFormFwd"
-
-// import AuthBr from "./Screens/BranchManager/AuthBr"
-// import SigninBr from "./Screens/BranchManager/SigninBr"
-// import SignupBr from "./Screens/BranchManager/SignupBr"
-// import ForgotPassBr from "./Screens/BranchManager/ForgotPassBr"
-// import HomeBr from "./Screens/BranchManagerHome/HomeBr"
-// import HomeScreenBr from "./Screens/BranchManagerHome/HomeScreenBr"
-// import EditLoanFormBr from "./Screens/BranchManagerHome/EditLoanFormBr"
-// import AuthCr from "./Screens/CreditManager/AuthCr"
-// import SigninCr from "./Screens/CreditManager/SigninCr"
-// import SignupCr from "./Screens/CreditManager/SignupCr"
-// import ForgotPassCr from "./Screens/CreditManager/ForgotPassCr"
-// import HomeCr from "./Screens/CreditManagerHome/HomeCr"
-// import HomeScreenCr from "./Screens/CreditManagerHome/HomeScreenCr"
-// import EditLoanFormCr from "./Screens/CreditManagerHome/EditLoanFormCr"
-// import AuthCeo from "./Screens/CEO/AuthCeo"
-// import SigninCeo from "./Screens/CEO/SigninCeo"
-// import SignupCeo from "./Screens/CEO/SignupCeo"
-// import ForgotPassCeo from "./Screens/CEO/ForgotPassCeo"
-// import HomeCeo from "./Screens/CEOHome/HomeCeo"
-// import HomeScreenCeo from "./Screens/CEOHome/HomeScreenCeo"
-// import EditLoanFormCeo from "./Screens/CEOHome/EditLoanFormCeo"
+import HomeBM from "./Screens/BMHome/HomeBM"
+import HomeScreenBM from "./Screens/BMHome/HomeScreenBM"
+import EditGRTFormBM from "./Screens/BMHome/EditGRTFormBM"
+import EditGroupFormBM from "./Screens/BMHome/EditGroupFormBM"
 
 // const AuthBr = lazy(() => import("./Screens/BranchManager/AuthBr"))
-// const SigninBr = lazy(() => import("./Screens/BranchManager/SigninBr"))
-// const SignupBr = lazy(() => import("./Screens/BranchManager/SignupBr"))
-// const ForgotPassBr = lazy(() => import("./Screens/BranchManager/ForgotPassBr"))
-// const HomeBr = lazy(() => import("./Screens/BranchManagerHome/HomeBr"))
-// const HomeScreenBr = lazy(() =>
-// 	import("./Screens/BranchManagerHome/HomeScreenBr")
-// )
-// const EditLoanFormBr = lazy(() =>
-// 	import("./Screens/BranchManagerHome/EditLoanFormBr")
-// )
-
-// const AuthCr = lazy(() => import("./Screens/CreditManager/AuthCr"))
-// const SigninCr = lazy(() => import("./Screens/CreditManager/SigninCr"))
-// const SignupCr = lazy(() => import("./Screens/CreditManager/SignupCr"))
-// const ForgotPassCr = lazy(() => import("./Screens/CreditManager/ForgotPassCr"))
-// const HomeCr = lazy(() => import("./Screens/CreditManagerHome/HomeCr"))
-// const HomeScreenCr = lazy(() =>
-// 	import("./Screens/CreditManagerHome/HomeScreenCr")
-// )
-// const EditLoanFormCr = lazy(() =>
-// 	import("./Screens/CreditManagerHome/EditLoanFormCr")
-// )
-
-// const AuthCeo = lazy(() => import("./Screens/CEO/AuthCeo"))
-// const SigninCeo = lazy(() => import("./Screens/CEO/SigninCeo"))
-// const SignupCeo = lazy(() => import("./Screens/CEO/SignupCeo"))
-// const ForgotPassCeo = lazy(() => import("./Screens/CEO/ForgotPassCeo"))
-// const HomeCeo = lazy(() => import("./Screens/CEOHome/HomeCeo"))
-// const HomeScreenCeo = lazy(() => import("./Screens/CEOHome/HomeScreenCeo"))
-// const EditLoanFormCeo = lazy(() => import("./Screens/CEOHome/EditLoanFormCeo"))
-
-// import FwdLoanApplicationsBr from "./Screens/BranchManagerHome/FwdLoanApplicationsBr"
-// import EditLoanFormFwdBr from "./Screens/BranchManagerHome/EditLoanFormFwdBr"
-// import RejectLoanApplicationsBr from "./Screens/BranchManagerHome/RejectLoanApplicationsBr"
-// import EditRejectLoanApplicationBr from "./Screens/BranchManagerHome/EditRejectLoanApplicationBr"
-// const HomeScreen = lazy(() => import("./Screens/AppraiserHome/HomeScreen"))
-// const Home = lazy(() => import("./Screens/AppraiserHome/Home"))
-// const EditLoanForm = lazy(() => import("./Screens/AppraiserHome/EditLoanForm"))
-// const ChooseComp = lazy(() => import("./Screens/Choose/ChooseComp"))
-// const UserChoose = lazy(() => import("./Screens/Choose/UserChoose"))
-// const LoanComp = lazy(() => import("./Screens/LoanForm/LoanComp"))
-// const LoanView = lazy(() => import("./Screens/LoanForm/LoanView"))
-// const LoanForm = lazy(() => import("./Screens/LoanForm/LoanForm"))
-// const ForgotPass = lazy(() => import("./Screens/Appraiser/ForgotPass"))
-// const Signup = lazy(() => import("./Screens/Appraiser/Signup"))
-// const Signin = lazy(() => import("./Screens/Appraiser/Signin"))
 
 const root = ReactDOM.createRoot(document.getElementById("root"))
 
@@ -140,72 +74,26 @@ const router = createBrowserRouter([
 							},
 						],
 					},
+					{
+						path: "homebm",
+						element: <HomeBM />,
+						children: [
+							{
+								path: "",
+								element: <HomeScreenBM />,
+							},
+							{
+								path: "editgroupform/:id",
+								element: <EditGroupFormBM />,
+							},
+							{
+								path: "editgrtform/:id",
+								element: <EditGRTFormBM />,
+							},
+						],
+					},
 				],
 			},
-			// {
-			// 	path: "creditmanager",
-			// 	element: <AuthCr />,
-			// 	children: [
-			// 		{
-			// 			path: "",
-			// 			element: <SigninCr />,
-			// 		},
-			// 		{
-			// 			path: "signup",
-			// 			element: <SignupCr />,
-			// 		},
-			// 		{
-			// 			path: "forgotpassword",
-			// 			element: <ForgotPassCr />,
-			// 		},
-			// 		{
-			// 			path: "homecr",
-			// 			element: <HomeCr />,
-			// 			children: [
-			// 				{
-			// 					path: "",
-			// 					element: <HomeScreenCr />,
-			// 				},
-			// 				{
-			// 					path: "editloanform/:id",
-			// 					element: <EditLoanFormCr />,
-			// 				},
-			// 			],
-			// 		},
-			// 	],
-			// },
-			// {
-			// 	path: "ceo",
-			// 	element: <AuthCeo />,
-			// 	children: [
-			// 		{
-			// 			path: "",
-			// 			element: <SigninCeo />,
-			// 		},
-			// 		{
-			// 			path: "signup",
-			// 			element: <SignupCeo />,
-			// 		},
-			// 		{
-			// 			path: "forgotpassword",
-			// 			element: <ForgotPassCeo />,
-			// 		},
-			// 		{
-			// 			path: "homeceo",
-			// 			element: <HomeCeo />,
-			// 			children: [
-			// 				{
-			// 					path: "",
-			// 					element: <HomeScreenCeo />,
-			// 				},
-			// 				{
-			// 					path: "editloanform/:id",
-			// 					element: <EditLoanFormCeo />,
-			// 				},
-			// 			],
-			// 		},
-			// 	],
-			// },
 
 			// {
 			// 	path: "forgotpassword",

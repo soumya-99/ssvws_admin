@@ -15,6 +15,7 @@ import { useLocation } from "react-router"
 import TDInputTemplateBr from "../../Components/TDInputTemplateBr"
 import { formatDateToYYYYMMDD } from "../../Utils/formateDate"
 import DialogBox from "../../Components/DialogBox"
+import { disableInputArray } from "./disableInputArray"
 
 function BasicDetailsForm({ memberDetails }) {
 	const params = useParams()
@@ -28,6 +29,10 @@ function BasicDetailsForm({ memberDetails }) {
 	const [loanTypes, setLoanTypes] = useState(() => [])
 	const [visible, setVisible] = useState(() => false)
 	const [visible2, setVisible2] = useState(() => false)
+
+	const [isPhoneVerified, setIsPhoneVerified] = useState(false)
+	const [isAadhaarVerified, setIsAadhaarVerified] = useState(false)
+	const [isPanVerified, setIsPanVerified] = useState(false)
 
 	const [groups, setGroups] = useState(() => [])
 	const [religions, setReligions] = useState(() => [])
@@ -241,6 +246,35 @@ function BasicDetailsForm({ memberDetails }) {
 		handleFetchEducations()
 	}, [])
 
+	const fetchVerificationDetails = async () => {
+		await axios
+			.get(
+				`${url}/admin/fetch_verify_flag?form_no=${params?.id}&member_code=${memberDetails?.member_code}`
+			)
+			.then((res) => {
+				const { phone_verify_flag, aadhar_verify_flag, pan_verify_flag } =
+					res.data?.msg[0]
+
+				console.log(
+					"!!!!!!@@@@@@@@@@########",
+					phone_verify_flag,
+					aadhar_verify_flag,
+					pan_verify_flag
+				)
+
+				setIsPhoneVerified(phone_verify_flag === "Y")
+				setIsAadhaarVerified(aadhar_verify_flag === "Y")
+				setIsPanVerified(pan_verify_flag === "Y")
+			})
+			.catch((err) => {
+				console.error("Failed to fetch verification details:", err)
+			})
+	}
+
+	useEffect(() => {
+		fetchVerificationDetails()
+	}, [])
+
 	const handleVerification = async (flag, val) => {
 		setLoading(true)
 		const creds = {
@@ -264,33 +298,21 @@ function BasicDetailsForm({ memberDetails }) {
 	}
 
 	const onChangeCheck1 = async (e) => {
-		console.log(`checked 1 = ${e.target.checked}`)
-		if (e.target.checked) {
-			console.log("vAL: === ", e.target.value)
-			await handleVerification("PH", "Y")
-		} else {
-			await handleVerification("PH", "N")
-		}
+		const isChecked = e.target.checked
+		setIsPhoneVerified(isChecked)
+		await handleVerification("PH", isChecked ? "Y" : "N")
 	}
 
 	const onChangeCheck2 = async (e) => {
-		console.log(`checked 1 = ${e.target.checked}`)
-		if (e.target.checked) {
-			console.log("vAL: === ", e.target.value)
-			await handleVerification("A", "Y")
-		} else {
-			await handleVerification("A", "N")
-		}
+		const isChecked = e.target.checked
+		setIsAadhaarVerified(isChecked)
+		await handleVerification("A", isChecked ? "Y" : "N")
 	}
 
 	const onChangeCheck3 = async (e) => {
-		console.log(`checked 1 = ${e.target.checked}`)
-		if (e.target.checked) {
-			console.log("vAL: === ", e.target.value)
-			await handleVerification("P", "Y")
-		} else {
-			await handleVerification("P", "N")
-		}
+		const isChecked = e.target.checked
+		setIsPanVerified(isChecked)
+		await handleVerification("P", isChecked ? "Y" : "N")
 	}
 
 	return (
@@ -362,6 +384,9 @@ function BasicDetailsForm({ memberDetails }) {
 										name: grp?.group_name,
 									}))}
 									mode={2}
+									disabled={disableInputArray.includes(
+										memberDetails?.approval_status
+									)}
 								/>
 								{formik.errors.b_groupCode && formik.touched.b_groupCode ? (
 									<VError title={formik.errors.b_groupCode} />
@@ -378,6 +403,9 @@ function BasicDetailsForm({ memberDetails }) {
 									handleChange={formik.handleChange}
 									handleBlur={formik.handleBlur}
 									mode={1}
+									disabled={disableInputArray.includes(
+										memberDetails?.approval_status
+									)}
 								/>
 								{formik.errors.b_clientName && formik.touched.b_clientName ? (
 									<VError title={formik.errors.b_clientName} />
@@ -394,6 +422,9 @@ function BasicDetailsForm({ memberDetails }) {
 									handleBlur={formik.handleBlur}
 									min={"1900-12-31"}
 									mode={1}
+									disabled={disableInputArray.includes(
+										memberDetails?.approval_status
+									)}
 								/>
 								{formik.errors.b_dob && formik.touched.b_dob ? (
 									<VError title={formik.errors.b_dob} />
@@ -417,6 +448,9 @@ function BasicDetailsForm({ memberDetails }) {
 										{ code: "O", name: "Others" },
 									]}
 									mode={2}
+									disabled={disableInputArray.includes(
+										memberDetails?.approval_status
+									)}
 								/>
 								{formik.errors.b_clientGender &&
 								formik.touched.b_clientGender ? (
@@ -434,6 +468,9 @@ function BasicDetailsForm({ memberDetails }) {
 									handleChange={formik.handleChange}
 									handleBlur={formik.handleBlur}
 									mode={3}
+									disabled={disableInputArray.includes(
+										memberDetails?.approval_status
+									)}
 								/>
 								{formik.errors.b_clientAddress &&
 								formik.touched.b_clientAddress ? (
@@ -451,6 +488,9 @@ function BasicDetailsForm({ memberDetails }) {
 									handleChange={formik.handleChange}
 									handleBlur={formik.handleBlur}
 									mode={1}
+									disabled={disableInputArray.includes(
+										memberDetails?.approval_status
+									)}
 								/>
 								{formik.errors.b_clientPin && formik.touched.b_clientPin ? (
 									<VError title={formik.errors.b_clientPin} />
@@ -467,6 +507,9 @@ function BasicDetailsForm({ memberDetails }) {
 									handleChange={formik.handleChange}
 									handleBlur={formik.handleBlur}
 									mode={1}
+									disabled={disableInputArray.includes(
+										memberDetails?.approval_status
+									)}
 								/>
 								{formik.errors.b_clientMobile &&
 								formik.touched.b_clientMobile ? (
@@ -484,6 +527,9 @@ function BasicDetailsForm({ memberDetails }) {
 									handleChange={formik.handleChange}
 									handleBlur={formik.handleBlur}
 									mode={1}
+									disabled={disableInputArray.includes(
+										memberDetails?.approval_status
+									)}
 								/>
 								{formik.errors.b_guardianName &&
 								formik.touched.b_guardianName ? (
@@ -501,6 +547,9 @@ function BasicDetailsForm({ memberDetails }) {
 									handleChange={formik.handleChange}
 									handleBlur={formik.handleBlur}
 									mode={1}
+									disabled={disableInputArray.includes(
+										memberDetails?.approval_status
+									)}
 								/>
 								{formik.errors.b_guardianMobile &&
 								formik.touched.b_guardianMobile ? (
@@ -518,6 +567,9 @@ function BasicDetailsForm({ memberDetails }) {
 									handleChange={formik.handleChange}
 									handleBlur={formik.handleBlur}
 									mode={1}
+									disabled={disableInputArray.includes(
+										memberDetails?.approval_status
+									)}
 								/>
 								{formik.errors.b_aadhaarNumber &&
 								formik.touched.b_aadhaarNumber ? (
@@ -534,6 +586,9 @@ function BasicDetailsForm({ memberDetails }) {
 									handleChange={formik.handleChange}
 									handleBlur={formik.handleBlur}
 									mode={1}
+									disabled={disableInputArray.includes(
+										memberDetails?.approval_status
+									)}
 								/>
 								{formik.errors.b_panNumber && formik.touched.b_panNumber ? (
 									<VError title={formik.errors.b_panNumber} />
@@ -554,6 +609,9 @@ function BasicDetailsForm({ memberDetails }) {
 										name: religion?.name,
 									}))}
 									mode={2}
+									disabled={disableInputArray.includes(
+										memberDetails?.approval_status
+									)}
 								/>
 								{formik.errors.b_religion && formik.touched.b_religion ? (
 									<VError title={formik.errors.b_religion} />
@@ -574,6 +632,9 @@ function BasicDetailsForm({ memberDetails }) {
 										name: caste?.name,
 									}))}
 									mode={2}
+									disabled={disableInputArray.includes(
+										memberDetails?.approval_status
+									)}
 								/>
 								{formik.errors.b_caste && formik.touched.b_caste ? (
 									<VError title={formik.errors.b_caste} />
@@ -594,62 +655,64 @@ function BasicDetailsForm({ memberDetails }) {
 										name: edu?.name,
 									}))}
 									mode={2}
+									disabled={disableInputArray.includes(
+										memberDetails?.approval_status
+									)}
 								/>
 								{formik.errors.b_education && formik.touched.b_education ? (
 									<VError title={formik.errors.b_education} />
 								) : null}
 							</div>
-							<div>
-								{/* <TDInputTemplateBr
-									placeholder="Choose Education..."
-									type="text"
-									label="Education"
-									name="b_education"
-									formControlName={formik.values.b_education}
-									handleChange={formik.handleChange}
-									handleBlur={formik.handleBlur}
-									data={educations?.map((edu) => ({
-										code: edu?.id,
-										name: edu?.name,
-									}))}
-									mode={2}
-								/>
-								{formik.errors.b_education && formik.touched.b_education ? (
-									<VError title={formik.errors.b_education} />
-								) : null} */}
-								<div className="block mb-2 text-sm capitalize font-bold text-blue-800 dark:text-gray-100">
-									Verification
+							{userDetails?.id === 3 && (
+								<div>
+									<div className="block mb-2 text-sm capitalize font-bold text-blue-800 dark:text-gray-100">
+										Verification
+									</div>
+									<div className="flex justify-between gap-5">
+										<Checkbox
+											className="text-lg uppercase text-slate-800"
+											onChange={onChangeCheck1}
+											value={"PH"}
+											checked={isPhoneVerified}
+											disabled={disableInputArray.includes(
+												memberDetails?.approval_status
+											)}
+										>
+											Mobile Number
+										</Checkbox>
+										<Checkbox
+											className="text-lg uppercase text-slate-800"
+											onChange={onChangeCheck2}
+											value={"A"}
+											checked={isAadhaarVerified}
+											disabled={disableInputArray.includes(
+												memberDetails?.approval_status
+											)}
+										>
+											Aadhaar Card
+										</Checkbox>
+										<Checkbox
+											className="text-lg uppercase text-slate-800"
+											onChange={onChangeCheck3}
+											value={"P"}
+											checked={isPanVerified}
+											disabled={disableInputArray.includes(
+												memberDetails?.approval_status
+											)}
+										>
+											PAN Card
+										</Checkbox>
+									</div>
 								</div>
-								<div className="flex justify-between gap-5">
-									<Checkbox
-										className="text-lg uppercase text-slate-800"
-										onChange={onChangeCheck1}
-										value={"PH"}
-									>
-										Mobile Number
-									</Checkbox>
-									<Checkbox
-										className="text-lg uppercase text-slate-800"
-										onChange={onChangeCheck2}
-										value={"A"}
-									>
-										Aadhaar Card
-									</Checkbox>
-									<Checkbox
-										className="text-lg uppercase text-slate-800"
-										onChange={onChangeCheck3}
-										value={"P"}
-									>
-										PAN Card
-									</Checkbox>
-								</div>
-							</div>
+							)}
 						</div>
 
 						{/* {loanApproveStatus !== "A" && loanApproveStatus !== "R" ? ( */}
-						<div className="mt-10">
-							<BtnComp mode="A" onReset={formik.resetForm} />
-						</div>
+						{!disableInputArray.includes(memberDetails?.approval_status) && (
+							<div className="mt-10">
+								<BtnComp mode="A" onReset={formik.resetForm} />
+							</div>
+						)}
 						{/* ) : loanApproveStatus === "A" ? (
 							<Tag
 								color="purple"

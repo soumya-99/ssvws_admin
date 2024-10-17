@@ -28,8 +28,9 @@ import Sidebar from "../../Components/Sidebar"
 import DialogBox from "../../Components/DialogBox"
 import TDInputTemplateBr from "../../Components/TDInputTemplateBr"
 import TimelineComp from "../../Components/TimelineComp"
+import { disableInputArray } from "./disableInputArray"
 
-function HouseholdDetailsForm() {
+function HouseholdDetailsForm({ memberDetails }) {
 	const params = useParams()
 	const [loading, setLoading] = useState(false)
 	const location = useLocation()
@@ -194,6 +195,9 @@ function HouseholdDetailsForm() {
 									name="h_no_of_rooms"
 									formControlName={formik.values.h_no_of_rooms}
 									mode={1}
+									disabled={disableInputArray.includes(
+										memberDetails?.approval_status
+									)}
 								/>
 								{formik.errors.h_no_of_rooms && formik.touched.h_no_of_rooms ? (
 									<VError title={formik.errors.h_no_of_rooms} />
@@ -209,6 +213,9 @@ function HouseholdDetailsForm() {
 									handleChange={formik.handleChange}
 									handleBlur={formik.handleBlur}
 									mode={3}
+									disabled={disableInputArray.includes(
+										memberDetails?.approval_status
+									)}
 								/>
 								{formik.errors.h_parental_address &&
 								formik.touched.h_parental_address ? (
@@ -240,6 +247,9 @@ function HouseholdDetailsForm() {
 										},
 									]}
 									mode={2}
+									disabled={disableInputArray.includes(
+										memberDetails?.approval_status
+									)}
 								/>
 								{formik.errors.h_house_type && formik.touched.h_house_type ? (
 									<VError title={formik.errors.h_house_type} />
@@ -266,6 +276,9 @@ function HouseholdDetailsForm() {
 										},
 									]}
 									mode={2}
+									disabled={disableInputArray.includes(
+										memberDetails?.approval_status
+									)}
 								/>
 								{formik.errors.h_own_rent && formik.touched.h_own_rent ? (
 									<VError title={formik.errors.h_own_rent} />
@@ -280,6 +293,9 @@ function HouseholdDetailsForm() {
 									name="h_total_land"
 									formControlName={formik.values.h_total_land}
 									mode={1}
+									disabled={disableInputArray.includes(
+										memberDetails?.approval_status
+									)}
 								/>
 								{formik.errors.h_total_land && formik.touched.h_total_land ? (
 									<VError title={formik.errors.h_total_land} />
@@ -306,6 +322,9 @@ function HouseholdDetailsForm() {
 										},
 									]}
 									mode={2}
+									disabled={disableInputArray.includes(
+										memberDetails?.approval_status
+									)}
 								/>
 								{formik.errors.h_politically_active &&
 								formik.touched.h_politically_active ? (
@@ -332,6 +351,9 @@ function HouseholdDetailsForm() {
 										},
 									]}
 									mode={2}
+									disabled={disableInputArray.includes(
+										memberDetails?.approval_status
+									)}
 								/>
 								{formik.errors.h_tv && formik.touched.h_tv ? (
 									<VError title={formik.errors.h_tv} />
@@ -357,6 +379,9 @@ function HouseholdDetailsForm() {
 										},
 									]}
 									mode={2}
+									disabled={disableInputArray.includes(
+										memberDetails?.approval_status
+									)}
 								/>
 								{formik.errors.h_bike && formik.touched.h_bike ? (
 									<VError title={formik.errors.h_bike} />
@@ -382,6 +407,9 @@ function HouseholdDetailsForm() {
 										},
 									]}
 									mode={2}
+									disabled={disableInputArray.includes(
+										memberDetails?.approval_status
+									)}
 								/>
 								{formik.errors.h_fridge && formik.touched.h_fridge ? (
 									<VError title={formik.errors.h_fridge} />
@@ -407,6 +435,9 @@ function HouseholdDetailsForm() {
 										},
 									]}
 									mode={2}
+									disabled={disableInputArray.includes(
+										memberDetails?.approval_status
+									)}
 								/>
 								{formik.errors.h_washing_machine &&
 								formik.touched.h_washing_machine ? (
@@ -415,9 +446,11 @@ function HouseholdDetailsForm() {
 							</div>
 						</div>
 
-						<div className="mt-10">
-							<BtnComp mode="A" onReset={formik.resetForm} />
-						</div>
+						{!disableInputArray.includes(memberDetails?.approval_status) && (
+							<div className="mt-10">
+								<BtnComp mode="A" onReset={formik.resetForm} />
+							</div>
+						)}
 
 						{/* {loanApproveStatus !== "A" && loanApproveStatus !== "R" ? (
 							<div className="mt-10">

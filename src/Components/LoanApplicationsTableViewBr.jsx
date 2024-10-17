@@ -18,6 +18,7 @@ function LoanApplicationsTableViewBr({
 	loanAppData,
 	setSearch,
 	title,
+	flag,
 	isForwardLoan = false,
 	isRejected = false,
 }) {
@@ -48,7 +49,13 @@ function LoanApplicationsTableViewBr({
 				animate={{ opacity: 1 }}
 				transition={{ delay: 0.5, type: "spring", stiffness: 30 }}
 			>
-				<div className="flex flex-col p-1 bg-blue-800 rounded-lg my-3 dark:bg-blue-800 md:flex-row items-center justify-between space-y-3 md:space-y-0 md:space-x-4 ">
+				<div
+					className={`flex flex-col p-1 ${
+						flag !== "BM" ? "bg-blue-800" : "bg-stone-800"
+					} rounded-lg my-3 ${
+						flag !== "BM" ? "dark:bg-blue-800" : "dark:bg-stone-800"
+					} md:flex-row items-center justify-between space-y-3 md:space-y-0 md:space-x-4`}
+				>
 					<div className="w-full">
 						<div className="flex items-center justify-between">
 							<motion.h2
@@ -85,7 +92,9 @@ function LoanApplicationsTableViewBr({
 									initial={{ opacity: 0, width: 0 }}
 									animate={{ opacity: 1, width: "95%" }}
 									transition={{ delay: 1.1, type: "just" }}
-									className="bg-white border rounded-lg border-blue-700 text-gray-800 block w-full h-12 pl-10 dark:bg-gray-800 md:ml-4 duration-300 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white text-lg focus:border-blue-600"
+									className={`bg-white border rounded-lg ${
+										flag !== "BM" ? "border-blue-700" : "border-stone-700"
+									} text-gray-800 block w-full h-12 pl-10 dark:bg-gray-800 md:ml-4 duration-300 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white text-lg focus:border-blue-600`}
 									placeholder="Search"
 									required=""
 									onChange={(text) => setSearch(text.target.value)}
@@ -101,7 +110,11 @@ function LoanApplicationsTableViewBr({
 				transition={{ delay: 0.5, type: "spring", stiffness: 30 }}
 			>
 				<table className="w-full text-sm text-left rtl:text-right shadow-lg text-green-900dark:text-gray-400">
-					<thead className=" text-md  text-gray-700 capitalize   bg-blue-100 dark:bg-gray-700 dark:text-gray-400">
+					<thead
+						className={`text-md text-gray-700 capitalize ${
+							flag !== "BM" ? "bg-blue-100" : "bg-stone-100"
+						} dark:bg-gray-700 dark:text-gray-400`}
+					>
 						<tr>
 							{/* <th scope="col" className="p-4">
 								#
@@ -163,23 +176,28 @@ function LoanApplicationsTableViewBr({
 									<td className="px-6 py-4">{item.loan_type_name}</td> */}
 									{/* <td className="px-6 py-4">{item.member_name}</td> */}
 									<td className="px-6 py-4">
-										<Link
-											to={
-												// !isRejected
-												// 	? isForwardLoan
-												// 		? routePaths.BR_EDIT_APPLICATION_FORWARD +
-												// 		  item?.application_no
-												// 		:
-
-												routePaths.MIS_ASSISTANT_EDIT_GROUP +
-												item?.prov_grp_code
-												// : routePaths.BR_EDIT_APPLICATION_REJECT +
-												//   item?.application_no
-											}
-											// to={}
-										>
-											<EditOutlined className="text-md text-blue-800" />
-										</Link>
+										{flag !== "BM" ? (
+											<Link
+												to={
+													routePaths.MIS_ASSISTANT_EDIT_GROUP +
+													item?.prov_grp_code
+												}
+											>
+												<EditOutlined
+													className={`text-md ${
+														flag !== "BM" ? "text-blue-800" : "text-stone-800"
+													}`}
+												/>
+											</Link>
+										) : (
+											<Link to={routePaths.BM_EDIT_GROUP + item?.prov_grp_code}>
+												<EditOutlined
+													className={`text-md ${
+														flag !== "BM" ? "text-blue-800" : "text-stone-800"
+													}`}
+												/>
+											</Link>
+										)}
 									</td>
 								</tr>
 							))}

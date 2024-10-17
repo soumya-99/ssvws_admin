@@ -47,7 +47,13 @@ function SigninMis() {
 						JSON.stringify(res?.data?.user_dtls)
 					)
 
-					navigate(routePaths.MIS_ASSISTANT_HOME)
+					if (res?.data?.user_dtls?.id == 2) {
+						navigate(routePaths.BM_HOME)
+					}
+
+					if (res?.data?.user_dtls?.id == 3) {
+						navigate(routePaths.MIS_ASSISTANT_HOME)
+					}
 				} else if (res?.data?.suc === 0) {
 					Message("error", res?.data?.msg)
 				} else {

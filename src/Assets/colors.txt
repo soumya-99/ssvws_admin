@@ -29,3 +29,9 @@ New palette -
 
 Slate
 #98B9F2
+
+New blue pallete
+033860
+087ca7
+004385
+05b2dc
