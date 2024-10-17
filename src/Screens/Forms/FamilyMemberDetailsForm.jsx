@@ -13,6 +13,7 @@ import DialogBox from "../../Components/DialogBox"
 import TDInputTemplateBr from "../../Components/TDInputTemplateBr"
 import { routePaths } from "../../Assets/Data/Routes"
 import { disableInputArray } from "./disableInputArray"
+import { disableCondition } from "./disableCondition"
 
 function FamilyMemberDetailsForm({ memberDetails }) {
 	const params = useParams()
@@ -219,7 +220,8 @@ function FamilyMemberDetailsForm({ memberDetails }) {
 												handleInputChange(i, "name", txt.target.value)
 											}
 											mode={1}
-											disabled={disableInputArray.includes(
+											disabled={disableCondition(
+												userDetails?.id,
 												memberDetails?.approval_status
 											)}
 										/>
@@ -235,7 +237,8 @@ function FamilyMemberDetailsForm({ memberDetails }) {
 												handleInputChange(i, "relation", txt.target.value)
 											}
 											mode={1}
-											disabled={disableInputArray.includes(
+											disabled={disableCondition(
+												userDetails?.id,
 												memberDetails?.approval_status
 											)}
 										/>
@@ -251,7 +254,8 @@ function FamilyMemberDetailsForm({ memberDetails }) {
 												handleInputChange(i, "age", txt.target.value)
 											}
 											mode={1}
-											disabled={disableInputArray.includes(
+											disabled={disableCondition(
+												userDetails?.id,
 												memberDetails?.approval_status
 											)}
 										/>
@@ -281,7 +285,8 @@ function FamilyMemberDetailsForm({ memberDetails }) {
 												},
 											]}
 											mode={2}
-											disabled={disableInputArray.includes(
+											disabled={disableCondition(
+												userDetails?.id,
 												memberDetails?.approval_status
 											)}
 										/>
@@ -301,7 +306,8 @@ function FamilyMemberDetailsForm({ memberDetails }) {
 												name: edu?.name,
 											}))}
 											mode={2}
-											disabled={disableInputArray.includes(
+											disabled={disableCondition(
+												userDetails?.id,
 												memberDetails?.approval_status
 											)}
 										/>
@@ -331,7 +337,8 @@ function FamilyMemberDetailsForm({ memberDetails }) {
 												},
 											]}
 											mode={2}
-											disabled={disableInputArray.includes(
+											disabled={disableCondition(
+												userDetails?.id,
 												memberDetails?.approval_status
 											)}
 										/>
@@ -347,7 +354,8 @@ function FamilyMemberDetailsForm({ memberDetails }) {
 												handleInputChange(i, "monthlyIncome", txt.target.value)
 											}
 											mode={1}
-											disabled={disableInputArray.includes(
+											disabled={disableCondition(
+												userDetails?.id,
 												memberDetails?.approval_status
 											)}
 										/>
@@ -356,7 +364,8 @@ function FamilyMemberDetailsForm({ memberDetails }) {
 								{formArray.length > 1 && (
 									<div>
 										<Button
-											disabled={disableInputArray.includes(
+											disabled={disableCondition(
+												userDetails?.id,
 												memberDetails?.approval_status
 											)}
 											className="rounded-full bg-red-700 text-white"
@@ -371,7 +380,8 @@ function FamilyMemberDetailsForm({ memberDetails }) {
 
 						<div className="pt-1">
 							<Button
-								disabled={disableInputArray.includes(
+								disabled={disableCondition(
+									userDetails?.id,
 									memberDetails?.approval_status
 								)}
 								className="rounded-full bg-yellow-400 text-white"
@@ -389,13 +399,17 @@ function FamilyMemberDetailsForm({ memberDetails }) {
 								formControlName={remarks}
 								handleChange={(e) => setRemarks(e.target.value)}
 								mode={3}
-								disabled={disableInputArray.includes(
+								disabled={disableCondition(
+									userDetails?.id,
 									memberDetails?.approval_status
 								)}
 							/>
 						</div>
 
-						{!disableInputArray.includes(memberDetails?.approval_status) && (
+						{!disableCondition(
+							userDetails?.id,
+							memberDetails?.approval_status
+						) && (
 							<div className="mt-10">
 								<BtnComp
 									mode="B"
@@ -424,7 +438,7 @@ function FamilyMemberDetailsForm({ memberDetails }) {
 							</div>
 						)}
 
-						{memberDetails?.approval_status === "S" && (
+						{/* {memberDetails?.approval_status === "S" && (
 							<Tag
 								color="blue"
 								className="mt-10 p-5 rounded-lg text-xl font-bold self-center"
@@ -449,7 +463,7 @@ function FamilyMemberDetailsForm({ memberDetails }) {
 							>
 								GRT Approved.
 							</Tag>
-						)}
+						)} */}
 					</div>
 				</form>
 			</Spin>

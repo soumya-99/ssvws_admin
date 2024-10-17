@@ -29,6 +29,7 @@ import DialogBox from "../../Components/DialogBox"
 import TDInputTemplateBr from "../../Components/TDInputTemplateBr"
 import TimelineComp from "../../Components/TimelineComp"
 import { disableInputArray } from "./disableInputArray"
+import { disableCondition } from "./disableCondition"
 
 function HouseholdDetailsForm({ memberDetails }) {
 	const params = useParams()
@@ -195,7 +196,8 @@ function HouseholdDetailsForm({ memberDetails }) {
 									name="h_no_of_rooms"
 									formControlName={formik.values.h_no_of_rooms}
 									mode={1}
-									disabled={disableInputArray.includes(
+									disabled={disableCondition(
+										userDetails?.id,
 										memberDetails?.approval_status
 									)}
 								/>
@@ -213,7 +215,8 @@ function HouseholdDetailsForm({ memberDetails }) {
 									handleChange={formik.handleChange}
 									handleBlur={formik.handleBlur}
 									mode={3}
-									disabled={disableInputArray.includes(
+									disabled={disableCondition(
+										userDetails?.id,
 										memberDetails?.approval_status
 									)}
 								/>
@@ -247,7 +250,8 @@ function HouseholdDetailsForm({ memberDetails }) {
 										},
 									]}
 									mode={2}
-									disabled={disableInputArray.includes(
+									disabled={disableCondition(
+										userDetails?.id,
 										memberDetails?.approval_status
 									)}
 								/>
@@ -276,7 +280,8 @@ function HouseholdDetailsForm({ memberDetails }) {
 										},
 									]}
 									mode={2}
-									disabled={disableInputArray.includes(
+									disabled={disableCondition(
+										userDetails?.id,
 										memberDetails?.approval_status
 									)}
 								/>
@@ -293,7 +298,8 @@ function HouseholdDetailsForm({ memberDetails }) {
 									name="h_total_land"
 									formControlName={formik.values.h_total_land}
 									mode={1}
-									disabled={disableInputArray.includes(
+									disabled={disableCondition(
+										userDetails?.id,
 										memberDetails?.approval_status
 									)}
 								/>
@@ -322,7 +328,8 @@ function HouseholdDetailsForm({ memberDetails }) {
 										},
 									]}
 									mode={2}
-									disabled={disableInputArray.includes(
+									disabled={disableCondition(
+										userDetails?.id,
 										memberDetails?.approval_status
 									)}
 								/>
@@ -351,7 +358,8 @@ function HouseholdDetailsForm({ memberDetails }) {
 										},
 									]}
 									mode={2}
-									disabled={disableInputArray.includes(
+									disabled={disableCondition(
+										userDetails?.id,
 										memberDetails?.approval_status
 									)}
 								/>
@@ -379,7 +387,8 @@ function HouseholdDetailsForm({ memberDetails }) {
 										},
 									]}
 									mode={2}
-									disabled={disableInputArray.includes(
+									disabled={disableCondition(
+										userDetails?.id,
 										memberDetails?.approval_status
 									)}
 								/>
@@ -407,7 +416,8 @@ function HouseholdDetailsForm({ memberDetails }) {
 										},
 									]}
 									mode={2}
-									disabled={disableInputArray.includes(
+									disabled={disableCondition(
+										userDetails?.id,
 										memberDetails?.approval_status
 									)}
 								/>
@@ -435,7 +445,8 @@ function HouseholdDetailsForm({ memberDetails }) {
 										},
 									]}
 									mode={2}
-									disabled={disableInputArray.includes(
+									disabled={disableCondition(
+										userDetails?.id,
 										memberDetails?.approval_status
 									)}
 								/>
@@ -446,7 +457,10 @@ function HouseholdDetailsForm({ memberDetails }) {
 							</div>
 						</div>
 
-						{!disableInputArray.includes(memberDetails?.approval_status) && (
+						{!disableCondition(
+							userDetails?.id,
+							memberDetails?.approval_status
+						) && (
 							<div className="mt-10">
 								<BtnComp mode="A" onReset={formik.resetForm} />
 							</div>

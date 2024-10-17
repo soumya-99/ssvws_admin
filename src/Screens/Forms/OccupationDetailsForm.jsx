@@ -15,6 +15,7 @@ import TDInputTemplateBr from "../../Components/TDInputTemplateBr"
 import BtnComp from "../../Components/BtnComp"
 import DialogBox from "../../Components/DialogBox"
 import { disableInputArray } from "./disableInputArray"
+import { disableCondition } from "./disableCondition"
 
 function OccupationDetailsForm({ memberDetails }) {
 	const params = useParams()
@@ -213,7 +214,8 @@ function OccupationDetailsForm({ memberDetails }) {
 									formControlName={formik.values.o_self_occupation}
 									handleChange={formik.handleChange}
 									mode={1}
-									disabled={disableInputArray.includes(
+									disabled={disableCondition(
+										userDetails?.id,
 										memberDetails?.approval_status
 									)}
 								/>
@@ -231,7 +233,8 @@ function OccupationDetailsForm({ memberDetails }) {
 									formControlName={formik.values.o_self_monthly_income}
 									handleChange={formik.handleChange}
 									mode={1}
-									disabled={disableInputArray.includes(
+									disabled={disableCondition(
+										userDetails?.id,
 										memberDetails?.approval_status
 									)}
 								/>
@@ -249,7 +252,8 @@ function OccupationDetailsForm({ memberDetails }) {
 									formControlName={formik.values.o_spouse_occupation}
 									handleChange={formik.handleChange}
 									mode={1}
-									disabled={disableInputArray.includes(
+									disabled={disableCondition(
+										userDetails?.id,
 										memberDetails?.approval_status
 									)}
 								/>
@@ -267,7 +271,8 @@ function OccupationDetailsForm({ memberDetails }) {
 									formControlName={formik.values.o_spouse_monthly_income}
 									handleChange={formik.handleChange}
 									mode={1}
-									disabled={disableInputArray.includes(
+									disabled={disableCondition(
+										userDetails?.id,
 										memberDetails?.approval_status
 									)}
 								/>
@@ -291,7 +296,8 @@ function OccupationDetailsForm({ memberDetails }) {
 										name: loan?.purpose_id,
 									}))}
 									mode={2}
-									disabled={disableInputArray.includes(
+									disabled={disableCondition(
+										userDetails?.id,
 										memberDetails?.approval_status
 									)}
 								/>
@@ -315,7 +321,8 @@ function OccupationDetailsForm({ memberDetails }) {
 										name: loan?.sub_purp_name,
 									}))}
 									mode={2}
-									disabled={disableInputArray.includes(
+									disabled={disableCondition(
+										userDetails?.id,
 										memberDetails?.approval_status
 									)}
 								/>
@@ -334,7 +341,8 @@ function OccupationDetailsForm({ memberDetails }) {
 									formControlName={formik.values.o_amount_applied}
 									handleChange={formik.handleChange}
 									mode={1}
-									disabled={disableInputArray.includes(
+									disabled={disableCondition(
+										userDetails?.id,
 										memberDetails?.approval_status
 									)}
 								/>
@@ -364,7 +372,8 @@ function OccupationDetailsForm({ memberDetails }) {
 										},
 									]}
 									mode={2}
-									disabled={disableInputArray.includes(
+									disabled={disableCondition(
+										userDetails?.id,
 										memberDetails?.approval_status
 									)}
 								/>
@@ -384,7 +393,8 @@ function OccupationDetailsForm({ memberDetails }) {
 											formControlName={formik.values.o_other_loan_amount}
 											handleChange={formik.handleChange}
 											mode={1}
-											disabled={disableInputArray.includes(
+											disabled={disableCondition(
+												userDetails?.id,
 												memberDetails?.approval_status
 											)}
 										/>
@@ -402,7 +412,8 @@ function OccupationDetailsForm({ memberDetails }) {
 											formControlName={formik.values.o_monthly_emi}
 											handleChange={formik.handleChange}
 											mode={1}
-											disabled={disableInputArray.includes(
+											disabled={disableCondition(
+												userDetails?.id,
 												memberDetails?.approval_status
 											)}
 										/>
@@ -415,7 +426,10 @@ function OccupationDetailsForm({ memberDetails }) {
 							)}
 						</div>
 
-						{!disableInputArray.includes(memberDetails?.approval_status) && (
+						{!disableCondition(
+							userDetails?.id,
+							memberDetails?.approval_status
+						) && (
 							<div className="mt-10">
 								<BtnComp mode="A" onReset={formik.resetForm} />
 							</div>

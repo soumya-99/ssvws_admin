@@ -15,7 +15,8 @@ import { useLocation } from "react-router"
 import TDInputTemplateBr from "../../Components/TDInputTemplateBr"
 import { formatDateToYYYYMMDD } from "../../Utils/formateDate"
 import DialogBox from "../../Components/DialogBox"
-import { disableInputArray } from "./disableInputArray"
+// import { disableInputArray } from "./disableInputArray"
+import { disableCondition } from "./disableCondition"
 
 function BasicDetailsForm({ memberDetails }) {
 	const params = useParams()
@@ -384,7 +385,8 @@ function BasicDetailsForm({ memberDetails }) {
 										name: grp?.group_name,
 									}))}
 									mode={2}
-									disabled={disableInputArray.includes(
+									disabled={disableCondition(
+										userDetails?.id,
 										memberDetails?.approval_status
 									)}
 								/>
@@ -403,7 +405,8 @@ function BasicDetailsForm({ memberDetails }) {
 									handleChange={formik.handleChange}
 									handleBlur={formik.handleBlur}
 									mode={1}
-									disabled={disableInputArray.includes(
+									disabled={disableCondition(
+										userDetails?.id,
 										memberDetails?.approval_status
 									)}
 								/>
@@ -422,7 +425,8 @@ function BasicDetailsForm({ memberDetails }) {
 									handleBlur={formik.handleBlur}
 									min={"1900-12-31"}
 									mode={1}
-									disabled={disableInputArray.includes(
+									disabled={disableCondition(
+										userDetails?.id,
 										memberDetails?.approval_status
 									)}
 								/>
@@ -448,7 +452,8 @@ function BasicDetailsForm({ memberDetails }) {
 										{ code: "O", name: "Others" },
 									]}
 									mode={2}
-									disabled={disableInputArray.includes(
+									disabled={disableCondition(
+										userDetails?.id,
 										memberDetails?.approval_status
 									)}
 								/>
@@ -468,7 +473,8 @@ function BasicDetailsForm({ memberDetails }) {
 									handleChange={formik.handleChange}
 									handleBlur={formik.handleBlur}
 									mode={3}
-									disabled={disableInputArray.includes(
+									disabled={disableCondition(
+										userDetails?.id,
 										memberDetails?.approval_status
 									)}
 								/>
@@ -488,7 +494,8 @@ function BasicDetailsForm({ memberDetails }) {
 									handleChange={formik.handleChange}
 									handleBlur={formik.handleBlur}
 									mode={1}
-									disabled={disableInputArray.includes(
+									disabled={disableCondition(
+										userDetails?.id,
 										memberDetails?.approval_status
 									)}
 								/>
@@ -507,7 +514,8 @@ function BasicDetailsForm({ memberDetails }) {
 									handleChange={formik.handleChange}
 									handleBlur={formik.handleBlur}
 									mode={1}
-									disabled={disableInputArray.includes(
+									disabled={disableCondition(
+										userDetails?.id,
 										memberDetails?.approval_status
 									)}
 								/>
@@ -527,7 +535,8 @@ function BasicDetailsForm({ memberDetails }) {
 									handleChange={formik.handleChange}
 									handleBlur={formik.handleBlur}
 									mode={1}
-									disabled={disableInputArray.includes(
+									disabled={disableCondition(
+										userDetails?.id,
 										memberDetails?.approval_status
 									)}
 								/>
@@ -547,7 +556,8 @@ function BasicDetailsForm({ memberDetails }) {
 									handleChange={formik.handleChange}
 									handleBlur={formik.handleBlur}
 									mode={1}
-									disabled={disableInputArray.includes(
+									disabled={disableCondition(
+										userDetails?.id,
 										memberDetails?.approval_status
 									)}
 								/>
@@ -567,7 +577,8 @@ function BasicDetailsForm({ memberDetails }) {
 									handleChange={formik.handleChange}
 									handleBlur={formik.handleBlur}
 									mode={1}
-									disabled={disableInputArray.includes(
+									disabled={disableCondition(
+										userDetails?.id,
 										memberDetails?.approval_status
 									)}
 								/>
@@ -586,7 +597,8 @@ function BasicDetailsForm({ memberDetails }) {
 									handleChange={formik.handleChange}
 									handleBlur={formik.handleBlur}
 									mode={1}
-									disabled={disableInputArray.includes(
+									disabled={disableCondition(
+										userDetails?.id,
 										memberDetails?.approval_status
 									)}
 								/>
@@ -609,7 +621,8 @@ function BasicDetailsForm({ memberDetails }) {
 										name: religion?.name,
 									}))}
 									mode={2}
-									disabled={disableInputArray.includes(
+									disabled={disableCondition(
+										userDetails?.id,
 										memberDetails?.approval_status
 									)}
 								/>
@@ -632,7 +645,8 @@ function BasicDetailsForm({ memberDetails }) {
 										name: caste?.name,
 									}))}
 									mode={2}
-									disabled={disableInputArray.includes(
+									disabled={disableCondition(
+										userDetails?.id,
 										memberDetails?.approval_status
 									)}
 								/>
@@ -655,7 +669,8 @@ function BasicDetailsForm({ memberDetails }) {
 										name: edu?.name,
 									}))}
 									mode={2}
-									disabled={disableInputArray.includes(
+									disabled={disableCondition(
+										userDetails?.id,
 										memberDetails?.approval_status
 									)}
 								/>
@@ -674,7 +689,8 @@ function BasicDetailsForm({ memberDetails }) {
 											onChange={onChangeCheck1}
 											value={"PH"}
 											checked={isPhoneVerified}
-											disabled={disableInputArray.includes(
+											disabled={disableCondition(
+												userDetails?.id,
 												memberDetails?.approval_status
 											)}
 										>
@@ -685,7 +701,8 @@ function BasicDetailsForm({ memberDetails }) {
 											onChange={onChangeCheck2}
 											value={"A"}
 											checked={isAadhaarVerified}
-											disabled={disableInputArray.includes(
+											disabled={disableCondition(
+												userDetails?.id,
 												memberDetails?.approval_status
 											)}
 										>
@@ -696,7 +713,8 @@ function BasicDetailsForm({ memberDetails }) {
 											onChange={onChangeCheck3}
 											value={"P"}
 											checked={isPanVerified}
-											disabled={disableInputArray.includes(
+											disabled={disableCondition(
+												userDetails?.id,
 												memberDetails?.approval_status
 											)}
 										>
@@ -708,7 +726,10 @@ function BasicDetailsForm({ memberDetails }) {
 						</div>
 
 						{/* {loanApproveStatus !== "A" && loanApproveStatus !== "R" ? ( */}
-						{!disableInputArray.includes(memberDetails?.approval_status) && (
+						{!disableCondition(
+							userDetails?.id,
+							memberDetails?.approval_status
+						) && (
 							<div className="mt-10">
 								<BtnComp mode="A" onReset={formik.resetForm} />
 							</div>
