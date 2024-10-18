@@ -96,11 +96,11 @@ function App() {
 							labelBg: "#F1F5F9",
 						},
 						Tabs: {
-							inkBarColor: "#A31E21",
-							itemColor: "#A31E21",
-							itemSelectedColor: "#A31E21",
-							itemHoverColor: "#A31E21",
-							itemActiveColor: "#A31E21",
+							inkBarColor: "#033860",
+							itemColor: "#033860",
+							itemSelectedColor: "#033860",
+							itemHoverColor: "#033860",
+							itemActiveColor: "#033860",
 						},
 						Dropdown: {
 							colorBgElevated: "white",
