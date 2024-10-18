@@ -429,34 +429,41 @@ function GroupExtendedForm({}) {
 							}}
 						/>
 						<div className="w-1/2 gap-3 space-x-7">
-							<div className="text-blue-700 mb-2 font-bold">
-								Members in this Group
-							</div>
+							<div>
+								<div className="text-blue-700 mb-2 font-bold">
+									Members in this Group
+								</div>
 
-							{console.log("+++++++++++++++++++++++++++++", memberDetails)}
+								{console.log("+++++++++++++++++++++++++++++", memberDetails)}
 
-							{memberDetails?.map((item, i) => (
-								<Tag
-									key={i}
-									icon={<UserOutlined />}
-									color="geekblue"
-									className="text-lg cursor-pointer mb-5 rounded-3xl
+								{memberDetails?.map((item, i) => (
+									<Tag
+										key={i}
+										icon={<UserOutlined />}
+										color={
+											item?.approval_status === "U" ||
+											(userDetails?.id == 3 && item?.approval_status === "S")
+												? "geekblue"
+												: "red"
+										}
+										className="text-lg cursor-pointer mb-5 rounded-3xl
 									"
-									onClick={
-										userDetails?.id == 3
-											? () =>
-													navigate(`/homemis/editgrtform/${item?.form_no}`, {
-														state: item,
-													})
-											: () =>
-													navigate(`/homebm/editgrtform/${item?.form_no}`, {
-														state: item,
-													})
-									}
-								>
-									{item?.client_name}
-								</Tag>
-							))}
+										onClick={
+											userDetails?.id == 3
+												? () =>
+														navigate(`/homemis/editgrtform/${item?.form_no}`, {
+															state: item,
+														})
+												: () =>
+														navigate(`/homebm/editgrtform/${item?.form_no}`, {
+															state: item,
+														})
+										}
+									>
+										{item?.client_name}
+									</Tag>
+								))}
+							</div>
 						</div>
 					</div>
 					<BtnComp

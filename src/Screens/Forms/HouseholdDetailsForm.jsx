@@ -294,7 +294,7 @@ function HouseholdDetailsForm({ memberDetails }) {
 								<TDInputTemplateBr
 									placeholder="Total Land"
 									type="number"
-									label="Total Land"
+									label="Total Land (In Kathas)"
 									name="h_total_land"
 									formControlName={formik.values.h_total_land}
 									mode={1}
@@ -429,7 +429,7 @@ function HouseholdDetailsForm({ memberDetails }) {
 								<TDInputTemplateBr
 									placeholder="Own a Washing Machine?"
 									type="text"
-									label="Own a Machine?"
+									label="Own a Washing Machine?"
 									name="h_washing_machine"
 									formControlName={formik.values.h_washing_machine}
 									handleChange={formik.handleChange}

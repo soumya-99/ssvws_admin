@@ -123,10 +123,10 @@ function LoanApplicationsTableViewBr({
 								Group Code
 							</th>
 							<th scope="col" className="p-4">
-								Name
+								Group Name
 							</th>
 							<th scope="col" className="p-4">
-								Type
+								Group Type
 							</th>
 							{/* <th scope="col" className="p-4">
 								Status

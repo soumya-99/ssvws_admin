@@ -175,7 +175,7 @@ function FamilyMemberDetailsForm({ memberDetails }) {
 		setLoading(false)
 	}
 
-	const handleForwardApplication = async () => {
+	const handleForwardApplicationMis = async () => {
 		setLoading(true)
 		await editFamilyMemberDetails()
 		const creds = {
@@ -189,6 +189,26 @@ function FamilyMemberDetailsForm({ memberDetails }) {
 			.then((res) => {
 				Message("success", "Application forwarded!")
 				navigate(routePaths.MIS_ASSISTANT_HOME)
+			})
+			.catch((err) => {
+				Message("error", "Some error occurred while forwarding application.")
+			})
+		setLoading(false)
+	}
+
+	const handleForwardApplicationBM = async () => {
+		setLoading(true)
+		await editFamilyMemberDetails()
+		const creds = {
+			modified_by: userDetails?.emp_name,
+			form_no: params?.id,
+			branch_code: userDetails?.brn_code,
+		}
+		await axios
+			.post(`${url}/final_submit`, creds)
+			.then((res) => {
+				Message("success", "Application forwarded!")
+				navigate(routePaths.BM_HOME)
 			})
 			.catch((err) => {
 				Message("error", "Some error occurred while forwarding application.")
@@ -478,7 +498,12 @@ function FamilyMemberDetailsForm({ memberDetails }) {
 						return
 					}
 					setVisible3(!visible3)
-					handleForwardApplication()
+					if (userDetails?.id == 2) {
+						handleForwardApplicationBM()
+					}
+					if (userDetails?.id == 3) {
+						handleForwardApplicationMis()
+					}
 				}}
 				onPressNo={() => setVisible3(!visible3)}
 			/>
