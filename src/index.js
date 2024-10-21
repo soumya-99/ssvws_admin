@@ -82,10 +82,10 @@ const router = createBrowserRouter([
 								path: "",
 								element: <HomeScreenBM />,
 							},
-							{
-								path: "editgroupform/:id",
-								element: <EditGroupFormBM />,
-							},
+							// {
+							// 	path: "editgroupform/:id",
+							// 	element: <EditGroupFormBM />,
+							// },
 							{
 								path: "editgrtform/:id",
 								element: <EditGRTFormBM />,

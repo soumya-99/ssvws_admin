@@ -126,9 +126,6 @@ function LoanApplicationsTableViewBr({
 								Member Name
 							</th>
 							<th scope="col" className="p-4">
-								Member Code
-							</th>
-							<th scope="col" className="p-4">
 								GRT Date
 							</th>
 							{/* <th scope="col" className="p-4">
@@ -165,9 +162,12 @@ function LoanApplicationsTableViewBr({
 									</th> */}
 									<td className="px-6 py-4">{item.form_no || "-----"}</td>
 									<td className="px-6 py-4">{item.client_name}</td>
-									<td className="px-6 py-4">{item.member_code}</td>
 									<td className="px-6 py-4">
-										{new Date(item?.grt_date).toLocaleDateString("en-GB")}
+										{item.group_type === "J"
+											? "JLG"
+											: item.group_type === "S"
+											? "SHG"
+											: "!(J/S)"}
 									</td>
 									{/* <td className="px-6 py-4">{item.member_name}</td> */}
 									{/* <td className="px-6 py-4">
@@ -190,21 +190,13 @@ function LoanApplicationsTableViewBr({
 												/>
 											</Link>
 										) : (
-											<button
-												// to={routePaths.BM_EDIT_GRT + item?.form_no}
-												onClick={() => {
-													console.log("LLSKSIODFUISFH", item)
-													navigate(`/homebm/editgrtform/${item?.form_no}`, {
-														state: item,
-													})
-												}}
-											>
+											<Link to={routePaths.BM_EDIT_GROUP + item?.prov_grp_code}>
 												<EditOutlined
 													className={`text-md ${
 														flag !== "BM" ? "text-blue-800" : "text-stone-800"
 													}`}
 												/>
-											</button>
+											</Link>
 										)}
 									</td>
 								</tr>

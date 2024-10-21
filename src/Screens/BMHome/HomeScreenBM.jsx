@@ -6,6 +6,18 @@ import { Message } from "../../Components/Message"
 import { Spin } from "antd"
 import { LoadingOutlined } from "@ant-design/icons"
 import LoanApplicationsTableViewBr from "../../Components/LoanApplicationsTableViewBr"
+import Radiobtn from "../../Components/Radiobtn"
+
+const options = [
+	{
+		label: "Pending",
+		value: "U",
+	},
+	{
+		label: "Approved",
+		value: "S",
+	},
+]
 
 function HomeScreenBM() {
 	const userDetails = JSON.parse(localStorage.getItem("user_details")) || ""
@@ -13,17 +25,22 @@ function HomeScreenBM() {
 	const [loanApplications, setLoanApplications] = useState(() => [])
 	const [copyLoanApplications, setCopyLoanApplications] = useState(() => [])
 
-	const fetchLoanApplications = async () => {
+	const [approvalStatus, setApprovalStatus] = useState("U")
+	// const [value2, setValue2] = useState("S")
+
+	const fetchLoanApplications = async (approvalStat) => {
 		setLoading(true)
 
-		const creds = {
-			prov_grp_code: 0,
-			user_type: userDetails?.id,
-			branch_code: userDetails?.brn_code,
-		}
+		// const creds = {
+		// 	prov_grp_code: 0,
+		// 	user_type: userDetails?.id,
+		// 	branch_code: userDetails?.brn_code,
+		// }
 
 		await axios
-			.post(`${url}/admin/fetch_bmfwd_dtls_web`, creds)
+			.get(
+				`${url}/admin/fetch_form_dtls_web?branch_code=${userDetails?.brn_code}&approval_status=${approvalStat}`
+			)
 			.then((res) => {
 				console.log("PPPPPPPPPPPPPPPPPPPP", res?.data)
 				if (res?.data?.suc === 1) {
@@ -43,25 +60,34 @@ function HomeScreenBM() {
 	}
 
 	useEffect(() => {
-		fetchLoanApplications()
+		fetchLoanApplications("U")
 	}, [])
 
 	const setSearch = (word) => {
 		setLoanApplications(
 			copyLoanApplications?.filter(
 				(e) =>
-					e?.sl_no?.toString()?.toLowerCase().includes(word?.toLowerCase()) ||
-					e?.group_name
+					e?.form_no?.toString()?.toLowerCase().includes(word?.toLowerCase()) ||
+					e?.client_name
 						?.toString()
 						?.toLowerCase()
 						?.includes(word?.toLowerCase()) ||
-					e?.prov_grp_code
+					e?.member_code
 						?.toString()
 						?.toLowerCase()
 						?.includes(word?.toLowerCase())
 			)
 		)
 	}
+
+	const onChange = (e) => {
+		console.log("radio1 checked", e)
+		setApprovalStatus(e)
+	}
+
+	useEffect(() => {
+		fetchLoanApplications(approvalStatus)
+	}, [approvalStatus])
 
 	return (
 		<div>
@@ -73,10 +99,19 @@ function HomeScreenBM() {
 				spinning={loading}
 			>
 				<main className="px-4 h-auto my-10 mx-32">
+					{/* <Radiobtn data={options} val={"U"} onChangeVal={onChange1} /> */}
+
+					<Radiobtn
+						data={options}
+						val={approvalStatus}
+						onChangeVal={(value) => {
+							onChange(value)
+						}}
+					/>
 					<LoanApplicationsTableViewBr
 						flag="BM"
 						loanAppData={loanApplications}
-						title="Pending Groups"
+						title="Pending Forms"
 						setSearch={(data) => setSearch(data)}
 					/>
 					{/* <DialogBox

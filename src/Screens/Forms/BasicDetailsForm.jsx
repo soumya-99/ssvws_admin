@@ -50,6 +50,7 @@ function BasicDetailsForm({ memberDetails }) {
 		b_clientName: "",
 		b_clientGender: "",
 		b_clientMobile: "",
+		b_clientEmail: "",
 		b_guardianName: "",
 		b_guardianMobile: "",
 		b_clientAddress: "",
@@ -59,6 +60,9 @@ function BasicDetailsForm({ memberDetails }) {
 		b_religion: "",
 		b_caste: "",
 		b_education: "",
+		b_otherReligion: "",
+		b_otherCaste: "",
+		b_otherEducation: "",
 		b_groupCode: "",
 		b_groupCodeName: "",
 		b_dob: "",
@@ -67,6 +71,7 @@ function BasicDetailsForm({ memberDetails }) {
 		b_clientName: "",
 		b_clientGender: "",
 		b_clientMobile: "",
+		b_clientEmail: "",
 		b_guardianName: "",
 		b_guardianMobile: "",
 		b_clientAddress: "",
@@ -76,6 +81,9 @@ function BasicDetailsForm({ memberDetails }) {
 		b_religion: "",
 		b_caste: "",
 		b_education: "",
+		b_otherReligion: "",
+		b_otherCaste: "",
+		b_otherEducation: "",
 		b_groupCode: "",
 		b_groupCodeName: "",
 		b_dob: "",
@@ -89,14 +97,11 @@ function BasicDetailsForm({ memberDetails }) {
 			.min(10, "Number should exactly be 10 digits")
 			.max(10, "Number should exactly be 10 digits")
 			.required("Mobile Numeber is required"),
+		b_clientEmail: Yup.string(),
 		b_guardianName: Yup.string()
 			.max(60, "Guardian name should always be less than 61 characters.")
 			.required("Guardian name is required"),
-		b_guardianMobile: Yup.string()
-			.matches(/^[0-9]+$/, "Must be only digits")
-			.min(10, "Number should exactly be 10 digits")
-			.max(10, "Number should exactly be 10 digits")
-			.required("Guardian mobile Numeber is required"),
+		b_guardianMobile: Yup.string().matches(/^[0-9]+$/, "Must be only digits"),
 		b_clientAddress: Yup.string()
 			.max(500, "Address length should always be less than 500 characters")
 			.required("Address is required"),
@@ -112,6 +117,9 @@ function BasicDetailsForm({ memberDetails }) {
 		b_religion: Yup.string().required("Religion is required"),
 		b_caste: Yup.string().required("Caste is required"),
 		b_education: Yup.string().required("Education is required"),
+		b_otherReligion: Yup.string(),
+		b_otherCaste: Yup.string(),
+		b_otherEducation: Yup.string(),
 		b_groupCode: Yup.string().required("Group code is required"),
 		b_dob: Yup.string().required("DOB is required"),
 	})
@@ -136,24 +144,68 @@ function BasicDetailsForm({ memberDetails }) {
 		validateOnMount: true,
 	})
 
+	// useEffect(() => {
+	// 	setValues({
+	// 		b_clientName: memberDetails?.client_name,
+	// 		b_clientGender: memberDetails?.gender,
+	// 		b_clientMobile: memberDetails?.client_mobile,
+	// 		b_clientEmail: memberDetails?.client_email,
+	// 		b_guardianName: memberDetails?.gurd_name,
+	// 		b_guardianMobile: memberDetails?.gurd_mobile,
+	// 		b_clientAddress: memberDetails?.client_addr,
+	// 		b_clientPin: memberDetails?.pin_no,
+	// 		b_aadhaarNumber: memberDetails?.aadhar_no,
+	// 		b_panNumber: memberDetails?.pan_no,
+	// 		b_religion: memberDetails?.religion,
+	// 		b_caste: memberDetails?.caste,
+	// 		b_education: memberDetails?.education,
+	// 		b_groupCode: memberDetails?.prov_grp_code,
+	// 		b_groupCodeName: "",
+	// 		b_dob: formatDateToYYYYMMDD(memberDetails?.dob),
+	// 	})
+	// }, [])
+
+	const handleFetchBasicDetails = async () => {
+		setLoading(true)
+		const creds = {
+			branch_code: userDetails?.brn_code,
+			form_no: params?.id,
+			approval_status: memberDetails?.approval_status,
+		}
+		await axios
+			.post(`${url}/admin/fetch_basic_dtls_web`, creds)
+			.then((res) => {
+				console.log("++--++--++--", res?.data)
+				setValues({
+					b_clientName: res?.data?.msg[0]?.client_name,
+					b_clientGender: res?.data?.msg[0]?.gender,
+					b_clientMobile: res?.data?.msg[0]?.client_mobile,
+					b_clientEmail: res?.data?.msg[0]?.email_id,
+					b_guardianName: res?.data?.msg[0]?.gurd_name,
+					b_guardianMobile: res?.data?.msg[0]?.gurd_mobile,
+					b_clientAddress: res?.data?.msg[0]?.client_addr,
+					b_clientPin: res?.data?.msg[0]?.pin_no,
+					b_aadhaarNumber: res?.data?.msg[0]?.aadhar_no,
+					b_panNumber: res?.data?.msg[0]?.pan_no,
+					b_religion: res?.data?.msg[0]?.religion,
+					b_caste: res?.data?.msg[0]?.caste,
+					b_education: res?.data?.msg[0]?.education,
+					b_otherReligion: res?.data?.msg[0]?.other_religion,
+					b_otherCaste: res?.data?.msg[0]?.other_caste,
+					b_otherEducation: res?.data?.msg[0]?.other_education,
+					b_groupCode: res?.data?.msg[0]?.prov_grp_code,
+					b_groupCodeName: "",
+					b_dob: formatDateToYYYYMMDD(res?.data?.msg[0]?.dob),
+				})
+			})
+			.catch((err) => {
+				console.log("--------------", err)
+			})
+		setLoading(false)
+	}
+
 	useEffect(() => {
-		setValues({
-			b_clientName: memberDetails?.client_name,
-			b_clientGender: memberDetails?.gender,
-			b_clientMobile: memberDetails?.client_mobile,
-			b_guardianName: memberDetails?.gurd_name,
-			b_guardianMobile: memberDetails?.gurd_mobile,
-			b_clientAddress: memberDetails?.client_addr,
-			b_clientPin: memberDetails?.pin_no,
-			b_aadhaarNumber: memberDetails?.aadhar_no,
-			b_panNumber: memberDetails?.pan_no,
-			b_religion: memberDetails?.religion,
-			b_caste: memberDetails?.caste,
-			b_education: memberDetails?.education,
-			b_groupCode: memberDetails?.prov_grp_code,
-			b_groupCodeName: "",
-			b_dob: formatDateToYYYYMMDD(memberDetails?.dob),
-		})
+		handleFetchBasicDetails()
 	}, [])
 
 	const updateBasicDetails = async () => {
@@ -179,6 +231,32 @@ function BasicDetailsForm({ memberDetails }) {
 			bm_long_val: memberDetails?.co_long_val,
 			bm_gps_address: memberDetails?.co_gps_address,
 			modified_by: userDetails?.emp_name,
+			member_code: memberDetails?.member_code,
+			email_id: formik.values.b_clientEmail,
+			other_religion: formik.values.b_otherReligion || "",
+			other_caste: formik.values.b_otherCaste || "",
+			other_education: formik.values.b_otherEducation || "",
+			/////////////////////////////
+
+			// form_no: "",
+			// branch_code: "",
+			// gender: "",
+			// client_name: "",
+			// client_mobile: "",
+			// gurd_name: "",
+			// gurd_mobile: "",
+			// client_addr: "",
+			// pin_no: "",
+			// aadhar_no: "",
+			// pan_no: "",
+			// religion: "",
+			// caste: "",
+			// education: "",
+			// prov_grp_code: "",
+			// bm_lat_val: "",
+			// bm_long_val: "",
+			// bm_gps_address: "",
+			// modified_by: "",
 		}
 		await axios
 			.post(`${url}/admin/edit_basic_dtls_web`, creds)
@@ -353,7 +431,7 @@ function BasicDetailsForm({ memberDetails }) {
 								disabled
 							/>
 						</div>
-						<div className="grid gap-4 sm:grid-cols-6 sm:gap-6">
+						<div className="grid gap-4 sm:grid-cols-4 sm:gap-6">
 							<div>
 								<TDInputTemplateBr
 									placeholder="Member Code"
@@ -371,7 +449,7 @@ function BasicDetailsForm({ memberDetails }) {
 								) : null} */}
 							</div>
 
-							<div>
+							{/* <div>
 								<TDInputTemplateBr
 									placeholder="Choose Group..."
 									type="text"
@@ -393,9 +471,9 @@ function BasicDetailsForm({ memberDetails }) {
 								{formik.errors.b_groupCode && formik.touched.b_groupCode ? (
 									<VError title={formik.errors.b_groupCode} />
 								) : null}
-							</div>
+							</div> */}
 
-							<div className="sm:col-span-2">
+							<div>
 								<TDInputTemplateBr
 									placeholder="Type member name..."
 									type="text"
@@ -524,6 +602,25 @@ function BasicDetailsForm({ memberDetails }) {
 									<VError title={formik.errors.b_clientMobile} />
 								) : null}
 							</div>
+							<div>
+								<TDInputTemplateBr
+									placeholder="Type Email..."
+									type="email"
+									label="Member Email"
+									name="b_clientEmail"
+									formControlName={formik.values.b_clientEmail}
+									handleChange={formik.handleChange}
+									handleBlur={formik.handleBlur}
+									mode={1}
+									disabled={disableCondition(
+										userDetails?.id,
+										memberDetails?.approval_status
+									)}
+								/>
+								{formik.errors.b_clientEmail && formik.touched.b_clientEmail ? (
+									<VError title={formik.errors.b_clientEmail} />
+								) : null}
+							</div>
 
 							<div>
 								<TDInputTemplateBr
@@ -631,6 +728,29 @@ function BasicDetailsForm({ memberDetails }) {
 								) : null}
 							</div>
 
+							{formik.values.b_religion === "Others" && (
+								<div>
+									<TDInputTemplateBr
+										placeholder="Type Other Religion..."
+										type="text"
+										label="Other Religion"
+										name="b_otherReligion"
+										formControlName={formik.values.b_otherReligion}
+										handleChange={formik.handleChange}
+										handleBlur={formik.handleBlur}
+										mode={1}
+										disabled={disableCondition(
+											userDetails?.id,
+											memberDetails?.approval_status
+										)}
+									/>
+									{formik.errors.b_otherReligion &&
+									formik.touched.b_otherReligion ? (
+										<VError title={formik.errors.b_otherReligion} />
+									) : null}
+								</div>
+							)}
+
 							<div>
 								<TDInputTemplateBr
 									placeholder="Choose Caste..."
@@ -655,6 +775,28 @@ function BasicDetailsForm({ memberDetails }) {
 								) : null}
 							</div>
 
+							{formik.values.b_caste === "Others" && (
+								<div>
+									<TDInputTemplateBr
+										placeholder="Type Other Caste..."
+										type="text"
+										label="Other Caste"
+										name="b_otherCaste"
+										formControlName={formik.values.b_otherCaste}
+										handleChange={formik.handleChange}
+										handleBlur={formik.handleBlur}
+										mode={1}
+										disabled={disableCondition(
+											userDetails?.id,
+											memberDetails?.approval_status
+										)}
+									/>
+									{formik.errors.b_otherCaste && formik.touched.b_otherCaste ? (
+										<VError title={formik.errors.b_otherCaste} />
+									) : null}
+								</div>
+							)}
+
 							<div>
 								<TDInputTemplateBr
 									placeholder="Choose Education..."
@@ -678,6 +820,30 @@ function BasicDetailsForm({ memberDetails }) {
 									<VError title={formik.errors.b_education} />
 								) : null}
 							</div>
+
+							{formik.values.b_education === "Others" && (
+								<div>
+									<TDInputTemplateBr
+										placeholder="Type Other Education..."
+										type="text"
+										label="Other Education"
+										name="b_otherEducation"
+										formControlName={formik.values.b_otherEducation}
+										handleChange={formik.handleChange}
+										handleBlur={formik.handleBlur}
+										mode={1}
+										disabled={disableCondition(
+											userDetails?.id,
+											memberDetails?.approval_status
+										)}
+									/>
+									{formik.errors.b_otherEducation &&
+									formik.touched.b_otherEducation ? (
+										<VError title={formik.errors.b_otherEducation} />
+									) : null}
+								</div>
+							)}
+
 							{userDetails?.id === 3 && (
 								<div>
 									<div className="block mb-2 text-sm capitalize font-bold text-blue-800 dark:text-gray-100">
