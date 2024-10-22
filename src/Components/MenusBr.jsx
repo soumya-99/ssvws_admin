@@ -68,7 +68,14 @@ function MenusBr({ theme }) {
 		{
 			key: "sub2",
 			icon: <ImportOutlined />,
-			label: <Link to={"/homebm/appls/"}>Applications</Link>,
+			label: "Applications",
+			children: [
+				{
+					key: "sub2",
+					icon: <ImportOutlined />,
+					label: <Link to={"/homebm/grtappls/"}>GRT Applications</Link>,
+				},
+			],
 		},
 		{
 			label: "Reports",

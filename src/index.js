@@ -84,7 +84,7 @@ const router = createBrowserRouter([
 								element: <DashboardBM />,
 							},
 							{
-								path: "appls",
+								path: "grtappls",
 								element: <HomeScreenBM />,
 							},
 							// {
