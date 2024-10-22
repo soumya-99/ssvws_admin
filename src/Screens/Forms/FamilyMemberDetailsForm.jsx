@@ -73,9 +73,15 @@ function FamilyMemberDetailsForm({ memberDetails }) {
 		if (formArray[index]) {
 			const updatedForm = [...formArray]
 			updatedForm[index][field] = value
+
+			if (field === "familyDob") {
+				const calculatedAge = calculateAge(value)
+				updatedForm[index]["age"] = calculatedAge?.toString() || ""
+			}
+
 			setFormArray(updatedForm)
 
-			console.log("LLLLLKKKKKKKKKKKK", formArray)
+			console.log("Updated formArray:", updatedForm)
 		} else {
 			console.error(`No form item found at index ${index}`)
 		}
@@ -344,10 +350,13 @@ function FamilyMemberDetailsForm({ memberDetails }) {
 												},
 											]}
 											mode={2}
-											disabled={disableCondition(
-												userDetails?.id,
-												memberDetails?.approval_status
-											)}
+											disabled={
+												calculateAge(item?.familyDob) > 0 ||
+												disableCondition(
+													userDetails?.id,
+													memberDetails?.approval_status
+												)
+											}
 										/>
 									</div>
 									<div>
@@ -500,33 +509,6 @@ function FamilyMemberDetailsForm({ memberDetails }) {
 								/>
 							</div>
 						)}
-
-						{/* {memberDetails?.approval_status === "S" && (
-							<Tag
-								color="blue"
-								className="mt-10 p-5 rounded-lg text-xl font-bold self-center"
-							>
-								GRT forwarded to MIS Assistant.
-							</Tag>
-						)}
-
-						{memberDetails?.approval_status === "R" && (
-							<Tag
-								color="red"
-								className="mt-10 p-5 rounded-lg text-xl font-bold self-center"
-							>
-								GRT Rejected.
-							</Tag>
-						)}
-
-						{memberDetails?.approval_status === "A" && (
-							<Tag
-								color="red"
-								className="mt-10 p-5 rounded-lg text-xl font-bold self-center"
-							>
-								GRT Approved.
-							</Tag>
-						)} */}
 					</div>
 				</form>
 			</Spin>
