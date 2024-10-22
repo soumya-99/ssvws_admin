@@ -14,8 +14,12 @@ const options = [
 		value: "U",
 	},
 	{
-		label: "Approved",
+		label: "Sent to MIS",
 		value: "S",
+	},
+	{
+		label: "Approved",
+		value: "A",
 	},
 ]
 

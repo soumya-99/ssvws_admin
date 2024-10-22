@@ -35,7 +35,12 @@ function MenusBr({ theme }) {
 		{
 			key: "sub1",
 			icon: <ImportOutlined />,
-			label: <Link to={"/homemis/"}>Applications</Link>,
+			label: <Link to={"/homemis/"}>Dashboard</Link>,
+		},
+		{
+			key: "sub2",
+			icon: <ImportOutlined />,
+			label: <Link to={"/homemis/appls/"}>Applications</Link>,
 		},
 		// {
 		// 	key: "sub2",
@@ -58,7 +63,12 @@ function MenusBr({ theme }) {
 		{
 			key: "sub1",
 			icon: <ImportOutlined />,
-			label: <Link to={"/homebm/"}>Applications</Link>,
+			label: <Link to={"/homebm/"}>Dashboard</Link>,
+		},
+		{
+			key: "sub2",
+			icon: <ImportOutlined />,
+			label: <Link to={"/homebm/appls/"}>Applications</Link>,
 		},
 		{
 			label: "Reports",

@@ -24,6 +24,7 @@ import HomeBM from "./Screens/BMHome/HomeBM"
 import HomeScreenBM from "./Screens/BMHome/HomeScreenBM"
 import EditGRTFormBM from "./Screens/BMHome/EditGRTFormBM"
 import EditGroupFormBM from "./Screens/BMHome/EditGroupFormBM"
+import DashboardBM from "./Screens/BMHome/DashboardBM"
 
 // const AuthBr = lazy(() => import("./Screens/BranchManager/AuthBr"))
 
@@ -80,6 +81,10 @@ const router = createBrowserRouter([
 						children: [
 							{
 								path: "",
+								element: <DashboardBM />,
+							},
+							{
+								path: "appls",
 								element: <HomeScreenBM />,
 							},
 							// {

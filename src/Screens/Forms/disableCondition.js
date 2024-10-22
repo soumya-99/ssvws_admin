@@ -8,10 +8,14 @@ export const disableCondition = (userType, approvalStatus) => {
 		return true
 	}
 
-	if (approvalStatus === "S" && userType === 2) {
+	if (userType === 2) {
 		// Disable for user type 2 when approval status is "S"
 		return true
 	}
+	// if (approvalStatus === "S" && userType === 2) {
+	// 	// Disable for user type 2 when approval status is "S"
+	// 	return true
+	// }
 
 	// if (approvalStatus === "R") {
 	// 	if (userType === 3) {
