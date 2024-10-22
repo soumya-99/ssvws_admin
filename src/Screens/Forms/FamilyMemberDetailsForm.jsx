@@ -320,10 +320,13 @@ function FamilyMemberDetailsForm({ memberDetails }) {
 												)
 											}
 											mode={1}
-											disabled={disableCondition(
-												userDetails?.id,
-												memberDetails?.approval_status
-											)}
+											disabled={
+												calculateAge(item?.familyDob) > 0 ||
+												disableCondition(
+													userDetails?.id,
+													memberDetails?.approval_status
+												)
+											}
 										/>
 									</div>
 									<div>
@@ -351,13 +354,10 @@ function FamilyMemberDetailsForm({ memberDetails }) {
 												},
 											]}
 											mode={2}
-											disabled={
-												calculateAge(item?.familyDob) > 0 ||
-												disableCondition(
-													userDetails?.id,
-													memberDetails?.approval_status
-												)
-											}
+											disabled={disableCondition(
+												userDetails?.id,
+												memberDetails?.approval_status
+											)}
 										/>
 									</div>
 									<div>
