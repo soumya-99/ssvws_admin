@@ -82,7 +82,7 @@ function MenusBr({ theme }) {
 		{
 			key: "sub2",
 			icon: <ImportOutlined />,
-			label: <Link to={"/homebm/grtappls/"}>Applications</Link>,
+			label: <Link to={"/homebm/grtappls/"}>GRT Applications</Link>,
 		},
 		{
 			label: "Reports",

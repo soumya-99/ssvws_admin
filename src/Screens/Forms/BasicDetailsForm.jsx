@@ -398,17 +398,30 @@ function BasicDetailsForm({ memberDetails }) {
 						touched,
 					}) => ( */}
 				<form onSubmit={formik.handleSubmit}>
-					<div className="">
-						<div className="mb-4">
-							<TDInputTemplateBr
-								placeholder="Form Number"
-								type="text"
-								label="Form Number"
-								name="form_no"
-								formControlName={params.id}
-								mode={1}
-								disabled
-							/>
+					<div>
+						<div className="grid gap-4 sm:grid-cols-2 sm:gap-6">
+							<div className="mb-4">
+								<TDInputTemplateBr
+									placeholder="Form Number"
+									type="text"
+									label="Form Number"
+									name="form_no"
+									formControlName={params.id}
+									mode={1}
+									disabled
+								/>
+							</div>
+							<div className="mb-4">
+								<TDInputTemplateBr
+									placeholder="Branch"
+									type="text"
+									label="Branch Name"
+									name="branch_name"
+									formControlName={memberDetails?.branch_name}
+									mode={1}
+									disabled
+								/>
+							</div>
 						</div>
 						<div className="grid gap-4 sm:grid-cols-4 sm:gap-6">
 							<div>

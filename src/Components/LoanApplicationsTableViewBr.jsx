@@ -122,6 +122,11 @@ function LoanApplicationsTableViewBr({
 							<th scope="col" className="p-4">
 								Form No.
 							</th>
+							{flag === "MIS" && (
+								<th scope="col" className="p-4">
+									Branch Name
+								</th>
+							)}
 							<th scope="col" className="p-4">
 								Member Name
 							</th>
@@ -164,6 +169,9 @@ function LoanApplicationsTableViewBr({
 										{item.sl_no}
 									</th> */}
 									<td className="px-6 py-4">{item.form_no || "-----"}</td>
+									{flag === "MIS" && (
+										<td className="px-6 py-4">{item.branch_name || ""}</td>
+									)}
 									<td className="px-6 py-4">{item.client_name}</td>
 									<td className="px-6 py-4">{item.member_code}</td>
 									<td className="px-6 py-4">
