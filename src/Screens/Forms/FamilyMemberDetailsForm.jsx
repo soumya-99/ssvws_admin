@@ -30,6 +30,8 @@ function FamilyMemberDetailsForm({ memberDetails }) {
 	const [visible2, setVisible2] = useState(() => false)
 	const [visible3, setVisible3] = useState(() => false)
 
+	const [metadataArray, setMetadataArray] = useState(() => [])
+
 	console.log(params, "params")
 	console.log(location, "location")
 	console.log(memberDetails, "memberDetails")
@@ -230,6 +232,26 @@ function FamilyMemberDetailsForm({ memberDetails }) {
 			})
 		setLoading(false)
 	}
+
+	const fetchMetaData = async () => {
+		const creds = {
+			form_no: params?.id,
+			member_code: memberDetails?.member_code,
+		}
+		await axios
+			.post(`${url}/admin/approved_dtls`, creds)
+			.then((res) => {
+				console.log("___---___---___---", res?.data)
+				setMetadataArray(res?.data?.msg)
+			})
+			.catch((err) => {
+				console.log("ERRRRR fetching metadata", err)
+			})
+	}
+
+	useEffect(() => {
+		fetchMetaData()
+	}, [])
 
 	return (
 		<>
@@ -514,6 +536,18 @@ function FamilyMemberDetailsForm({ memberDetails }) {
 					</div>
 				</form>
 			</Spin>
+			<div className="flex flex-col justify-start items-start gap-2">
+				{metadataArray?.map((item, i) => (
+					<div key={i}>
+						<Tag className="text-sm" bordered={false} color="cyan">
+							Modified By: {}
+						</Tag>
+						<Tag className="text-sm" bordered={false} color="blue">
+							Location: {}
+						</Tag>
+					</div>
+				))}
+			</div>
 			<DialogBox
 				flag={4}
 				onPress={() => setVisible3(!visible3)}
