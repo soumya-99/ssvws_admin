@@ -213,7 +213,7 @@ function BasicDetailsForm({ memberDetails }) {
 		const creds = {
 			form_no: params?.id,
 			branch_code: userDetails?.brn_code,
-			prov_grp_code: memberDetails?.prov_grp_code,
+			prov_grp_code: "",
 			gender: formik.values.b_clientGender,
 			client_name: formik.values.b_clientName,
 			client_mobile: formik.values.b_clientMobile,
@@ -227,36 +227,15 @@ function BasicDetailsForm({ memberDetails }) {
 			caste: formik.values.b_caste,
 			education: formik.values.b_education,
 			dob: formik.values.b_dob,
-			bm_lat_val: memberDetails?.co_lat_val,
-			bm_long_val: memberDetails?.co_long_val,
-			bm_gps_address: memberDetails?.co_gps_address,
+			bm_lat_val: memberDetails?.co_lat_val || "",
+			bm_long_val: memberDetails?.co_long_val || "",
+			bm_gps_address: memberDetails?.co_gps_address || "",
 			modified_by: userDetails?.emp_name,
 			member_code: memberDetails?.member_code,
 			email_id: formik.values.b_clientEmail,
 			other_religion: formik.values.b_otherReligion || "",
 			other_caste: formik.values.b_otherCaste || "",
 			other_education: formik.values.b_otherEducation || "",
-			/////////////////////////////
-
-			// form_no: "",
-			// branch_code: "",
-			// gender: "",
-			// client_name: "",
-			// client_mobile: "",
-			// gurd_name: "",
-			// gurd_mobile: "",
-			// client_addr: "",
-			// pin_no: "",
-			// aadhar_no: "",
-			// pan_no: "",
-			// religion: "",
-			// caste: "",
-			// education: "",
-			// prov_grp_code: "",
-			// bm_lat_val: "",
-			// bm_long_val: "",
-			// bm_gps_address: "",
-			// modified_by: "",
 		}
 		await axios
 			.post(`${url}/admin/edit_basic_dtls_web`, creds)
@@ -328,7 +307,7 @@ function BasicDetailsForm({ memberDetails }) {
 	const fetchVerificationDetails = async () => {
 		await axios
 			.get(
-				`${url}/admin/fetch_verify_flag?form_no=${params?.id}&member_code=${memberDetails?.member_code}`
+				`${url}/admin/fetch_verify_flag?member_code=${memberDetails?.member_code}`
 			)
 			.then((res) => {
 				const { phone_verify_flag, aadhar_verify_flag, pan_verify_flag } =
@@ -359,7 +338,7 @@ function BasicDetailsForm({ memberDetails }) {
 		const creds = {
 			flag: flag,
 			verify_value: val,
-			form_no: params?.id,
+			// form_no: params?.id,
 			member_id: memberDetails?.member_code,
 		}
 
