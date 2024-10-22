@@ -17,6 +17,10 @@ const options = [
 		label: "Approved",
 		value: "A",
 	},
+	{
+		label: "Rejected",
+		value: "R",
+	},
 ]
 
 function HomeScreenMis() {

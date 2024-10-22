@@ -37,17 +37,22 @@ function MenusBr({ theme }) {
 			icon: <ImportOutlined />,
 			label: <Link to={"/homemis/"}>Dashboard</Link>,
 		},
+		// {
+		// 	key: "sub2",
+		// 	icon: <ImportOutlined />,
+		// 	label: "Applications",
+		// 	children: [
+		// 		{
+		// 			key: "sub2",
+		// 			icon: <ImportOutlined />,
+		// 			label: <Link to={"/homemis/grtappls/"}>GRT Applications</Link>,
+		// 		},
+		// 	],
+		// },
 		{
 			key: "sub2",
 			icon: <ImportOutlined />,
-			label: "Applications",
-			children: [
-				{
-					key: "sub2",
-					icon: <ImportOutlined />,
-					label: <Link to={"/homemis/grtappls/"}>GRT Applications</Link>,
-				},
-			],
+			label: <Link to={"/homemis/grtappls/"}>GRT Applications</Link>,
 		},
 		{
 			label: "Reports",
@@ -62,17 +67,22 @@ function MenusBr({ theme }) {
 			icon: <ImportOutlined />,
 			label: <Link to={"/homebm/"}>Dashboard</Link>,
 		},
+		// {
+		// 	key: "sub2",
+		// 	icon: <ImportOutlined />,
+		// 	label: "Applications",
+		// 	children: [
+		// 		{
+		// 			key: "sub2",
+		// 			icon: <ImportOutlined />,
+		// 			label: <Link to={"/homebm/grtappls/"}>GRT Applications</Link>,
+		// 		},
+		// 	],
+		// },
 		{
 			key: "sub2",
 			icon: <ImportOutlined />,
-			label: "Applications",
-			children: [
-				{
-					key: "sub2",
-					icon: <ImportOutlined />,
-					label: <Link to={"/homebm/grtappls/"}>GRT Applications</Link>,
-				},
-			],
+			label: <Link to={"/homebm/grtappls/"}>Applications</Link>,
 		},
 		{
 			label: "Reports",

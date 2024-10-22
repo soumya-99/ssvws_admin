@@ -129,6 +129,7 @@ function FamilyMemberDetailsForm({ memberDetails }) {
 						}))
 						setFormArray(transformedData)
 					}
+					setRemarks(memberDetails?.remarks)
 				}
 			})
 			.catch((err) => {
