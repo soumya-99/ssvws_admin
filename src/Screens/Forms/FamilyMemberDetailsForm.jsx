@@ -236,7 +236,9 @@ function FamilyMemberDetailsForm({ memberDetails }) {
 	const fetchMetaData = async () => {
 		const creds = {
 			form_no: params?.id,
-			member_code: memberDetails?.member_code,
+			// member_code: memberDetails?.member_code,
+			user_type: userDetails?.id,
+			approval_status: memberDetails?.approval_status,
 		}
 		await axios
 			.post(`${url}/admin/approved_dtls`, creds)
@@ -536,18 +538,111 @@ function FamilyMemberDetailsForm({ memberDetails }) {
 					</div>
 				</form>
 			</Spin>
-			<div className="flex flex-col justify-start items-start gap-2">
+
+			{userDetails?.id === 2 && memberDetails?.approval_status === "U" ? (
+				<div className="flex flex-col justify-start items-start gap-2">
+					{metadataArray?.map((item, i) => (
+						<div key={i} className="mt-5">
+							<Tag className="text-sm" bordered={false} color="cyan">
+								Created By: {item?.created_by},{" "}
+								{new Date(item?.created_at).toLocaleString("en-GB")}
+							</Tag>
+							<Tag className="text-sm" bordered={false} color="blue">
+								Location: {item?.co_gps_address}
+							</Tag>
+						</div>
+					))}
+				</div>
+			) : userDetails?.id === 2 && memberDetails?.approval_status === "S" ? (
+				<div className="flex flex-col justify-start items-start gap-2">
+					{metadataArray?.map((item, i) => (
+						<div key={i} className="mt-5">
+							<Tag className="text-sm" bordered={false} color="cyan">
+								Modified By: {item?.modified_by},{" "}
+								{new Date(item?.modified_at).toLocaleString("en-GB")}
+							</Tag>
+							<Tag className="text-sm" bordered={false} color="blue">
+								Location: {item?.bm_gps_address}
+							</Tag>
+						</div>
+					))}
+				</div>
+			) : userDetails?.id === 2 && memberDetails?.approval_status === "A" ? (
+				<div className="flex flex-col justify-start items-start gap-2">
+					{metadataArray?.map((item, i) => (
+						<div key={i} className="mt-5">
+							<Tag className="text-sm" bordered={false} color="cyan">
+								Approved By: {item?.approved_by},{" "}
+								{new Date(item?.approved_at).toLocaleString("en-GB")}
+							</Tag>
+							{/* <Tag className="text-sm" bordered={false} color="blue">
+								Location: {item?.bm_gps_address}
+							</Tag> */}
+						</div>
+					))}
+				</div>
+			) : userDetails?.id === 3 && memberDetails?.approval_status === "S" ? (
+				<div className="flex flex-col justify-start items-start gap-2">
+					{metadataArray?.map((item, i) => (
+						<div key={i} className="mt-5">
+							<Tag className="text-sm" bordered={false} color="cyan">
+								Modified By: {item?.modified_by},{" "}
+								{new Date(item?.modified_at).toLocaleString("en-GB")}
+							</Tag>
+							<Tag className="text-sm" bordered={false} color="blue">
+								Location: {item?.bm_gps_address}
+							</Tag>
+						</div>
+					))}
+				</div>
+			) : userDetails?.id === 3 && memberDetails?.approval_status === "A" ? (
+				<div className="flex flex-col justify-start items-start gap-2">
+					{metadataArray?.map((item, i) => (
+						<div key={i} className="mt-5">
+							<Tag className="text-sm" bordered={false} color="cyan">
+								Approved By: {item?.approved_by},{" "}
+								{new Date(item?.approved_at).toLocaleString("en-GB")}
+							</Tag>
+							{/* <Tag className="text-sm" bordered={false} color="blue">
+								Location: {item?.bm_gps_address}
+							</Tag> */}
+						</div>
+					))}
+				</div>
+			) : (
+				<div className="flex flex-col justify-start items-start gap-2">
+					{metadataArray?.map((item, i) => (
+						<div key={i} className="mt-5">
+							<Tag className="text-sm" bordered={false} color="cyan">
+								Rejected By: {item?.rejected_by},{" "}
+								{new Date(item?.rejected_at).toLocaleString("en-GB")}
+							</Tag>
+							<Tag className="text-sm" bordered={false} color="cyan">
+								Location: {item?.co_gps_address}
+							</Tag>
+							<Tag className="text-sm" bordered={false} color="cyan">
+								Modified By: {item?.modified_by}, {item?.modified_at}
+							</Tag>
+							{/* <Tag className="text-sm" bordered={false} color="blue">
+								Location: {item?.bm_gps_address}
+							</Tag> */}
+						</div>
+					))}
+				</div>
+			)}
+
+			{/* <div className="flex flex-col justify-start items-start gap-2">
 				{metadataArray?.map((item, i) => (
-					<div key={i}>
+					<div key={i} className="mt-5">
 						<Tag className="text-sm" bordered={false} color="cyan">
-							Modified By: {}
+							Modified By: {item?.modified_by}
 						</Tag>
 						<Tag className="text-sm" bordered={false} color="blue">
-							Location: {}
+							Location: {item?.bm_gps_address}
 						</Tag>
 					</div>
 				))}
-			</div>
+			</div> */}
 			<DialogBox
 				flag={4}
 				onPress={() => setVisible3(!visible3)}
