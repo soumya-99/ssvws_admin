@@ -3,32 +3,17 @@ import "../LoanForm/LoanForm.css"
 import { useParams } from "react-router"
 import BtnComp from "../../Components/BtnComp"
 import VError from "../../Components/VError"
-import TDInputTemplate from "../../Components/TDInputTemplate"
 import { useNavigate } from "react-router-dom"
-import { FieldArray, Formik, useFormik } from "formik"
+import { useFormik } from "formik"
 import * as Yup from "yup"
 import axios from "axios"
 import { Message } from "../../Components/Message"
 import { url } from "../../Address/BaseUrl"
-import { Spin, Button, Popconfirm, Tag, Timeline } from "antd"
-import {
-	LoadingOutlined,
-	DeleteOutlined,
-	PlusOutlined,
-	MinusOutlined,
-	FilePdfOutlined,
-	MinusCircleOutlined,
-	ClockCircleOutlined,
-	ArrowRightOutlined,
-} from "@ant-design/icons"
-import FormHeader from "../../Components/FormHeader"
-import { routePaths } from "../../Assets/Data/Routes"
+import { Spin } from "antd"
+import { LoadingOutlined } from "@ant-design/icons"
 import { useLocation } from "react-router"
-import Sidebar from "../../Components/Sidebar"
 import DialogBox from "../../Components/DialogBox"
 import TDInputTemplateBr from "../../Components/TDInputTemplateBr"
-import TimelineComp from "../../Components/TimelineComp"
-import { disableInputArray } from "./disableInputArray"
 import { disableCondition } from "./disableCondition"
 
 function HouseholdDetailsForm({ memberDetails }) {
@@ -49,7 +34,7 @@ function HouseholdDetailsForm({ memberDetails }) {
 		h_parental_phone: "",
 		h_house_type: "",
 		h_own_rent: "",
-		h_total_land: "",
+		h_total_land: "0",
 		h_politically_active: "",
 		h_tv: "",
 		h_bike: "",
@@ -72,22 +57,24 @@ function HouseholdDetailsForm({ memberDetails }) {
 	})
 
 	const validationSchema = Yup.object({
-		h_no_of_rooms: Yup.string().optional(),
-		h_parental_address: Yup.string().optional(),
-		h_parental_phone: Yup.string().optional(),
-		h_house_type: Yup.string().optional(),
-		h_own_rent: Yup.string().optional(),
-		h_total_land: Yup.string().optional(),
-		h_politically_active: Yup.string().optional(),
-		h_tv: Yup.string().optional(),
-		h_bike: Yup.string().optional(),
-		h_fridge: Yup.string().optional(),
-		h_washing_machine: Yup.string().optional(),
+		h_no_of_rooms: Yup.string().required("Required"),
+		h_parental_address: Yup.string().required("Required"),
+		h_parental_phone: Yup.string(),
+		h_house_type: Yup.string().required("Required"),
+		h_own_rent: Yup.string().required("Required"),
+		h_total_land: Yup.string(),
+		h_politically_active: Yup.string().required("Required"),
+		h_tv: Yup.string().required("Required"),
+		h_bike: Yup.string().required("Required"),
+		h_fridge: Yup.string().required("Required"),
+		h_washing_machine: Yup.string().required("Required"),
 	})
 
 	const fetchHouseholdDetails = async () => {
 		await axios
-			.get(`${url}/admin/fetch_household_dt_web?form_no=${params?.id}`)
+			.get(
+				`${url}/admin/fetch_household_dt_web?form_no=${params?.id}&branch_code=${userDetails?.brn_code}`
+			)
 			.then((res) => {
 				console.log("HOuSEHOLD DAT", res?.data)
 				setValues({
@@ -119,7 +106,7 @@ function HouseholdDetailsForm({ memberDetails }) {
 		console.log(values, "onsubmit vendor")
 		setLoading(true)
 
-		setVisible(true)
+		setVisible(!visible)
 
 		setLoading(false)
 	}
@@ -163,20 +150,6 @@ function HouseholdDetailsForm({ memberDetails }) {
 		setLoading(false)
 	}
 
-	// console.log("======================================", +branchIdForForwarding)
-
-	// h_no_of_rooms: "",
-	// h_parental_address: "",
-	// h_parental_phone: "",
-	// h_house_type: "",
-	// h_own_rent: "",
-	// h_total_land: "",
-	// h_politically_active: "",
-	// h_tv: "",
-	// h_bike: "",
-	// h_fridge: "",
-	// h_washing_machine: "",
-
 	return (
 		<>
 			<Spin
@@ -195,6 +168,8 @@ function HouseholdDetailsForm({ memberDetails }) {
 									label="No. of rooms"
 									name="h_no_of_rooms"
 									formControlName={formik.values.h_no_of_rooms}
+									handleChange={formik.handleChange}
+									handleBlur={formik.handleBlur}
 									mode={1}
 									disabled={disableCondition(
 										userDetails?.id,
@@ -297,6 +272,8 @@ function HouseholdDetailsForm({ memberDetails }) {
 									label="Total Land (In Kathas)"
 									name="h_total_land"
 									formControlName={formik.values.h_total_land}
+									handleChange={formik.handleChange}
+									handleBlur={formik.handleBlur}
 									mode={1}
 									disabled={disableCondition(
 										userDetails?.id,

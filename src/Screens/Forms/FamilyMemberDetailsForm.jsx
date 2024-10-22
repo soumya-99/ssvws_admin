@@ -14,6 +14,7 @@ import TDInputTemplateBr from "../../Components/TDInputTemplateBr"
 import { routePaths } from "../../Assets/Data/Routes"
 import { disableInputArray } from "./disableInputArray"
 import { disableCondition } from "./disableCondition"
+import { calculateAge } from "../../Utils/calculateAge"
 
 function FamilyMemberDetailsForm({ memberDetails }) {
 	const params = useParams()
@@ -38,11 +39,12 @@ function FamilyMemberDetailsForm({ memberDetails }) {
 			sl_no: 0,
 			name: "",
 			relation: "",
+			familyDob: new Date().toLocaleDateString(),
 			age: "",
 			sex: "",
 			education: "",
 			studyingOrWorking: "",
-			monthlyIncome: "",
+			monthlyIncome: "0",
 		},
 	])
 
@@ -53,11 +55,12 @@ function FamilyMemberDetailsForm({ memberDetails }) {
 				sl_no: 0,
 				name: "",
 				relation: "",
+				familyDob: new Date().toLocaleDateString(),
 				age: "",
 				sex: "",
 				education: "",
 				studyingOrWorking: "",
-				monthlyIncome: "",
+				monthlyIncome: "0",
 			},
 		])
 	}
@@ -97,7 +100,9 @@ function FamilyMemberDetailsForm({ memberDetails }) {
 	const fetchFamilyMemberDetails = async () => {
 		setLoading(true)
 		await axios
-			.get(`${url}/admin/fetch_family_dt_web?form_no=${params?.id}`)
+			.get(
+				`${url}/admin/fetch_family_dt_web?form_no=${params?.id}&branch_code=${userDetails?.brn_code}`
+			)
 			.then((res) => {
 				console.log("FAMILYYYY DATT", res?.data)
 				if (res?.data?.suc === 1) {
@@ -108,6 +113,7 @@ function FamilyMemberDetailsForm({ memberDetails }) {
 							sl_no: member.sl_no || index + 1,
 							name: member.name || "",
 							relation: member.relation || "",
+							familyDob: member.family_dob || "",
 							age: member.age?.toString() || "",
 							sex: member.sex || "",
 							education: member.education || "",
@@ -136,6 +142,7 @@ function FamilyMemberDetailsForm({ memberDetails }) {
 			created_by: userDetails?.emp_name,
 			modified_by: userDetails?.emp_name,
 			memberdtls: formArray,
+			///////
 		}
 		await axios
 			.post(`${url}/admin/edit_family_dtls_web`, creds)
@@ -263,15 +270,47 @@ function FamilyMemberDetailsForm({ memberDetails }) {
 											)}
 										/>
 									</div>
+
 									<div>
+										<TDInputTemplateBr
+											placeholder="Type DOB..."
+											type="date"
+											label="Date of Birth"
+											name={`${item?.familyDob}_${i}`}
+											formControlName={item?.familyDob}
+											handleChange={(txt) =>
+												handleInputChange(i, "familyDob", txt.target.value)
+											}
+											min={"1900-12-31"}
+											mode={1}
+											disabled={disableCondition(
+												userDetails?.id,
+												memberDetails?.approval_status
+											)}
+										/>
+									</div>
+
+									<div>
+										{console.log(
+											">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>",
+											calculateAge(item?.familyDob)
+										)}
 										<TDInputTemplateBr
 											placeholder="Age"
 											type="number"
 											label="Age"
-											name={`${item?.age}_${i}`}
-											formControlName={item?.age}
+											name={`${
+												calculateAge(item?.familyDob) || item?.age
+											}_${i}`}
+											formControlName={
+												calculateAge(item?.familyDob) || item?.age
+											}
 											handleChange={(txt) =>
-												handleInputChange(i, "age", txt.target.value)
+												handleInputChange(
+													i,
+													"age",
+													calculateAge(item?.familyDob) || txt.target.value
+												)
 											}
 											mode={1}
 											disabled={disableCondition(
@@ -354,6 +393,10 @@ function FamilyMemberDetailsForm({ memberDetails }) {
 												{
 													code: "Working",
 													name: "WORKING",
+												},
+												{
+													code: "None",
+													name: "NONE",
 												},
 											]}
 											mode={2}
