@@ -80,7 +80,7 @@ function BtnComp({
 							onClick={onForwardApplication}
 						>
 							<CheckOutlined className="mr-2" />
-							Forward Application
+							Approve Application
 						</button>
 					)}
 				</>

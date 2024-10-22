@@ -6,6 +6,18 @@ import { Message } from "../../Components/Message"
 import { Spin } from "antd"
 import { LoadingOutlined } from "@ant-design/icons"
 import LoanApplicationsTableViewBr from "../../Components/LoanApplicationsTableViewBr"
+import Radiobtn from "../../Components/Radiobtn"
+
+const options = [
+	{
+		label: "Received",
+		value: "S",
+	},
+	{
+		label: "Approved",
+		value: "A",
+	},
+]
 
 function HomeScreenMis() {
 	const userDetails = JSON.parse(localStorage.getItem("user_details")) || ""
@@ -13,16 +25,21 @@ function HomeScreenMis() {
 	const [loanApplications, setLoanApplications] = useState(() => [])
 	const [copyLoanApplications, setCopyLoanApplications] = useState(() => [])
 
+	const [approvalStatus, setApprovalStatus] = useState("S")
+
 	const fetchLoanApplications = async () => {
 		setLoading(true)
-		const creds = {
-			prov_grp_code: 0,
-			user_type: userDetails?.id,
-			branch_code: userDetails?.brn_code,
-		}
+		// const creds = {
+		// 	// prov_grp_code: 0,
+		// 	// user_type: userDetails?.id,
+		// 	// branch_code: userDetails?.brn_code,
+		// 	approval_status: approvalStatus,
+		// }
 
 		await axios
-			.post(`${url}/admin/fetch_bmfwd_dtls_web`, creds)
+			.get(
+				`${url}/admin/fetch_form_fwd_bm_web?approval_status=${approvalStatus}&branch_code=${userDetails?.brn_code}`
+			)
 			.then((res) => {
 				if (res?.data?.suc === 1) {
 					setLoanApplications(res?.data?.msg)
@@ -40,20 +57,32 @@ function HomeScreenMis() {
 		setLoading(false)
 	}
 
+	const onChange = (e) => {
+		console.log("radio1 checked", e)
+		setApprovalStatus(e)
+	}
+
 	useEffect(() => {
 		fetchLoanApplications()
 	}, [])
+
+	useEffect(() => {
+		fetchLoanApplications()
+	}, [approvalStatus])
 
 	const setSearch = (word) => {
 		setLoanApplications(
 			copyLoanApplications?.filter(
 				(e) =>
-					e?.sl_no?.toString()?.toLowerCase().includes(word?.toLowerCase()) ||
-					e?.group_name
+					e?.member_code
+						?.toString()
+						?.toLowerCase()
+						.includes(word?.toLowerCase()) ||
+					e?.form_no
 						?.toString()
 						?.toLowerCase()
 						?.includes(word?.toLowerCase()) ||
-					e?.prov_grp_code
+					e?.client_name
 						?.toString()
 						?.toLowerCase()
 						?.includes(word?.toLowerCase())
@@ -71,10 +100,17 @@ function HomeScreenMis() {
 				spinning={loading}
 			>
 				<main className="px-4 h-auto my-10 mx-32">
+					<Radiobtn
+						data={options}
+						val={approvalStatus}
+						onChangeVal={(value) => {
+							onChange(value)
+						}}
+					/>
 					<LoanApplicationsTableViewBr
 						flag="MIS"
 						loanAppData={loanApplications}
-						title="Pending Groups"
+						title="GRT Forms"
 						setSearch={(data) => setSearch(data)}
 					/>
 					{/* <DialogBox

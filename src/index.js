@@ -25,6 +25,7 @@ import HomeScreenBM from "./Screens/BMHome/HomeScreenBM"
 import EditGRTFormBM from "./Screens/BMHome/EditGRTFormBM"
 import EditGroupFormBM from "./Screens/BMHome/EditGroupFormBM"
 import DashboardBM from "./Screens/BMHome/DashboardBM"
+import DashboardMis from "./Screens/MISAssistantHome/DashboardMis"
 
 // const AuthBr = lazy(() => import("./Screens/BranchManager/AuthBr"))
 
@@ -63,6 +64,10 @@ const router = createBrowserRouter([
 						children: [
 							{
 								path: "",
+								element: <DashboardMis />,
+							},
+							{
+								path: "grtappls",
 								element: <HomeScreenMis />,
 							},
 							{

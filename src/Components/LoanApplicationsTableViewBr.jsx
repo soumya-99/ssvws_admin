@@ -177,19 +177,29 @@ function LoanApplicationsTableViewBr({
 									{/* <td className="px-6 py-4">{item.member_name}</td> */}
 									<td className="px-6 py-4">
 										{flag !== "BM" ? (
-											<Link
-												to={
-													routePaths.MIS_ASSISTANT_EDIT_GROUP +
-													item?.prov_grp_code
-												}
+											// <Link
+											// 	to={
+											// 		routePaths.MIS_ASSISTANT_EDIT_GROUP +
+											// 		item?.prov_grp_code
+											// 	}
+											// >
+											<button
+												// to={routePaths.BM_EDIT_GRT + item?.form_no}
+												onClick={() => {
+													console.log("LLSKSIODFUISFH", item)
+													navigate(`/homemis/editgrtform/${item?.form_no}`, {
+														state: item,
+													})
+												}}
 											>
 												<EditOutlined
 													className={`text-md ${
 														flag !== "BM" ? "text-blue-800" : "text-stone-800"
 													}`}
 												/>
-											</Link>
+											</button>
 										) : (
+											// </Link>
 											<button
 												// to={routePaths.BM_EDIT_GRT + item?.form_no}
 												onClick={() => {

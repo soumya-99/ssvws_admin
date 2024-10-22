@@ -40,18 +40,15 @@ function MenusBr({ theme }) {
 		{
 			key: "sub2",
 			icon: <ImportOutlined />,
-			label: <Link to={"/homemis/appls/"}>Applications</Link>,
+			label: "Applications",
+			children: [
+				{
+					key: "sub2",
+					icon: <ImportOutlined />,
+					label: <Link to={"/homemis/grtappls/"}>GRT Applications</Link>,
+				},
+			],
 		},
-		// {
-		// 	key: "sub2",
-		// 	icon: <ArrowRightOutlined />,
-		// 	label: <Link to={"/branchmanager/homebr/fwdapplication"}>Forward</Link>,
-		// },
-		// {
-		// 	key: "sub3",
-		// 	icon: <MinusCircleOutlined />,
-		// 	label: <Link to={"/branchmanager/homebr/rejectapplication"}>Reject</Link>,
-		// },
 		{
 			label: "Reports",
 			key: "sub6",

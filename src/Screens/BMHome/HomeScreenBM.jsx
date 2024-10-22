@@ -115,7 +115,7 @@ function HomeScreenBM() {
 					<LoanApplicationsTableViewBr
 						flag="BM"
 						loanAppData={loanApplications}
-						title="Pending Forms"
+						title="GRT Forms"
 						setSearch={(data) => setSearch(data)}
 					/>
 					{/* <DialogBox

@@ -209,6 +209,10 @@ function OccupationDetailsForm({ memberDetails }) {
 					<div className="">
 						<div className="grid gap-4 sm:grid-cols-3 sm:gap-6">
 							<div>
+								{console.log(
+									"QQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQ",
+									memberDetails?.approval_status
+								)}
 								<TDInputTemplateBr
 									placeholder="Type self occupation..."
 									type="text"
