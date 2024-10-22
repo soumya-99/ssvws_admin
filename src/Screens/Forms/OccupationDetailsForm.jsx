@@ -61,8 +61,8 @@ function OccupationDetailsForm({ memberDetails }) {
 	const validationSchema = Yup.object({
 		o_self_occupation: Yup.string().required("Required"),
 		o_self_monthly_income: Yup.string().required("Required"),
-		o_spouse_occupation: Yup.string().required("Required"),
-		o_spouse_monthly_income: Yup.string().required("Required"),
+		o_spouse_occupation: Yup.string(),
+		o_spouse_monthly_income: Yup.string(),
 		o_purpose_of_loan: Yup.string().required("Required"),
 		o_sub_purpose_of_loan: Yup.string().optional(),
 		o_amount_applied: Yup.string().required("Required"),
@@ -73,7 +73,9 @@ function OccupationDetailsForm({ memberDetails }) {
 
 	const fetchOccupDetails = async () => {
 		await axios
-			.get(`${url}/admin/fetch_occup_dt_web?form_no=${params?.id}`)
+			.get(
+				`${url}/admin/fetch_occup_dt_web?form_no=${params?.id}&branch_code=${userDetails?.brn_code}`
+			)
 			.then((res) => {
 				console.log("PPPPPPPPPPPPPPPPPP", res?.data)
 				setValues({
@@ -134,6 +136,7 @@ function OccupationDetailsForm({ memberDetails }) {
 			other_loan_amt: formik.values.o_other_loan_amount,
 			other_loan_emi: formik.values.o_monthly_emi,
 			modified_by: userDetails?.emp_name,
+			created_by: userDetails?.emp_name,
 		}
 		await axios
 			.post(`${url}/admin/edit_occup_dtls_web`, creds)
