@@ -119,7 +119,8 @@ function FamilyMemberDetailsForm({ memberDetails }) {
 							sl_no: member.sl_no || index + 1,
 							name: member.name || "",
 							relation: member.relation || "",
-							familyDob: member.family_dob || "",
+							familyDob:
+								new Date(member.family_dob).toISOString().slice(0, 10) || "",
 							age: member.age?.toString() || "",
 							sex: member.sex || "",
 							education: member.education || "",
