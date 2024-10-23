@@ -8,7 +8,7 @@ import * as Yup from "yup"
 import axios from "axios"
 import { Message } from "../../Components/Message"
 import { url } from "../../Address/BaseUrl"
-import { Spin } from "antd"
+import { Spin, Tag } from "antd"
 import {
 	LoadingOutlined,
 	ArrowLeftOutlined,
@@ -31,21 +31,151 @@ const MAX_FILE_SIZE = 200000
 
 function EditGRTFormMis() {
 	const params = useParams()
+	const userDetails = JSON.parse(localStorage.getItem("user_details"))
 	const [loading, setLoading] = useState(false)
 	const location = useLocation()
 	const memberDetailsData = location.state || {}
 	const navigate = useNavigate()
+
+	const [metadataArray, setMetadataArray] = useState(() => [])
 
 	console.log(params, "params")
 	console.log(location, "location")
 
 	const stepperRef = useRef(null)
 
+	const fetchMetaData = async () => {
+		const creds = {
+			form_no: params?.id,
+			// member_code: memberDetails?.member_code,
+			user_type: userDetails?.id,
+			approval_status: memberDetailsData?.approval_status,
+		}
+		await axios
+			.post(`${url}/admin/approved_dtls`, creds)
+			.then((res) => {
+				console.log("___---___---___---", res?.data)
+				setMetadataArray(res?.data?.msg)
+			})
+			.catch((err) => {
+				console.log("ERRRRR fetching metadata", err)
+			})
+	}
+
+	useEffect(() => {
+		fetchMetaData()
+	}, [])
+
 	return (
 		<>
 			<Sidebar mode={1} />
 			<section className="bg-blue-50 dark:bg-[#001529] flex justify-center align-middle p-5">
 				<div className=" bg-white p-5 w-4/5 min-h-screen rounded-3xl">
+					{userDetails?.id === 3 &&
+						memberDetailsData?.approval_status === "S" && (
+							<div className="ml-14">
+								{metadataArray?.map((item, i) => (
+									<div
+										key={i}
+										className="mt-5 flex flex-col justify-start align-middle items-start gap-2"
+									>
+										<Tag className="text-sm" bordered={false} color="cyan">
+											CO: {item?.created_by || "Nil"}, AT:{" "}
+											{item?.created_at
+												? new Date(item?.created_at).toLocaleString("en-GB")
+												: "Nil"}
+										</Tag>
+										<Tag className="text-sm" bordered={false} color="blue">
+											CO Location: {item?.co_gps_address || "Nil"}
+										</Tag>
+										<Tag className="text-sm" bordered={false} color="cyan">
+											BM: {item?.modified_by || "Nil"}, AT:{" "}
+											{item?.modified_at
+												? new Date(item?.modified_at).toLocaleString("en-GB")
+												: "Nil"}
+										</Tag>
+										<Tag className="text-sm" bordered={false} color="blue">
+											BM Location: {item?.bm_gps_address || "Nil"}
+										</Tag>
+									</div>
+								))}
+							</div>
+						)}
+
+					{userDetails?.id === 3 &&
+						memberDetailsData?.approval_status === "A" && (
+							<div className="ml-14">
+								{metadataArray?.map((item, i) => (
+									<div
+										key={i}
+										className="mt-5 flex flex-col justify-start align-middle items-start gap-2"
+									>
+										<Tag className="text-sm" bordered={false} color="cyan">
+											CO: {item?.created_by || "Nil"}, AT:{" "}
+											{item?.created_at
+												? new Date(item?.created_at).toLocaleString("en-GB")
+												: "Nil"}
+										</Tag>
+										<Tag className="text-sm" bordered={false} color="blue">
+											CO Location: {item?.co_gps_address || "Nil"}
+										</Tag>
+										<Tag className="text-sm" bordered={false} color="cyan">
+											BM: {item?.modified_by || "Nil"}, AT:{" "}
+											{item?.modified_at
+												? new Date(item?.modified_at).toLocaleString("en-GB")
+												: "Nil"}
+										</Tag>
+										<Tag className="text-sm" bordered={false} color="blue">
+											BM Location: {item?.bm_gps_address || "Nil"}
+										</Tag>
+										<Tag className="text-sm" bordered={false} color="green">
+											Approved By: {item?.approved_by || "Nil"}, AT:{" "}
+											{item?.approved_at
+												? new Date(item?.approved_at).toLocaleString("en-GB")
+												: "Nil"}
+										</Tag>
+									</div>
+								))}
+							</div>
+						)}
+
+					{userDetails?.id === 3 &&
+						memberDetailsData?.approval_status === "R" && (
+							<div className="ml-14">
+								{metadataArray?.map((item, i) => (
+									<div
+										key={i}
+										className="mt-5 flex flex-col justify-start align-middle items-start gap-2"
+									>
+										<Tag className="text-sm" bordered={false} color="cyan">
+											CO: {item?.created_by || "Nil"}, AT:{" "}
+											{item?.created_at
+												? new Date(item?.created_at).toLocaleString("en-GB")
+												: "Nil"}
+										</Tag>
+										<Tag className="text-sm" bordered={false} color="blue">
+											CO Location: {item?.co_gps_address || "Nil"}
+										</Tag>
+										<Tag className="text-sm" bordered={false} color="cyan">
+											BM: {item?.modified_by || "Nil"}, AT:{" "}
+											{item?.modified_at
+												? new Date(item?.modified_at).toLocaleString("en-GB")
+												: "Nil"}
+										</Tag>
+										<Tag className="text-sm" bordered={false} color="blue">
+											BM Location: {item?.bm_gps_address || "Nil"}
+										</Tag>
+										<Tag className="text-sm" bordered={false} color="red">
+											Rejected By: {item?.rejected_by || "Nil"}, AT:{" "}
+											{item?.rejected_at
+												? new Date(item?.rejected_at).toLocaleString("en-GB")
+												: "Nil"}
+										</Tag>
+									</div>
+								))}
+							</div>
+						)}
+
 					<div className="w-auto mx-14 my-4">
 						<FormHeader text="Pending GRT Preview & Edit" mode={1} />
 					</div>
