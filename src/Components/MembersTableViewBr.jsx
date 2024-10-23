@@ -14,7 +14,7 @@ import {
 import { useNavigate } from "react-router-dom"
 import { Tag } from "antd"
 
-function LoanApplicationsTableViewBr({
+function MembersTableViewBr({
 	loanAppData,
 	setSearch,
 	title,
@@ -123,22 +123,17 @@ function LoanApplicationsTableViewBr({
 								#
 							</th> */}
 							<th scope="col" className="p-4">
-								Form No.
-							</th>
-							{flag === "MIS" && (
-								<th scope="col" className="p-4">
-									Branch Name
-								</th>
-							)}
-							<th scope="col" className="p-4">
-								Member Name
+								Member Code
 							</th>
 							<th scope="col" className="p-4">
+								Client Name
+							</th>
+							{/* <th scope="col" className="p-4">
 								Member Code
 							</th>
 							<th scope="col" className="p-4">
 								GRT Date
-							</th>
+							</th> */}
 							{/* <th scope="col" className="p-4">
 								Status
 							</th> */}
@@ -171,21 +166,8 @@ function LoanApplicationsTableViewBr({
 									>
 										{item.sl_no}
 									</th> */}
-									<td className="px-6 py-4">{item.form_no || "-----"}</td>
-									{flag === "MIS" && (
-										<td className="px-6 py-4">{item.branch_name || ""}</td>
-									)}
+									<td className="px-6 py-4">{item.member_code || "-----"}</td>
 									<td className="px-6 py-4">{item.client_name}</td>
-									<td className="px-6 py-4">{item.member_code}</td>
-									<td className="px-6 py-4">
-										{new Date(item?.grt_date).toLocaleDateString("en-GB")}
-									</td>
-									{/* <td className="px-6 py-4">{item.member_name}</td> */}
-									{/* <td className="px-6 py-4">
-										{item.branch_name}
-									</td>
-									<td className="px-6 py-4">{item.loan_type_name}</td> */}
-									{/* <td className="px-6 py-4">{item.member_name}</td> */}
 									<td className="px-6 py-4">
 										{flag !== "BM" ? (
 											// <Link
@@ -195,12 +177,16 @@ function LoanApplicationsTableViewBr({
 											// 	}
 											// >
 											<button
+												disabled
 												// to={routePaths.BM_EDIT_GRT + item?.form_no}
 												onClick={() => {
 													console.log("LLSKSIODFUISFH", item)
-													navigate(`/homemis/editgrtform/${item?.form_no}`, {
-														state: item,
-													})
+													navigate(
+														`/homemis/editgroupform/${item?.member_code}`,
+														{
+															state: item,
+														}
+													)
 												}}
 											>
 												<EditOutlined
@@ -212,12 +198,16 @@ function LoanApplicationsTableViewBr({
 										) : (
 											// </Link>
 											<button
+												disabled
 												// to={routePaths.BM_EDIT_GRT + item?.form_no}
 												onClick={() => {
 													console.log("LLSKSIODFUISFH", item)
-													navigate(`/homebm/editgrtform/${item?.form_no}`, {
-														state: item,
-													})
+													navigate(
+														`/homebm/editgroupform/${item?.member_code}`,
+														{
+															state: item,
+														}
+													)
 												}}
 											>
 												<EditOutlined
@@ -244,4 +234,4 @@ function LoanApplicationsTableViewBr({
 	)
 }
 
-export default LoanApplicationsTableViewBr
+export default MembersTableViewBr

@@ -30,13 +30,15 @@ import DialogBox from "../../Components/DialogBox"
 import TDInputTemplateBr from "../../Components/TDInputTemplateBr"
 import TimelineComp from "../../Components/TimelineComp"
 
-function GroupExtendedForm({}) {
+function GroupExtendedForm({ groupDataArr }) {
 	const params = useParams()
 	const [loading, setLoading] = useState(false)
 	const location = useLocation()
 	const { loanAppData } = location.state || {}
 	const navigate = useNavigate()
 	const userDetails = JSON.parse(localStorage.getItem("user_details"))
+
+	const [groupData, setGroupData] = useState(() => [])
 
 	const [groupDetails, setGroupDetails] = useState(() => [])
 	const [memberDetails, setMemberDetails] = useState(() => [])
@@ -61,51 +63,33 @@ function GroupExtendedForm({}) {
 		g_acc1: "",
 		g_acc2: "",
 	}
-	const [formValues, setValues] = useState({
-		g_group_name: "",
-		g_group_type: "",
-		g_address: "",
-		g_pin: "",
-		g_group_block: "",
-		g_phone1: "",
-		g_phone2: "",
-		g_email: "",
-		g_bank_name: "",
-		g_bank_branch: "",
-		g_ifsc: "",
-		g_micr: "",
-		g_acc1: "",
-		g_acc2: "",
-	})
+	const [formValues, setValues] = useState(initialValues)
 
 	const validationSchema = Yup.object({
-		// g_group_name: Yup.string().optional(),
-		// g_group_type: Yup.string().optional(),
-		// g_address: Yup.string().optional(),
-		// g_pin: Yup.string().optional(),
-		// g_group_block: Yup.string().optional(),
-		// g_phone1: Yup.string().optional(),
-		// g_phone2: Yup.string().optional(),
-		// g_email: Yup.string().optional(),
-		// g_bank_name: Yup.string().optional(),
-		// g_bank_branch: Yup.string().optional(),
-		// g_ifsc: Yup.string().optional(),
-		// g_micr: Yup.string().optional(),
-		// g_acc1: Yup.string().optional(),
+		g_group_name: Yup.string().required("Group name is required"),
+		g_group_type: Yup.string().required("Group type is required"),
+		g_address: Yup.string().required("Group address is required"),
+		g_pin: Yup.string().required("PIN No. is required"),
+		g_group_block: Yup.string().required("Group block is required"),
+		g_phone1: Yup.string().required("Phone 1 is required"),
+		// g_phone2: Yup.string(),
+		// g_email: Yup.string(),
+		// g_bank_name: Yup.string(),
+		// g_bank_branch: Yup.string(),
+		// g_ifsc: Yup.string(),
+		// g_micr: Yup.string(),
+		// g_acc1: Yup.string(),
 		// g_acc2: Yup.string().optional(),
 	})
 
-	const fetchGroupAndMembersDetails = async () => {
-		setLoading(true)
+	const fetchGroupDetails = async () => {
 		const creds = {
-			prov_grp_code: params?.id,
-			user_type: userDetails?.id,
-			branch_code: userDetails?.brn_code,
+			group_code: params?.id,
 		}
 		await axios
-			.post(`${url}/admin/fetch_bmfwd_dtls_web`, creds)
+			.post(`${url}/admin/edit_search_group_web`, creds)
 			.then((res) => {
-				console.log("TETETETETTETETETTETE", res?.data)
+				console.log("........>>>>>>>>>>", res?.data)
 				setValues({
 					g_group_name: res?.data?.msg[0]?.group_name,
 					g_group_type: res?.data?.msg[0]?.group_type,
@@ -122,18 +106,56 @@ function GroupExtendedForm({}) {
 					g_acc1: res?.data?.msg[0]?.acc_no1,
 					g_acc2: res?.data?.msg[0]?.acc_no2,
 				})
-				setGroupDetails(res?.data?.msg[0])
-				setMemberDetails(res?.data?.msg[0]?.memb_dt)
+				setGroupData(res?.data?.msg)
 			})
 			.catch((err) => {
-				console.log("ERRRRRRPPPPEEEE", err)
+				Message("error", "Some error occurred while fetching group form")
 			})
-		setLoading(false)
 	}
 
 	useEffect(() => {
-		fetchGroupAndMembersDetails()
+		fetchGroupDetails()
 	}, [])
+
+	// const fetchGroupAndMembersDetails = async () => {
+	// 	setLoading(true)
+	// 	const creds = {
+	// 		prov_grp_code: params?.id,
+	// 		user_type: userDetails?.id,
+	// 		branch_code: userDetails?.brn_code,
+	// 	}
+	// 	await axios
+	// 		.post(`${url}/admin/fetch_bmfwd_dtls_web`, creds)
+	// 		.then((res) => {
+	// 			console.log("TETETETETTETETETTETE", res?.data)
+	// 			setValues({
+	// 				g_group_name: res?.data?.msg[0]?.group_name,
+	// 				g_group_type: res?.data?.msg[0]?.group_type,
+	// 				g_address: res?.data?.msg[0]?.grp_addr,
+	// 				g_pin: res?.data?.msg[0]?.pin_no,
+	// 				g_group_block: res?.data?.msg[0]?.block,
+	// 				g_phone1: res?.data?.msg[0]?.phone1,
+	// 				g_phone2: res?.data?.msg[0]?.phone2,
+	// 				g_email: res?.data?.msg[0]?.email_id,
+	// 				g_bank_name: res?.data?.msg[0]?.bank_name,
+	// 				g_bank_branch: res?.data?.msg[0]?.branch_name,
+	// 				g_ifsc: res?.data?.msg[0]?.ifsc,
+	// 				g_micr: res?.data?.msg[0]?.micr,
+	// 				g_acc1: res?.data?.msg[0]?.acc_no1,
+	// 				g_acc2: res?.data?.msg[0]?.acc_no2,
+	// 			})
+	// 			setGroupDetails(res?.data?.msg[0])
+	// 			setMemberDetails(res?.data?.msg[0]?.memb_dt)
+	// 		})
+	// 		.catch((err) => {
+	// 			console.log("ERRRRRRPPPPEEEE", err)
+	// 		})
+	// 	setLoading(false)
+	// }
+
+	// useEffect(() => {
+	// 	fetchGroupAndMembersDetails()
+	// }, [])
 
 	const onSubmit = async (values) => {
 		console.log("onsubmit called")
@@ -146,7 +168,7 @@ function GroupExtendedForm({}) {
 	}
 
 	const formik = useFormik({
-		initialValues: formValues,
+		initialValues: +params.id > 0 ? formValues : initialValues,
 		onSubmit,
 		validationSchema,
 		validateOnChange: true,
@@ -204,6 +226,19 @@ function GroupExtendedForm({}) {
 				<form onSubmit={formik.handleSubmit}>
 					<div className="flex justify-start gap-5">
 						<div className="grid gap-4 sm:grid-cols-2 sm:gap-6 w-1/2">
+							<div className="sm:col-span-2">
+								<TDInputTemplateBr
+									placeholder="Form filled by / CO Name"
+									type="text"
+									label="Form filled by / CO Name"
+									name="co_name"
+									// handleChange={formik.handleChange}
+									// handleBlur={formik.handleBlur}
+									formControlName={groupData[0]?.emp_name}
+									mode={1}
+									disabled
+								/>
+							</div>
 							<div>
 								<TDInputTemplateBr
 									placeholder="Group Name"

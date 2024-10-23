@@ -79,24 +79,40 @@ function EditGRTFormMis() {
 										key={i}
 										className="ml-14 mt-5 flex flex-col justify-start align-middle items-start gap-2"
 									>
-										<div className="text-sm text-wrap w-96 italic text-blue-800">
+										<Tag
+											className="text-sm text-wrap w-96 italic"
+											bordered={false}
+											color="geekblue"
+										>
 											CO: {item?.created_by || "Nil"}, AT:{" "}
 											{item?.created_at
 												? new Date(item?.created_at).toLocaleString("en-GB")
 												: "Nil"}
-										</div>
-										<div className="text-sm text-wrap w-96 italic text-blue-800">
+										</Tag>
+										<Tag
+											className="text-sm text-wrap w-96 italic"
+											bordered={false}
+											color="blue"
+										>
 											CO Location: {item?.co_gps_address || "Nil"}
-										</div>
-										<div className="text-sm text-wrap w-96 italic text-blue-800">
+										</Tag>
+										<Tag
+											className="text-sm text-wrap w-96 italic"
+											bordered={false}
+											color="geekblue"
+										>
 											BM: {item?.modified_by || "Nil"}, AT:{" "}
 											{item?.modified_at
 												? new Date(item?.modified_at).toLocaleString("en-GB")
 												: "Nil"}
-										</div>
-										<div className="text-sm text-wrap w-96 italic text-blue-800">
+										</Tag>
+										<Tag
+											className="text-sm text-wrap w-96 italic"
+											bordered={false}
+											color="blue"
+										>
 											BM Location: {item?.bm_gps_address || "Nil"}
-										</div>
+										</Tag>
 									</div>
 								))}
 
@@ -121,30 +137,50 @@ function EditGRTFormMis() {
 										key={i}
 										className="ml-14 mt-5 flex flex-col justify-start align-middle items-start gap-2"
 									>
-										<div className="text-sm text-wrap w-96 italic text-blue-800">
+										<Tag
+											className="text-sm text-wrap w-96 italic"
+											bordered={false}
+											color="geekblue"
+										>
 											CO: {item?.created_by || "Nil"}, AT:{" "}
 											{item?.created_at
 												? new Date(item?.created_at).toLocaleString("en-GB")
 												: "Nil"}
-										</div>
-										<div className="text-sm text-wrap w-96 italic text-blue-800">
+										</Tag>
+										<Tag
+											className="text-sm text-wrap w-96 italic"
+											bordered={false}
+											color="blue"
+										>
 											CO Location: {item?.co_gps_address || "Nil"}
-										</div>
-										<div className="text-sm text-wrap w-96 italic text-blue-800">
+										</Tag>
+										<Tag
+											className="text-sm text-wrap w-96 italic"
+											bordered={false}
+											color="geekblue"
+										>
 											BM: {item?.modified_by || "Nil"}, AT:{" "}
 											{item?.modified_at
 												? new Date(item?.modified_at).toLocaleString("en-GB")
 												: "Nil"}
-										</div>
-										<div className="text-sm text-wrap w-96 italic text-blue-800">
+										</Tag>
+										<Tag
+											className="text-sm text-wrap w-96 italic"
+											bordered={false}
+											color="blue"
+										>
 											BM Location: {item?.bm_gps_address || "Nil"}
-										</div>
-										<div className="text-sm text-wrap w-96 italic text-blue-800">
+										</Tag>
+										<Tag
+											className="text-sm text-wrap w-96 italic"
+											bordered={false}
+											color="green"
+										>
 											Approved By: {item?.approved_by || "Nil"}, AT:{" "}
 											{item?.approved_at
 												? new Date(item?.approved_at).toLocaleString("en-GB")
 												: "Nil"}
-										</div>
+										</Tag>
 									</div>
 								))}
 

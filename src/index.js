@@ -23,9 +23,13 @@ import EditGroupForm from "./Screens/MISAssistantHome/EditGroupForm"
 import HomeBM from "./Screens/BMHome/HomeBM"
 import HomeScreenBM from "./Screens/BMHome/HomeScreenBM"
 import EditGRTFormBM from "./Screens/BMHome/EditGRTFormBM"
-import EditGroupFormBM from "./Screens/BMHome/EditGroupFormBM"
+// import EditGroupFormBM from "./Screens/BMHome/EditGroupFormBM"
 import DashboardBM from "./Screens/BMHome/DashboardBM"
 import DashboardMis from "./Screens/MISAssistantHome/DashboardMis"
+import SearchGRTFormMis from "./Screens/MISAssistantHome/SearchGRTFormMis"
+import SearchGroupMis from "./Screens/MISAssistantHome/SearchGroupMis"
+import SearchGRTFormBM from "./Screens/BMHome/SearchGRTFormBM"
+import SearchMemberMis from "./Screens/MISAssistantHome/SearchMemberMis"
 
 // const AuthBr = lazy(() => import("./Screens/BranchManager/AuthBr"))
 
@@ -71,6 +75,18 @@ const router = createBrowserRouter([
 								element: <HomeScreenMis />,
 							},
 							{
+								path: "searchform",
+								element: <SearchGRTFormMis />,
+							},
+							{
+								path: "searchgroup",
+								element: <SearchGroupMis />,
+							},
+							{
+								path: "searchmember",
+								element: <SearchMemberMis />,
+							},
+							{
 								path: "editgroupform/:id",
 								element: <EditGroupForm />,
 							},
@@ -91,6 +107,14 @@ const router = createBrowserRouter([
 							{
 								path: "grtappls",
 								element: <HomeScreenBM />,
+							},
+							{
+								path: "searchform",
+								element: <SearchGRTFormBM />,
+							},
+							{
+								path: "searchgroup",
+								element: <SearchGroupMis />,
 							},
 							// {
 							// 	path: "editgroupform/:id",

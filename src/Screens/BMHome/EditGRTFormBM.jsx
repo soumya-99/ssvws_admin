@@ -77,89 +77,113 @@ function EditGRTFormBM() {
 				<div className=" bg-white p-5 w-4/5 min-h-screen rounded-3xl">
 					{userDetails?.id === 2 &&
 						memberDetailsData?.approval_status === "U" && (
-							<div className="ml-14">
+							<div className="flex justify-between">
 								{metadataArray?.map((item, i) => (
 									<div
 										key={i}
-										className="mt-5 flex flex-col justify-start align-middle items-start gap-2"
+										className="ml-14 mt-5 flex flex-col justify-start align-middle items-start gap-2"
 									>
-										<Tag className="text-sm" bordered={false} color="cyan">
+										<div className="text-sm text-wrap w-96 italic text-blue-800">
 											CO: {item?.created_by || "Nil"}, AT:{" "}
 											{new Date(item?.created_at || "Nil").toLocaleString(
 												"en-GB"
 											)}
-										</Tag>
-										<Tag className="text-sm" bordered={false} color="blue">
+										</div>
+										<div className="text-sm text-wrap w-96 italic text-blue-800">
 											CO Location: {item?.co_gps_address || "Nil"}
-										</Tag>
+										</div>
 									</div>
 								))}
+
+								<div className="mr-14 mt-5">
+									<Tag
+										className="text-xl text-wrap w-96 text-right p-2 flex flex-col justify-center items-end align-middle"
+										bordered={false}
+										color={"green"}
+									>
+										Approval Status: Un-approved
+										{/* <div></div> */}
+									</Tag>
+								</div>
 							</div>
 						)}
 
 					{userDetails?.id === 2 &&
 						memberDetailsData?.approval_status === "S" && (
-							<div className="ml-14">
+							<div className="flex justify-between">
 								{metadataArray?.map((item, i) => (
 									<div
 										key={i}
-										className="mt-5 flex flex-col justify-start align-middle items-start gap-2"
+										className="ml-14 mt-5 flex flex-col justify-start align-middle items-start gap-2"
 									>
-										<Tag className="text-sm" bordered={false} color="cyan">
+										<div className="text-sm text-wrap w-96 italic text-blue-800">
 											CO: {item?.created_by || "Nil"}, AT:{" "}
 											{new Date(item?.created_at || "Nil").toLocaleString(
 												"en-GB"
 											)}
-										</Tag>
-										<Tag className="text-sm" bordered={false} color="blue">
+										</div>
+										<div className="text-sm text-wrap w-96 italic text-blue-800">
 											CO Location: {item?.co_gps_address || "Nil"}
-										</Tag>
-										<Tag className="text-sm" bordered={false} color="cyan">
+										</div>
+										<div className="text-sm text-wrap w-96 italic text-blue-800">
 											BM: {item?.modified_by || "Nil"}, AT:{" "}
 											{new Date(item?.modified_at || "Nil").toLocaleString(
 												"en-GB"
 											)}
-										</Tag>
-										<Tag className="text-sm" bordered={false} color="blue">
+										</div>
+										<div className="text-sm text-wrap w-96 italic text-blue-800">
 											BM Location: {item?.bm_gps_address || "Nil"}
-										</Tag>
+										</div>
 									</div>
 								))}
+
+								<div className="mr-14 mt-5">
+									<Tag
+										className="text-xl text-wrap w-96 text-right p-2 flex flex-col justify-center items-end align-middle"
+										bordered={false}
+										color={"Red"}
+									>
+										Approval Status: Sanctioned
+										<div>
+											<div>Forwarded from BM to Mis Assistant</div>
+										</div>
+									</Tag>
+								</div>
 							</div>
 						)}
 
 					{userDetails?.id === 2 &&
 						memberDetailsData?.approval_status === "A" && (
-							<div className="ml-14">
+							<div className="flex justify-between">
 								{metadataArray?.map((item, i) => (
 									<div
 										key={i}
 										className="mt-5 flex flex-col justify-start align-middle items-start gap-2"
 									>
-										<Tag className="text-sm" bordered={false} color="cyan">
+										<div className="text-sm text-wrap w-96 italic text-blue-800">
 											CO: {item?.created_by || "Nil"}, AT:{" "}
 											{item?.created_at
 												? new Date(item?.created_at).toLocaleString("en-GB")
 												: "Nil"}
-										</Tag>
-										<Tag className="text-sm" bordered={false} color="blue">
+										</div>
+										<div className="text-sm text-wrap w-96 italic text-blue-800">
 											CO Location: {item?.co_gps_address || "Nil"}
-										</Tag>
-										<Tag className="text-sm" bordered={false} color="cyan">
+										</div>
+										<div className="text-sm text-wrap w-96 italic text-blue-800">
 											BM: {item?.modified_by || "Nil"}, AT:{" "}
 											{item?.modified_at
 												? new Date(item?.modified_at).toLocaleString("en-GB")
 												: "Nil"}
-										</Tag>
-										<Tag className="text-sm" bordered={false} color="blue">
+										</div>
+										<div className="text-sm text-wrap w-96 italic text-blue-800">
 											BM Location: {item?.bm_gps_address || "Nil"}
-										</Tag>
-										<Tag className="text-sm" bordered={false} color="green">
+										</div>
+										<div className="text-sm text-wrap w-96 italic text-blue-800">
 											Approved By: {item?.approved_by || "Nil"}, AT:{" "}
 											{item?.approved_at
 												? new Date(item?.approved_at).toLocaleString("en-GB")
 												: "Nil"}
-										</Tag>
+										</div>
 									</div>
 								))}
 							</div>

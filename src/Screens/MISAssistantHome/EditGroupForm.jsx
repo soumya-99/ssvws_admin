@@ -39,6 +39,8 @@ function EditGroupForm() {
 	const { loanAppData } = location.state || {}
 	const navigate = useNavigate()
 
+	const [groupData, setGroupData] = useState(() => [])
+
 	return (
 		<>
 			<Sidebar mode={1} />

@@ -13,10 +13,10 @@ const options = [
 		label: "Received",
 		value: "S",
 	},
-	{
-		label: "Approved",
-		value: "A",
-	},
+	// {
+	// 	label: "Approved",
+	// 	value: "A",
+	// },
 	{
 		label: "Rejected",
 		value: "R",

@@ -8,6 +8,10 @@ import {
 	ArrowRightOutlined,
 	MinusCircleOutlined,
 	ImportOutlined,
+	LineChartOutlined,
+	ContainerOutlined,
+	FileSearchOutlined,
+	SearchOutlined,
 } from "@ant-design/icons"
 import { Menu } from "antd"
 import { Link } from "react-router-dom"
@@ -34,26 +38,41 @@ function MenusBr({ theme }) {
 	const items = [
 		{
 			key: "sub1",
-			icon: <ImportOutlined />,
+			icon: <LineChartOutlined />,
 			label: <Link to={"/homemis/"}>Dashboard</Link>,
+		},
+		{
+			key: "sub2",
+			icon: <ContainerOutlined />,
+			label: "Members",
+			children: [
+				{
+					key: "sub2-1",
+					icon: <ContainerOutlined />,
+					label: <Link to={"/homemis/grtappls/"}>Applications</Link>,
+				},
+				{
+					key: "sub2-2",
+					icon: <SearchOutlined />,
+					label: <Link to={"/homemis/searchform/"}>Search Form</Link>,
+				},
+				{
+					key: "sub2-3",
+					icon: <FileSearchOutlined />,
+					label: <Link to={"/homemis/searchgroup/"}>Search Group</Link>,
+				},
+				{
+					key: "sub2-4",
+					icon: <FileSearchOutlined />,
+					label: <Link to={"/homemis/searchmember/"}>Search Member</Link>,
+				},
+			],
 		},
 		// {
 		// 	key: "sub2",
 		// 	icon: <ImportOutlined />,
-		// 	label: "Applications",
-		// 	children: [
-		// 		{
-		// 			key: "sub2",
-		// 			icon: <ImportOutlined />,
-		// 			label: <Link to={"/homemis/grtappls/"}>GRT Applications</Link>,
-		// 		},
-		// 	],
+		// 	label: <Link to={"/homemis/grtappls/"}>GRT Applications</Link>,
 		// },
-		{
-			key: "sub2",
-			icon: <ImportOutlined />,
-			label: <Link to={"/homemis/grtappls/"}>GRT Applications</Link>,
-		},
 		{
 			label: "Reports",
 			key: "sub6",
@@ -64,26 +83,36 @@ function MenusBr({ theme }) {
 	const itemsBM = [
 		{
 			key: "sub1",
-			icon: <ImportOutlined />,
+			icon: <LineChartOutlined />,
 			label: <Link to={"/homebm/"}>Dashboard</Link>,
+		},
+		{
+			key: "sub2",
+			icon: <ImportOutlined />,
+			label: "Members",
+			children: [
+				{
+					key: "sub2-1",
+					icon: <ContainerOutlined />,
+					label: <Link to={"/homebm/grtappls/"}>Applications</Link>,
+				},
+				{
+					key: "sub2-2",
+					icon: <SearchOutlined />,
+					label: <Link to={"/homemis/searchform/"}>Search Form</Link>,
+				},
+				{
+					key: "sub2-3",
+					icon: <FileSearchOutlined />,
+					label: <Link to={"/homemis/searchgroup/"}>Search Group</Link>,
+				},
+			],
 		},
 		// {
 		// 	key: "sub2",
 		// 	icon: <ImportOutlined />,
-		// 	label: "Applications",
-		// 	children: [
-		// 		{
-		// 			key: "sub2",
-		// 			icon: <ImportOutlined />,
-		// 			label: <Link to={"/homebm/grtappls/"}>GRT Applications</Link>,
-		// 		},
-		// 	],
+		// 	label: <Link to={"/homebm/grtappls/"}>GRT Applications</Link>,
 		// },
-		{
-			key: "sub2",
-			icon: <ImportOutlined />,
-			label: <Link to={"/homebm/grtappls/"}>GRT Applications</Link>,
-		},
 		{
 			label: "Reports",
 			key: "sub6",
