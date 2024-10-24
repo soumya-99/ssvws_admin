@@ -96,14 +96,14 @@ function EditGRTFormBM() {
 								))}
 
 								<div className="mr-14 mt-5">
-									<Tag
-										className="text-xl text-wrap w-96 text-right p-2 flex flex-col justify-center items-end align-middle"
+									<div
+										className="text-sm text-wrap w-96 italic text-right text-green-600 p-2 flex flex-col justify-center items-end align-middle"
 										bordered={false}
 										color={"green"}
 									>
 										Approval Status: Un-approved
 										{/* <div></div> */}
-									</Tag>
+									</div>
 								</div>
 							</div>
 						)}
@@ -138,16 +138,14 @@ function EditGRTFormBM() {
 								))}
 
 								<div className="mr-14 mt-5">
-									<Tag
-										className="text-xl text-wrap w-96 text-right p-2 flex flex-col justify-center items-end align-middle"
-										bordered={false}
-										color={"Red"}
-									>
+									<div className="text-sm text-wrap w-96 italic text-right text-purple-600 p-2 flex flex-col justify-center items-end align-middle">
 										Approval Status: Sanctioned
 										<div>
-											<div>Forwarded from BM to MIS Assistant</div>
+											<div className="text-sm text-wrap w-96 italic text-right text-purple-600">
+												Forwarded from BM to MIS Assistant
+											</div>
 										</div>
-									</Tag>
+									</div>
 								</div>
 							</div>
 						)}
@@ -188,16 +186,14 @@ function EditGRTFormBM() {
 								))}
 
 								<div className="mr-14 mt-5">
-									<Tag
-										className="text-xl text-wrap w-96 text-right p-2 flex flex-col justify-center items-end align-middle"
-										bordered={false}
-										color={"Red"}
-									>
+									<div className="text-sm text-wrap w-96 italic text-right text-purple-600 p-2 flex flex-col justify-center items-end align-middle">
 										Approval Status: Approved
 										<div>
-											<div>Approved by MIS Assistant</div>
+											<div className="text-sm text-wrap w-96 italic text-right text-purple-600">
+												Approved by MIS Assistant
+											</div>
 										</div>
-									</Tag>
+									</div>
 								</div>
 							</div>
 						)}

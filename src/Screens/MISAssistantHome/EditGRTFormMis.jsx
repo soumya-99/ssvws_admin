@@ -101,14 +101,12 @@ function EditGRTFormMis() {
 								))}
 
 								<div className="mr-14 mt-5">
-									<Tag
-										className="text-xl text-wrap w-96 text-right p-2 flex flex-col justify-center items-end align-middle"
-										bordered={false}
-										color={"green"}
-									>
+									<div className="text-xl text-wrap w-96 text-right text-green-600 p-2 flex flex-col justify-center items-end align-middle">
 										Approval Status: Sanctioned
-										<div>Forwarded from BM to MIS Assistant</div>
-									</Tag>
+										<div className="text-sm text-wrap w-96 italic text-right text-green-600">
+											Forwarded from BM to MIS Assistant
+										</div>
+									</div>
 								</div>
 							</div>
 						)}
@@ -149,14 +147,12 @@ function EditGRTFormMis() {
 								))}
 
 								<div className="mr-14 mt-5">
-									<Tag
-										className="text-xl text-wrap w-96 text-right p-2 flex flex-col justify-center items-end align-middle"
-										bordered={false}
-										color={"red"}
-									>
+									<div className="text-sm text-wrap w-96 italic text-right text-purple-600 p-2 flex flex-col justify-center items-end align-middle">
 										Approval Status: Approved
-										<div>Approved by MIS Assistant</div>
-									</Tag>
+										<div className="text-sm text-wrap w-96 italic text-right text-purple-600">
+											Approved by MIS Assistant
+										</div>
+									</div>
 								</div>
 							</div>
 						)}
@@ -169,62 +165,40 @@ function EditGRTFormMis() {
 										key={i}
 										className="ml-14 mt-5 flex flex-col justify-start align-middle items-start gap-2"
 									>
-										<Tag
-											className="text-sm text-wrap w-96 italic"
-											bordered={false}
-											color="geekblue"
-										>
+										<div className="text-sm text-wrap w-96 italic text-blue-800">
 											CO: {item?.created_by || "Nil"}, AT:{" "}
 											{item?.created_at
 												? new Date(item?.created_at).toLocaleString("en-GB")
 												: "Nil"}
-										</Tag>
-										<Tag
-											className="text-sm text-wrap w-96 italic"
-											bordered={false}
-											color="blue"
-										>
+										</div>
+										<div className="text-sm text-wrap w-96 italic text-blue-800">
 											CO Location: {item?.co_gps_address || "Nil"}
-										</Tag>
-										<Tag
-											className="text-sm text-wrap w-96 italic"
-											bordered={false}
-											color="geekblue"
-										>
+										</div>
+										<div className="text-sm text-wrap w-96 italic text-blue-800">
 											BM: {item?.modified_by || "Nil"}, AT:{" "}
 											{item?.modified_at
 												? new Date(item?.modified_at).toLocaleString("en-GB")
 												: "Nil"}
-										</Tag>
-										<Tag
-											className="text-sm text-wrap w-96 italic"
-											bordered={false}
-											color="blue"
-										>
+										</div>
+										<div className="text-sm text-wrap w-96 italic text-blue-800">
 											BM Location: {item?.bm_gps_address || "Nil"}
-										</Tag>
-										<Tag
-											className="text-sm text-wrap w-96 italic"
-											bordered={false}
-											color="red"
-										>
+										</div>
+										<div className="text-sm text-wrap w-96 italic text-blue-800">
 											Rejected By: {item?.rejected_by || "Nil"}, AT:{" "}
 											{item?.rejected_at
 												? new Date(item?.rejected_at).toLocaleString("en-GB")
 												: "Nil"}
-										</Tag>
+										</div>
 									</div>
 								))}
 
 								<div className="mr-14 mt-5">
-									<Tag
-										className="text-xl text-wrap w-96 text-right p-2 flex flex-col justify-center items-end align-middle"
-										bordered={false}
-										color={"red"}
-									>
+									<div className="text-sm text-wrap w-96 italic text-right text-red-600 p-2 flex flex-col justify-center items-end align-middle">
 										Approval Status: Rejected
-										<div>Rejected by Mis Assistant</div>
-									</Tag>
+										<div className="text-sm text-wrap w-96 italic text-right text-red-600">
+											Rejected by Mis Assistant
+										</div>
+									</div>
 								</div>
 							</div>
 						)}

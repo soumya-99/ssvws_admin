@@ -472,7 +472,7 @@ function GroupExtendedForm({ groupDataArr }) {
 
 								{console.log("+++++++++++++++++++++++++++++", memberDetails)}
 
-								{memberDetails?.map((item, i) => (
+								{groupData[0]?.memb_dt?.map((item, i) => (
 									<Tag
 										key={i}
 										icon={<UserOutlined />}
