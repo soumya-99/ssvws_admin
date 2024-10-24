@@ -145,7 +145,7 @@ function EditGRTFormBM() {
 									>
 										Approval Status: Sanctioned
 										<div>
-											<div>Forwarded from BM to Mis Assistant</div>
+											<div>Forwarded from BM to MIS Assistant</div>
 										</div>
 									</Tag>
 								</div>
@@ -186,6 +186,19 @@ function EditGRTFormBM() {
 										</div>
 									</div>
 								))}
+
+								<div className="mr-14 mt-5">
+									<Tag
+										className="text-xl text-wrap w-96 text-right p-2 flex flex-col justify-center items-end align-middle"
+										bordered={false}
+										color={"Red"}
+									>
+										Approval Status: Approved
+										<div>
+											<div>Approved by MIS Assistant</div>
+										</div>
+									</Tag>
+								</div>
 							</div>
 						)}
 

@@ -107,7 +107,7 @@ function EditGRTFormMis() {
 										color={"green"}
 									>
 										Approval Status: Sanctioned
-										<div>Forwarded from BM to Mis Assistant</div>
+										<div>Forwarded from BM to MIS Assistant</div>
 									</Tag>
 								</div>
 							</div>
@@ -155,7 +155,7 @@ function EditGRTFormMis() {
 										color={"red"}
 									>
 										Approval Status: Approved
-										<div>Approved by Mis Assistant</div>
+										<div>Approved by MIS Assistant</div>
 									</Tag>
 								</div>
 							</div>
