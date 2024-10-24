@@ -12,6 +12,8 @@ import {
 	ContainerOutlined,
 	FileSearchOutlined,
 	SearchOutlined,
+	DeploymentUnitOutlined,
+	PlusCircleOutlined,
 } from "@ant-design/icons"
 import { Menu } from "antd"
 import { Link } from "react-router-dom"
@@ -56,11 +58,11 @@ function MenusBr({ theme }) {
 					icon: <SearchOutlined />,
 					label: <Link to={"/homemis/searchform/"}>Search Form</Link>,
 				},
-				{
-					key: "sub2-3",
-					icon: <FileSearchOutlined />,
-					label: <Link to={"/homemis/searchgroup/"}>Search Group</Link>,
-				},
+				// {
+				// 	key: "sub2-3",
+				// 	icon: <FileSearchOutlined />,
+				// 	label: <Link to={"/homemis/searchgroup/"}>Search Group</Link>,
+				// },
 				{
 					key: "sub2-4",
 					icon: <FileSearchOutlined />,
@@ -68,11 +70,23 @@ function MenusBr({ theme }) {
 				},
 			],
 		},
-		// {
-		// 	key: "sub2",
-		// 	icon: <ImportOutlined />,
-		// 	label: <Link to={"/homemis/grtappls/"}>GRT Applications</Link>,
-		// },
+		{
+			key: "sub3",
+			icon: <DeploymentUnitOutlined />,
+			label: "Groups",
+			children: [
+				{
+					key: "sub3-1",
+					icon: <FileSearchOutlined />,
+					label: <Link to={"/homemis/searchgroup/"}>Search Group</Link>,
+				},
+				{
+					key: "sub3-2",
+					icon: <PlusCircleOutlined />,
+					label: <Link to={"/homemis/editgroupform/0"}>Add Group</Link>,
+				},
+			],
+		},
 		{
 			label: "Reports",
 			key: "sub6",

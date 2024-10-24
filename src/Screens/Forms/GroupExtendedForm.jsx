@@ -40,6 +40,12 @@ function GroupExtendedForm({ groupDataArr }) {
 
 	const [groupData, setGroupData] = useState(() => [])
 
+	const [branches, setBranches] = useState(() => [])
+	const [branch, setBranch] = useState(() => "")
+
+	const [blocks, setBlocks] = useState(() => [])
+	const [block, setBlock] = useState(() => "")
+
 	const [groupDetails, setGroupDetails] = useState(() => [])
 	const [memberDetails, setMemberDetails] = useState(() => [])
 	const [visible, setVisible] = useState(() => false)
@@ -52,7 +58,7 @@ function GroupExtendedForm({ groupDataArr }) {
 		g_group_type: "",
 		g_address: "",
 		g_pin: "",
-		g_group_block: "",
+		// g_group_block: "",
 		g_phone1: "",
 		g_phone2: "",
 		g_email: "",
@@ -70,7 +76,7 @@ function GroupExtendedForm({ groupDataArr }) {
 		g_group_type: Yup.string().required("Group type is required"),
 		g_address: Yup.string().required("Group address is required"),
 		g_pin: Yup.string().required("PIN No. is required"),
-		g_group_block: Yup.string().required("Group block is required"),
+		// g_group_block: Yup.string().required("Group block is required"),
 		g_phone1: Yup.string().required("Phone 1 is required"),
 		// g_phone2: Yup.string(),
 		// g_email: Yup.string(),
@@ -108,6 +114,10 @@ function GroupExtendedForm({ groupDataArr }) {
 					g_acc2: res?.data?.msg[0]?.acc_no2,
 				})
 				setGroupData(res?.data?.msg)
+				setBranch(
+					res?.data?.msg[0]?.disctrict + "," + res?.data?.msg[0]?.branch_code
+				)
+				setBlock(res?.data?.msg[0]?.block)
 			})
 			.catch((err) => {
 				Message("error", "Some error occurred while fetching group form")
@@ -158,6 +168,43 @@ function GroupExtendedForm({ groupDataArr }) {
 	// 	fetchGroupAndMembersDetails()
 	// }, [])
 
+	const handleFetchBranches = async () => {
+		setLoading(true)
+		await axios
+			.get(`${url}/admin/branch_name_mis?branch_code=${userDetails?.brn_code}`)
+			.then((res) => {
+				console.log("QQQQQQQQQQQQQQQQ", res?.data)
+				setBranches(res?.data?.msg)
+			})
+			.catch((err) => {
+				console.log("?????????????????????", err)
+			})
+
+		setLoading(false)
+	}
+
+	useEffect(() => {
+		handleFetchBranches()
+	}, [])
+
+	const handleFetchBlocks = async (brn) => {
+		setLoading(true)
+		await axios
+			.get(`${url}/get_block?dist_id=${brn}`)
+			.then((res) => {
+				console.log("******************", res?.data)
+				setBlocks(res?.data?.msg)
+			})
+			.catch((err) => {
+				console.log("!!!!!!!!!!!!!!!!", err)
+			})
+		setLoading(false)
+	}
+
+	useEffect(() => {
+		handleFetchBlocks(branch)
+	}, [branch])
+
 	const onSubmit = async (values) => {
 		console.log("onsubmit called")
 		console.log(values, "onsubmit vendor")
@@ -181,7 +228,7 @@ function GroupExtendedForm({ groupDataArr }) {
 	const editGroup = async () => {
 		setLoading(true)
 		const creds = {
-			branch_code: userDetails?.brn_code,
+			branch_code: branch?.split(",")[1],
 			group_name: formik.values.g_group_name,
 			group_type: formik.values.g_group_type,
 			// co_id: userDetails?.id,
@@ -198,9 +245,12 @@ function GroupExtendedForm({ groupDataArr }) {
 			micr: formik.values.g_micr,
 			acc_no1: formik.values.g_acc1,
 			acc_no2: formik.values.g_acc2,
-			modified_by: formik.values.g_group_name,
+			modified_by: userDetails?.emp_name,
 			// modified_at: formik.values.g_group_name,
 			group_code: params?.id,
+			district: branch?.split(",")[0], // this is dist_code, stored in selection of branch
+			block: block,
+			co_id: userDetails?.emp_id,
 		}
 		await axios
 			.post(`${url}/admin/edit_group_web`, creds)
@@ -227,19 +277,19 @@ function GroupExtendedForm({ groupDataArr }) {
 				<form onSubmit={formik.handleSubmit}>
 					<div className="flex justify-start gap-5">
 						<div className="grid gap-4 sm:grid-cols-2 sm:gap-6 w-1/2">
-							<div className="sm:col-span-2">
-								<TDInputTemplateBr
-									placeholder="Form filled by / CO Name"
-									type="text"
-									label="Form filled by / CO Name"
-									name="co_name"
-									// handleChange={formik.handleChange}
-									// handleBlur={formik.handleBlur}
-									formControlName={groupData[0]?.emp_name}
-									mode={1}
-									disabled
-								/>
-							</div>
+							{params?.id > 0 && (
+								<div className="sm:col-span-2">
+									<TDInputTemplateBr
+										placeholder="Form filled by / CO Name"
+										type="text"
+										label="Form filled by / CO Name"
+										name="co_name"
+										formControlName={groupData[0]?.emp_name}
+										mode={1}
+										disabled
+									/>
+								</div>
+							)}
 							<div>
 								<TDInputTemplateBr
 									placeholder="Group Name"
@@ -281,6 +331,44 @@ function GroupExtendedForm({ groupDataArr }) {
 									<VError title={formik.errors.g_group_type} />
 								) : null}
 							</div>
+
+							{userDetails?.id === 3 && (
+								<>
+									<div className="sm:col-span-2">
+										<TDInputTemplateBr
+											placeholder="Choose Branch"
+											type="text"
+											label="Branch"
+											name="g_branch"
+											formControlName={branch}
+											handleChange={(e) => {
+												setBranch(e.target.value)
+												console.log(e.target.value)
+											}}
+											data={branches?.map((item, i) => ({
+												code: item?.dist_code + "," + item?.branch_code,
+												name: item?.branch_name,
+											}))}
+											mode={2}
+										/>
+									</div>
+									<div className="sm:col-span-2">
+										<TDInputTemplateBr
+											placeholder="Group Block"
+											type="text"
+											label="Group Block"
+											name="g_block"
+											formControlName={block}
+											handleChange={(e) => setBlock(e.target.value)}
+											data={blocks?.map((item, i) => ({
+												code: item?.block_id,
+												name: item?.block_name,
+											}))}
+											mode={2}
+										/>
+									</div>
+								</>
+							)}
 
 							<div className="sm:col-span-2">
 								<TDInputTemplateBr
@@ -464,43 +552,48 @@ function GroupExtendedForm({ groupDataArr }) {
 								height: 650,
 							}}
 						/>
-						<div className="w-1/2 gap-3 space-x-7">
-							<div>
-								<div className="text-blue-700 mb-2 font-bold">
-									Members in this Group
-								</div>
+						{params?.id > 0 && (
+							<div className="w-1/2 gap-3 space-x-7">
+								<div>
+									<div className="text-blue-700 mb-2 font-bold">
+										Members in this Group
+									</div>
 
-								{console.log("+++++++++++++++++++++++++++++", memberDetails)}
+									{console.log("+++++++++++++++++++++++++++++", memberDetails)}
 
-								{groupData[0]?.memb_dt?.map((item, i) => (
-									<Tag
-										key={i}
-										icon={<UserOutlined />}
-										color={
-											item?.approval_status === "U" ||
-											(userDetails?.id == 3 && item?.approval_status === "S")
-												? "geekblue"
-												: "red"
-										}
-										className="text-lg cursor-pointer mb-5 rounded-3xl
+									{groupData[0]?.memb_dt?.map((item, i) => (
+										<Tag
+											key={i}
+											icon={<UserOutlined />}
+											color={
+												item?.approval_status === "U" ||
+												(userDetails?.id == 3 && item?.approval_status === "S")
+													? "geekblue"
+													: "red"
+											}
+											className="text-lg cursor-pointer mb-5 rounded-3xl
 									"
-										onClick={
-											userDetails?.id == 3
-												? () =>
-														navigate(`/homemis/editgrtform/${item?.form_no}`, {
-															state: item,
-														})
-												: () =>
-														navigate(`/homebm/editgrtform/${item?.form_no}`, {
-															state: item,
-														})
-										}
-									>
-										{item?.client_name}
-									</Tag>
-								))}
+											onClick={
+												userDetails?.id == 3
+													? () =>
+															navigate(
+																`/homemis/editgrtform/${item?.form_no}`,
+																{
+																	state: item,
+																}
+															)
+													: () =>
+															navigate(`/homebm/editgrtform/${item?.form_no}`, {
+																state: item,
+															})
+											}
+										>
+											{item?.client_name}
+										</Tag>
+									))}
+								</div>
 							</div>
-						</div>
+						)}
 					</div>
 					<BtnComp
 						mode="A"
@@ -513,6 +606,7 @@ function GroupExtendedForm({ groupDataArr }) {
 						// onSendTo={() => console.log("dsaf")}
 						// condition={fetchedFileDetails?.length > 0}
 						// showSave
+						param={params?.id}
 					/>
 				</form>
 			</Spin>
