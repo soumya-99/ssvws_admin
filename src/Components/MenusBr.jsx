@@ -14,6 +14,7 @@ import {
 	SearchOutlined,
 	DeploymentUnitOutlined,
 	PlusCircleOutlined,
+	SubnodeOutlined,
 } from "@ant-design/icons"
 import { Menu } from "antd"
 import { Link } from "react-router-dom"
@@ -84,6 +85,11 @@ function MenusBr({ theme }) {
 					key: "sub3-2",
 					icon: <PlusCircleOutlined />,
 					label: <Link to={"/homemis/editgroupform/0"}>Add Group</Link>,
+				},
+				{
+					key: "sub3-3",
+					icon: <SubnodeOutlined />,
+					label: <Link to={"/homemis/assignmember"}>Assign Member</Link>,
 				},
 			],
 		},

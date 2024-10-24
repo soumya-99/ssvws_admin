@@ -30,6 +30,7 @@ import SearchGRTFormMis from "./Screens/MISAssistantHome/SearchGRTFormMis"
 import SearchGroupMis from "./Screens/MISAssistantHome/SearchGroupMis"
 import SearchGRTFormBM from "./Screens/BMHome/SearchGRTFormBM"
 import SearchMemberMis from "./Screens/MISAssistantHome/SearchMemberMis"
+import AssignMemberToGroup from "./Screens/MISAssistantHome/AssignMemberToGroup"
 
 // const AuthBr = lazy(() => import("./Screens/BranchManager/AuthBr"))
 
@@ -85,6 +86,10 @@ const router = createBrowserRouter([
 							{
 								path: "searchmember",
 								element: <SearchMemberMis />,
+							},
+							{
+								path: "assignmember",
+								element: <AssignMemberToGroup />,
 							},
 							{
 								path: "editgroupform/:id",
