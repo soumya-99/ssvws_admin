@@ -85,9 +85,10 @@ function GroupExtendedForm({ groupDataArr }) {
 	const fetchGroupDetails = async () => {
 		const creds = {
 			group_code: params?.id,
+			branch_code: userDetails?.brn_code,
 		}
 		await axios
-			.post(`${url}/admin/edit_search_group_web`, creds)
+			.post(`${url}/admin/fetch_search_group_web`, creds)
 			.then((res) => {
 				console.log("........>>>>>>>>>>", res?.data)
 				setValues({
@@ -183,13 +184,13 @@ function GroupExtendedForm({ groupDataArr }) {
 			branch_code: userDetails?.brn_code,
 			group_name: formik.values.g_group_name,
 			group_type: formik.values.g_group_type,
-			co_id: userDetails?.id,
+			// co_id: userDetails?.id,
 			phone1: formik.values.g_phone1,
 			phone2: formik.values.g_phone2,
 			email_id: formik.values.g_email,
 			grp_addr: formik.values.g_address,
-			disctrict: groupDetails?.disctrict,
-			block: formik.values.g_group_block,
+			// disctrict: groupDetails?.disctrict,
+			// block: formik.values.g_group_block,
 			pin_no: formik.values.g_pin,
 			bank_name: formik.values.g_bank_name,
 			branch_name: formik.values.g_bank_branch,
@@ -199,7 +200,7 @@ function GroupExtendedForm({ groupDataArr }) {
 			acc_no2: formik.values.g_acc2,
 			modified_by: formik.values.g_group_name,
 			// modified_at: formik.values.g_group_name,
-			group_code: groupDetails?.prov_grp_code,
+			group_code: params?.id,
 		}
 		await axios
 			.post(`${url}/admin/edit_group_web`, creds)
