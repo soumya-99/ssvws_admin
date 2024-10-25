@@ -12,8 +12,10 @@ import {
 import GroupsTableViewBr from "../../Components/GroupsTableViewBr"
 import FormHeader from "../../Components/FormHeader"
 import TDInputTemplateBr from "../../Components/TDInputTemplateBr"
+import { useNavigate } from "react-router-dom"
 
 function AssignMemberToGroup() {
+	const navigate = useNavigate()
 	const userDetails = JSON.parse(localStorage.getItem("user_details")) || ""
 	const [loading, setLoading] = useState(false)
 
@@ -75,9 +77,9 @@ function AssignMemberToGroup() {
 	// 	console.log("target:", e.target)
 	// }
 
-	const mockVal = (str, repeat = 1) => ({
-		value: str.repeat(repeat),
-	})
+	// const mockVal = (str, repeat = 1) => ({
+	// 	value: str.repeat(repeat),
+	// })
 
 	const fetchMembers = async () => {
 		setLoading(true)
@@ -99,6 +101,30 @@ function AssignMemberToGroup() {
 				])
 			})
 			.catch((err) => {
+				console.log(err)
+			})
+		setLoading(false)
+	}
+
+	const onSubmit = async () => {
+		setLoading(true)
+		const creds = {
+			group_code: group?.split(",")[0],
+			member_code: targetKeys,
+			added_by: userDetails?.emp_name,
+		}
+		await axios
+			.post(`${url}/admin/assign_group_to_mem`, creds)
+			.then((res) => {
+				Message("success", "Members assigned!")
+				// navigate(`/homemis/searchgroup`)
+				setMemberNameOrCode(() => "")
+				setInitialDataSource(() => [])
+				setGroups(() => [])
+				setGroup(() => "")
+			})
+			.catch((err) => {
+				Message("error", "Some error occurred while assigning.")
 				console.log(err)
 			})
 		setLoading(false)
@@ -223,7 +249,7 @@ function AssignMemberToGroup() {
 							<button
 								type="button"
 								className=" disabled:bg-gray-400 disabled:dark:bg-gray-400 inline-flex items-center px-5 py-2.5 mt-4 sm:mt-6 text-sm font-medium text-center text-white bg-[#6457A6] transition ease-in-out hover:bg-[#4e4480] duration-300  rounded-full focus:ring-gray-600  dark:focus:ring-primary-900 dark:bg-[#92140C] dark:hover:bg-gray-600"
-								onClick={() => null}
+								onClick={onSubmit}
 								disabled={targetKeys.length === 0 && !group.split(",")[0]}
 							>
 								<SaveOutlined className="mr-2 self-center" />
