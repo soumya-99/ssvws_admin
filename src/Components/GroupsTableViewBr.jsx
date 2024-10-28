@@ -187,7 +187,7 @@ function GroupsTableViewBr({
 												onClick={() => {
 													console.log("LLSKSIODFUISFH", item)
 													navigate(
-														`/homemis/editgroupform/${item?.group_code}`,
+														`/homeco/editgroupform/${item?.group_code}`,
 														{
 															state: item,
 														}

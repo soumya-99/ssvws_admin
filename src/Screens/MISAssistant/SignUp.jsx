@@ -28,6 +28,26 @@ function SignUp() {
 		cnf_password: "",
 	}
 
+	const handleEmployeeIdBlur = async (e) => {
+		setLoading(true)
+		console.log("MEM IDDDD BLUR", e.target.value)
+		formik.handleBlur(e)
+
+		const creds = {
+			emp_id: e.target.value,
+		}
+		await axios
+			.post(`${url}/admin/fetch_sign_up_dt`, creds)
+			.then((res) => {
+				console.log("-------- -------- --------", res?.data)
+				Message("success", res?.data?.msg)
+			})
+			.catch((err) => {
+				console.log("ERRR FETCH", err)
+			})
+		setLoading(false)
+	}
+
 	const onSubmit = async (values) => {
 		setLoading(true)
 		console.log(values)
@@ -121,7 +141,7 @@ function SignUp() {
 							name="user_id"
 							formControlName={formik.values.user_id}
 							handleChange={formik.handleChange}
-							handleBlur={formik.handleBlur}
+							handleBlur={handleEmployeeIdBlur}
 							mode={1}
 						/>
 						{formik.errors.user_id && formik.touched.user_id ? (

@@ -30,4 +30,8 @@ export const routePaths = {
 	BM_HOME: "/homebm/",
 	BM_EDIT_GRT: "/homebm/editgrtform/",
 	BM_EDIT_GROUP: "/homebm/editgroupform/",
+
+	CO_HOME: "/homeco/",
+	CO_EDIT_GRT: "/homeco/editgrtform/",
+	CO_EDIT_GROUP: "/homeco/editgroupform/",
 }

@@ -33,6 +33,13 @@ import SearchMemberMis from "./Screens/MISAssistantHome/SearchMemberMis"
 import AssignMemberToGroup from "./Screens/MISAssistantHome/AssignMemberToGroup"
 import SignUp from "./Screens/MISAssistant/SignUp"
 import SearchGroupBM from "./Screens/BMHome/SearchGroupBM"
+import HomeCO from "./Screens/COHome/HomeCO"
+import DashboardCO from "./Screens/COHome/DashboardCO"
+import HomeScreenCO from "./Screens/COHome/HomeScreenCO"
+import SearchGRTFormCO from "./Screens/COHome/SearchGRTFormCO"
+import SearchGroupCO from "./Screens/COHome/SearchGroupCO"
+import EditGRTFormCO from "./Screens/COHome/EditGRTFormCO"
+import SearchMemberCO from "./Screens/COHome/SearchMemberCO"
 
 // const AuthBr = lazy(() => import("./Screens/BranchManager/AuthBr"))
 
@@ -130,6 +137,53 @@ const router = createBrowserRouter([
 							{
 								path: "editgrtform/:id",
 								element: <EditGRTFormBM />,
+							},
+						],
+					},
+					{
+						path: "homeco",
+						element: <HomeCO />,
+						children: [
+							{
+								path: "",
+								element: <DashboardCO />,
+							},
+							{
+								path: "grtappls",
+								element: <HomeScreenCO />,
+							},
+							{
+								path: "searchform",
+								element: <SearchGRTFormCO />,
+							},
+							{
+								path: "searchgroup",
+								element: <SearchGroupCO />,
+							},
+
+							{
+								path: "searchgroup",
+								element: <SearchGroupCO />,
+							},
+							{
+								path: "searchmember",
+								element: <SearchMemberCO />,
+							},
+							{
+								path: "assignmember",
+								element: <AssignMemberToGroup />,
+							},
+							{
+								path: "editgroupform/:id",
+								element: <EditGroupForm />,
+							},
+							// {
+							// 	path: "editgroupform/:id",
+							// 	element: <EditGroupFormBM />,
+							// },
+							{
+								path: "editgrtform/:id",
+								element: <EditGRTFormCO />,
 							},
 						],
 					},

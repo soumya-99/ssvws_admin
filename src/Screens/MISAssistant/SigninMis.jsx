@@ -47,6 +47,10 @@ function SigninMis() {
 						JSON.stringify(res?.data?.user_dtls)
 					)
 
+					if (res?.data?.user_dtls?.id == 1) {
+						navigate(routePaths.CO_HOME)
+					}
+
 					if (res?.data?.user_dtls?.id == 2) {
 						navigate(routePaths.BM_HOME)
 					}
@@ -86,7 +90,7 @@ function SigninMis() {
 					<motion.img
 						initial={{ opacity: 0 }}
 						animate={{ opacity: 1 }}
-						transition={{ delay: 4, type: "spring" }}
+						transition={{ delay: 1, type: "spring" }}
 						src={LOGO}
 						className="h-20"
 						alt="Flowbite Logo"
@@ -172,7 +176,7 @@ function SigninMis() {
 								type="submit"
 								className="bg-blue-800 hover:duration-500 w-full hover:scale-105 text-white p-3 rounded-full"
 							>
-								Sign Up
+								Sign In
 							</button>
 						</div>
 					</Spin>

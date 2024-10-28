@@ -59,11 +59,6 @@ function MenusBr({ theme }) {
 					icon: <SearchOutlined />,
 					label: <Link to={"/homemis/searchform/"}>Search Form</Link>,
 				},
-				// {
-				// 	key: "sub2-3",
-				// 	icon: <FileSearchOutlined />,
-				// 	label: <Link to={"/homemis/searchgroup/"}>Search Group</Link>,
-				// },
 				{
 					key: "sub2-4",
 					icon: <FileSearchOutlined />,
@@ -71,28 +66,28 @@ function MenusBr({ theme }) {
 				},
 			],
 		},
-		{
-			key: "sub3",
-			icon: <DeploymentUnitOutlined />,
-			label: "Groups",
-			children: [
-				{
-					key: "sub3-1",
-					icon: <FileSearchOutlined />,
-					label: <Link to={"/homemis/searchgroup/"}>Search Group</Link>,
-				},
-				{
-					key: "sub3-2",
-					icon: <PlusCircleOutlined />,
-					label: <Link to={"/homemis/editgroupform/0"}>Add Group</Link>,
-				},
-				{
-					key: "sub3-3",
-					icon: <SubnodeOutlined />,
-					label: <Link to={"/homemis/assignmember"}>Assign Member</Link>,
-				},
-			],
-		},
+		// {
+		// 	key: "sub3",
+		// 	icon: <DeploymentUnitOutlined />,
+		// 	label: "Groups",
+		// 	children: [
+		// 		{
+		// 			key: "sub3-1",
+		// 			icon: <FileSearchOutlined />,
+		// 			label: <Link to={"/homemis/searchgroup/"}>Search Group</Link>,
+		// 		},
+		// 		{
+		// 			key: "sub3-2",
+		// 			icon: <PlusCircleOutlined />,
+		// 			label: <Link to={"/homemis/editgroupform/0"}>Add Group</Link>,
+		// 		},
+		// 		{
+		// 			key: "sub3-3",
+		// 			icon: <SubnodeOutlined />,
+		// 			label: <Link to={"/homemis/assignmember"}>Assign Member</Link>,
+		// 		},
+		// 	],
+		// },
 		{
 			label: "Reports",
 			key: "sub6",
@@ -128,6 +123,92 @@ function MenusBr({ theme }) {
 				},
 			],
 		},
+
+		{
+			key: "sub3",
+			icon: <DeploymentUnitOutlined />,
+			label: "Groups",
+			children: [
+				{
+					key: "sub3-1",
+					icon: <FileSearchOutlined />,
+					label: <Link to={"/homebm/searchgroup/"}>Search Group</Link>,
+				},
+				{
+					key: "sub3-2",
+					icon: <PlusCircleOutlined />,
+					label: <Link to={"/homebm/editgroupform/0"}>Add Group</Link>,
+				},
+				{
+					key: "sub3-3",
+					icon: <SubnodeOutlined />,
+					label: <Link to={"/homebm/assignmember"}>Assign Member</Link>,
+				},
+			],
+		},
+		// {
+		// 	key: "sub2",
+		// 	icon: <ImportOutlined />,
+		// 	label: <Link to={"/homebm/grtappls/"}>GRT Applications</Link>,
+		// },
+		{
+			label: "Reports",
+			key: "sub6",
+			icon: <BarsOutlined />,
+		},
+	]
+
+	const itemsCO = [
+		{
+			key: "sub1",
+			icon: <LineChartOutlined />,
+			label: <Link to={"/homeco/"}>Dashboard</Link>,
+		},
+		{
+			key: "sub2",
+			icon: <ImportOutlined />,
+			label: "Members",
+			children: [
+				{
+					key: "sub2-1",
+					icon: <ContainerOutlined />,
+					label: <Link to={"/homeco/grtappls/"}>Applications</Link>,
+				},
+				{
+					key: "sub2-2",
+					icon: <SearchOutlined />,
+					label: <Link to={"/homeco/searchform/"}>Search Form</Link>,
+				},
+				{
+					key: "sub2-3",
+					icon: <FileSearchOutlined />,
+					label: <Link to={"/homeco/searchgroup/"}>Search Group</Link>,
+				},
+			],
+		},
+
+		{
+			key: "sub3",
+			icon: <DeploymentUnitOutlined />,
+			label: "Groups",
+			children: [
+				{
+					key: "sub3-1",
+					icon: <FileSearchOutlined />,
+					label: <Link to={"/homeco/searchgroup/"}>Search Group</Link>,
+				},
+				{
+					key: "sub3-2",
+					icon: <PlusCircleOutlined />,
+					label: <Link to={"/homeco/editgroupform/0"}>Add Group</Link>,
+				},
+				{
+					key: "sub3-3",
+					icon: <SubnodeOutlined />,
+					label: <Link to={"/homeco/assignmember"}>Assign Member</Link>,
+				},
+			],
+		},
 		// {
 		// 	key: "sub2",
 		// 	icon: <ImportOutlined />,
@@ -146,7 +227,13 @@ function MenusBr({ theme }) {
 			<Menu
 				onClick={onClick}
 				selectedKeys={[current]}
-				items={userDetails?.id === 3 ? items : itemsBM}
+				items={
+					userDetails?.id === 3
+						? items
+						: userDetails?.id === 2
+						? itemsBM
+						: itemsCO
+				}
 				mode="horizontal"
 				style={{
 					width: 1000,
