@@ -52,9 +52,9 @@ function GroupsTableViewBr({
 			>
 				<div
 					className={`flex flex-col p-1 ${
-						flag !== "BM" ? "bg-blue-800" : "bg-stone-800"
+						flag !== "BM" ? "bg-stone-800" : "bg-stone-800"
 					} rounded-lg my-3 ${
-						flag !== "BM" ? "dark:bg-blue-800" : "dark:bg-stone-800"
+						flag !== "BM" ? "dark:bg-stone-800" : "dark:bg-stone-800"
 					} md:flex-row items-center justify-between space-y-3 md:space-y-0 md:space-x-4 p-3`}
 				>
 					<div className="w-full">
@@ -95,8 +95,8 @@ function GroupsTableViewBr({
 										animate={{ opacity: 1, width: "95%" }}
 										transition={{ delay: 1.1, type: "just" }}
 										className={`bg-white border rounded-lg ${
-											flag !== "BM" ? "border-blue-700" : "border-stone-700"
-										} text-gray-800 block w-full h-12 pl-10 dark:bg-gray-800 md:ml-4 duration-300 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white text-lg focus:border-blue-600`}
+											flag !== "BM" ? "border-stone-700" : "border-stone-700"
+										} text-gray-800 block w-full h-12 pl-10 dark:bg-gray-800 md:ml-4 duration-300 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white text-lg focus:border-stone-600`}
 										placeholder="Search"
 										required=""
 										onChange={(text) => setSearch(text.target.value)}
@@ -115,7 +115,7 @@ function GroupsTableViewBr({
 				<table className="w-full text-sm text-left rtl:text-right shadow-lg text-green-900dark:text-gray-400">
 					<thead
 						className={`text-md text-gray-700 capitalize ${
-							flag !== "BM" ? "bg-blue-100" : "bg-stone-100"
+							flag !== "BM" ? "bg-stone-100" : "bg-stone-100"
 						} dark:bg-gray-700 dark:text-gray-400`}
 					>
 						<tr>
@@ -196,7 +196,7 @@ function GroupsTableViewBr({
 											>
 												<EditOutlined
 													className={`text-md ${
-														flag !== "BM" ? "text-blue-800" : "text-stone-800"
+														flag !== "BM" ? "text-stone-800" : "text-stone-800"
 													}`}
 												/>
 											</button>
@@ -216,7 +216,7 @@ function GroupsTableViewBr({
 											>
 												<EditOutlined
 													className={`text-md ${
-														flag !== "BM" ? "text-blue-800" : "text-stone-800"
+														flag !== "BM" ? "text-stone-800" : "text-stone-800"
 													}`}
 												/>
 											</button>
