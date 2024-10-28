@@ -81,199 +81,102 @@ function SigninMis() {
 
 	return (
 		<div className="bg-blue-800 p-20 flex justify-center min-h-screen min-w-screen">
-			<motion.div
-				initial={{ opacity: 0 }}
-				animate={{ opacity: 1 }}
-				transition={{ delay: 0.5, type: "spring" }}
-				className="grid grid-cols-2 gap-0 h-auto shadow-lg w-5/6"
-			>
-				<div className="hidden bg-white sm:block rounded-l-3xl">
-					{/* <img className="ml-7 h-full w-full" src={`${IMG}`} alt="" /> */}
+			<div className="bg-white p-44 rounded-3xl flex flex-col gap-8 justify-center items-center">
+				<div className="absolute top-32">
+					<motion.img
+						initial={{ opacity: 0 }}
+						animate={{ opacity: 1 }}
+						transition={{ delay: 4, type: "spring" }}
+						src={LOGO}
+						className="h-20"
+						alt="Flowbite Logo"
+					/>
 				</div>
-				<div
-					className={`hidden sm:block sm:p-5 col-span-2 sm:col-span-1 
-        bg-white h-auto space-y-5 w-full
-         sm:rounded-r-3xl
-        `}
+				<div className="text-4xl text-center font-thin text-blue-800">
+					LOGIN
+				</div>
+
+				<form
+					onSubmit={formik.handleSubmit}
+					className="flex flex-col justify-center items-center gap-5"
 				>
 					<div
-						className={`max-w-screen px-16
-                flex-col items-center justify-center mt-7
-                `}
+						style={{
+							width: 280,
+						}}
 					>
-						<div className="flex-col items-center justify-center ml-7 2xl:ml-36 2xl:mt-44">
-							<motion.h2
-								className="text-blue-800 text-4xl mt-14 ml-24 font-bold"
-								initial={{ opacity: 1 }}
-								animate={{ opacity: 0, y: -20 }}
-								transition={{ delay: 4, type: "tween" }}
-							>
-								Welcome Back!
-							</motion.h2>
-							<motion.img
-								initial={{ opacity: 0 }}
-								animate={{ opacity: 1 }}
-								transition={{ delay: 4, type: "spring" }}
-								src={LOGO}
-								className="h-20 -mt-16 -ml-4 sm:ml-9 2xl:ml-7 2xl:h-24"
-								alt="Flowbite Logo"
-							/>
-						</div>
-
-						<form
-							onSubmit={formik.handleSubmit}
-							className="w-full py-6 sm:ml-10 2xl:space-y-2 2xl:px-8"
-						>
-							<div className="pt-1 block ">
-								<TDInputTemplateBr
-									placeholder="Type employee id..."
-									type="text"
-									label="Employee ID"
-									name="user_id"
-									formControlName={formik.values.user_id}
-									handleChange={formik.handleChange}
-									handleBlur={formik.handleBlur}
-									mode={1}
-								/>
-
-								{formik.errors.user_id && formik.touched.user_id ? (
-									<VError title={formik.errors.user_id} />
-								) : null}
-							</div>
-							<div className="pt-6 block">
-								<TDInputTemplateBr
-									placeholder="*****"
-									type="password"
-									label="Your password"
-									name="password"
-									formControlName={formik.values.password}
-									handleChange={formik.handleChange}
-									handleBlur={formik.handleBlur}
-									mode={1}
-								/>
-
-								{formik.errors.password && formik.touched.password ? (
-									<VError title={formik.errors.password} />
-								) : null}
-							</div>
-							<div className="pt-2">
-								<Link to={routePaths.FORGOTPASS}>
-									<p className="text-xs text-blue-800 hover:underline py-2 cursor-pointer">
-										Forgot password?
-									</p>
-								</Link>
-							</div>
-							<Spin
-								indicator={<LoadingOutlined spin />}
-								size={5}
-								className="text-blue-800 w-52 dark:text-gray-400"
-								spinning={loading}
-							>
-								<div className="pt-4 pb-4 flex justify-center text-sm">
-									<button
-										disabled={!formik.isValid}
-										type="submit"
-										className="bg-blue-800 hover:duration-500 w-full hover:scale-105 text-white p-3 rounded-full"
-									>
-										Login to your account
-									</button>
-								</div>
-							</Spin>
-						</form>
-					</div>
-				</div>
-			</motion.div>
-			<div
-				className={`block w-80 sm:hidden 
-        bg-white h-auto space-y-5
-         rounded-3xl
-        `}
-			>
-				<div
-					className={`
-                flex-col items-center justify-center mt-7 p-10
-                `}
-				>
-					<div className="flex-col items-center justify-center">
-						<motion.h2
-							className="text-blue-800 text-4xl mt-14 mx-24 font-bold"
-							initial={{ opacity: 1 }}
-							animate={{ opacity: 0, y: -20 }}
-							transition={{ delay: 4, type: "tween" }}
-						>
-							Welcome
-						</motion.h2>
-						<motion.img
-							initial={{ opacity: 0 }}
-							animate={{ opacity: 1 }}
-							transition={{ delay: 4, type: "spring" }}
-							src={LOGO}
-							className="h-20 -mt-16 -ml-4 sm:ml-9 2xl:ml-7 2xl:h-24"
-							alt="Flowbite Logo"
+						<TDInputTemplateBr
+							placeholder="Type employee id..."
+							type="text"
+							label="Employee ID"
+							name="user_id"
+							formControlName={formik.values.user_id}
+							handleChange={formik.handleChange}
+							handleBlur={formik.handleBlur}
+							mode={1}
 						/>
+						{formik.errors.user_id && formik.touched.user_id ? (
+							<VError title={formik.errors.user_id} />
+						) : null}
 					</div>
-
-					<form
-						onSubmit={formik.handleSubmit}
-						className="w-full py-6 sm:ml-10 2xl:space-y-2 2xl:px-8"
+					<div
+						style={{
+							width: 280,
+						}}
 					>
-						<div className="pt-1 block ">
-							<TDInputTemplate
-								placeholder="user id"
-								type="text"
-								label="Your User ID"
-								name="user_id"
-								formControlName={formik.values.user_id}
-								handleChange={formik.handleChange}
-								handleBlur={formik.handleBlur}
-								mode={1}
-							/>
-
-							{formik.errors.user_id && formik.touched.user_id ? (
-								<VError title={formik.errors.user_id} />
-							) : null}
-						</div>
-						<div className="pt-6 block">
-							<TDInputTemplate
-								placeholder="*****"
-								type="password"
-								label="Your password"
-								name="password"
-								formControlName={formik.values.password}
-								handleChange={formik.handleChange}
-								handleBlur={formik.handleBlur}
-								mode={1}
-							/>
-
-							{formik.errors.password && formik.touched.password ? (
-								<VError title={formik.errors.password} />
-							) : null}
-						</div>
-						<div className="pt-2">
-							<Link to={routePaths.FORGOTPASS}>
-								<p className="text-xs text-green-900 hover:underline py-2 cursor-pointer">
-									Forgot password?
-								</p>
-							</Link>
-						</div>
-						<Spin
-							indicator={<LoadingOutlined spin />}
-							size={5}
-							className="text-blue-800 w-52 dark:text-gray-400"
-							spinning={loading}
+						<TDInputTemplateBr
+							placeholder="*****"
+							type="password"
+							label="Password"
+							name="password"
+							formControlName={formik.values.password}
+							handleChange={formik.handleChange}
+							handleBlur={formik.handleBlur}
+							mode={1}
+						/>
+						{formik.errors.password && formik.touched.password ? (
+							<VError title={formik.errors.password} />
+						) : null}
+					</div>
+					<div
+						className="pt-2 flex justify-between gap-5"
+						style={{
+							width: 280,
+						}}
+					>
+						<Link to={routePaths.SIGN_UP}>
+							<p className="text-sm text-blue-800 hover:underline py-2 cursor-pointer">
+								Sign Up
+							</p>
+						</Link>
+						<Link to={routePaths.FORGOTPASS}>
+							<p className="text-sm text-blue-800 hover:underline py-2 cursor-pointer">
+								Forgot password?
+							</p>
+						</Link>
+					</div>
+					<Spin
+						indicator={<LoadingOutlined spin />}
+						size={5}
+						className="text-blue-800 w-52 dark:text-gray-400"
+						spinning={loading}
+					>
+						<div
+							className="pt-4 pb-4 flex justify-center text-sm"
+							style={{
+								width: 280,
+							}}
 						>
-							<div className="pt-4 pb-4 flex justify-center text-sm">
-								<button
-									disabled={!formik.isValid}
-									type="submit"
-									className="bg-blue-800 hover:duration-500 w-full hover:scale-105  text-white p-3 rounded-full"
-								>
-									Login to your account
-								</button>
-							</div>
-						</Spin>
-					</form>
-				</div>
+							<button
+								disabled={!formik.isValid}
+								type="submit"
+								className="bg-blue-800 hover:duration-500 w-full hover:scale-105 text-white p-3 rounded-full"
+							>
+								Sign Up
+							</button>
+						</div>
+					</Spin>
+				</form>
 			</div>
 		</div>
 	)

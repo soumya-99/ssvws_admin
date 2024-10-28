@@ -96,11 +96,11 @@ function SearchGRTFormBM() {
 
 	return (
 		<div>
-			<Sidebar mode={1} />
+			<Sidebar mode={2} />
 			<Spin
 				indicator={<LoadingOutlined spin />}
 				size="large"
-				className="text-blue-800 dark:text-gray-400"
+				className="text-stone-800 dark:text-gray-400"
 				spinning={loading}
 			>
 				<main className="px-4 h-auto my-10 mx-32">
@@ -118,7 +118,7 @@ function SearchGRTFormBM() {
 							placeholder="Search by Form No./Member Name/Member Code/Mobile No."
 							className={`bg-white border-1 border-gray-400 text-gray-800 text-sm rounded-lg ${
 								userDetails?.id == 3
-									? "active:border-blue-600 focus:ring-blue-600 focus:border-blue-800"
+									? "active:border-stone-600 focus:ring-stone-600 focus:border-stone-800"
 									: "active:border-stone-600 focus:ring-stone-600 focus:border-stone-800"
 							} focus:border-1 duration-500 block w-full p-2 dark:bg-bg-white dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500`}
 							onChange={(e) => setSearchKeywords(e.target.value)}
@@ -126,7 +126,7 @@ function SearchGRTFormBM() {
 						<button
 							icon={<SearchOutlined />}
 							iconPosition="end"
-							className="bg-blue-700 text-white hover:bg-blue-800 p-5 text-center text-sm border-none rounded-lg w-36 h-10 flex justify-center items-center align-middle gap-2 disabled:bg-gray-400 disabled:cursor-not-allowed active:ring-2 active:ring-blue-400"
+							className="bg-stone-700 text-white hover:bg-stone-800 p-5 text-center text-sm border-none rounded-lg w-36 h-10 flex justify-center items-center align-middle gap-2 disabled:bg-gray-400 disabled:cursor-not-allowed active:ring-2 active:ring-stone-400"
 							onClick={fetchSearchedApplication}
 							disabled={!searchKeywords}
 						>

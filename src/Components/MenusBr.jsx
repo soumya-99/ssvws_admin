@@ -119,12 +119,12 @@ function MenusBr({ theme }) {
 				{
 					key: "sub2-2",
 					icon: <SearchOutlined />,
-					label: <Link to={"/homemis/searchform/"}>Search Form</Link>,
+					label: <Link to={"/homebm/searchform/"}>Search Form</Link>,
 				},
 				{
 					key: "sub2-3",
 					icon: <FileSearchOutlined />,
-					label: <Link to={"/homemis/searchgroup/"}>Search Group</Link>,
+					label: <Link to={"/homebm/searchgroup/"}>Search Group</Link>,
 				},
 			],
 		},

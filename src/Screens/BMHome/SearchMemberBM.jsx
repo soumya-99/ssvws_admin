@@ -6,27 +6,28 @@ import { Message } from "../../Components/Message"
 import { Spin, Button } from "antd"
 import { LoadingOutlined, SearchOutlined } from "@ant-design/icons"
 import GroupsTableViewBr from "../../Components/GroupsTableViewBr"
+import MembersTableViewBr from "../../Components/MembersTableViewBr"
 
-function SearchGroupBM() {
+function SearchMemberBM() {
 	const userDetails = JSON.parse(localStorage.getItem("user_details")) || ""
 	const [loading, setLoading] = useState(false)
 
 	const [searchKeywords, setSearchKeywords] = useState(() => "")
-	const [groups, setGroups] = useState(() => [])
+	const [members, setMembers] = useState(() => [])
 	const [copyLoanApplications, setCopyLoanApplications] = useState(() => [])
 
 	const [approvalStatus, setApprovalStatus] = useState("S")
 
-	const fetchSearchedGroups = async () => {
+	const fetchSearchedMembers = async () => {
 		setLoading(true)
 		const creds = {
-			group_name: searchKeywords,
+			client_name: searchKeywords,
 		}
 		await axios
-			.post(`${url}/admin/search_group_web`, creds)
+			.post(`${url}/admin/search_member_web`, creds)
 			.then((res) => {
 				console.log("JJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJj", res?.data)
-				setGroups(res?.data?.msg)
+				setMembers(res?.data?.msg)
 			})
 			.catch((err) => {
 				Message("error", "Some error occurred while searching...")
@@ -36,7 +37,7 @@ function SearchGroupBM() {
 
 	return (
 		<div>
-			<Sidebar mode={2} />
+			<Sidebar mode={1} />
 			<Spin
 				indicator={<LoadingOutlined spin />}
 				size="large"
@@ -47,7 +48,7 @@ function SearchGroupBM() {
 					<div className="flex flex-row gap-3">
 						<input
 							type="text"
-							placeholder="Search by Group Name"
+							placeholder="Search by Member Name"
 							className={`bg-white border-1 border-gray-400 text-gray-800 text-sm rounded-lg ${
 								userDetails?.id == 3
 									? "active:border-stone-600 focus:ring-stone-600 focus:border-stone-800"
@@ -58,8 +59,8 @@ function SearchGroupBM() {
 						<button
 							icon={<SearchOutlined />}
 							iconPosition="end"
-							className="bg-stone-700 text-white hover:bg-stone-800 p-5 text-center text-sm border-none rounded-lg w-36 h-10 flex justify-center items-center align-middle gap-2 disabled:bg-gray-400 disabled:cursor-not-allowed active:ring-2 active:ring-stone-400"
-							onClick={fetchSearchedGroups}
+							className="bg-stone-700 text-white hover:bg-stone-800 p-5 text-center text-sm border-none rounded-lg w-36 h-10 flex justify-center items-center align-middle gap-2 disabled:bg-gray-400 disabled:cursor-not-allowed active:ring-2 active:ring-blue-400"
+							onClick={fetchSearchedMembers}
 							disabled={!searchKeywords}
 						>
 							<SearchOutlined />
@@ -67,10 +68,10 @@ function SearchGroupBM() {
 						</button>
 					</div>
 
-					<GroupsTableViewBr
+					<MembersTableViewBr
 						flag="BM"
-						loanAppData={groups}
-						title="Groups"
+						loanAppData={members}
+						title="Members"
 						showSearch={false}
 						// setSearch={(data) => setSearch(data)}
 					/>
@@ -85,4 +86,4 @@ function SearchGroupBM() {
 	)
 }
 
-export default SearchGroupBM
+export default SearchMemberBM

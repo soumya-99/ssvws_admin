@@ -1,6 +1,7 @@
 export const routePaths = {
 	LANDING: "/",
 
+	SIGN_UP: "/signup/",
 	// LOAN_FORM: "/loan/loanform/",
 	// LOAN_VIEW: "/loan/loanview/",
 	// APPRAISER_LOGIN: "/appraiser/",
