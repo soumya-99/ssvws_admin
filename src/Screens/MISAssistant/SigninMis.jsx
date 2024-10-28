@@ -39,7 +39,7 @@ function SigninMis() {
 			.post(`${url}/login_app`, creds)
 			.then((res) => {
 				if (res?.data?.suc === 1) {
-					Message("success", res?.data?.msg)
+					// Message("success", res?.data?.msg)
 					// setLoginUserDetails()
 
 					localStorage.setItem(
