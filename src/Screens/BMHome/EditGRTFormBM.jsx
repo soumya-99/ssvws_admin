@@ -198,6 +198,58 @@ function EditGRTFormBM() {
 							</div>
 						)}
 
+					{userDetails?.id === 2 &&
+						memberDetailsData?.approval_status === "R" && (
+							<div className="flex justify-between">
+								{metadataArray?.map((item, i) => (
+									<div
+										key={i}
+										className="mt-5 flex flex-col justify-start align-middle items-start gap-2"
+									>
+										<div className="text-sm text-wrap w-96 italic text-blue-800">
+											CO: {item?.created_by || "Nil"}, AT:{" "}
+											{item?.created_at
+												? new Date(item?.created_at).toLocaleString("en-GB")
+												: "Nil"}
+										</div>
+										<div className="text-sm text-wrap w-96 italic text-blue-800">
+											CO Location: {item?.co_gps_address || "Nil"}
+										</div>
+										<div className="text-sm text-wrap w-96 italic text-blue-800">
+											BM: {item?.modified_by || "Nil"}, AT:{" "}
+											{item?.modified_at
+												? new Date(item?.modified_at).toLocaleString("en-GB")
+												: "Nil"}
+										</div>
+										<div className="text-sm text-wrap w-96 italic text-blue-800">
+											BM Location: {item?.bm_gps_address || "Nil"}
+										</div>
+										<div className="text-sm text-wrap w-96 italic text-blue-800">
+											Rejected By: {item?.rejected_by || "Nil"}, AT:{" "}
+											{item?.rejected_at
+												? new Date(item?.rejected_at).toLocaleString("en-GB")
+												: "Nil"}
+										</div>
+									</div>
+								))}
+
+								<div className="mr-14 mt-5">
+									<div className="text-sm text-wrap w-96 italic text-right text-red-600 p-2 flex flex-col justify-center items-end align-middle">
+										Approval Status: Rejected
+										<div>
+											<div className="text-sm text-wrap w-96 italic text-right text-red-600">
+												Rejected by MIS Assistant
+											</div>
+
+											{/* <div className="text-sm text-wrap w-96 italic text-right text-red-600">
+												Remarks: {memberDetailsData?.remarks || "Nil"}
+											</div> */}
+										</div>
+									</div>
+								</div>
+							</div>
+						)}
+
 					<div className="w-auto mx-14 my-4">
 						<FormHeader text="Pending GRT Preview & Edit" mode={2} />
 					</div>

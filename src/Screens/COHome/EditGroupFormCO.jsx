@@ -1,6 +1,6 @@
 import React, { useState } from "react"
 import "../LoanForm/LoanForm.css"
-import "./EditLoanFormBMStyles.css"
+import "./EditLoanFormCOStyles.css"
 import { useParams } from "react-router"
 import { useNavigate } from "react-router-dom"
 import { Spin } from "antd"

@@ -21,6 +21,10 @@ const options = [
 		label: "Approved",
 		value: "A",
 	},
+	{
+		label: "MIS Rejected",
+		value: "R",
+	},
 ]
 
 function HomeScreenBM() {

@@ -101,7 +101,7 @@ function EditGRTFormMis() {
 								))}
 
 								<div className="mr-14 mt-5">
-									<div className="text-xl text-wrap w-96 text-right text-green-600 p-2 flex flex-col justify-center items-end align-middle">
+									<div className="text-sm text-wrap w-96 text-right text-green-600 p-2 flex flex-col justify-center items-end align-middle">
 										Approval Status: Sanctioned
 										<div className="text-sm text-wrap w-96 italic text-right text-green-600">
 											Forwarded from BM to MIS Assistant

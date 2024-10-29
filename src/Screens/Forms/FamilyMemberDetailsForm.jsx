@@ -220,6 +220,7 @@ function FamilyMemberDetailsForm({ memberDetails }) {
 			modified_by: userDetails?.emp_name,
 			form_no: params?.id,
 			branch_code: userDetails?.brn_code,
+			remarks: remarks,
 		}
 		await axios
 			.post(`${url}/final_submit`, creds)
@@ -497,37 +498,35 @@ function FamilyMemberDetailsForm({ memberDetails }) {
 								formControlName={remarks}
 								handleChange={(e) => setRemarks(e.target.value)}
 								mode={3}
-								disabled={disableCondition(
-									userDetails?.id,
-									memberDetails?.approval_status
-								)}
+								// disabled={disableCondition(
+								// 	userDetails?.id,
+								// 	memberDetails?.approval_status
+								// )}
 							/>
 						</div>
 
-						{!disableCondition(
-							userDetails?.id,
-							memberDetails?.approval_status
-						) && (
+						{true && (
 							<div className="mt-10">
 								<BtnComp
 									mode="B"
-									onPressSubmit={() => {
-										setVisible(!visible)
-									}}
-									onReset={() => {
-										setFormArray([
-											{
-												sl_no: 0,
-												f_name: "",
-												f_relation: "",
-												f_age: "",
-												f_sex: "",
-												f_education: "",
-												f_studying_or_working: "",
-												f_monthly_income: "",
-											},
-										])
-									}}
+									// onPressSubmit={() => {
+									// 	setVisible(!visible)
+									// }}
+									// onReset={() => {
+									// 	setFormArray([
+									// 		{
+									// 			sl_no: 0,
+									// 			f_name: "",
+									// 			f_relation: "",
+									// 			f_age: "",
+									// 			f_sex: "",
+									// 			f_education: "",
+									// 			f_studying_or_working: "",
+									// 			f_monthly_income: "",
+									// 		},
+									// 	])
+									// }}
+									showUpdateAndReset={false}
 									showReject={true}
 									onRejectApplication={() => setVisible2(true)}
 									showForward={true}

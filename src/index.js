@@ -23,7 +23,7 @@ import EditGroupForm from "./Screens/MISAssistantHome/EditGroupForm"
 import HomeBM from "./Screens/BMHome/HomeBM"
 import HomeScreenBM from "./Screens/BMHome/HomeScreenBM"
 import EditGRTFormBM from "./Screens/BMHome/EditGRTFormBM"
-// import EditGroupFormBM from "./Screens/BMHome/EditGroupFormBM"
+import EditGroupFormBM from "./Screens/BMHome/EditGroupFormBM"
 import DashboardBM from "./Screens/BMHome/DashboardBM"
 import DashboardMis from "./Screens/MISAssistantHome/DashboardMis"
 import SearchGRTFormMis from "./Screens/MISAssistantHome/SearchGRTFormMis"
@@ -40,6 +40,7 @@ import SearchGRTFormCO from "./Screens/COHome/SearchGRTFormCO"
 import SearchGroupCO from "./Screens/COHome/SearchGroupCO"
 import EditGRTFormCO from "./Screens/COHome/EditGRTFormCO"
 import SearchMemberCO from "./Screens/COHome/SearchMemberCO"
+import EditGroupFormCO from "./Screens/COHome/EditGroupFormCO"
 
 // const AuthBr = lazy(() => import("./Screens/BranchManager/AuthBr"))
 
@@ -96,10 +97,10 @@ const router = createBrowserRouter([
 								path: "searchmember",
 								element: <SearchMemberMis />,
 							},
-							{
-								path: "assignmember",
-								element: <AssignMemberToGroup />,
-							},
+							// {
+							// 	path: "assignmember",
+							// 	element: <AssignMemberToGroup />,
+							// },
 							{
 								path: "editgroupform/:id",
 								element: <EditGroupForm />,
@@ -130,10 +131,10 @@ const router = createBrowserRouter([
 								path: "searchgroup",
 								element: <SearchGroupBM />,
 							},
-							// {
-							// 	path: "editgroupform/:id",
-							// 	element: <EditGroupFormBM />,
-							// },
+							{
+								path: "editgroupform/:id",
+								element: <EditGroupFormBM />,
+							},
 							{
 								path: "editgrtform/:id",
 								element: <EditGRTFormBM />,
@@ -169,13 +170,13 @@ const router = createBrowserRouter([
 								path: "searchmember",
 								element: <SearchMemberCO />,
 							},
-							{
-								path: "assignmember",
-								element: <AssignMemberToGroup />,
-							},
+							// {
+							// 	path: "assignmember",
+							// 	element: <AssignMemberToGroup />,
+							// },
 							{
 								path: "editgroupform/:id",
-								element: <EditGroupForm />,
+								element: <EditGroupFormCO />,
 							},
 							// {
 							// 	path: "editgroupform/:id",

@@ -3,18 +3,22 @@ export const disableCondition = (userType, approvalStatus) => {
 	// const approvalStatus = memberDetails?.approval_status
 	// const userType = formik.values.userType // Assuming userType is stored in formik
 
+	if (userType == 3) {
+		return true
+	}
+
 	if (approvalStatus === "A") {
 		// No one can edit if approval status is "A"
 		return true
 	}
 
-	if (userType == 3 && approvalStatus === "R") {
-		return true
-	}
+	// if (userType == 3 && approvalStatus === "R") {
+	// 	return true
+	// }
 
-	if (userType === 2) {
+	if (userType === 2 && approvalStatus === "R") {
 		// Disable for user type 2 when approval status is "S"
-		return true
+		return false
 	}
 	// if (approvalStatus === "S" && userType === 2) {
 	// 	// Disable for user type 2 when approval status is "S"

@@ -332,43 +332,43 @@ function GroupExtendedForm({ groupDataArr }) {
 								) : null}
 							</div>
 
-							{userDetails?.id === 3 && (
-								<>
-									<div className="sm:col-span-2">
-										<TDInputTemplateBr
-											placeholder="Choose Branch"
-											type="text"
-											label="Branch"
-											name="g_branch"
-											formControlName={branch}
-											handleChange={(e) => {
-												setBranch(e.target.value)
-												console.log(e.target.value)
-											}}
-											data={branches?.map((item, i) => ({
-												code: item?.dist_code + "," + item?.branch_code,
-												name: item?.branch_name,
-											}))}
-											mode={2}
-										/>
-									</div>
-									<div className="sm:col-span-2">
-										<TDInputTemplateBr
-											placeholder="Group Block"
-											type="text"
-											label="Group Block"
-											name="g_block"
-											formControlName={block}
-											handleChange={(e) => setBlock(e.target.value)}
-											data={blocks?.map((item, i) => ({
-												code: item?.block_id,
-												name: item?.block_name,
-											}))}
-											mode={2}
-										/>
-									</div>
-								</>
-							)}
+							{/* {userDetails?.id === 3 && ( */}
+							<>
+								<div className="sm:col-span-2">
+									<TDInputTemplateBr
+										placeholder="Choose Branch"
+										type="text"
+										label="Branch"
+										name="g_branch"
+										formControlName={branch}
+										handleChange={(e) => {
+											setBranch(e.target.value)
+											console.log(e.target.value)
+										}}
+										data={branches?.map((item, i) => ({
+											code: item?.dist_code + "," + item?.branch_code,
+											name: item?.branch_name,
+										}))}
+										mode={2}
+									/>
+								</div>
+								<div className="sm:col-span-2">
+									<TDInputTemplateBr
+										placeholder="Group Block"
+										type="text"
+										label="Group Block"
+										name="g_block"
+										formControlName={block}
+										handleChange={(e) => setBlock(e.target.value)}
+										data={blocks?.map((item, i) => ({
+											code: item?.block_id,
+											name: item?.block_name,
+										}))}
+										mode={2}
+									/>
+								</div>
+							</>
+							{/* )} */}
 
 							<div className="sm:col-span-2">
 								<TDInputTemplateBr
@@ -574,16 +574,13 @@ function GroupExtendedForm({ groupDataArr }) {
 											className="text-lg cursor-pointer mb-5 rounded-3xl
 									"
 											onClick={
-												userDetails?.id == 3
+												userDetails?.id == 2
 													? () =>
-															navigate(
-																`/homemis/editgrtform/${item?.form_no}`,
-																{
-																	state: item,
-																}
-															)
-													: () =>
 															navigate(`/homebm/editgrtform/${item?.form_no}`, {
+																state: item,
+															})
+													: () =>
+															navigate(`/homeco/editgrtform/${item?.form_no}`, {
 																state: item,
 															})
 											}
