@@ -135,8 +135,8 @@ function OccupationDetailsForm({ memberDetails }) {
 			other_loan_flag: formik.values.o_other_loans,
 			other_loan_amt: formik.values.o_other_loan_amount,
 			other_loan_emi: formik.values.o_monthly_emi,
-			modified_by: userDetails?.emp_name,
-			created_by: userDetails?.emp_name,
+			modified_by: userDetails?.emp_id,
+			created_by: userDetails?.emp_id,
 		}
 		await axios
 			.post(`${url}/admin/edit_occup_dtls_web`, creds)

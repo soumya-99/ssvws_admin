@@ -245,7 +245,7 @@ function GroupExtendedForm({ groupDataArr }) {
 			micr: formik.values.g_micr,
 			acc_no1: formik.values.g_acc1,
 			acc_no2: formik.values.g_acc2,
-			modified_by: userDetails?.emp_name,
+			modified_by: userDetails?.emp_id,
 			// modified_at: formik.values.g_group_name,
 			group_code: params?.id,
 			district: branch?.split(",")[0], // this is dist_code, stored in selection of branch

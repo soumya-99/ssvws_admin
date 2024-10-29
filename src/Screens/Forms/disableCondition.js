@@ -7,7 +7,7 @@ export const disableCondition = (userType, approvalStatus) => {
 		return true
 	}
 
-	if (approvalStatus === "A") {
+	if (userType === 3 && approvalStatus === "A") {
 		// No one can edit if approval status is "A"
 		return true
 	}
@@ -19,6 +19,11 @@ export const disableCondition = (userType, approvalStatus) => {
 	if (userType === 2 && approvalStatus === "R") {
 		// Disable for user type 2 when approval status is "S"
 		return false
+	}
+
+	if (userType === 2 && approvalStatus === "S") {
+		// Disable for user type 2 when approval status is "S"
+		return true
 	}
 	// if (approvalStatus === "S" && userType === 2) {
 	// 	// Disable for user type 2 when approval status is "S"

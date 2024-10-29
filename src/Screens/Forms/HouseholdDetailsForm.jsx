@@ -136,7 +136,7 @@ function HouseholdDetailsForm({ memberDetails }) {
 			poltical_flag: formik.values.h_politically_active,
 			parental_addr: formik.values.h_parental_address,
 			parental_phone: formik.values.h_parental_phone,
-			modified_by: userDetails?.emp_name,
+			modified_by: userDetails?.emp_id,
 		}
 		await axios
 			.post(`${url}/admin/edit_household_dtls_web`, creds)

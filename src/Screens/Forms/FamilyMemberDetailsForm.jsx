@@ -150,7 +150,7 @@ function FamilyMemberDetailsForm({ memberDetails }) {
 			form_no: params?.id,
 			branch_code: userDetails?.brn_code,
 			created_by: userDetails?.emp_name,
-			modified_by: userDetails?.emp_name,
+			modified_by: userDetails?.emp_id,
 			memberdtls: formArray,
 			///////
 		}
@@ -178,7 +178,7 @@ function FamilyMemberDetailsForm({ memberDetails }) {
 			form_no: params?.id,
 			remarks: remarks,
 			member_code: memberDetails?.member_code,
-			rejected_by: userDetails?.emp_name,
+			rejected_by: userDetails?.emp_id,
 		}
 		await axios
 			.post(`${url}/admin/delete_member_mis`, creds)
@@ -197,7 +197,7 @@ function FamilyMemberDetailsForm({ memberDetails }) {
 		await editFamilyMemberDetails()
 		const creds = {
 			form_no: params?.id,
-			approved_by: userDetails?.emp_name,
+			approved_by: userDetails?.emp_id,
 			remarks: remarks,
 			member_id: memberDetails?.member_code,
 		}
@@ -217,7 +217,7 @@ function FamilyMemberDetailsForm({ memberDetails }) {
 		setLoading(true)
 		await editFamilyMemberDetails()
 		const creds = {
-			modified_by: userDetails?.emp_name,
+			modified_by: userDetails?.emp_id,
 			form_no: params?.id,
 			branch_code: userDetails?.brn_code,
 			remarks: remarks,
@@ -498,34 +498,41 @@ function FamilyMemberDetailsForm({ memberDetails }) {
 								formControlName={remarks}
 								handleChange={(e) => setRemarks(e.target.value)}
 								mode={3}
-								// disabled={disableCondition(
-								// 	userDetails?.id,
-								// 	memberDetails?.approval_status
-								// )}
+								disabled={
+									userDetails?.id !== 3 &&
+									memberDetails?.approval_status === "S"
+								}
 							/>
 						</div>
 
-						{true && (
+						{userDetails?.id == 3 && memberDetails?.approval_status === "S" && (
 							<div className="mt-10">
 								<BtnComp
 									mode="B"
-									// onPressSubmit={() => {
-									// 	setVisible(!visible)
-									// }}
-									// onReset={() => {
-									// 	setFormArray([
-									// 		{
-									// 			sl_no: 0,
-									// 			f_name: "",
-									// 			f_relation: "",
-									// 			f_age: "",
-									// 			f_sex: "",
-									// 			f_education: "",
-									// 			f_studying_or_working: "",
-									// 			f_monthly_income: "",
-									// 		},
-									// 	])
-									// }}
+									showUpdateAndReset={false}
+									showReject={true}
+									onRejectApplication={() => setVisible2(true)}
+									showForward={true}
+									onForwardApplication={() => setVisible3(true)}
+								/>
+							</div>
+						)}
+						{userDetails?.id == 2 && memberDetails?.approval_status === "R" && (
+							<div className="mt-10">
+								<BtnComp
+									mode="B"
+									showUpdateAndReset={false}
+									showReject={true}
+									onRejectApplication={() => setVisible2(true)}
+									showForward={true}
+									onForwardApplication={() => setVisible3(true)}
+								/>
+							</div>
+						)}
+						{userDetails?.id == 2 && memberDetails?.approval_status === "U" && (
+							<div className="mt-10">
+								<BtnComp
+									mode="B"
 									showUpdateAndReset={false}
 									showReject={true}
 									onRejectApplication={() => setVisible2(true)}
