@@ -112,7 +112,7 @@ function SearchGRTFormMis() {
 						}}
 					/> */}
 
-					<div className="flex flex-row gap-3">
+					<div className="flex flex-row gap-3 mt-20">
 						<input
 							type="text"
 							placeholder="Search by Form No./Member Name/Member Code/Mobile No."

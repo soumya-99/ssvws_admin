@@ -44,7 +44,7 @@ function SearchGroupMis() {
 				spinning={loading}
 			>
 				<main className="px-4 h-auto my-10 mx-32">
-					<div className="flex flex-row gap-3">
+					<div className="flex flex-row gap-3 mt-20">
 						<input
 							type="text"
 							placeholder="Search by Group Name"

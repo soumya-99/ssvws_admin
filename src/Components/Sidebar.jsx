@@ -11,6 +11,7 @@ function Sidebar({ mode = 0 }) {
 	const [current, setCurrent] = React.useState("mail")
 	const [theme, setTheme] = useState(localStorage.getItem("col"))
 	const paths = location.pathname.split("/")
+	const userDetails = JSON.parse(localStorage.getItem("user_details"))
 	const [open, setOpen] = useState(false)
 	useState(() => {
 		setTheme(localStorage.getItem("col"))
@@ -69,12 +70,12 @@ function Sidebar({ mode = 0 }) {
 				id="sidebar-multi-level-sidebar"
 				className={
 					mode === 0
-						? "fixed top-0 z-10 left-0 w-full h-auto transition-transform -translate-x-full sm:translate-x-0 p-4 justify-center bg-red-800"
+						? "fixed top-0 z-20 left-0 w-full h-auto transition-transform -translate-x-full sm:translate-x-0 p-4 justify-center bg-red-800"
 						: mode === 1
-						? "fixed top-0 z-10 left-0 w-full h-auto transition-transform -translate-x-full sm:translate-x-0 p-4 justify-center bg-blue-800"
+						? "fixed top-0 z-20 left-0 w-full h-auto transition-transform -translate-x-full sm:translate-x-0 p-4 justify-center bg-blue-800"
 						: mode === 2
-						? "fixed top-0 z-10 left-0 w-full h-auto transition-transform -translate-x-full sm:translate-x-0 p-4 justify-center bg-stone-800"
-						: "fixed top-0 z-10 left-0 w-full h-auto transition-transform -translate-x-full sm:translate-x-0 p-4 justify-center bg-slate-800"
+						? "fixed top-0 z-20 left-0 w-full h-auto transition-transform -translate-x-full sm:translate-x-0 p-4 justify-center bg-stone-800"
+						: "fixed top-0 z-20 left-0 w-full h-auto transition-transform -translate-x-full sm:translate-x-0 p-4 justify-center bg-slate-800"
 				}
 				aria-label="Sidebar"
 			>
@@ -95,6 +96,37 @@ function Sidebar({ mode = 0 }) {
 				{/* <motion.img initial={{opacity:0}} animate={{opacity:1}} transition={{delay:0.5, type:'spring'
               }} src={sidebar1} className="h-14" alt="Flowbite Logo" /> */}
 			</aside>
+
+			<div
+				className={`w-full ${
+					userDetails?.id == 1
+						? "bg-stone-300"
+						: userDetails?.id == 2
+						? "bg-stone-300"
+						: userDetails?.id == 3
+						? "bg-blue-300"
+						: "bg-slate-300"
+				} p-1 justify-center align-middle ${
+					userDetails?.id == 1
+						? "text-stone-800"
+						: userDetails?.id == 2
+						? "text-stone-800"
+						: userDetails?.id == 3
+						? "text-blue-800"
+						: "text-slate-800"
+				}  font-thin text-sm fixed left-0 top-20 shadow-sm z-10`}
+			>
+				<div className="mt-2 italic ml-10">
+					⇨{" "}
+					{userDetails?.id == 1
+						? `Credit Officer - ${userDetails?.emp_name}`
+						: userDetails?.id == 2
+						? `Branch Manager - ${userDetails?.emp_name}`
+						: userDetails?.id == 3
+						? `MIS Assistant - ${userDetails?.emp_name}`
+						: "Some error!"}
+				</div>
+			</div>
 		</div>
 	)
 }

@@ -105,19 +105,19 @@ function HomeScreenCO() {
 				<main className="px-4 h-auto my-10 mx-32">
 					{/* <Radiobtn data={options} val={"U"} onChangeVal={onChange1} /> */}
 
-					<Radiobtn
+					{/* <Radiobtn
 						data={options}
 						val={approvalStatus}
 						onChangeVal={(value) => {
 							onChange(value)
 						}}
-					/>
-					<LoanApplicationsTableViewBr
-						flag="BM"
+					/> */}
+					{/* <LoanApplicationsTableViewBr
+						flag="CO"
 						loanAppData={loanApplications}
 						title="GRT Forms"
 						setSearch={(data) => setSearch(data)}
-					/>
+					/> */}
 					{/* <DialogBox
 					visible={visible}
 					flag={flag}

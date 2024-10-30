@@ -156,7 +156,7 @@ function EditGRTFormBM() {
 								{metadataArray?.map((item, i) => (
 									<div
 										key={i}
-										className="mt-5 flex flex-col justify-start align-middle items-start gap-2"
+										className="mt-5 ml-14 flex flex-col justify-start align-middle items-start gap-2"
 									>
 										<div className="text-sm text-wrap w-96 italic text-blue-800">
 											CO: {item?.created_by || "Nil"}, AT:{" "}
@@ -204,7 +204,7 @@ function EditGRTFormBM() {
 								{metadataArray?.map((item, i) => (
 									<div
 										key={i}
-										className="mt-5 flex flex-col justify-start align-middle items-start gap-2"
+										className="mt-5 ml-14 flex flex-col justify-start align-middle items-start gap-2"
 									>
 										<div className="text-sm text-wrap w-96 italic text-blue-800">
 											CO: {item?.created_by || "Nil"}, AT:{" "}

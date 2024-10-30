@@ -112,7 +112,7 @@ function SearchGRTFormCO() {
 						}}
 					/> */}
 
-					<div className="flex flex-row gap-3">
+					<div className="flex flex-row gap-3 mt-20">
 						<input
 							type="text"
 							placeholder="Search by Form No./Member Name/Member Code/Mobile No."
@@ -136,7 +136,7 @@ function SearchGRTFormCO() {
 					</div>
 
 					<LoanApplicationsTableViewBr
-						flag="BM"
+						flag="CO"
 						loanAppData={loanApplications}
 						title="GRT Forms"
 						showSearch={false}

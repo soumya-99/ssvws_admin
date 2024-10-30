@@ -52,9 +52,9 @@ function LoanApplicationsTableViewBr({
 			>
 				<div
 					className={`flex flex-col p-1 ${
-						flag !== "BM" ? "bg-blue-800" : "bg-stone-800"
+						flag === "MIS" ? "bg-blue-800" : "bg-stone-800"
 					} rounded-lg my-3 ${
-						flag !== "BM" ? "dark:bg-blue-800" : "dark:bg-stone-800"
+						flag === "MIS" ? "dark:bg-blue-800" : "dark:bg-stone-800"
 					} md:flex-row items-center justify-between space-y-3 md:space-y-0 md:space-x-4 p-3`}
 				>
 					<div className="w-full">
@@ -95,7 +95,7 @@ function LoanApplicationsTableViewBr({
 										animate={{ opacity: 1, width: "95%" }}
 										transition={{ delay: 1.1, type: "just" }}
 										className={`bg-white border rounded-lg ${
-											flag !== "BM" ? "border-blue-700" : "border-stone-700"
+											flag === "MIS" ? "border-blue-700" : "border-stone-700"
 										} text-gray-800 block w-full h-12 pl-10 dark:bg-gray-800 md:ml-4 duration-300 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white text-lg focus:border-blue-600`}
 										placeholder="Search"
 										required=""
@@ -115,7 +115,7 @@ function LoanApplicationsTableViewBr({
 				<table className="w-full text-sm text-left rtl:text-right shadow-lg text-green-900dark:text-gray-400">
 					<thead
 						className={`text-md text-gray-700 capitalize ${
-							flag !== "BM" ? "bg-blue-100" : "bg-stone-100"
+							flag === "MIS" ? "bg-blue-100" : "bg-stone-100"
 						} dark:bg-gray-700 dark:text-gray-400`}
 					>
 						<tr>
@@ -187,7 +187,7 @@ function LoanApplicationsTableViewBr({
 									<td className="px-6 py-4">{item.loan_type_name}</td> */}
 									{/* <td className="px-6 py-4">{item.member_name}</td> */}
 									<td className="px-6 py-4">
-										{flag !== "BM" ? (
+										{flag === "MIS" ? (
 											// <Link
 											// 	to={
 											// 		routePaths.MIS_ASSISTANT_EDIT_GROUP +
@@ -205,11 +205,11 @@ function LoanApplicationsTableViewBr({
 											>
 												<EditOutlined
 													className={`text-md ${
-														flag !== "BM" ? "text-blue-800" : "text-stone-800"
+														flag === "MIS" ? "text-blue-800" : "text-stone-800"
 													}`}
 												/>
 											</button>
-										) : (
+										) : flag === "BM" ? (
 											// </Link>
 											<button
 												// to={routePaths.BM_EDIT_GRT + item?.form_no}
@@ -222,7 +222,24 @@ function LoanApplicationsTableViewBr({
 											>
 												<EditOutlined
 													className={`text-md ${
-														flag !== "BM" ? "text-blue-800" : "text-stone-800"
+														flag === "MIS" ? "text-blue-800" : "text-stone-800"
+													}`}
+												/>
+											</button>
+										) : (
+											// </Link>
+											<button
+												// to={routePaths.BM_EDIT_GRT + item?.form_no}
+												onClick={() => {
+													console.log("LLSKSIODFUISFH", item)
+													navigate(`/homeco/editgrtform/${item?.form_no}`, {
+														state: item,
+													})
+												}}
+											>
+												<EditOutlined
+													className={`text-md ${
+														flag === "MIS" ? "text-blue-800" : "text-stone-800"
 													}`}
 												/>
 											</button>
