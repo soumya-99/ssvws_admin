@@ -399,335 +399,33 @@ function DisbursmentForm({ memberDetails }) {
 					}) => ( */}
 				<form onSubmit={formik.handleSubmit}>
 					<div>
-						<div className="grid gap-4 sm:grid-cols-2 sm:gap-6">
-							<div className="mb-4">
-								<TDInputTemplateBr
-									placeholder="Form Number"
-									type="text"
-									label="Form Number"
-									name="form_no"
-									formControlName={params.id}
-									mode={1}
-									disabled
-								/>
+						<div>
+							<div className="grid gap-4 sm:grid-cols-2 sm:gap-6">
+								<div className="text-xl mb-2 text-lime-800 font-semibold underline">
+									Personal Details
+								</div>
 							</div>
-							<div className="mb-4">
-								<TDInputTemplateBr
-									placeholder="Branch"
-									type="text"
-									label="Branch Name"
-									name="branch_name"
-									formControlName={memberDetails?.branch_name}
-									mode={1}
-									disabled
-								/>
-							</div>
-						</div>
-						<div className="grid gap-4 sm:grid-cols-4 sm:gap-6">
-							<div>
-								<TDInputTemplateBr
-									placeholder="Member Code"
-									type="text"
-									label="Member Code"
-									name="mem_code"
-									formControlName={memberDetails?.member_code}
-									handleChange={formik.handleChange}
-									handleBlur={formik.handleBlur}
-									mode={1}
-									disabled
-								/>
-								{/* {formik.errors.l_member_id && formik.touched.l_member_id ? (
-									<VError title={formik.errors.l_member_id} />
-								) : null} */}
-							</div>
-
-							{/* <div>
-								<TDInputTemplateBr
-									placeholder="Choose Group..."
-									type="text"
-									label="Group"
-									name="b_groupCode"
-									formControlName={formik.values.b_groupCode}
-									handleChange={formik.handleChange}
-									handleBlur={formik.handleBlur}
-									data={groups?.map((grp) => ({
-										code: grp?.group_code,
-										name: grp?.group_name,
-									}))}
-									mode={2}
-									disabled={disableCondition(
-										userDetails?.id,
-										memberDetails?.approval_status
-									)}
-								/>
-								{formik.errors.b_groupCode && formik.touched.b_groupCode ? (
-									<VError title={formik.errors.b_groupCode} />
-								) : null}
-							</div> */}
-
-							<div>
-								<TDInputTemplateBr
-									placeholder="Type member name..."
-									type="text"
-									label="Member Name"
-									name="b_clientName"
-									formControlName={formik.values.b_clientName}
-									handleChange={formik.handleChange}
-									handleBlur={formik.handleBlur}
-									mode={1}
-									disabled={disableCondition(
-										userDetails?.id,
-										memberDetails?.approval_status
-									)}
-								/>
-								{formik.errors.b_clientName && formik.touched.b_clientName ? (
-									<VError title={formik.errors.b_clientName} />
-								) : null}
-							</div>
-							<div className="sm:col-span-2">
-								<TDInputTemplateBr
-									placeholder="Type DOB..."
-									type="date"
-									label="Date of Birth"
-									name="b_dob"
-									formControlName={formik.values.b_dob}
-									handleChange={formik.handleChange}
-									handleBlur={formik.handleBlur}
-									min={"1900-12-31"}
-									mode={1}
-									disabled={disableCondition(
-										userDetails?.id,
-										memberDetails?.approval_status
-									)}
-								/>
-								{formik.errors.b_dob && formik.touched.b_dob ? (
-									<VError title={formik.errors.b_dob} />
-								) : null}
-							</div>
-						</div>
-
-						<div className="grid gap-4 sm:grid-cols-2 sm:gap-6 pt-5">
-							<div>
-								<TDInputTemplateBr
-									placeholder="Select Gender..."
-									type="text"
-									label="Gender"
-									name="b_clientGender"
-									formControlName={formik.values.b_clientGender}
-									handleChange={formik.handleChange}
-									handleBlur={formik.handleBlur}
-									data={[
-										{ code: "M", name: "Male" },
-										{ code: "F", name: "Female" },
-										{ code: "O", name: "Others" },
-									]}
-									mode={2}
-									disabled={disableCondition(
-										userDetails?.id,
-										memberDetails?.approval_status
-									)}
-								/>
-								{formik.errors.b_clientGender &&
-								formik.touched.b_clientGender ? (
-									<VError title={formik.errors.b_clientGender} />
-								) : null}
-							</div>
-
-							<div>
-								<TDInputTemplateBr
-									placeholder="Type Address..."
-									type="text"
-									label={`Member Address`}
-									name="b_clientAddress"
-									formControlName={formik.values.b_clientAddress}
-									handleChange={formik.handleChange}
-									handleBlur={formik.handleBlur}
-									mode={3}
-									disabled={disableCondition(
-										userDetails?.id,
-										memberDetails?.approval_status
-									)}
-								/>
-								{formik.errors.b_clientAddress &&
-								formik.touched.b_clientAddress ? (
-									<VError title={formik.errors.b_clientAddress} />
-								) : null}
-							</div>
-
-							<div>
-								<TDInputTemplateBr
-									placeholder="Type PIN..."
-									type="number"
-									label="PIN No."
-									name="b_clientPin"
-									formControlName={formik.values.b_clientPin}
-									handleChange={formik.handleChange}
-									handleBlur={formik.handleBlur}
-									mode={1}
-									disabled={disableCondition(
-										userDetails?.id,
-										memberDetails?.approval_status
-									)}
-								/>
-								{formik.errors.b_clientPin && formik.touched.b_clientPin ? (
-									<VError title={formik.errors.b_clientPin} />
-								) : null}
-							</div>
-
-							<div>
-								<TDInputTemplateBr
-									placeholder="Type Mobile Number..."
-									type="number"
-									label="Member Mobile Number"
-									name="b_clientMobile"
-									formControlName={formik.values.b_clientMobile}
-									handleChange={formik.handleChange}
-									handleBlur={formik.handleBlur}
-									mode={1}
-									disabled={disableCondition(
-										userDetails?.id,
-										memberDetails?.approval_status
-									)}
-								/>
-								{formik.errors.b_clientMobile &&
-								formik.touched.b_clientMobile ? (
-									<VError title={formik.errors.b_clientMobile} />
-								) : null}
-							</div>
-							<div>
-								<TDInputTemplateBr
-									placeholder="Type Email..."
-									type="email"
-									label="Member Email"
-									name="b_clientEmail"
-									formControlName={formik.values.b_clientEmail}
-									handleChange={formik.handleChange}
-									handleBlur={formik.handleBlur}
-									mode={1}
-									disabled={disableCondition(
-										userDetails?.id,
-										memberDetails?.approval_status
-									)}
-								/>
-								{formik.errors.b_clientEmail && formik.touched.b_clientEmail ? (
-									<VError title={formik.errors.b_clientEmail} />
-								) : null}
-							</div>
-
-							<div>
-								<TDInputTemplateBr
-									placeholder="Type Guardian's Name..."
-									type="text"
-									label="Guardian's Name"
-									name="b_guardianName"
-									formControlName={formik.values.b_guardianName}
-									handleChange={formik.handleChange}
-									handleBlur={formik.handleBlur}
-									mode={1}
-									disabled={disableCondition(
-										userDetails?.id,
-										memberDetails?.approval_status
-									)}
-								/>
-								{formik.errors.b_guardianName &&
-								formik.touched.b_guardianName ? (
-									<VError title={formik.errors.b_guardianName} />
-								) : null}
-							</div>
-
-							<div>
-								<TDInputTemplateBr
-									placeholder="Type Guardian Mobile Number..."
-									type="number"
-									label="Guardian Mobile Number"
-									name="b_guardianMobile"
-									formControlName={formik.values.b_guardianMobile}
-									handleChange={formik.handleChange}
-									handleBlur={formik.handleBlur}
-									mode={1}
-									disabled={disableCondition(
-										userDetails?.id,
-										memberDetails?.approval_status
-									)}
-								/>
-								{formik.errors.b_guardianMobile &&
-								formik.touched.b_guardianMobile ? (
-									<VError title={formik.errors.b_guardianMobile} />
-								) : null}
-							</div>
-
-							<div>
-								<TDInputTemplateBr
-									placeholder="Type Aadhaar No..."
-									type="number"
-									label="Aadhaar No."
-									name="b_aadhaarNumber"
-									formControlName={formik.values.b_aadhaarNumber}
-									handleChange={formik.handleChange}
-									handleBlur={formik.handleBlur}
-									mode={1}
-									disabled={disableCondition(
-										userDetails?.id,
-										memberDetails?.approval_status
-									)}
-								/>
-								{formik.errors.b_aadhaarNumber &&
-								formik.touched.b_aadhaarNumber ? (
-									<VError title={formik.errors.b_aadhaarNumber} />
-								) : null}
-							</div>
-							<div>
-								<TDInputTemplateBr
-									placeholder="Type PAN No..."
-									type="text"
-									label="PAN No."
-									name="b_panNumber"
-									formControlName={formik.values.b_panNumber}
-									handleChange={formik.handleChange}
-									handleBlur={formik.handleBlur}
-									mode={1}
-									disabled={disableCondition(
-										userDetails?.id,
-										memberDetails?.approval_status
-									)}
-								/>
-								{formik.errors.b_panNumber && formik.touched.b_panNumber ? (
-									<VError title={formik.errors.b_panNumber} />
-								) : null}
-							</div>
-
-							<div>
-								<TDInputTemplateBr
-									placeholder="Type Religion..."
-									type="text"
-									label="Religion"
-									name="b_religion"
-									formControlName={formik.values.b_religion}
-									handleChange={formik.handleChange}
-									handleBlur={formik.handleBlur}
-									data={religions?.map((religion) => ({
-										code: religion?.id,
-										name: religion?.name,
-									}))}
-									mode={2}
-									disabled={disableCondition(
-										userDetails?.id,
-										memberDetails?.approval_status
-									)}
-								/>
-								{formik.errors.b_religion && formik.touched.b_religion ? (
-									<VError title={formik.errors.b_religion} />
-								) : null}
-							</div>
-
-							{formik.values.b_religion === "Others" && (
+							<div className="grid gap-4 sm:grid-cols-4 sm:gap-6">
 								<div>
 									<TDInputTemplateBr
-										placeholder="Type Other Religion..."
+										placeholder="Member Code"
 										type="text"
-										label="Other Religion"
-										name="b_otherReligion"
-										formControlName={formik.values.b_otherReligion}
+										label="Member Code"
+										name="mem_code"
+										formControlName={memberDetails?.member_code}
+										handleChange={formik.handleChange}
+										handleBlur={formik.handleBlur}
+										mode={1}
+									/>
+								</div>
+
+								<div>
+									<TDInputTemplateBr
+										placeholder="Type member name..."
+										type="text"
+										label="Member Name"
+										name="b_clientName"
+										formControlName={formik.values.b_clientName}
 										handleChange={formik.handleChange}
 										handleBlur={formik.handleBlur}
 										mode={1}
@@ -736,154 +434,334 @@ function DisbursmentForm({ memberDetails }) {
 											memberDetails?.approval_status
 										)}
 									/>
-									{formik.errors.b_otherReligion &&
-									formik.touched.b_otherReligion ? (
-										<VError title={formik.errors.b_otherReligion} />
+									{formik.errors.b_clientName && formik.touched.b_clientName ? (
+										<VError title={formik.errors.b_clientName} />
 									) : null}
 								</div>
-							)}
 
-							<div>
-								<TDInputTemplateBr
-									placeholder="Choose Caste..."
-									type="text"
-									label="Caste"
-									name="b_caste"
-									formControlName={formik.values.b_caste}
-									handleChange={formik.handleChange}
-									handleBlur={formik.handleBlur}
-									data={castes?.map((caste) => ({
-										code: caste?.id,
-										name: caste?.name,
-									}))}
-									mode={2}
-									disabled={disableCondition(
-										userDetails?.id,
-										memberDetails?.approval_status
-									)}
-								/>
-								{formik.errors.b_caste && formik.touched.b_caste ? (
-									<VError title={formik.errors.b_caste} />
-								) : null}
-							</div>
-
-							{formik.values.b_caste === "Others" && (
 								<div>
 									<TDInputTemplateBr
-										placeholder="Type Other Caste..."
+										placeholder="Group name..."
 										type="text"
-										label="Other Caste"
-										name="b_otherCaste"
-										formControlName={formik.values.b_otherCaste}
+										label="Group Name"
+										name="b_groupName"
+										formControlName={formik.values.b_groupName}
 										handleChange={formik.handleChange}
 										handleBlur={formik.handleBlur}
 										mode={1}
-										disabled={disableCondition(
-											userDetails?.id,
-											memberDetails?.approval_status
-										)}
+										disabled
 									/>
-									{formik.errors.b_otherCaste && formik.touched.b_otherCaste ? (
-										<VError title={formik.errors.b_otherCaste} />
-									) : null}
 								</div>
-							)}
 
-							<div>
-								<TDInputTemplateBr
-									placeholder="Choose Education..."
-									type="text"
-									label="Education"
-									name="b_education"
-									formControlName={formik.values.b_education}
-									handleChange={formik.handleChange}
-									handleBlur={formik.handleBlur}
-									data={educations?.map((edu) => ({
-										code: edu?.id,
-										name: edu?.name,
-									}))}
-									mode={2}
-									disabled={disableCondition(
-										userDetails?.id,
-										memberDetails?.approval_status
-									)}
-								/>
-								{formik.errors.b_education && formik.touched.b_education ? (
-									<VError title={formik.errors.b_education} />
-								) : null}
-							</div>
-
-							{formik.values.b_education === "Others" && (
 								<div>
 									<TDInputTemplateBr
-										placeholder="Type Other Education..."
+										placeholder="Form Number"
 										type="text"
-										label="Other Education"
-										name="b_otherEducation"
-										formControlName={formik.values.b_otherEducation}
+										label="Form Number"
+										name="form_no"
+										formControlName={params.id}
+										mode={1}
+										disabled
+									/>
+								</div>
+
+								<div>
+									<TDInputTemplateBr
+										placeholder="GRT Approve date..."
+										type="text"
+										label="GRT Approve Date"
+										name="b_grtApproveDate"
+										formControlName={formik.values.b_grtApproveDate}
 										handleChange={formik.handleChange}
 										handleBlur={formik.handleBlur}
 										mode={1}
-										disabled={disableCondition(
-											userDetails?.id,
-											memberDetails?.approval_status
-										)}
+										disabled
 									/>
-									{formik.errors.b_otherEducation &&
-									formik.touched.b_otherEducation ? (
-										<VError title={formik.errors.b_otherEducation} />
-									) : null}
 								</div>
-							)}
-
-							{userDetails?.id === 3 && (
 								<div>
-									<div className="block mb-2 text-sm capitalize font-bold text-blue-800 dark:text-gray-100">
-										Verification
-									</div>
-									<div className="flex justify-between gap-5">
-										<Checkbox
-											className="text-lg uppercase text-slate-800"
-											onChange={onChangeCheck1}
-											value={"PH"}
-											checked={isPhoneVerified}
-											disabled={disableCondition(
-												userDetails?.id,
-												memberDetails?.approval_status
-											)}
-										>
-											Mobile Number
-										</Checkbox>
-										<Checkbox
-											className="text-lg uppercase text-slate-800"
-											onChange={onChangeCheck2}
-											value={"A"}
-											checked={isAadhaarVerified}
-											disabled={disableCondition(
-												userDetails?.id,
-												memberDetails?.approval_status
-											)}
-										>
-											Aadhaar Card
-										</Checkbox>
-										<Checkbox
-											className="text-lg uppercase text-slate-800"
-											onChange={onChangeCheck3}
-											value={"P"}
-											checked={isPanVerified}
-											disabled={disableCondition(
-												userDetails?.id,
-												memberDetails?.approval_status
-											)}
-										>
-											PAN Card
-										</Checkbox>
-									</div>
+									<TDInputTemplateBr
+										placeholder="Branch..."
+										type="text"
+										label="Branch"
+										name="b_branch"
+										formControlName={formik.values.b_branch}
+										handleChange={formik.handleChange}
+										handleBlur={formik.handleBlur}
+										mode={1}
+										disabled
+									/>
 								</div>
-							)}
+								<div>
+									<TDInputTemplateBr
+										placeholder="Purpose..."
+										type="text"
+										label="Purpose"
+										name="b_purpose"
+										formControlName={formik.values.b_purpose}
+										handleChange={formik.handleChange}
+										handleBlur={formik.handleBlur}
+										mode={1}
+										disabled
+									/>
+								</div>
+								<div>
+									<TDInputTemplateBr
+										placeholder="Sub Purpose..."
+										type="text"
+										label="Sub Purpose"
+										name="b_subPurpose"
+										formControlName={formik.values.b_subPurpose}
+										handleChange={formik.handleChange}
+										handleBlur={formik.handleBlur}
+										mode={1}
+										disabled
+									/>
+								</div>
+								<div className="sm:col-span-2">
+									<TDInputTemplateBr
+										placeholder="Application Date..."
+										type="text"
+										label="Application Date"
+										name="b_applicationDate"
+										formControlName={formik.values.b_applicationDate}
+										handleChange={formik.handleChange}
+										handleBlur={formik.handleBlur}
+										mode={1}
+										disabled
+									/>
+								</div>
+								<div className="sm:col-span-2">
+									<TDInputTemplateBr
+										placeholder="Applied Amount..."
+										type="text"
+										label="Applied Amount"
+										name="b_appliedAmt"
+										formControlName={formik.values.b_appliedAmt}
+										handleChange={formik.handleChange}
+										handleBlur={formik.handleBlur}
+										mode={1}
+										disabled
+									/>
+								</div>
+							</div>
 						</div>
 
-						{/* {loanApproveStatus !== "A" && loanApproveStatus !== "R" ? ( */}
+						{/* ///////////////////////// */}
+
+						<div>
+							<div className="grid gap-4 sm:grid-cols-2 sm:gap-6">
+								<div className="text-xl mb-2 mt-5 text-lime-800 font-semibold underline">
+									Disbursement Details
+								</div>
+							</div>
+							<div className="grid gap-4 sm:grid-cols-4 sm:gap-6">
+								<div>
+									<TDInputTemplateBr
+										placeholder="Select Scheme..."
+										type="text"
+										label="Scheme"
+										name="b_scheme"
+										formControlName={formik.values.b_scheme}
+										handleChange={formik.handleChange}
+										handleBlur={formik.handleBlur}
+										data={[
+											{ code: "S1", name: "Scheme 1" },
+											{ code: "S1", name: "Scheme 2" },
+											{ code: "S3", name: "Scheme 3" },
+										]}
+										mode={2}
+									/>
+									{formik.errors.b_clientGender &&
+									formik.touched.b_clientGender ? (
+										<VError title={formik.errors.b_clientGender} />
+									) : null}
+								</div>
+								<div>
+									<TDInputTemplateBr
+										placeholder="Select Fund..."
+										type="text"
+										label="Fund"
+										name="b_fund"
+										formControlName={formik.values.b_fund}
+										handleChange={formik.handleChange}
+										handleBlur={formik.handleBlur}
+										data={[
+											{ code: "F1", name: "Fund 1" },
+											{ code: "F2", name: "Fund 2" },
+											{ code: "F3", name: "Fund 3" },
+										]}
+										mode={2}
+									/>
+								</div>
+								<div>
+									<TDInputTemplateBr
+										placeholder="Period..."
+										type="text"
+										label="Period"
+										name="b_period"
+										formControlName={formik.values.b_period}
+										handleChange={formik.handleChange}
+										handleBlur={formik.handleBlur}
+										mode={1}
+										disabled
+									/>
+								</div>
+								<div>
+									<TDInputTemplateBr
+										placeholder="R.O.I..."
+										type="text"
+										label="Rate of Interest"
+										name="b_roi"
+										formControlName={formik.values.b_roi}
+										handleChange={formik.handleChange}
+										handleBlur={formik.handleBlur}
+										mode={1}
+										disabled
+									/>
+								</div>
+								<div>
+									<TDInputTemplateBr
+										placeholder="Mode..."
+										type="text"
+										label="Mode"
+										name="b_mode"
+										formControlName={formik.values.b_mode}
+										handleChange={formik.handleChange}
+										handleBlur={formik.handleBlur}
+										mode={1}
+										disabled
+									/>
+								</div>
+								<div>
+									<TDInputTemplateBr
+										placeholder="Disburse Amount..."
+										type="text"
+										label="Disburse Amount"
+										name="b_disburseAmt"
+										formControlName={formik.values.b_disburseAmt}
+										handleChange={formik.handleChange}
+										handleBlur={formik.handleBlur}
+										mode={1}
+										disabled
+									/>
+								</div>
+								<div>
+									<TDInputTemplateBr
+										placeholder="Bank charges..."
+										type="text"
+										label="Bank Charges"
+										name="b_bankCharges"
+										formControlName={formik.values.b_bankCharges}
+										handleChange={formik.handleChange}
+										handleBlur={formik.handleBlur}
+										mode={1}
+										disabled
+									/>
+								</div>
+								<div>
+									<TDInputTemplateBr
+										placeholder="Processing charges..."
+										type="text"
+										label="Processing Charges"
+										name="b_processingCharges"
+										formControlName={formik.values.b_processingCharges}
+										handleChange={formik.handleChange}
+										handleBlur={formik.handleBlur}
+										mode={1}
+										disabled
+									/>
+								</div>
+							</div>
+						</div>
+
+						{/* ///////////////////////// */}
+
+						<div>
+							<div className="grid gap-4 sm:grid-cols-2 sm:gap-6">
+								<div className="text-xl mb-2 mt-5 text-lime-800 font-semibold underline">
+									Transaction Details
+								</div>
+							</div>
+							<div className="grid gap-4 sm:grid-cols-4 sm:gap-6">
+								<div>
+									<TDInputTemplateBr
+										placeholder="Transaction date..."
+										type="date"
+										label="Transaction Date"
+										name="b_tnxDate"
+										formControlName={formik.values.b_tnxDate}
+										handleChange={formik.handleChange}
+										handleBlur={formik.handleBlur}
+										min={"1900-12-31"}
+										max={formatDateToYYYYMMDD(new Date())}
+										mode={1}
+									/>
+									{formik.errors.b_tnxDate && formik.touched.b_tnxDate ? (
+										<VError title={formik.errors.b_tnxDate} />
+									) : null}
+								</div>
+								<div>
+									<TDInputTemplateBr
+										placeholder="Bank Name..."
+										type="text"
+										label="Bank Name"
+										name="b_bankName"
+										formControlName={formik.values.b_bankName}
+										handleChange={formik.handleChange}
+										handleBlur={formik.handleBlur}
+										mode={1}
+									/>
+								</div>
+
+								<div>
+									<TDInputTemplateBr
+										placeholder="Cheque/Ref. no..."
+										type="text"
+										label="Cheque/Ref. No."
+										name="b_chequeOrRefNo"
+										formControlName={formik.values.b_chequeOrRefNo}
+										handleChange={formik.handleChange}
+										handleBlur={formik.handleBlur}
+										mode={1}
+									/>
+								</div>
+
+								<div>
+									<TDInputTemplateBr
+										placeholder="Cheque/Ref. Date..."
+										type="date"
+										label="Cheque/Ref. Date"
+										name="b_chequeOrRefDate"
+										formControlName={formik.values.b_chequeOrRefDate}
+										handleChange={formik.handleChange}
+										handleBlur={formik.handleBlur}
+										min={"1900-12-31"}
+										max={formatDateToYYYYMMDD(new Date())}
+										mode={1}
+									/>
+									{formik.errors.b_chequeOrRefDate &&
+									formik.touched.b_chequeOrRefDate ? (
+										<VError title={formik.errors.b_chequeOrRefDate} />
+									) : null}
+								</div>
+								<div className="sm:col-span-4">
+									<TDInputTemplateBr
+										placeholder="Type Remarks..."
+										type="text"
+										label="Remarks"
+										name="b_remarks"
+										formControlName={formik.values.b_remarks}
+										handleChange={formik.handleChange}
+										handleBlur={formik.handleBlur}
+										mode={3}
+									/>
+									{formik.errors.b_remarks && formik.touched.b_remarks ? (
+										<VError title={formik.errors.b_remarks} />
+									) : null}
+								</div>
+							</div>
+						</div>
+
 						{!disableCondition(
 							userDetails?.id,
 							memberDetails?.approval_status
@@ -892,28 +770,6 @@ function DisbursmentForm({ memberDetails }) {
 								<BtnComp mode="A" onReset={formik.resetForm} />
 							</div>
 						)}
-						{/* ) : loanApproveStatus === "A" ? (
-							<Tag
-								color="purple"
-								className="mt-10 p-5 rounded-lg text-xl font-bold self-center"
-							>
-								E-Files forwarded to Credit Manager.
-							</Tag>
-						) : loanApproveStatus === "R" ? (
-							<Tag
-								color="orange"
-								className="mt-10 p-5 rounded-lg text-xl font-bold self-center"
-							>
-								E-Files rejected and sent to Loan Appraiser.
-							</Tag>
-						) : (
-							<Tag
-								color="red"
-								className="mt-10 p-5 rounded-lg text-xl font-bold self-center"
-							>
-								Some error occurred. [Status is not b/w P/A/R]
-							</Tag>
-						)} */}
 					</div>
 				</form>
 			</Spin>
