@@ -146,6 +146,31 @@ function MenusBr({ theme }) {
 				// },
 			],
 		},
+
+		{
+			key: "sub4",
+			icon: <DeploymentUnitOutlined />,
+			label: "Loans",
+			children: [
+				{
+					key: "sub4-1",
+					icon: <FileSearchOutlined />,
+					label: <Link to={"/homebm/disburseloan/0"}>Disburse Loan</Link>,
+				},
+				{
+					key: "sub4-2",
+					icon: <PlusCircleOutlined />,
+					label: (
+						<Link to={"/homebm/editgroupform/0"}>Disbursement Approve</Link>
+					),
+				},
+				// {
+				// 	key: "sub3-3",
+				// 	icon: <SubnodeOutlined />,
+				// 	label: <Link to={"/homebm/assignmember"}>Assign Member</Link>,
+				// },
+			],
+		},
 		// {
 		// 	key: "sub2",
 		// 	icon: <ImportOutlined />,
