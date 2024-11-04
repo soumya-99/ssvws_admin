@@ -59,7 +59,7 @@ function HouseholdDetailsForm({ memberDetails }) {
 	const validationSchema = Yup.object({
 		h_no_of_rooms: Yup.string().required("Required"),
 		h_parental_address: Yup.string().required("Required"),
-		h_parental_phone: Yup.string(),
+		// h_parental_phone: Yup.string().optional(),
 		h_house_type: Yup.string().required("Required"),
 		h_own_rent: Yup.string().required("Required"),
 		h_total_land: Yup.string(),
@@ -112,7 +112,7 @@ function HouseholdDetailsForm({ memberDetails }) {
 	}
 
 	const formik = useFormik({
-		initialValues: formValues,
+		initialValues: params?.id > 0 ? formValues : initialValues,
 		onSubmit,
 		validationSchema,
 		validateOnChange: true,

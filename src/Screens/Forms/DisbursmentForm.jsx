@@ -46,27 +46,28 @@ function DisbursmentForm({ memberDetails }) {
 	console.log(location, "location")
 	console.log(memberDetails, "memberDetails")
 
-	const initialValues = {
+	const [personalDetailsData, setPersonalDetailsData] = useState({
+		b_memCode: "",
 		b_clientName: "",
-		b_clientGender: "",
-		b_clientMobile: "",
-		b_clientEmail: "",
-		b_guardianName: "",
-		b_guardianMobile: "",
-		b_clientAddress: "",
-		b_clientPin: "",
-		b_aadhaarNumber: "",
-		b_panNumber: "",
-		b_religion: "",
-		b_caste: "",
-		b_education: "",
-		b_otherReligion: "",
-		b_otherCaste: "",
-		b_otherEducation: "",
-		b_groupCode: "",
-		b_groupCodeName: "",
-		b_dob: "",
+		b_groupName: "",
+		b_formNo: "",
+		b_grtApproveDate: "",
+		b_branch: "",
+		b_purpose: "",
+		b_subPurpose: "",
+		b_applicationDate: "",
+		b_appliedAmt: "",
+	})
+
+	const handleChangePersonalDetails = (e) => {
+		const { name, value } = e.target
+		setPersonalDetailsData((prevData) => ({
+			...prevData,
+			[name]: value,
+		}))
 	}
+
+	const initialValues = {}
 	const [formValues, setValues] = useState({
 		b_clientName: "",
 		b_clientGender: "",
@@ -144,235 +145,6 @@ function DisbursmentForm({ memberDetails }) {
 		validateOnMount: true,
 	})
 
-	// useEffect(() => {
-	// 	setValues({
-	// 		b_clientName: memberDetails?.client_name,
-	// 		b_clientGender: memberDetails?.gender,
-	// 		b_clientMobile: memberDetails?.client_mobile,
-	// 		b_clientEmail: memberDetails?.client_email,
-	// 		b_guardianName: memberDetails?.gurd_name,
-	// 		b_guardianMobile: memberDetails?.gurd_mobile,
-	// 		b_clientAddress: memberDetails?.client_addr,
-	// 		b_clientPin: memberDetails?.pin_no,
-	// 		b_aadhaarNumber: memberDetails?.aadhar_no,
-	// 		b_panNumber: memberDetails?.pan_no,
-	// 		b_religion: memberDetails?.religion,
-	// 		b_caste: memberDetails?.caste,
-	// 		b_education: memberDetails?.education,
-	// 		b_groupCode: memberDetails?.prov_grp_code,
-	// 		b_groupCodeName: "",
-	// 		b_dob: formatDateToYYYYMMDD(memberDetails?.dob),
-	// 	})
-	// }, [])
-
-	const handleFetchBasicDetails = async () => {
-		setLoading(true)
-		const creds = {
-			branch_code: userDetails?.brn_code,
-			form_no: params?.id,
-			approval_status: memberDetails?.approval_status,
-		}
-		await axios
-			.post(`${url}/admin/fetch_basic_dtls_web`, creds)
-			.then((res) => {
-				console.log("++--++--++--", res?.data)
-				setValues({
-					b_clientName: res?.data?.msg[0]?.client_name,
-					b_clientGender: res?.data?.msg[0]?.gender,
-					b_clientMobile: res?.data?.msg[0]?.client_mobile,
-					b_clientEmail: res?.data?.msg[0]?.email_id,
-					b_guardianName: res?.data?.msg[0]?.gurd_name,
-					b_guardianMobile: res?.data?.msg[0]?.gurd_mobile,
-					b_clientAddress: res?.data?.msg[0]?.client_addr,
-					b_clientPin: res?.data?.msg[0]?.pin_no,
-					b_aadhaarNumber: res?.data?.msg[0]?.aadhar_no,
-					b_panNumber: res?.data?.msg[0]?.pan_no,
-					b_religion: res?.data?.msg[0]?.religion,
-					b_caste: res?.data?.msg[0]?.caste,
-					b_education: res?.data?.msg[0]?.education,
-					b_otherReligion: res?.data?.msg[0]?.other_religion,
-					b_otherCaste: res?.data?.msg[0]?.other_caste,
-					b_otherEducation: res?.data?.msg[0]?.other_education,
-					b_groupCode: res?.data?.msg[0]?.prov_grp_code,
-					b_groupCodeName: "",
-					b_dob: formatDateToYYYYMMDD(res?.data?.msg[0]?.dob),
-				})
-			})
-			.catch((err) => {
-				console.log("--------------", err)
-			})
-		setLoading(false)
-	}
-
-	useEffect(() => {
-		handleFetchBasicDetails()
-	}, [])
-
-	const updateBasicDetails = async () => {
-		setLoading(true)
-		const creds = {
-			form_no: params?.id,
-			branch_code: userDetails?.brn_code,
-			prov_grp_code: "",
-			gender: formik.values.b_clientGender,
-			client_name: formik.values.b_clientName,
-			client_mobile: formik.values.b_clientMobile,
-			gurd_name: formik.values.b_guardianName,
-			gurd_mobile: formik.values.b_guardianMobile,
-			client_addr: formik.values.b_clientAddress,
-			pin_no: formik.values.b_clientPin,
-			aadhar_no: formik.values.b_aadhaarNumber,
-			pan_no: formik.values.b_panNumber,
-			religion: formik.values.b_religion,
-			caste: formik.values.b_caste,
-			education: formik.values.b_education,
-			dob: formik.values.b_dob,
-			bm_lat_val: memberDetails?.co_lat_val || "",
-			bm_long_val: memberDetails?.co_long_val || "",
-			bm_gps_address: memberDetails?.co_gps_address || "",
-			modified_by: userDetails?.emp_name,
-			member_code: memberDetails?.member_code,
-			email_id: formik.values.b_clientEmail,
-			other_religion: formik.values.b_otherReligion || "",
-			other_caste: formik.values.b_otherCaste || "",
-			other_education: formik.values.b_otherEducation || "",
-		}
-		await axios
-			.post(`${url}/admin/edit_basic_dtls_web`, creds)
-			.then((res) => {
-				console.log("*******************", res?.data)
-				Message("success", "Updated Successfully.")
-			})
-			.catch((err) => {
-				console.log("BASIC ERRRRRRR", err)
-			})
-		setLoading(false)
-	}
-
-	const handleFetchGroups = async () => {
-		await axios
-			.get(`${url}/get_group?branch_code=${userDetails?.brn_code}`)
-			.then((res) => {
-				console.log("GROUPSSSS====", res?.data)
-				setGroups(res?.data?.msg)
-			})
-			.catch((err) => {
-				console.log("Some err")
-			})
-	}
-
-	const handleFetchReligions = async () => {
-		await axios
-			.get(`${url}/get_religion`)
-			.then((res) => {
-				console.log("RELIIGIONSSSS====", res?.data)
-				setReligions(res?.data)
-			})
-			.catch((err) => {
-				console.log("Some err")
-			})
-	}
-
-	const handleFetchCastes = async () => {
-		await axios
-			.get(`${url}/get_caste`)
-			.then((res) => {
-				console.log("CASETEEEEEEWSSSSS====", res?.data)
-				setCastes(res?.data)
-			})
-			.catch((err) => {
-				console.log("Some err")
-			})
-	}
-
-	const handleFetchEducations = async () => {
-		await axios
-			.get(`${url}/get_education`)
-			.then((res) => {
-				console.log("EDUCATIONSSSSSS====", res?.data)
-				setEducations(res?.data)
-			})
-			.catch((err) => {
-				console.log("Some err")
-			})
-	}
-
-	useEffect(() => {
-		handleFetchGroups()
-		handleFetchReligions()
-		handleFetchCastes()
-		handleFetchEducations()
-	}, [])
-
-	const fetchVerificationDetails = async () => {
-		await axios
-			.get(
-				`${url}/admin/fetch_verify_flag?member_code=${memberDetails?.member_code}`
-			)
-			.then((res) => {
-				const { phone_verify_flag, aadhar_verify_flag, pan_verify_flag } =
-					res.data?.msg[0]
-
-				console.log(
-					"!!!!!!@@@@@@@@@@########",
-					phone_verify_flag,
-					aadhar_verify_flag,
-					pan_verify_flag
-				)
-
-				setIsPhoneVerified(phone_verify_flag === "Y")
-				setIsAadhaarVerified(aadhar_verify_flag === "Y")
-				setIsPanVerified(pan_verify_flag === "Y")
-			})
-			.catch((err) => {
-				console.error("Failed to fetch verification details:", err)
-			})
-	}
-
-	useEffect(() => {
-		fetchVerificationDetails()
-	}, [])
-
-	const handleVerification = async (flag, val) => {
-		setLoading(true)
-		const creds = {
-			flag: flag,
-			verify_value: val,
-			// form_no: params?.id,
-			member_id: memberDetails?.member_code,
-		}
-
-		await axios
-			.post(`${url}/admin/verify_by_mis`, creds)
-			.then((res) => {
-				Message("success", "Verification checked.")
-				console.log(">>>>>>>>>>>", res?.data)
-			})
-			.catch((err) => {
-				Message("error", "Verification failed.")
-				console.log("MMMMMMMMM", err)
-			})
-		setLoading(false)
-	}
-
-	const onChangeCheck1 = async (e) => {
-		const isChecked = e.target.checked
-		setIsPhoneVerified(isChecked)
-		await handleVerification("PH", isChecked ? "Y" : "N")
-	}
-
-	const onChangeCheck2 = async (e) => {
-		const isChecked = e.target.checked
-		setIsAadhaarVerified(isChecked)
-		await handleVerification("A", isChecked ? "Y" : "N")
-	}
-
-	const onChangeCheck3 = async (e) => {
-		const isChecked = e.target.checked
-		setIsPanVerified(isChecked)
-		await handleVerification("P", isChecked ? "Y" : "N")
-	}
-
 	return (
 		<>
 			<Spin
@@ -402,7 +174,7 @@ function DisbursmentForm({ memberDetails }) {
 						<div>
 							<div className="grid gap-4 sm:grid-cols-2 sm:gap-6">
 								<div className="text-xl mb-2 text-lime-800 font-semibold underline">
-									Personal Details
+									1. Personal Details
 								</div>
 							</div>
 							<div className="grid gap-4 sm:grid-cols-4 sm:gap-6">
@@ -411,10 +183,9 @@ function DisbursmentForm({ memberDetails }) {
 										placeholder="Member Code"
 										type="text"
 										label="Member Code"
-										name="mem_code"
-										formControlName={memberDetails?.member_code}
-										handleChange={formik.handleChange}
-										handleBlur={formik.handleBlur}
+										name="b_memCode"
+										formControlName={personalDetailsData?.b_memCode}
+										handleChange={handleChangePersonalDetails}
 										mode={1}
 									/>
 								</div>
@@ -425,18 +196,10 @@ function DisbursmentForm({ memberDetails }) {
 										type="text"
 										label="Member Name"
 										name="b_clientName"
-										formControlName={formik.values.b_clientName}
-										handleChange={formik.handleChange}
-										handleBlur={formik.handleBlur}
+										formControlName={personalDetailsData?.b_clientName}
+										handleChange={handleChangePersonalDetails}
 										mode={1}
-										disabled={disableCondition(
-											userDetails?.id,
-											memberDetails?.approval_status
-										)}
 									/>
-									{formik.errors.b_clientName && formik.touched.b_clientName ? (
-										<VError title={formik.errors.b_clientName} />
-									) : null}
 								</div>
 
 								<div>
@@ -445,9 +208,8 @@ function DisbursmentForm({ memberDetails }) {
 										type="text"
 										label="Group Name"
 										name="b_groupName"
-										formControlName={formik.values.b_groupName}
-										handleChange={formik.handleChange}
-										handleBlur={formik.handleBlur}
+										formControlName={personalDetailsData?.b_groupName}
+										handleChange={handleChangePersonalDetails}
 										mode={1}
 										disabled
 									/>
@@ -458,8 +220,8 @@ function DisbursmentForm({ memberDetails }) {
 										placeholder="Form Number"
 										type="text"
 										label="Form Number"
-										name="form_no"
-										formControlName={params.id}
+										name="b_formNo"
+										formControlName={personalDetailsData?.b_formNo}
 										mode={1}
 										disabled
 									/>
@@ -471,9 +233,8 @@ function DisbursmentForm({ memberDetails }) {
 										type="text"
 										label="GRT Approve Date"
 										name="b_grtApproveDate"
-										formControlName={formik.values.b_grtApproveDate}
-										handleChange={formik.handleChange}
-										handleBlur={formik.handleBlur}
+										formControlName={personalDetailsData?.b_grtApproveDate}
+										handleChange={handleChangePersonalDetails}
 										mode={1}
 										disabled
 									/>
@@ -484,9 +245,8 @@ function DisbursmentForm({ memberDetails }) {
 										type="text"
 										label="Branch"
 										name="b_branch"
-										formControlName={formik.values.b_branch}
-										handleChange={formik.handleChange}
-										handleBlur={formik.handleBlur}
+										formControlName={personalDetailsData?.b_branch}
+										handleChange={handleChangePersonalDetails}
 										mode={1}
 										disabled
 									/>
@@ -497,9 +257,8 @@ function DisbursmentForm({ memberDetails }) {
 										type="text"
 										label="Purpose"
 										name="b_purpose"
-										formControlName={formik.values.b_purpose}
-										handleChange={formik.handleChange}
-										handleBlur={formik.handleBlur}
+										formControlName={personalDetailsData?.b_purpose}
+										handleChange={handleChangePersonalDetails}
 										mode={1}
 										disabled
 									/>
@@ -510,9 +269,8 @@ function DisbursmentForm({ memberDetails }) {
 										type="text"
 										label="Sub Purpose"
 										name="b_subPurpose"
-										formControlName={formik.values.b_subPurpose}
-										handleChange={formik.handleChange}
-										handleBlur={formik.handleBlur}
+										formControlName={personalDetailsData?.b_subPurpose}
+										handleChange={handleChangePersonalDetails}
 										mode={1}
 										disabled
 									/>
@@ -523,9 +281,8 @@ function DisbursmentForm({ memberDetails }) {
 										type="text"
 										label="Application Date"
 										name="b_applicationDate"
-										formControlName={formik.values.b_applicationDate}
-										handleChange={formik.handleChange}
-										handleBlur={formik.handleBlur}
+										formControlName={personalDetailsData?.b_applicationDate}
+										handleChange={handleChangePersonalDetails}
 										mode={1}
 										disabled
 									/>
@@ -536,9 +293,8 @@ function DisbursmentForm({ memberDetails }) {
 										type="text"
 										label="Applied Amount"
 										name="b_appliedAmt"
-										formControlName={formik.values.b_appliedAmt}
-										handleChange={formik.handleChange}
-										handleBlur={formik.handleBlur}
+										formControlName={personalDetailsData?.b_appliedAmt}
+										handleChange={handleChangePersonalDetails}
 										mode={1}
 										disabled
 									/>
@@ -551,7 +307,7 @@ function DisbursmentForm({ memberDetails }) {
 						<div>
 							<div className="grid gap-4 sm:grid-cols-2 sm:gap-6">
 								<div className="text-xl mb-2 mt-5 text-lime-800 font-semibold underline">
-									Disbursement Details
+									2. Disbursement Details
 								</div>
 							</div>
 							<div className="grid gap-4 sm:grid-cols-4 sm:gap-6">
@@ -679,7 +435,7 @@ function DisbursmentForm({ memberDetails }) {
 						<div>
 							<div className="grid gap-4 sm:grid-cols-2 sm:gap-6">
 								<div className="text-xl mb-2 mt-5 text-lime-800 font-semibold underline">
-									Transaction Details
+									3. Transaction Details
 								</div>
 							</div>
 							<div className="grid gap-4 sm:grid-cols-4 sm:gap-6">
@@ -780,7 +536,7 @@ function DisbursmentForm({ memberDetails }) {
 				visible={visible}
 				onPressYes={() => {
 					// editGroup()
-					updateBasicDetails()
+					// updateBasicDetails()
 					setVisible(!visible)
 				}}
 				onPressNo={() => setVisible(!visible)}
