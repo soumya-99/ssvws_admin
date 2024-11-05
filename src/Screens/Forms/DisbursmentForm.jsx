@@ -683,6 +683,16 @@ function DisbursmentForm() {
 				visible={visible}
 				onPressYes={() => {
 					if (
+						!personalDetailsData.b_memCode ||
+						!personalDetailsData.b_clientName ||
+						!personalDetailsData.b_groupName ||
+						!personalDetailsData.b_formNo ||
+						!personalDetailsData.b_grtApproveDate ||
+						!personalDetailsData.b_branch ||
+						!personalDetailsData.b_purpose ||
+						!personalDetailsData.b_subPurpose ||
+						!personalDetailsData.b_applicationDate ||
+						!personalDetailsData.b_appliedAmt ||
 						!disbursementDetailsData.b_scheme ||
 						!disbursementDetailsData.b_fund ||
 						!disbursementDetailsData.b_period ||
