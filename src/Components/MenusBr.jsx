@@ -235,6 +235,31 @@ function MenusBr({ theme }) {
 				// },
 			],
 		},
+
+		{
+			key: "sub4",
+			icon: <ThunderboltOutlined />,
+			label: "Loans",
+			children: [
+				{
+					key: "sub4-1",
+					icon: <ThunderboltOutlined />,
+					label: <Link to={"/homeco/disburseloan"}>Disburse Loan</Link>,
+				},
+				{
+					key: "sub4-2",
+					icon: <PlusCircleOutlined />,
+					label: (
+						<Link to={"/homeco/editgroupform/0"}>Disbursement Approve</Link>
+					),
+				},
+				// {
+				// 	key: "sub3-3",
+				// 	icon: <SubnodeOutlined />,
+				// 	label: <Link to={"/homebm/assignmember"}>Assign Member</Link>,
+				// },
+			],
+		},
 		// {
 		// 	key: "sub2",
 		// 	icon: <ImportOutlined />,

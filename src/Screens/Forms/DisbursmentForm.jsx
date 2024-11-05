@@ -18,7 +18,7 @@ import DialogBox from "../../Components/DialogBox"
 // import { disableInputArray } from "./disableInputArray"
 import { disableCondition } from "./disableCondition"
 
-function DisbursmentForm({ memberDetails }) {
+function DisbursmentForm() {
 	const params = useParams()
 	const [loading, setLoading] = useState(false)
 	const location = useLocation()
@@ -29,14 +29,19 @@ function DisbursmentForm({ memberDetails }) {
 
 	const [visible, setVisible] = useState(() => false)
 
+	const [maxDisburseAmountForAScheme, setMaxDisburseAmountForAScheme] =
+		useState(() => "")
+
 	const [schemes, setSchemes] = useState(() => [])
 	const [funds, setFunds] = useState(() => [])
+	const [tnxTypes, setTnxTypes] = useState(() => [])
+	const [tnxModes, setTnxModes] = useState(() => [])
 
 	// const formattedDob = formatDateToYYYYMMDD(memberDetails?.dob)
 
 	console.log(params, "params")
 	console.log(location, "location")
-	console.log(memberDetails, "memberDetails")
+	// console.log(memberDetails, "memberDetails")
 
 	const [personalDetailsData, setPersonalDetailsData] = useState({
 		b_memCode: "",
@@ -83,6 +88,8 @@ function DisbursmentForm({ memberDetails }) {
 		b_bankName: "",
 		b_chequeOrRefNo: "",
 		b_chequeOrRefDate: "",
+		b_tnxType: "D",
+		b_tnxMode: "",
 		b_remarks: "",
 	})
 
@@ -96,16 +103,16 @@ function DisbursmentForm({ memberDetails }) {
 
 	useEffect(() => {
 		setPersonalDetailsData({
-			b_memCode: personalDetails?.member_code,
-			b_clientName: personalDetails?.client_name,
-			b_groupName: personalDetails?.group_name,
-			b_formNo: personalDetails?.form_no,
-			b_grtApproveDate: personalDetails?.grt_approve_date,
-			b_branch: personalDetails?.branch_name,
-			b_purpose: personalDetails?.purpose_id,
-			b_subPurpose: personalDetails?.sub_purp_name,
-			b_applicationDate: personalDetails?.application_date,
-			b_appliedAmt: personalDetails?.applied_amt,
+			b_memCode: personalDetails?.member_code || "",
+			b_clientName: personalDetails?.client_name || "",
+			b_groupName: personalDetails?.group_name || "",
+			b_formNo: personalDetails?.form_no || "",
+			b_grtApproveDate: personalDetails?.grt_approve_date || "",
+			b_branch: personalDetails?.branch_name || "",
+			b_purpose: personalDetails?.purpose_id || "",
+			b_subPurpose: personalDetails?.sub_purp_name || "",
+			b_applicationDate: personalDetails?.application_date || "",
+			b_appliedAmt: personalDetails?.applied_amt || "",
 		})
 
 		console.log("?????????????????????", personalDetails)
@@ -139,9 +146,25 @@ function DisbursmentForm({ memberDetails }) {
 		setLoading(false)
 	}
 
+	const getTnxTypes = async () => {
+		await axios.get(`${url}/get_tr_type`).then((res) => {
+			console.log("777 --- 777 --- 777", res?.data)
+			setTnxTypes(res?.data)
+		})
+	}
+
+	const getTnxModes = async () => {
+		await axios.get(`${url}/get_tr_mode`).then((res) => {
+			console.log("888 --- 888 --- 888", res?.data)
+			setTnxModes(res?.data)
+		})
+	}
+
 	useEffect(() => {
 		getSchemes()
 		getFunds()
+		getTnxTypes()
+		getTnxModes()
 	}, [])
 
 	const getParticularScheme = async (schemeId) => {
@@ -163,6 +186,7 @@ function DisbursmentForm({ memberDetails }) {
 					b_bankCharges: "",
 					b_processingCharges: "",
 				})
+				setMaxDisburseAmountForAScheme(res?.data?.msg[0]?.max_amt)
 			})
 			.catch((err) => {
 				console.log("errrr", err)
@@ -200,13 +224,61 @@ function DisbursmentForm({ memberDetails }) {
 			b_bankName: "",
 			b_chequeOrRefNo: "",
 			b_chequeOrRefDate: "",
+			b_tnxType: "",
+			b_tnxMode: "",
 			b_remarks: "",
 		})
 	}
 
-	// const handleSubmitDisbursementForm = async () => {
-	// 	await axios.post(`${url}/admin/submit_disbur`)
-	// }
+	const handleSubmitDisbursementForm = async () => {
+		setLoading(true)
+		const creds = {
+			branch_code: personalDetails?.branch_code || "",
+			group_code: personalDetails?.prov_grp_code || "",
+			member_code: personalDetails?.member_code || "",
+			grt_form_no: personalDetails?.form_no || "",
+			purpose: personalDetails?.loan_purpose || "",
+			sub_purpose: personalDetails?.sub_pupose || "",
+			applied_amt: personalDetails?.applied_amt || "",
+			scheme_id: disbursementDetailsData?.b_scheme || "",
+			fund_id: disbursementDetailsData?.b_fund || "",
+			period: disbursementDetailsData?.b_period || "",
+			curr_roi: disbursementDetailsData?.b_roi || "",
+			od_roi: "0",
+			prn_disb_amt: disbursementDetailsData?.b_disburseAmt || "",
+			old_prn_amt: "0",
+			od_intt_amt: "0",
+			period_mode: disbursementDetailsData?.b_mode || "",
+			created_by: userDetails?.emp_id || "",
+			loan_code: params?.id || "",
+			particulars: transactionDetailsData?.b_remarks || "",
+			bank_charge: disbursementDetailsData?.b_bankCharges || "",
+			proc_charge: disbursementDetailsData?.b_processingCharges || "",
+			tr_type: transactionDetailsData?.b_tnxType || "",
+			tr_mode: transactionDetailsData?.b_tnxMode || "",
+			cheque_id: transactionDetailsData?.b_chequeOrRefNo || "",
+			chq_dt: transactionDetailsData?.b_chequeOrRefDate || "",
+			// deposit_by: "",
+			// bill_no: "",
+			// trn_lat: "",
+			// trn_long: "",
+		}
+		await axios
+			.post(`${url}/admin/save_loan_transaction`, creds)
+			.then((res) => {
+				console.log("Disbursement initiated successfully", res?.data)
+				Message("success", "Submitted successfully.")
+				navigate(-1)
+			})
+			.catch((err) => {
+				Message(
+					"error",
+					"Some error occurred while submitting disbursement form!"
+				)
+				console.log("DDEEERRR", err)
+			})
+		setLoading(false)
+	}
 
 	return (
 		<>
@@ -225,6 +297,18 @@ function DisbursmentForm({ memberDetails }) {
 								</div>
 							</div>
 							<div className="grid gap-4 sm:grid-cols-4 sm:gap-6">
+								<div className="sm:col-span-4 bg-slate-200 border-stone-200 text-lime-900 p-5 rounded-2xl">
+									<TDInputTemplateBr
+										placeholder="Group name..."
+										type="text"
+										label="Group Name"
+										name="b_groupName"
+										formControlName={personalDetailsData?.b_groupName}
+										handleChange={handleChangePersonalDetails}
+										mode={1}
+										disabled
+									/>
+								</div>
 								<div>
 									<TDInputTemplateBr
 										placeholder="Member Code"
@@ -245,19 +329,6 @@ function DisbursmentForm({ memberDetails }) {
 										label="Member Name"
 										name="b_clientName"
 										formControlName={personalDetailsData?.b_clientName}
-										handleChange={handleChangePersonalDetails}
-										mode={1}
-										disabled
-									/>
-								</div>
-
-								<div>
-									<TDInputTemplateBr
-										placeholder="Group name..."
-										type="text"
-										label="Group Name"
-										name="b_groupName"
-										formControlName={personalDetailsData?.b_groupName}
 										handleChange={handleChangePersonalDetails}
 										mode={1}
 										disabled
@@ -312,7 +383,7 @@ function DisbursmentForm({ memberDetails }) {
 										disabled
 									/>
 								</div>
-								<div>
+								<div className="sm:col-span-2">
 									<TDInputTemplateBr
 										placeholder="Sub Purpose..."
 										type="text"
@@ -439,31 +510,37 @@ function DisbursmentForm({ memberDetails }) {
 								<div>
 									<TDInputTemplateBr
 										placeholder="Disburse Amount..."
-										type="text"
-										label="Disburse Amount"
+										type="number"
+										label={`Disburse Amount`}
 										name="b_disburseAmt"
 										formControlName={disbursementDetailsData.b_disburseAmt}
 										handleChange={handleChangeDisburseDetails}
 										mode={1}
-										// disabled
+										disabled={!disbursementDetailsData?.b_scheme}
 									/>
+									{+disbursementDetailsData.b_disburseAmt >
+									+maxDisburseAmountForAScheme ? (
+										<VError
+											title={`Disburse amount must be less than ${maxDisburseAmountForAScheme}`}
+										/>
+									) : null}
 								</div>
 								<div>
 									<TDInputTemplateBr
 										placeholder="Bank charges..."
-										type="text"
+										type="number"
 										label="Bank Charges"
 										name="b_bankCharges"
 										formControlName={disbursementDetailsData.b_bankCharges}
 										handleChange={handleChangeDisburseDetails}
 										mode={1}
-										// disabled
+										disabled={!disbursementDetailsData?.b_scheme}
 									/>
 								</div>
 								<div>
 									<TDInputTemplateBr
 										placeholder="Processing charges..."
-										type="text"
+										type="number"
 										label="Processing Charges"
 										name="b_processingCharges"
 										formControlName={
@@ -471,7 +548,7 @@ function DisbursmentForm({ memberDetails }) {
 										}
 										handleChange={handleChangeDisburseDetails}
 										mode={1}
-										// disabled
+										disabled={!disbursementDetailsData?.b_scheme}
 									/>
 								</div>
 							</div>
@@ -536,6 +613,49 @@ function DisbursmentForm({ memberDetails }) {
 										mode={1}
 									/>
 								</div>
+
+								<div className="sm:col-span-2">
+									<TDInputTemplateBr
+										placeholder="Select Transaction Type..."
+										type="text"
+										label="Transaction Type"
+										name="b_tnxType"
+										formControlName={transactionDetailsData.b_tnxType}
+										handleChange={handleChangeTnxDetailsDetails}
+										data={tnxTypes?.map((item, _) => ({
+											code: item?.id,
+											name: item?.name,
+										}))}
+										// data={[
+										// 	{ code: "F1", name: "Fund 1" },
+										// 	{ code: "F2", name: "Fund 2" },
+										// 	{ code: "F3", name: "Fund 3" },
+										// ]}
+										mode={2}
+										disabled
+									/>
+								</div>
+								<div className="sm:col-span-2">
+									<TDInputTemplateBr
+										placeholder="Select Transaction Mode..."
+										type="text"
+										label="Transaction Mode"
+										name="b_tnxMode"
+										formControlName={transactionDetailsData.b_tnxMode}
+										handleChange={handleChangeTnxDetailsDetails}
+										data={tnxModes?.map((item, _) => ({
+											code: item?.id,
+											name: item?.name,
+										}))}
+										// data={[
+										// 	{ code: "F1", name: "Fund 1" },
+										// 	{ code: "F2", name: "Fund 2" },
+										// 	{ code: "F3", name: "Fund 3" },
+										// ]}
+										mode={2}
+									/>
+								</div>
+
 								<div className="sm:col-span-4">
 									<TDInputTemplateBr
 										placeholder="Type Remarks..."
@@ -562,8 +682,27 @@ function DisbursmentForm({ memberDetails }) {
 				onPress={() => setVisible(!visible)}
 				visible={visible}
 				onPressYes={() => {
-					// editGroup()
-					// updateBasicDetails()
+					if (
+						!disbursementDetailsData.b_scheme ||
+						!disbursementDetailsData.b_fund ||
+						!disbursementDetailsData.b_period ||
+						!disbursementDetailsData.b_roi ||
+						!disbursementDetailsData.b_mode ||
+						!disbursementDetailsData.b_disburseAmt ||
+						!disbursementDetailsData.b_bankCharges ||
+						!disbursementDetailsData.b_processingCharges ||
+						!transactionDetailsData.b_tnxDate ||
+						!transactionDetailsData.b_bankName ||
+						!transactionDetailsData.b_chequeOrRefNo ||
+						!transactionDetailsData.b_chequeOrRefDate ||
+						!transactionDetailsData.b_tnxMode ||
+						!transactionDetailsData.b_remarks
+					) {
+						Message("warning", "Fill all the values properly!")
+						setVisible(false)
+						return
+					}
+					handleSubmitDisbursementForm()
 					setVisible(!visible)
 				}}
 				onPressNo={() => setVisible(!visible)}

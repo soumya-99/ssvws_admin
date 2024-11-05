@@ -62,6 +62,8 @@ function App() {
 							// lineWidthFocus: 0,
 							colorPrimaryBorder: "#A31E21",
 							horizontalItemSelectedColor: "#FBEC21",
+							// padding: 2,
+							itemMarginInline: 4,
 						},
 						Segmented: {
 							itemActiveBg: "#A31E21",

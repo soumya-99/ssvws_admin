@@ -15,7 +15,10 @@ function TDInputTemplateBr(props) {
 </div> */}{" "}
 				{props.mode !== 3
 					? props.label
-					: props.label + " (" + props.formControlName?.length + "/500)"}
+					: props.label +
+					  " (" +
+					  (props.formControlName?.length || "0") +
+					  "/500)"}
 			</label>
 			{props.mode == 1 && (
 				<input

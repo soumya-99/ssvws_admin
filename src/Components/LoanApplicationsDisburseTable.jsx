@@ -190,12 +190,6 @@ function LoanApplicationsDisburseTable({
 									{/* <td className="px-6 py-4">{item.member_name}</td> */}
 									<td className="px-6 py-4">
 										{flag === "MIS" ? (
-											// <Link
-											// 	to={
-											// 		routePaths.MIS_ASSISTANT_EDIT_GROUP +
-											// 		item?.prov_grp_code
-											// 	}
-											// >
 											<button
 												// to={routePaths.BM_EDIT_GRT + item?.form_no}
 												onClick={() => {
@@ -204,6 +198,7 @@ function LoanApplicationsDisburseTable({
 														state: item,
 													})
 												}}
+												disabled
 											>
 												<EditOutlined
 													className={`text-md ${
@@ -234,7 +229,7 @@ function LoanApplicationsDisburseTable({
 												// to={routePaths.BM_EDIT_GRT + item?.form_no}
 												onClick={() => {
 													console.log("LLSKSIODFUISFH", item)
-													navigate(`/homeco/editgrtform/${item?.form_no}`, {
+													navigate(`/homeco/disburseloan/0`, {
 														state: item,
 													})
 												}}
