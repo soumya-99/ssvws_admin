@@ -42,6 +42,7 @@ import EditGRTFormCO from "./Screens/COHome/EditGRTFormCO"
 import SearchMemberCO from "./Screens/COHome/SearchMemberCO"
 import EditGroupFormCO from "./Screens/COHome/EditGroupFormCO"
 import EditDisburseFormBM from "./Screens/BMHome/EditDisburseFormBM"
+import SearchMemberForDisburseBM from "./Screens/BMHome/SearchMemberForDisburseBM"
 
 // const AuthBr = lazy(() => import("./Screens/BranchManager/AuthBr"))
 
@@ -136,6 +137,11 @@ const router = createBrowserRouter([
 								path: "editgroupform/:id",
 								element: <EditGroupFormBM />,
 							},
+							{
+								path: "disburseloan",
+								element: <SearchMemberForDisburseBM />,
+							},
+
 							{
 								path: "editgrtform/:id",
 								element: <EditGRTFormBM />,

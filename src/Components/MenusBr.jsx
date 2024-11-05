@@ -15,6 +15,7 @@ import {
 	DeploymentUnitOutlined,
 	PlusCircleOutlined,
 	SubnodeOutlined,
+	ThunderboltOutlined,
 } from "@ant-design/icons"
 import { Menu } from "antd"
 import { Link } from "react-router-dom"
@@ -149,13 +150,13 @@ function MenusBr({ theme }) {
 
 		{
 			key: "sub4",
-			icon: <DeploymentUnitOutlined />,
+			icon: <ThunderboltOutlined />,
 			label: "Loans",
 			children: [
 				{
 					key: "sub4-1",
-					icon: <FileSearchOutlined />,
-					label: <Link to={"/homebm/disburseloan/0"}>Disburse Loan</Link>,
+					icon: <ThunderboltOutlined />,
+					label: <Link to={"/homebm/disburseloan"}>Disburse Loan</Link>,
 				},
 				{
 					key: "sub4-2",

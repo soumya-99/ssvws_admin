@@ -4,7 +4,7 @@ import { useParams } from "react-router"
 import BtnComp from "../../Components/BtnComp"
 import VError from "../../Components/VError"
 import { useNavigate } from "react-router-dom"
-import { useFormik } from "formik"
+// import { useFormik } from "formik"
 import * as Yup from "yup"
 import axios from "axios"
 import { Message } from "../../Components/Message"
@@ -22,23 +22,15 @@ function DisbursmentForm({ memberDetails }) {
 	const params = useParams()
 	const [loading, setLoading] = useState(false)
 	const location = useLocation()
-	// const { loanAppData } = location.state || {}
+	const personalDetails = location.state || {}
+
 	const navigate = useNavigate()
 	const userDetails = JSON.parse(localStorage.getItem("user_details"))
 
-	const [branches, setBranches] = useState(() => [])
-	const [loanTypes, setLoanTypes] = useState(() => [])
 	const [visible, setVisible] = useState(() => false)
-	const [visible2, setVisible2] = useState(() => false)
 
-	const [isPhoneVerified, setIsPhoneVerified] = useState(false)
-	const [isAadhaarVerified, setIsAadhaarVerified] = useState(false)
-	const [isPanVerified, setIsPanVerified] = useState(false)
-
-	const [groups, setGroups] = useState(() => [])
-	const [religions, setReligions] = useState(() => [])
-	const [castes, setCastes] = useState(() => [])
-	const [educations, setEducations] = useState(() => [])
+	const [schemes, setSchemes] = useState(() => [])
+	const [funds, setFunds] = useState(() => [])
 
 	// const formattedDob = formatDateToYYYYMMDD(memberDetails?.dob)
 
@@ -67,83 +59,154 @@ function DisbursmentForm({ memberDetails }) {
 		}))
 	}
 
-	const initialValues = {}
-	const [formValues, setValues] = useState({
-		b_clientName: "",
-		b_clientGender: "",
-		b_clientMobile: "",
-		b_clientEmail: "",
-		b_guardianName: "",
-		b_guardianMobile: "",
-		b_clientAddress: "",
-		b_clientPin: "",
-		b_aadhaarNumber: "",
-		b_panNumber: "",
-		b_religion: "",
-		b_caste: "",
-		b_education: "",
-		b_otherReligion: "",
-		b_otherCaste: "",
-		b_otherEducation: "",
-		b_groupCode: "",
-		b_groupCodeName: "",
-		b_dob: "",
+	const [disbursementDetailsData, setDisbursementDetailsData] = useState({
+		b_scheme: "",
+		b_fund: "",
+		b_period: "",
+		b_roi: "",
+		b_mode: "",
+		b_disburseAmt: "",
+		b_bankCharges: "",
+		b_processingCharges: "",
 	})
 
-	const validationSchema = Yup.object({
-		b_clientName: Yup.string().required("Client name is required"),
-		b_clientGender: Yup.string().required("Gender is required"),
-		b_clientMobile: Yup.string()
-			.matches(/^[0-9]+$/, "Must be only digits")
-			.min(10, "Number should exactly be 10 digits")
-			.max(10, "Number should exactly be 10 digits")
-			.required("Mobile Numeber is required"),
-		b_clientEmail: Yup.string(),
-		b_guardianName: Yup.string()
-			.max(60, "Guardian name should always be less than 61 characters.")
-			.required("Guardian name is required"),
-		b_guardianMobile: Yup.string().matches(/^[0-9]+$/, "Must be only digits"),
-		b_clientAddress: Yup.string()
-			.max(500, "Address length should always be less than 500 characters")
-			.required("Address is required"),
-		b_clientPin: Yup.number()
-			.integer("Only integers are allowed")
-			.min(1, "PIN should always be greater than 0")
-			.max(1000000, "Max loan amount is 10000000")
-			.required("PIN is required"),
-		b_aadhaarNumber: Yup.number()
-			.integer("Only integers are allowed")
-			.required("Aadhaar is required"),
-		b_panNumber: Yup.string().required("PAN Number is required"),
-		b_religion: Yup.string().required("Religion is required"),
-		b_caste: Yup.string().required("Caste is required"),
-		b_education: Yup.string().required("Education is required"),
-		b_otherReligion: Yup.string(),
-		b_otherCaste: Yup.string(),
-		b_otherEducation: Yup.string(),
-		b_groupCode: Yup.string().required("Group code is required"),
-		b_dob: Yup.string().required("DOB is required"),
+	const handleChangeDisburseDetails = (e) => {
+		const { name, value } = e.target
+		setDisbursementDetailsData((prevData) => ({
+			...prevData,
+			[name]: value,
+		}))
+	}
+
+	const [transactionDetailsData, setTransactionDetailsData] = useState({
+		b_tnxDate: "",
+		b_bankName: "",
+		b_chequeOrRefNo: "",
+		b_chequeOrRefDate: "",
+		b_remarks: "",
 	})
 
-	const onSubmit = async (values) => {
-		console.log("onsubmit called")
-		console.log(values, "onsubmit vendor")
+	const handleChangeTnxDetailsDetails = (e) => {
+		const { name, value } = e.target
+		setTransactionDetailsData((prevData) => ({
+			...prevData,
+			[name]: value,
+		}))
+	}
+
+	useEffect(() => {
+		setPersonalDetailsData({
+			b_memCode: personalDetails?.member_code,
+			b_clientName: personalDetails?.client_name,
+			b_groupName: personalDetails?.group_name,
+			b_formNo: personalDetails?.form_no,
+			b_grtApproveDate: personalDetails?.grt_approve_date,
+			b_branch: personalDetails?.branch_name,
+			b_purpose: personalDetails?.purpose_id,
+			b_subPurpose: personalDetails?.sub_purp_name,
+			b_applicationDate: personalDetails?.application_date,
+			b_appliedAmt: personalDetails?.applied_amt,
+		})
+
+		console.log("?????????????????????", personalDetails)
+	}, [])
+
+	const getSchemes = async () => {
 		setLoading(true)
-
-		setVisible(true)
-
+		await axios
+			.get(`${url}/get_scheme`)
+			.then((res) => {
+				console.log("==============", res?.data)
+				setSchemes(res?.data?.msg)
+			})
+			.catch((err) => {
+				console.log("err", err)
+			})
 		setLoading(false)
 	}
 
-	const formik = useFormik({
-		initialValues: formValues,
-		onSubmit,
-		validationSchema,
-		validateOnChange: true,
-		validateOnBlur: true,
-		enableReinitialize: true,
-		validateOnMount: true,
-	})
+	const getFunds = async () => {
+		setLoading(true)
+		await axios
+			.get(`${url}/get_fund`)
+			.then((res) => {
+				console.log("--------------", res?.data)
+				setFunds(res?.data?.msg)
+			})
+			.catch((err) => {
+				console.log("err", err)
+			})
+		setLoading(false)
+	}
+
+	useEffect(() => {
+		getSchemes()
+		getFunds()
+	}, [])
+
+	const getParticularScheme = async (schemeId) => {
+		setLoading(true)
+		const creds = {
+			scheme_id: schemeId,
+		}
+		await axios
+			.post(`${url}/admin/scheme_dtls`, creds)
+			.then((res) => {
+				console.log("PPP", res?.data)
+				setDisbursementDetailsData({
+					b_scheme: disbursementDetailsData.b_scheme,
+					b_fund: disbursementDetailsData.b_fund,
+					b_period: res?.data?.msg[0]?.max_period,
+					b_roi: res?.data?.msg[0]?.roi,
+					b_mode: res?.data?.msg[0]?.payment_mode,
+					b_disburseAmt: "",
+					b_bankCharges: "",
+					b_processingCharges: "",
+				})
+			})
+			.catch((err) => {
+				console.log("errrr", err)
+			})
+		setLoading(false)
+	}
+
+	useEffect(() => {
+		getParticularScheme(disbursementDetailsData.b_scheme)
+	}, [disbursementDetailsData.b_scheme])
+
+	//////////////////////////////////////////////////
+	//////////////////////////////////////////////////
+
+	const onSubmit = (e) => {
+		e.preventDefault()
+
+		setVisible(true)
+	}
+
+	const onReset = async () => {
+		console.log("onreset called")
+		setDisbursementDetailsData({
+			b_scheme: "",
+			b_fund: "",
+			b_period: "",
+			b_roi: "",
+			b_mode: "",
+			b_disburseAmt: "",
+			b_bankCharges: "",
+			b_processingCharges: "",
+		})
+		setTransactionDetailsData({
+			b_tnxDate: "",
+			b_bankName: "",
+			b_chequeOrRefNo: "",
+			b_chequeOrRefDate: "",
+			b_remarks: "",
+		})
+	}
+
+	// const handleSubmitDisbursementForm = async () => {
+	// 	await axios.post(`${url}/admin/submit_disbur`)
+	// }
 
 	return (
 		<>
@@ -153,23 +216,7 @@ function DisbursmentForm({ memberDetails }) {
 				className="text-blue-800 dark:text-gray-400"
 				spinning={loading}
 			>
-				{/* <Formik
-					initialValues={formValues}
-					validationSchema={validationSchema}
-					onSubmit={onSubmit}
-					validateOnMount={true}
-					enableReinitialize={true}
-				>
-					{({
-						values,
-						handleReset,
-						handleChange,
-						handleBlur,
-						handleSubmit,
-						errors,
-						touched,
-					}) => ( */}
-				<form onSubmit={formik.handleSubmit}>
+				<form onSubmit={onSubmit}>
 					<div>
 						<div>
 							<div className="grid gap-4 sm:grid-cols-2 sm:gap-6">
@@ -187,6 +234,7 @@ function DisbursmentForm({ memberDetails }) {
 										formControlName={personalDetailsData?.b_memCode}
 										handleChange={handleChangePersonalDetails}
 										mode={1}
+										disabled
 									/>
 								</div>
 
@@ -199,6 +247,7 @@ function DisbursmentForm({ memberDetails }) {
 										formControlName={personalDetailsData?.b_clientName}
 										handleChange={handleChangePersonalDetails}
 										mode={1}
+										disabled
 									/>
 								</div>
 
@@ -317,20 +366,19 @@ function DisbursmentForm({ memberDetails }) {
 										type="text"
 										label="Scheme"
 										name="b_scheme"
-										formControlName={formik.values.b_scheme}
-										handleChange={formik.handleChange}
-										handleBlur={formik.handleBlur}
-										data={[
-											{ code: "S1", name: "Scheme 1" },
-											{ code: "S1", name: "Scheme 2" },
-											{ code: "S3", name: "Scheme 3" },
-										]}
+										formControlName={disbursementDetailsData.b_scheme}
+										handleChange={handleChangeDisburseDetails}
+										data={schemes?.map((item, _) => ({
+											code: item?.scheme_id,
+											name: item?.scheme_name,
+										}))}
+										// data={[
+										// 	{ code: "S1", name: "Scheme 1" },
+										// 	{ code: "S1", name: "Scheme 2" },
+										// 	{ code: "S3", name: "Scheme 3" },
+										// ]}
 										mode={2}
 									/>
-									{formik.errors.b_clientGender &&
-									formik.touched.b_clientGender ? (
-										<VError title={formik.errors.b_clientGender} />
-									) : null}
 								</div>
 								<div>
 									<TDInputTemplateBr
@@ -338,14 +386,17 @@ function DisbursmentForm({ memberDetails }) {
 										type="text"
 										label="Fund"
 										name="b_fund"
-										formControlName={formik.values.b_fund}
-										handleChange={formik.handleChange}
-										handleBlur={formik.handleBlur}
-										data={[
-											{ code: "F1", name: "Fund 1" },
-											{ code: "F2", name: "Fund 2" },
-											{ code: "F3", name: "Fund 3" },
-										]}
+										formControlName={disbursementDetailsData.b_fund}
+										handleChange={handleChangeDisburseDetails}
+										data={funds?.map((item, _) => ({
+											code: item?.fund_id,
+											name: item?.fund_name,
+										}))}
+										// data={[
+										// 	{ code: "F1", name: "Fund 1" },
+										// 	{ code: "F2", name: "Fund 2" },
+										// 	{ code: "F3", name: "Fund 3" },
+										// ]}
 										mode={2}
 									/>
 								</div>
@@ -355,9 +406,8 @@ function DisbursmentForm({ memberDetails }) {
 										type="text"
 										label="Period"
 										name="b_period"
-										formControlName={formik.values.b_period}
-										handleChange={formik.handleChange}
-										handleBlur={formik.handleBlur}
+										formControlName={disbursementDetailsData.b_period}
+										handleChange={handleChangeDisburseDetails}
 										mode={1}
 										disabled
 									/>
@@ -368,9 +418,8 @@ function DisbursmentForm({ memberDetails }) {
 										type="text"
 										label="Rate of Interest"
 										name="b_roi"
-										formControlName={formik.values.b_roi}
-										handleChange={formik.handleChange}
-										handleBlur={formik.handleBlur}
+										formControlName={disbursementDetailsData.b_roi}
+										handleChange={handleChangeDisburseDetails}
 										mode={1}
 										disabled
 									/>
@@ -381,9 +430,8 @@ function DisbursmentForm({ memberDetails }) {
 										type="text"
 										label="Mode"
 										name="b_mode"
-										formControlName={formik.values.b_mode}
-										handleChange={formik.handleChange}
-										handleBlur={formik.handleBlur}
+										formControlName={disbursementDetailsData.b_mode}
+										handleChange={handleChangeDisburseDetails}
 										mode={1}
 										disabled
 									/>
@@ -394,11 +442,10 @@ function DisbursmentForm({ memberDetails }) {
 										type="text"
 										label="Disburse Amount"
 										name="b_disburseAmt"
-										formControlName={formik.values.b_disburseAmt}
-										handleChange={formik.handleChange}
-										handleBlur={formik.handleBlur}
+										formControlName={disbursementDetailsData.b_disburseAmt}
+										handleChange={handleChangeDisburseDetails}
 										mode={1}
-										disabled
+										// disabled
 									/>
 								</div>
 								<div>
@@ -407,11 +454,10 @@ function DisbursmentForm({ memberDetails }) {
 										type="text"
 										label="Bank Charges"
 										name="b_bankCharges"
-										formControlName={formik.values.b_bankCharges}
-										handleChange={formik.handleChange}
-										handleBlur={formik.handleBlur}
+										formControlName={disbursementDetailsData.b_bankCharges}
+										handleChange={handleChangeDisburseDetails}
 										mode={1}
-										disabled
+										// disabled
 									/>
 								</div>
 								<div>
@@ -420,11 +466,12 @@ function DisbursmentForm({ memberDetails }) {
 										type="text"
 										label="Processing Charges"
 										name="b_processingCharges"
-										formControlName={formik.values.b_processingCharges}
-										handleChange={formik.handleChange}
-										handleBlur={formik.handleBlur}
+										formControlName={
+											disbursementDetailsData.b_processingCharges
+										}
+										handleChange={handleChangeDisburseDetails}
 										mode={1}
-										disabled
+										// disabled
 									/>
 								</div>
 							</div>
@@ -445,16 +492,12 @@ function DisbursmentForm({ memberDetails }) {
 										type="date"
 										label="Transaction Date"
 										name="b_tnxDate"
-										formControlName={formik.values.b_tnxDate}
-										handleChange={formik.handleChange}
-										handleBlur={formik.handleBlur}
+										formControlName={transactionDetailsData.b_tnxDate}
+										handleChange={handleChangeTnxDetailsDetails}
 										min={"1900-12-31"}
 										max={formatDateToYYYYMMDD(new Date())}
 										mode={1}
 									/>
-									{formik.errors.b_tnxDate && formik.touched.b_tnxDate ? (
-										<VError title={formik.errors.b_tnxDate} />
-									) : null}
 								</div>
 								<div>
 									<TDInputTemplateBr
@@ -462,9 +505,8 @@ function DisbursmentForm({ memberDetails }) {
 										type="text"
 										label="Bank Name"
 										name="b_bankName"
-										formControlName={formik.values.b_bankName}
-										handleChange={formik.handleChange}
-										handleBlur={formik.handleBlur}
+										formControlName={transactionDetailsData.b_bankName}
+										handleChange={handleChangeTnxDetailsDetails}
 										mode={1}
 									/>
 								</div>
@@ -475,9 +517,8 @@ function DisbursmentForm({ memberDetails }) {
 										type="text"
 										label="Cheque/Ref. No."
 										name="b_chequeOrRefNo"
-										formControlName={formik.values.b_chequeOrRefNo}
-										handleChange={formik.handleChange}
-										handleBlur={formik.handleBlur}
+										formControlName={transactionDetailsData.b_chequeOrRefNo}
+										handleChange={handleChangeTnxDetailsDetails}
 										mode={1}
 									/>
 								</div>
@@ -488,17 +529,12 @@ function DisbursmentForm({ memberDetails }) {
 										type="date"
 										label="Cheque/Ref. Date"
 										name="b_chequeOrRefDate"
-										formControlName={formik.values.b_chequeOrRefDate}
-										handleChange={formik.handleChange}
-										handleBlur={formik.handleBlur}
+										formControlName={transactionDetailsData.b_chequeOrRefDate}
+										handleChange={handleChangeTnxDetailsDetails}
 										min={"1900-12-31"}
 										max={formatDateToYYYYMMDD(new Date())}
 										mode={1}
 									/>
-									{formik.errors.b_chequeOrRefDate &&
-									formik.touched.b_chequeOrRefDate ? (
-										<VError title={formik.errors.b_chequeOrRefDate} />
-									) : null}
 								</div>
 								<div className="sm:col-span-4">
 									<TDInputTemplateBr
@@ -506,26 +542,17 @@ function DisbursmentForm({ memberDetails }) {
 										type="text"
 										label="Remarks"
 										name="b_remarks"
-										formControlName={formik.values.b_remarks}
-										handleChange={formik.handleChange}
-										handleBlur={formik.handleBlur}
+										formControlName={transactionDetailsData.b_remarks}
+										handleChange={handleChangeTnxDetailsDetails}
 										mode={3}
 									/>
-									{formik.errors.b_remarks && formik.touched.b_remarks ? (
-										<VError title={formik.errors.b_remarks} />
-									) : null}
 								</div>
 							</div>
 						</div>
 
-						{!disableCondition(
-							userDetails?.id,
-							memberDetails?.approval_status
-						) && (
-							<div className="mt-10">
-								<BtnComp mode="A" onReset={formik.resetForm} />
-							</div>
-						)}
+						<div className="mt-10">
+							<BtnComp mode="A" onReset={onReset} />
+						</div>
 					</div>
 				</form>
 			</Spin>
