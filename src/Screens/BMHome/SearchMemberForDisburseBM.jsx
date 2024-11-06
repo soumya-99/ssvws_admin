@@ -116,7 +116,7 @@ function SearchMemberForDisburseBM() {
 					<div className="flex flex-row gap-3 mt-20">
 						<input
 							type="text"
-							placeholder="Search by Member Name/Member Code/Mobile No."
+							placeholder="Search by GRT Form No./Member Name/Member Code/Mobile No."
 							className={`bg-white border-1 border-gray-400 text-gray-800 text-sm rounded-lg ${
 								userDetails?.id == 3
 									? "active:border-stone-600 focus:ring-stone-600 focus:border-stone-800"

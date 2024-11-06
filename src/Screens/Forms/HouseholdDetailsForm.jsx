@@ -246,11 +246,11 @@ function HouseholdDetailsForm({ memberDetails }) {
 									handleBlur={formik.handleBlur}
 									data={[
 										{
-											code: "O",
+											code: "Own",
 											name: "OWN",
 										},
 										{
-											code: "R",
+											code: "Rent",
 											name: "RENT",
 										},
 									]}

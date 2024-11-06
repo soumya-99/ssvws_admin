@@ -32,6 +32,9 @@ function DisbursmentForm() {
 	const [maxDisburseAmountForAScheme, setMaxDisburseAmountForAScheme] =
 		useState(() => "")
 
+	const [purposeOfLoan, setPurposeOfLoan] = useState(() => [])
+	const [subPurposeOfLoan, setSubPurposeOfLoan] = useState(() => [])
+
 	const [schemes, setSchemes] = useState(() => [])
 	const [funds, setFunds] = useState(() => [])
 	const [tnxTypes, setTnxTypes] = useState(() => [])
@@ -51,7 +54,9 @@ function DisbursmentForm() {
 		b_grtApproveDate: "",
 		b_branch: "",
 		b_purpose: "",
+		b_purposeId: "",
 		b_subPurpose: "",
+		b_subPurposeId: "",
 		b_applicationDate: "",
 		b_appliedAmt: "",
 	})
@@ -71,8 +76,8 @@ function DisbursmentForm() {
 		b_roi: "",
 		b_mode: "",
 		b_disburseAmt: "",
-		b_bankCharges: "",
-		b_processingCharges: "",
+		b_bankCharges: 0,
+		b_processingCharges: 0,
 	})
 
 	const handleChangeDisburseDetails = (e) => {
@@ -84,10 +89,10 @@ function DisbursmentForm() {
 	}
 
 	const [transactionDetailsData, setTransactionDetailsData] = useState({
-		b_tnxDate: "",
+		b_tnxDate: formatDateToYYYYMMDD(new Date()),
 		b_bankName: "",
 		b_chequeOrRefNo: "",
-		b_chequeOrRefDate: "",
+		b_chequeOrRefDate: formatDateToYYYYMMDD(new Date()),
 		b_tnxType: "D",
 		b_tnxMode: "",
 		b_remarks: "",
@@ -111,6 +116,8 @@ function DisbursmentForm() {
 			b_branch: personalDetails?.branch_name || "",
 			b_purpose: personalDetails?.purpose_id || "",
 			b_subPurpose: personalDetails?.sub_purp_name || "",
+			b_purposeId: personalDetails?.loan_purpose || "",
+			b_subPurposeId: personalDetails?.sub_pupose || "",
 			b_applicationDate: personalDetails?.application_date || "",
 			b_appliedAmt: personalDetails?.applied_amt || "",
 		})
@@ -197,6 +204,42 @@ function DisbursmentForm() {
 	useEffect(() => {
 		getParticularScheme(disbursementDetailsData.b_scheme)
 	}, [disbursementDetailsData.b_scheme])
+
+	const getPurposeOfLoan = async () => {
+		setLoading(true)
+		await axios
+			.get(`${url}/get_purpose`)
+			.then((res) => {
+				console.log("------------", res?.data)
+				setPurposeOfLoan(res?.data?.msg)
+			})
+			.catch((err) => {
+				console.log("+==========+", err)
+			})
+		setLoading(false)
+	}
+
+	useEffect(() => {
+		getPurposeOfLoan()
+	}, [])
+
+	const getSubPurposeOfLoan = async (purpId) => {
+		setLoading(true)
+		await axios
+			.get(`${url}/get_sub_purpose?purp_id=${purpId}`)
+			.then((res) => {
+				console.log("------------", res?.data)
+				setSubPurposeOfLoan(res?.data?.msg)
+			})
+			.catch((err) => {
+				console.log("+==========+", err)
+			})
+		setLoading(false)
+	}
+
+	useEffect(() => {
+		getSubPurposeOfLoan(personalDetailsData?.b_purposeId)
+	}, [personalDetailsData?.b_purposeId])
 
 	//////////////////////////////////////////////////
 	//////////////////////////////////////////////////
@@ -371,7 +414,7 @@ function DisbursmentForm() {
 										disabled
 									/>
 								</div>
-								<div>
+								{/* <div>
 									<TDInputTemplateBr
 										placeholder="Purpose..."
 										type="text"
@@ -382,8 +425,23 @@ function DisbursmentForm() {
 										mode={1}
 										disabled
 									/>
+								</div> */}
+								<div>
+									<TDInputTemplateBr
+										placeholder="Select Purpose"
+										type="text"
+										label="Purpose"
+										name="b_purpose"
+										formControlName={personalDetailsData?.b_purpose}
+										handleChange={handleChangePersonalDetails}
+										data={purposeOfLoan?.map((item, _) => ({
+											code: item?.loan_purpose,
+											name: item?.purpose_id,
+										}))}
+										mode={2}
+									/>
 								</div>
-								<div className="sm:col-span-2">
+								{/* <div className="sm:col-span-2">
 									<TDInputTemplateBr
 										placeholder="Sub Purpose..."
 										type="text"
@@ -393,6 +451,21 @@ function DisbursmentForm() {
 										handleChange={handleChangePersonalDetails}
 										mode={1}
 										disabled
+									/>
+								</div> */}
+								<div className="sm:col-span-2">
+									<TDInputTemplateBr
+										placeholder="Select Sub Purpose"
+										type="text"
+										label="Sub Purpose"
+										name="b_subPurpose"
+										formControlName={personalDetailsData?.b_subPurpose}
+										handleChange={handleChangePersonalDetails}
+										data={subPurposeOfLoan?.map((item, _) => ({
+											code: item?.sub_pupose,
+											name: item?.sub_purp_name,
+										}))}
+										mode={2}
 									/>
 								</div>
 								<div className="sm:col-span-2">
@@ -563,6 +636,17 @@ function DisbursmentForm() {
 								</div>
 							</div>
 							<div className="grid gap-4 sm:grid-cols-4 sm:gap-6">
+								<div className="sm:col-span-2">
+									<TDInputTemplateBr
+										placeholder="Bank Name..."
+										type="text"
+										label="Bank Name"
+										name="b_bankName"
+										formControlName={transactionDetailsData.b_bankName}
+										handleChange={handleChangeTnxDetailsDetails}
+										mode={1}
+									/>
+								</div>
 								<div>
 									<TDInputTemplateBr
 										placeholder="Transaction date..."
@@ -573,17 +657,6 @@ function DisbursmentForm() {
 										handleChange={handleChangeTnxDetailsDetails}
 										min={"1900-12-31"}
 										max={formatDateToYYYYMMDD(new Date())}
-										mode={1}
-									/>
-								</div>
-								<div>
-									<TDInputTemplateBr
-										placeholder="Bank Name..."
-										type="text"
-										label="Bank Name"
-										name="b_bankName"
-										formControlName={transactionDetailsData.b_bankName}
-										handleChange={handleChangeTnxDetailsDetails}
 										mode={1}
 									/>
 								</div>
@@ -614,7 +687,7 @@ function DisbursmentForm() {
 									/>
 								</div>
 
-								<div className="sm:col-span-2">
+								<div>
 									<TDInputTemplateBr
 										placeholder="Select Transaction Type..."
 										type="text"
