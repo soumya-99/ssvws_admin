@@ -44,6 +44,8 @@ import EditGroupFormCO from "./Screens/COHome/EditGroupFormCO"
 import EditDisburseFormBM from "./Screens/BMHome/EditDisburseFormBM"
 import SearchMemberForDisburseBM from "./Screens/BMHome/SearchMemberForDisburseBM"
 import SearchMemberForDisburseCO from "./Screens/COHome/SearchMemberForDisburseCO"
+import DisbursedLoanApproveBM from "./Screens/BMHome/DisbursedLoanApproveBM"
+import EditDisburseApproveFormBM from "./Screens/BMHome/EditDisburseApproveFormBM"
 
 // const AuthBr = lazy(() => import("./Screens/BranchManager/AuthBr"))
 
@@ -145,6 +147,14 @@ const router = createBrowserRouter([
 							{
 								path: "disburseloan/:id",
 								element: <EditDisburseFormBM />,
+							},
+							{
+								path: "disburseloanapprove",
+								element: <DisbursedLoanApproveBM />,
+							},
+							{
+								path: "disburseloanapprove/:id",
+								element: <EditDisburseApproveFormBM />,
 							},
 							{
 								path: "editgrtform/:id",

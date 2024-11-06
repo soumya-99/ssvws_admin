@@ -117,6 +117,9 @@ function App() {
 						Popconfirm: {
 							colorWarning: "#A31E21",
 						},
+						// Badge: {
+						// 	statusSize: 20,
+						// },
 					},
 				}}
 			>

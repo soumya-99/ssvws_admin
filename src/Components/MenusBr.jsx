@@ -16,6 +16,7 @@ import {
 	PlusCircleOutlined,
 	SubnodeOutlined,
 	ThunderboltOutlined,
+	CheckCircleOutlined,
 } from "@ant-design/icons"
 import { Menu } from "antd"
 import { Link } from "react-router-dom"
@@ -160,9 +161,9 @@ function MenusBr({ theme }) {
 				},
 				{
 					key: "sub4-2",
-					icon: <PlusCircleOutlined />,
+					icon: <CheckCircleOutlined />,
 					label: (
-						<Link to={"/homebm/editgroupform/0"}>Disbursement Approve</Link>
+						<Link to={"/homebm/disburseloanapprove"}>Disbursement Approve</Link>
 					),
 				},
 				// {
@@ -248,7 +249,7 @@ function MenusBr({ theme }) {
 				},
 				{
 					key: "sub4-2",
-					icon: <PlusCircleOutlined />,
+					icon: <CheckCircleOutlined />,
 					label: (
 						<Link to={"/homeco/editgroupform/0"}>Disbursement Approve</Link>
 					),

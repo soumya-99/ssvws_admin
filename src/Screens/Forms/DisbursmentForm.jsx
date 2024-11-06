@@ -9,7 +9,7 @@ import * as Yup from "yup"
 import axios from "axios"
 import { Message } from "../../Components/Message"
 import { url } from "../../Address/BaseUrl"
-import { Checkbox, Spin } from "antd"
+import { Badge, Spin, Card } from "antd"
 import { LoadingOutlined } from "@ant-design/icons"
 import { useLocation } from "react-router"
 import TDInputTemplateBr from "../../Components/TDInputTemplateBr"
@@ -29,6 +29,7 @@ function DisbursmentForm() {
 
 	const [visible, setVisible] = useState(() => false)
 
+	const [disburseOrNot, setDisburseOrNot] = useState(() => false)
 	const [maxDisburseAmountForAScheme, setMaxDisburseAmountForAScheme] =
 		useState(() => "")
 
@@ -39,6 +40,9 @@ function DisbursmentForm() {
 	const [funds, setFunds] = useState(() => [])
 	const [tnxTypes, setTnxTypes] = useState(() => [])
 	const [tnxModes, setTnxModes] = useState(() => [])
+
+	const [fetchedLoanData, setFetchedLoanData] = useState(() => Object)
+	const [fetchedTnxData, setFetchedTnxData] = useState(() => Object)
 
 	// const formattedDob = formatDateToYYYYMMDD(memberDetails?.dob)
 
@@ -101,6 +105,27 @@ function DisbursmentForm() {
 	const handleChangeTnxDetailsDetails = (e) => {
 		const { name, value } = e.target
 		setTransactionDetailsData((prevData) => ({
+			...prevData,
+			[name]: value,
+		}))
+	}
+
+	const [installmentDetailsData, setInstallmentDetailsData] = useState({
+		b_isntallmentStartDate: "",
+		b_isntallmentEndDate: "",
+		b_interestAmount: "",
+		// b_isntallmentCalculatedAmount: "",
+		b_interestEMIAmount: "",
+		// b_principleAmount: "",
+		b_principleDisbursedAmount: "",
+		b_principleEMIAmount: "",
+		b_totalEMIAmount: "",
+		b_receivable: "",
+	})
+
+	const handleChangeInstallmentDetails = (e) => {
+		const { name, value } = e.target
+		setInstallmentDetailsData((prevData) => ({
 			...prevData,
 			[name]: value,
 		}))
@@ -241,6 +266,100 @@ function DisbursmentForm() {
 		getSubPurposeOfLoan(personalDetailsData?.b_purposeId)
 	}, [personalDetailsData?.b_purposeId])
 
+	const fetchSearchedApplication = async () => {
+		setLoading(true)
+		const creds = {
+			member_dtls: params?.id,
+		}
+		await axios
+			.post(`${url}/admin/fetch_loan_application_dtls`, creds)
+			.then((res) => {
+				console.log("KKKKKKKKkkkkkKKKKKkkkkKKKK", res?.data)
+				// setLoanApplications(res?.data?.msg)
+				setPersonalDetailsData({
+					b_memCode: res?.data?.msg[0]?.member_code,
+					b_clientName: res?.data?.msg[0]?.client_name,
+					b_groupName: res?.data?.msg[0]?.group_name,
+					b_formNo: res?.data?.msg[0]?.form_no,
+					b_grtApproveDate: res?.data?.msg[0]?.grt_approve_date,
+					b_branch: res?.data?.msg[0]?.branch_name,
+					b_purpose: res?.data?.msg[0]?.purpose_id,
+					b_purposeId: res?.data?.msg[0]?.loan_purpose,
+					b_subPurpose: res?.data?.msg[0]?.sub_purp_name,
+					b_subPurposeId: res?.data?.msg[0]?.sub_pupose,
+					b_applicationDate: res?.data?.msg[0]?.application_date,
+					b_appliedAmt: res?.data?.msg[0]?.applied_amt,
+				})
+			})
+			.catch((err) => {
+				Message("error", "Some error occurred while searching...")
+			})
+		setLoading(false)
+	}
+
+	const checkDisbursedOrNot = async () => {
+		setLoading(true)
+		const creds = {
+			form_no: personalDetails?.form_no,
+			// form_no: personalDetails?.grt_form_no,
+		}
+		await axios
+			.post(`${url}/admin/fetch_existing_loan`, creds)
+			.then((res) => {
+				console.log("checkDisbursedOrNot --------+++++++", res?.data)
+				setDisburseOrNot(res?.data?.msg)
+				setFetchedLoanData(res?.data?.loan_dt)
+				setFetchedTnxData(res?.data?.loan_trans)
+
+				setDisbursementDetailsData({
+					b_scheme: res?.data?.loan_dt?.scheme_id || "",
+					b_fund: res?.data?.loan_dt?.fund_id || "",
+					b_period: res?.data?.loan_dt?.period || "",
+					b_roi: res?.data?.loan_dt?.curr_roi || "",
+					b_mode: res?.data?.loan_dt?.period_mode || "",
+					b_disburseAmt: res?.data?.loan_dt?.prn_disb_amt || "",
+					b_bankCharges: res?.data?.loan_trans?.bank_charge || 0,
+					b_processingCharges: res?.data?.loan_trans?.proc_charge || 0,
+				})
+
+				setTransactionDetailsData({
+					b_tnxDate: res?.data?.loan_dt?.last_trn_dt
+						? formatDateToYYYYMMDD(new Date(res?.data?.loan_dt?.last_trn_dt))
+						: formatDateToYYYYMMDD(new Date()),
+					b_bankName: "",
+					b_chequeOrRefNo: res?.data?.loan_trans?.cheque_id || "",
+					b_chequeOrRefDate: res?.data?.loan_trans?.chq_dt
+						? formatDateToYYYYMMDD(new Date(res?.data?.loan_trans?.chq_dt))
+						: formatDateToYYYYMMDD(new Date()),
+					b_tnxType: res?.data?.loan_trans?.tr_type || "D",
+					b_tnxMode: res?.data?.loan_trans?.tr_mode || "",
+					b_remarks: res?.data?.loan_trans?.particulars || "",
+				})
+
+				if (res?.data?.msg) {
+					fetchSearchedApplication()
+					setInstallmentDetailsData({
+						b_isntallmentStartDate: res?.data?.loan_dt?.instl_start_dt || "",
+						b_isntallmentEndDate: res?.data?.loan_dt?.instl_end_dt || "",
+						b_interestAmount: res?.data?.loan_dt?.intt_amt || "",
+						b_interestEMIAmount: res?.data?.loan_dt?.intt_emi || "",
+						b_principleDisbursedAmount: res?.data?.loan_dt?.prn_disb_amt || "",
+						b_principleEMIAmount: res?.data?.loan_dt?.instl_start_dt || "",
+						b_totalEMIAmount: res?.data?.loan_dt?.prn_emi || "",
+						b_receivable: res?.data?.loan_dt?.prn_disb_amt || "",
+					})
+				}
+			})
+			.catch((err) => {
+				Message("error", "Some error during fetching the status of the form.")
+			})
+		setLoading(false)
+	}
+
+	useEffect(() => {
+		checkDisbursedOrNot()
+	}, [])
+
 	//////////////////////////////////////////////////
 	//////////////////////////////////////////////////
 
@@ -280,8 +399,8 @@ function DisbursmentForm() {
 			group_code: personalDetails?.prov_grp_code || "",
 			member_code: personalDetails?.member_code || "",
 			grt_form_no: personalDetails?.form_no || "",
-			purpose: personalDetails?.loan_purpose || "",
-			sub_purpose: personalDetails?.sub_pupose || "",
+			purpose: personalDetailsData?.b_purposeId || "",
+			sub_purpose: personalDetailsData?.b_subPurposeId || "",
 			applied_amt: personalDetails?.applied_amt || "",
 			scheme_id: disbursementDetailsData?.b_scheme || "",
 			fund_id: disbursementDetailsData?.b_fund || "",
@@ -294,7 +413,9 @@ function DisbursmentForm() {
 			period_mode: disbursementDetailsData?.b_mode || "",
 			created_by: userDetails?.emp_id || "",
 			loan_code: params?.id || "",
+			trans_date: transactionDetailsData?.b_tnxDate || "",
 			particulars: transactionDetailsData?.b_remarks || "",
+			bank_name: transactionDetailsData?.b_bankName || "",
 			bank_charge: disbursementDetailsData?.b_bankCharges || "",
 			proc_charge: disbursementDetailsData?.b_processingCharges || "",
 			tr_type: transactionDetailsData?.b_tnxType || "",
@@ -325,6 +446,20 @@ function DisbursmentForm() {
 
 	return (
 		<>
+			{disburseOrNot && (
+				<Badge.Ribbon
+					className="bg-slate-500 absolute top-10 z-10"
+					text={"Disbursement Initiated"}
+					style={{
+						fontSize: 17,
+						width: 200,
+						height: 25,
+						justifyContent: "start",
+						alignItems: "center",
+						textAlign: "center",
+					}}
+				></Badge.Ribbon>
+			)}
 			<Spin
 				indicator={<LoadingOutlined spin />}
 				size="large"
@@ -439,6 +574,7 @@ function DisbursmentForm() {
 											name: item?.purpose_id,
 										}))}
 										mode={2}
+										disabled={disburseOrNot}
 									/>
 								</div>
 								{/* <div className="sm:col-span-2">
@@ -466,6 +602,7 @@ function DisbursmentForm() {
 											name: item?.sub_purp_name,
 										}))}
 										mode={2}
+										disabled={disburseOrNot}
 									/>
 								</div>
 								<div className="sm:col-span-2">
@@ -522,6 +659,7 @@ function DisbursmentForm() {
 										// 	{ code: "S3", name: "Scheme 3" },
 										// ]}
 										mode={2}
+										disabled={disburseOrNot}
 									/>
 								</div>
 								<div>
@@ -542,6 +680,7 @@ function DisbursmentForm() {
 										// 	{ code: "F3", name: "Fund 3" },
 										// ]}
 										mode={2}
+										disabled={disburseOrNot}
 									/>
 								</div>
 								<div>
@@ -589,7 +728,9 @@ function DisbursmentForm() {
 										formControlName={disbursementDetailsData.b_disburseAmt}
 										handleChange={handleChangeDisburseDetails}
 										mode={1}
-										disabled={!disbursementDetailsData?.b_scheme}
+										disabled={
+											!disbursementDetailsData?.b_scheme || disburseOrNot
+										}
 									/>
 									{+disbursementDetailsData.b_disburseAmt >
 									+maxDisburseAmountForAScheme ? (
@@ -607,7 +748,9 @@ function DisbursmentForm() {
 										formControlName={disbursementDetailsData.b_bankCharges}
 										handleChange={handleChangeDisburseDetails}
 										mode={1}
-										disabled={!disbursementDetailsData?.b_scheme}
+										disabled={
+											!disbursementDetailsData?.b_scheme || disburseOrNot
+										}
 									/>
 								</div>
 								<div>
@@ -621,7 +764,9 @@ function DisbursmentForm() {
 										}
 										handleChange={handleChangeDisburseDetails}
 										mode={1}
-										disabled={!disbursementDetailsData?.b_scheme}
+										disabled={
+											!disbursementDetailsData?.b_scheme || disburseOrNot
+										}
 									/>
 								</div>
 							</div>
@@ -645,6 +790,7 @@ function DisbursmentForm() {
 										formControlName={transactionDetailsData.b_bankName}
 										handleChange={handleChangeTnxDetailsDetails}
 										mode={1}
+										disabled={disburseOrNot}
 									/>
 								</div>
 								<div>
@@ -658,6 +804,7 @@ function DisbursmentForm() {
 										min={"1900-12-31"}
 										max={formatDateToYYYYMMDD(new Date())}
 										mode={1}
+										disabled={disburseOrNot}
 									/>
 								</div>
 
@@ -670,6 +817,7 @@ function DisbursmentForm() {
 										formControlName={transactionDetailsData.b_chequeOrRefNo}
 										handleChange={handleChangeTnxDetailsDetails}
 										mode={1}
+										disabled={disburseOrNot}
 									/>
 								</div>
 
@@ -684,6 +832,7 @@ function DisbursmentForm() {
 										min={"1900-12-31"}
 										max={formatDateToYYYYMMDD(new Date())}
 										mode={1}
+										disabled={disburseOrNot}
 									/>
 								</div>
 
@@ -726,6 +875,7 @@ function DisbursmentForm() {
 										// 	{ code: "F3", name: "Fund 3" },
 										// ]}
 										mode={2}
+										disabled={disburseOrNot}
 									/>
 								</div>
 
@@ -738,14 +888,136 @@ function DisbursmentForm() {
 										formControlName={transactionDetailsData.b_remarks}
 										handleChange={handleChangeTnxDetailsDetails}
 										mode={3}
+										disabled={disburseOrNot}
 									/>
 								</div>
 							</div>
 						</div>
 
-						<div className="mt-10">
-							<BtnComp mode="A" onReset={onReset} />
-						</div>
+						{!disburseOrNot && (
+							<div className="mt-10">
+								<BtnComp mode="A" onReset={onReset} />
+							</div>
+						)}
+
+						{disburseOrNot && (
+							<div>
+								<div className="w-full h-1 my-10 bg-gray-500 border-dashed"></div>
+								<div className="grid gap-4 sm:grid-cols-2 sm:gap-6">
+									<div className="text-xl mb-2 mt-5 text-lime-800 font-semibold underline">
+										4. Installment Details
+									</div>
+								</div>
+								<div className="grid gap-4 sm:grid-cols-4 sm:gap-6">
+									<div className="sm:col-span-2">
+										<TDInputTemplateBr
+											placeholder="Installment Start Date..."
+											type="text"
+											label="Installment Start Date"
+											name="b_isntallmentStartDate"
+											formControlName={
+												installmentDetailsData?.b_isntallmentStartDate
+											}
+											handleChange={handleChangeInstallmentDetails}
+											mode={1}
+											disabled
+										/>
+									</div>
+									<div className="sm:col-span-2">
+										<TDInputTemplateBr
+											placeholder="Installment End Date..."
+											type="text"
+											label="Installment End Date"
+											name="b_isntallmentEndDate"
+											formControlName={
+												installmentDetailsData?.b_isntallmentEndDate
+											}
+											handleChange={handleChangeInstallmentDetails}
+											mode={1}
+											disabled
+										/>
+									</div>
+									<div>
+										<TDInputTemplateBr
+											placeholder="Interest Amount..."
+											type="text"
+											label="Interest Amount"
+											name="b_interestAmount"
+											formControlName={installmentDetailsData?.b_interestAmount}
+											handleChange={handleChangeInstallmentDetails}
+											mode={1}
+											disabled
+										/>
+									</div>
+									<div>
+										<TDInputTemplateBr
+											placeholder="Interest EMI..."
+											type="text"
+											label="Interest EMI"
+											name="b_interestEMIAmount"
+											formControlName={
+												installmentDetailsData?.b_interestEMIAmount
+											}
+											handleChange={handleChangeInstallmentDetails}
+											mode={1}
+											disabled
+										/>
+									</div>
+									<div>
+										<TDInputTemplateBr
+											placeholder="Principle Amount..."
+											type="text"
+											label="Principle Amount"
+											name="b_principleDisbursedAmount"
+											formControlName={
+												installmentDetailsData?.b_principleDisbursedAmount
+											}
+											handleChange={handleChangeInstallmentDetails}
+											mode={1}
+											disabled
+										/>
+									</div>
+									<div>
+										<TDInputTemplateBr
+											placeholder="Principle EMI Amount..."
+											type="text"
+											label="Principle EMI Amount"
+											name="b_principleEMIAmount"
+											formControlName={
+												installmentDetailsData?.b_principleEMIAmount
+											}
+											handleChange={handleChangeInstallmentDetails}
+											mode={1}
+											disabled
+										/>
+									</div>
+									<div>
+										<TDInputTemplateBr
+											placeholder="Receivable..."
+											type="text"
+											label="Receivable"
+											name="b_receivable"
+											formControlName={installmentDetailsData?.b_receivable}
+											handleChange={handleChangeInstallmentDetails}
+											mode={1}
+											disabled
+										/>
+									</div>
+									<div className="sm:col-span-3">
+										<TDInputTemplateBr
+											placeholder="Total EMI Amount..."
+											type="text"
+											label="Total EMI Amount"
+											name="b_totalEMIAmount"
+											formControlName={installmentDetailsData?.b_totalEMIAmount}
+											handleChange={handleChangeInstallmentDetails}
+											mode={1}
+											disabled
+										/>
+									</div>
+								</div>
+							</div>
+						)}
 					</div>
 				</form>
 			</Spin>
