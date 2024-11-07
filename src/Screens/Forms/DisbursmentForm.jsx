@@ -361,7 +361,11 @@ function DisbursmentForm() {
 						b_principleDisbursedAmount: res?.data?.loan_dt?.prn_disb_amt || "",
 						b_principleEMIAmount: res?.data?.loan_dt?.prn_emi || "",
 						b_totalEMIAmount: res?.data?.loan_dt?.tot_emi || "",
-						b_receivable: res?.data?.loan_dt?.prn_disb_amt || "",
+						b_receivable:
+							Math.round(
+								+res?.data?.loan_dt?.prn_disb_amt +
+									+res?.data?.loan_dt?.intt_amt
+							).toFixed(2) || "",
 					})
 				}
 			})
@@ -469,7 +473,7 @@ function DisbursmentForm() {
 			.post(`${url}/admin/approve_loan_disbursement`, creds)
 			.then((res) => {
 				console.log("&&&&&&&&&&&&", res?.data)
-				Message("success", "Application approved.")
+				Message("success", "Loan approved.")
 				navigate(-1)
 			})
 			.catch((err) => {
@@ -487,7 +491,7 @@ function DisbursmentForm() {
 			.post(`${url}/admin/delete_apply_loan`, creds)
 			.then((res) => {
 				console.log("@@@@@@@@@@@@", res?.data)
-				Message("success", "Application rejected successfullly.")
+				Message("success", "Loan deleted successfullly.")
 				navigate(-1)
 			})
 			.catch((err) => {
@@ -1013,7 +1017,7 @@ function DisbursmentForm() {
 											disabled
 										/>
 									</div>
-									<div>
+									<div className="sm:col-span-2">
 										<TDInputTemplateBr
 											placeholder="Receivable..."
 											type="text"
@@ -1053,7 +1057,7 @@ function DisbursmentForm() {
 											disabled
 										/>
 									</div>
-									<div className="sm:col-span-3">
+									<div className="sm:col-span-2">
 										<TDInputTemplateBr
 											placeholder="Total EMI Amount..."
 											type="text"
@@ -1068,7 +1072,7 @@ function DisbursmentForm() {
 								</div>
 								<div className="mt-10">
 									<BtnComp
-										mode="B"
+										mode="N"
 										showUpdateAndReset={false}
 										showReject={true}
 										onRejectApplication={() => setVisible3(true)}
