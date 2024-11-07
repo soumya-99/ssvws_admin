@@ -28,6 +28,8 @@ function DisbursmentForm() {
 	const userDetails = JSON.parse(localStorage.getItem("user_details"))
 
 	const [visible, setVisible] = useState(() => false)
+	const [visible2, setVisible2] = useState(() => false)
+	const [visible3, setVisible3] = useState(() => false)
 
 	const [disburseOrNot, setDisburseOrNot] = useState(() => false)
 	const [maxDisburseAmountForAScheme, setMaxDisburseAmountForAScheme] =
@@ -208,16 +210,29 @@ function DisbursmentForm() {
 			.post(`${url}/admin/scheme_dtls`, creds)
 			.then((res) => {
 				console.log("PPP", res?.data)
-				setDisbursementDetailsData({
-					b_scheme: disbursementDetailsData.b_scheme,
-					b_fund: disbursementDetailsData.b_fund,
+				// setDisbursementDetailsData({
+				// 	b_scheme: disbursementDetailsData.b_scheme,
+				// 	b_fund: disbursementDetailsData.b_fund,
+				// 	b_period: res?.data?.msg[0]?.max_period,
+				// 	b_roi: res?.data?.msg[0]?.roi,
+				// 	b_mode: res?.data?.msg[0]?.payment_mode,
+				// 	b_disburseAmt: "",
+				// 	b_bankCharges: "",
+				// 	b_processingCharges: "",
+				// })
+
+				setDisbursementDetailsData((prevData) => ({
+					...prevData,
+					b_scheme: prevData.b_scheme,
+					b_fund: prevData.b_fund,
 					b_period: res?.data?.msg[0]?.max_period,
 					b_roi: res?.data?.msg[0]?.roi,
 					b_mode: res?.data?.msg[0]?.payment_mode,
-					b_disburseAmt: "",
-					b_bankCharges: "",
-					b_processingCharges: "",
-				})
+
+					b_disburseAmt: prevData.b_disburseAmt || "",
+					b_bankCharges: prevData.b_bankCharges || "",
+					b_processingCharges: prevData.b_processingCharges || "",
+				}))
 				setMaxDisburseAmountForAScheme(res?.data?.msg[0]?.max_amt)
 			})
 			.catch((err) => {
@@ -269,7 +284,7 @@ function DisbursmentForm() {
 	const fetchSearchedApplication = async () => {
 		setLoading(true)
 		const creds = {
-			member_dtls: params?.id,
+			member_dtls: personalDetails?.member_code,
 		}
 		await axios
 			.post(`${url}/admin/fetch_loan_application_dtls`, creds)
@@ -326,7 +341,7 @@ function DisbursmentForm() {
 					b_tnxDate: res?.data?.loan_dt?.last_trn_dt
 						? formatDateToYYYYMMDD(new Date(res?.data?.loan_dt?.last_trn_dt))
 						: formatDateToYYYYMMDD(new Date()),
-					b_bankName: "",
+					b_bankName: res?.data?.loan_trans?.bank_name || "",
 					b_chequeOrRefNo: res?.data?.loan_trans?.cheque_id || "",
 					b_chequeOrRefDate: res?.data?.loan_trans?.chq_dt
 						? formatDateToYYYYMMDD(new Date(res?.data?.loan_trans?.chq_dt))
@@ -344,8 +359,8 @@ function DisbursmentForm() {
 						b_interestAmount: res?.data?.loan_dt?.intt_amt || "",
 						b_interestEMIAmount: res?.data?.loan_dt?.intt_emi || "",
 						b_principleDisbursedAmount: res?.data?.loan_dt?.prn_disb_amt || "",
-						b_principleEMIAmount: res?.data?.loan_dt?.instl_start_dt || "",
-						b_totalEMIAmount: res?.data?.loan_dt?.prn_emi || "",
+						b_principleEMIAmount: res?.data?.loan_dt?.prn_emi || "",
+						b_totalEMIAmount: res?.data?.loan_dt?.tot_emi || "",
 						b_receivable: res?.data?.loan_dt?.prn_disb_amt || "",
 					})
 				}
@@ -440,6 +455,43 @@ function DisbursmentForm() {
 					"Some error occurred while submitting disbursement form!"
 				)
 				console.log("DDEEERRR", err)
+			})
+		setLoading(false)
+	}
+
+	const handleApproveLoanDisbursement = async () => {
+		setLoading(true)
+		const creds = {
+			approved_by: userDetails?.emp_id || "",
+			loan_id: personalDetails?.loan_id || "",
+		}
+		await axios
+			.post(`${url}/admin/approve_loan_disbursement`, creds)
+			.then((res) => {
+				console.log("&&&&&&&&&&&&", res?.data)
+				Message("success", "Application approved.")
+				navigate(-1)
+			})
+			.catch((err) => {
+				console.log("ERRR - APPROVE", err)
+			})
+		setLoading(false)
+	}
+
+	const handleRejectLoanDisbursement = async () => {
+		setLoading(true)
+		const creds = {
+			loan_id: personalDetails?.loan_id || "",
+		}
+		await axios
+			.post(`${url}/admin/delete_apply_loan`, creds)
+			.then((res) => {
+				console.log("@@@@@@@@@@@@", res?.data)
+				Message("success", "Application rejected successfullly.")
+				navigate(-1)
+			})
+			.catch((err) => {
+				console.log("ERRR - REJECT", err)
 			})
 		setLoading(false)
 	}
@@ -848,11 +900,6 @@ function DisbursmentForm() {
 											code: item?.id,
 											name: item?.name,
 										}))}
-										// data={[
-										// 	{ code: "F1", name: "Fund 1" },
-										// 	{ code: "F2", name: "Fund 2" },
-										// 	{ code: "F3", name: "Fund 3" },
-										// ]}
 										mode={2}
 										disabled
 									/>
@@ -869,11 +916,6 @@ function DisbursmentForm() {
 											code: item?.id,
 											name: item?.name,
 										}))}
-										// data={[
-										// 	{ code: "F1", name: "Fund 1" },
-										// 	{ code: "F2", name: "Fund 2" },
-										// 	{ code: "F3", name: "Fund 3" },
-										// ]}
 										mode={2}
 										disabled={disburseOrNot}
 									/>
@@ -900,11 +942,11 @@ function DisbursmentForm() {
 							</div>
 						)}
 
-						{disburseOrNot && (
+						{disburseOrNot && params?.id > 0 && (
 							<div>
-								<div className="w-full h-1 my-10 bg-gray-500 border-dashed"></div>
+								<div className="w-full my-10 border-t-4 border-gray-500 border-dashed"></div>
 								<div className="grid gap-4 sm:grid-cols-2 sm:gap-6">
-									<div className="text-xl mb-2 mt-5 text-lime-800 font-semibold underline">
+									<div className="text-xl mb-2 text-lime-800 font-semibold underline">
 										4. Installment Details
 									</div>
 								</div>
@@ -917,6 +959,10 @@ function DisbursmentForm() {
 											name="b_isntallmentStartDate"
 											formControlName={
 												installmentDetailsData?.b_isntallmentStartDate
+													? new Date(
+															installmentDetailsData?.b_isntallmentStartDate
+													  ).toLocaleDateString("en-GB")
+													: ""
 											}
 											handleChange={handleChangeInstallmentDetails}
 											mode={1}
@@ -931,32 +977,10 @@ function DisbursmentForm() {
 											name="b_isntallmentEndDate"
 											formControlName={
 												installmentDetailsData?.b_isntallmentEndDate
-											}
-											handleChange={handleChangeInstallmentDetails}
-											mode={1}
-											disabled
-										/>
-									</div>
-									<div>
-										<TDInputTemplateBr
-											placeholder="Interest Amount..."
-											type="text"
-											label="Interest Amount"
-											name="b_interestAmount"
-											formControlName={installmentDetailsData?.b_interestAmount}
-											handleChange={handleChangeInstallmentDetails}
-											mode={1}
-											disabled
-										/>
-									</div>
-									<div>
-										<TDInputTemplateBr
-											placeholder="Interest EMI..."
-											type="text"
-											label="Interest EMI"
-											name="b_interestEMIAmount"
-											formControlName={
-												installmentDetailsData?.b_interestEMIAmount
+													? new Date(
+															installmentDetailsData?.b_isntallmentEndDate
+													  ).toLocaleDateString("en-GB")
+													: ""
 											}
 											handleChange={handleChangeInstallmentDetails}
 											mode={1}
@@ -979,13 +1003,11 @@ function DisbursmentForm() {
 									</div>
 									<div>
 										<TDInputTemplateBr
-											placeholder="Principle EMI Amount..."
+											placeholder="Interest Amount..."
 											type="text"
-											label="Principle EMI Amount"
-											name="b_principleEMIAmount"
-											formControlName={
-												installmentDetailsData?.b_principleEMIAmount
-											}
+											label="Interest Amount"
+											name="b_interestAmount"
+											formControlName={installmentDetailsData?.b_interestAmount}
 											handleChange={handleChangeInstallmentDetails}
 											mode={1}
 											disabled
@@ -1003,6 +1025,34 @@ function DisbursmentForm() {
 											disabled
 										/>
 									</div>
+									<div>
+										<TDInputTemplateBr
+											placeholder="Principle EMI Amount..."
+											type="text"
+											label="Principle EMI Amount"
+											name="b_principleEMIAmount"
+											formControlName={
+												installmentDetailsData?.b_principleEMIAmount
+											}
+											handleChange={handleChangeInstallmentDetails}
+											mode={1}
+											disabled
+										/>
+									</div>
+									<div>
+										<TDInputTemplateBr
+											placeholder="Interest EMI..."
+											type="text"
+											label="Interest EMI"
+											name="b_interestEMIAmount"
+											formControlName={
+												installmentDetailsData?.b_interestEMIAmount
+											}
+											handleChange={handleChangeInstallmentDetails}
+											mode={1}
+											disabled
+										/>
+									</div>
 									<div className="sm:col-span-3">
 										<TDInputTemplateBr
 											placeholder="Total EMI Amount..."
@@ -1015,6 +1065,16 @@ function DisbursmentForm() {
 											disabled
 										/>
 									</div>
+								</div>
+								<div className="mt-10">
+									<BtnComp
+										mode="B"
+										showUpdateAndReset={false}
+										showReject={true}
+										onRejectApplication={() => setVisible3(true)}
+										showForward={true}
+										onForwardApplication={() => setVisible2(true)}
+									/>
 								</div>
 							</div>
 						)}
@@ -1063,17 +1123,29 @@ function DisbursmentForm() {
 				onPressNo={() => setVisible(!visible)}
 			/>
 
-			{/* <DialogBox
+			{/* For Approve */}
+			<DialogBox
 				flag={4}
 				onPress={() => setVisible2(!visible2)}
 				visible={visible2}
 				onPressYes={() => {
-					// editGroup()
-					onChangeCheck1()
+					handleApproveLoanDisbursement()
 					setVisible2(!visible2)
 				}}
 				onPressNo={() => setVisible2(!visible2)}
-			/> */}
+			/>
+
+			{/* For Reject */}
+			<DialogBox
+				flag={4}
+				onPress={() => setVisible3(!visible3)}
+				visible={visible3}
+				onPressYes={() => {
+					handleRejectLoanDisbursement()
+					setVisible3(!visible3)
+				}}
+				onPressNo={() => setVisible3(!visible3)}
+			/>
 		</>
 	)
 }

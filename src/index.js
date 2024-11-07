@@ -9,43 +9,105 @@ import Notfound from "./Screens/Notfound/Notfound"
 // import Details from "./Screens/Homescreen/Details"
 import { Democontext } from "./Context/Democontext"
 import Loader from "./Components/Loader"
-
 import CircularProgress from "@mui/material/CircularProgress"
-import CatchError from "./Screens/CatchError"
-import AuthMis from "./Screens/MISAssistant/AuthMis"
-import SigninMis from "./Screens/MISAssistant/SigninMis"
-import SignupMis from "./Screens/MISAssistant/SignupMis"
-import ForgotPassMis from "./Screens/MISAssistant/ForgotPassMis"
-import HomeMis from "./Screens/MISAssistantHome/HomeMis"
-import HomeScreenMis from "./Screens/MISAssistantHome/HomeScreenMis"
-import EditGRTFormMis from "./Screens/MISAssistantHome/EditGRTFormMis"
-import EditGroupForm from "./Screens/MISAssistantHome/EditGroupForm"
-import HomeBM from "./Screens/BMHome/HomeBM"
-import HomeScreenBM from "./Screens/BMHome/HomeScreenBM"
-import EditGRTFormBM from "./Screens/BMHome/EditGRTFormBM"
-import EditGroupFormBM from "./Screens/BMHome/EditGroupFormBM"
-import DashboardBM from "./Screens/BMHome/DashboardBM"
-import DashboardMis from "./Screens/MISAssistantHome/DashboardMis"
-import SearchGRTFormMis from "./Screens/MISAssistantHome/SearchGRTFormMis"
-import SearchGroupMis from "./Screens/MISAssistantHome/SearchGroupMis"
-import SearchGRTFormBM from "./Screens/BMHome/SearchGRTFormBM"
-import SearchMemberMis from "./Screens/MISAssistantHome/SearchMemberMis"
-import AssignMemberToGroup from "./Screens/MISAssistantHome/AssignMemberToGroup"
-import SignUp from "./Screens/MISAssistant/SignUp"
-import SearchGroupBM from "./Screens/BMHome/SearchGroupBM"
-import HomeCO from "./Screens/COHome/HomeCO"
-import DashboardCO from "./Screens/COHome/DashboardCO"
-import HomeScreenCO from "./Screens/COHome/HomeScreenCO"
-import SearchGRTFormCO from "./Screens/COHome/SearchGRTFormCO"
-import SearchGroupCO from "./Screens/COHome/SearchGroupCO"
-import EditGRTFormCO from "./Screens/COHome/EditGRTFormCO"
-import SearchMemberCO from "./Screens/COHome/SearchMemberCO"
-import EditGroupFormCO from "./Screens/COHome/EditGroupFormCO"
-import EditDisburseFormBM from "./Screens/BMHome/EditDisburseFormBM"
-import SearchMemberForDisburseBM from "./Screens/BMHome/SearchMemberForDisburseBM"
-import SearchMemberForDisburseCO from "./Screens/COHome/SearchMemberForDisburseCO"
-import DisbursedLoanApproveBM from "./Screens/BMHome/DisbursedLoanApproveBM"
-import EditDisburseApproveFormBM from "./Screens/BMHome/EditDisburseApproveFormBM"
+
+// import CatchError from "./Screens/CatchError"
+// import AuthMis from "./Screens/MISAssistant/AuthMis"
+// import SigninMis from "./Screens/MISAssistant/SigninMis"
+// import SignupMis from "./Screens/MISAssistant/SignupMis"
+// import ForgotPassMis from "./Screens/MISAssistant/ForgotPassMis"
+// import HomeMis from "./Screens/MISAssistantHome/HomeMis"
+// import HomeScreenMis from "./Screens/MISAssistantHome/HomeScreenMis"
+// import EditGRTFormMis from "./Screens/MISAssistantHome/EditGRTFormMis"
+// import EditGroupForm from "./Screens/MISAssistantHome/EditGroupForm"
+// import HomeBM from "./Screens/BMHome/HomeBM"
+// import HomeScreenBM from "./Screens/BMHome/HomeScreenBM"
+// import EditGRTFormBM from "./Screens/BMHome/EditGRTFormBM"
+// import EditGroupFormBM from "./Screens/BMHome/EditGroupFormBM"
+// import DashboardBM from "./Screens/BMHome/DashboardBM"
+// import DashboardMis from "./Screens/MISAssistantHome/DashboardMis"
+// import SearchGRTFormMis from "./Screens/MISAssistantHome/SearchGRTFormMis"
+// import SearchGroupMis from "./Screens/MISAssistantHome/SearchGroupMis"
+// import SearchGRTFormBM from "./Screens/BMHome/SearchGRTFormBM"
+// import SearchMemberMis from "./Screens/MISAssistantHome/SearchMemberMis"
+// import AssignMemberToGroup from "./Screens/MISAssistantHome/AssignMemberToGroup"
+// import SignUp from "./Screens/MISAssistant/SignUp"
+// import SearchGroupBM from "./Screens/BMHome/SearchGroupBM"
+// import HomeCO from "./Screens/COHome/HomeCO"
+// import DashboardCO from "./Screens/COHome/DashboardCO"
+// import HomeScreenCO from "./Screens/COHome/HomeScreenCO"
+// import SearchGRTFormCO from "./Screens/COHome/SearchGRTFormCO"
+// import SearchGroupCO from "./Screens/COHome/SearchGroupCO"
+// import EditGRTFormCO from "./Screens/COHome/EditGRTFormCO"
+// import SearchMemberCO from "./Screens/COHome/SearchMemberCO"
+// import EditGroupFormCO from "./Screens/COHome/EditGroupFormCO"
+// import EditDisburseFormBM from "./Screens/BMHome/EditDisburseFormBM"
+// import SearchMemberForDisburseBM from "./Screens/BMHome/SearchMemberForDisburseBM"
+// import SearchMemberForDisburseCO from "./Screens/COHome/SearchMemberForDisburseCO"
+// import DisbursedLoanApproveBM from "./Screens/BMHome/DisbursedLoanApproveBM"
+// import EditDisburseApproveFormBM from "./Screens/BMHome/EditDisburseApproveFormBM"
+
+const CatchError = lazy(() => import("./Screens/CatchError"))
+const AuthMis = lazy(() => import("./Screens/MISAssistant/AuthMis"))
+const SigninMis = lazy(() => import("./Screens/MISAssistant/SigninMis"))
+const SignupMis = lazy(() => import("./Screens/MISAssistant/SignupMis"))
+const ForgotPassMis = lazy(() => import("./Screens/MISAssistant/ForgotPassMis"))
+const HomeMis = lazy(() => import("./Screens/MISAssistantHome/HomeMis"))
+const HomeScreenMis = lazy(() =>
+	import("./Screens/MISAssistantHome/HomeScreenMis")
+)
+const EditGRTFormMis = lazy(() =>
+	import("./Screens/MISAssistantHome/EditGRTFormMis")
+)
+const EditGroupForm = lazy(() =>
+	import("./Screens/MISAssistantHome/EditGroupForm")
+)
+const HomeBM = lazy(() => import("./Screens/BMHome/HomeBM"))
+const HomeScreenBM = lazy(() => import("./Screens/BMHome/HomeScreenBM"))
+const EditGRTFormBM = lazy(() => import("./Screens/BMHome/EditGRTFormBM"))
+const EditGroupFormBM = lazy(() => import("./Screens/BMHome/EditGroupFormBM"))
+const DashboardBM = lazy(() => import("./Screens/BMHome/DashboardBM"))
+const DashboardMis = lazy(() =>
+	import("./Screens/MISAssistantHome/DashboardMis")
+)
+const SearchGRTFormMis = lazy(() =>
+	import("./Screens/MISAssistantHome/SearchGRTFormMis")
+)
+const SearchGroupMis = lazy(() =>
+	import("./Screens/MISAssistantHome/SearchGroupMis")
+)
+const SearchGRTFormBM = lazy(() => import("./Screens/BMHome/SearchGRTFormBM"))
+const SearchMemberMis = lazy(() =>
+	import("./Screens/MISAssistantHome/SearchMemberMis")
+)
+const AssignMemberToGroup = lazy(() =>
+	import("./Screens/MISAssistantHome/AssignMemberToGroup")
+)
+const SignUp = lazy(() => import("./Screens/MISAssistant/SignUp"))
+const SearchGroupBM = lazy(() => import("./Screens/BMHome/SearchGroupBM"))
+const HomeCO = lazy(() => import("./Screens/COHome/HomeCO"))
+const DashboardCO = lazy(() => import("./Screens/COHome/DashboardCO"))
+const HomeScreenCO = lazy(() => import("./Screens/COHome/HomeScreenCO"))
+const SearchGRTFormCO = lazy(() => import("./Screens/COHome/SearchGRTFormCO"))
+const SearchGroupCO = lazy(() => import("./Screens/COHome/SearchGroupCO"))
+const EditGRTFormCO = lazy(() => import("./Screens/COHome/EditGRTFormCO"))
+const SearchMemberCO = lazy(() => import("./Screens/COHome/SearchMemberCO"))
+const EditGroupFormCO = lazy(() => import("./Screens/COHome/EditGroupFormCO"))
+const EditDisburseFormBM = lazy(() =>
+	import("./Screens/BMHome/EditDisburseFormBM")
+)
+const SearchMemberForDisburseBM = lazy(() =>
+	import("./Screens/BMHome/SearchMemberForDisburseBM")
+)
+const SearchMemberForDisburseCO = lazy(() =>
+	import("./Screens/COHome/SearchMemberForDisburseCO")
+)
+const DisbursedLoanApproveBM = lazy(() =>
+	import("./Screens/BMHome/DisbursedLoanApproveBM")
+)
+const EditDisburseApproveFormBM = lazy(() =>
+	import("./Screens/BMHome/EditDisburseApproveFormBM")
+)
 
 // const AuthBr = lazy(() => import("./Screens/BranchManager/AuthBr"))
 
