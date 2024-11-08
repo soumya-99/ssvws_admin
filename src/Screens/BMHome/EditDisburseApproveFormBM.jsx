@@ -32,7 +32,7 @@ function EditDisburseApproveFormBM() {
 				{/* {JSON.stringify(loanAppData)} */}
 				<div className=" bg-white p-5 w-4/5 min-h-screen rounded-3xl">
 					<div className="w-auto mx-14 my-4">
-						<FormHeader text="Approve/Reject Disbursed Form" mode={2} />
+						<FormHeader text="Approve/Delete Disbursed Form" mode={2} />
 					</div>
 					<Spin
 						indicator={<LoadingOutlined spin />}
