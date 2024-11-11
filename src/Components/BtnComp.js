@@ -6,6 +6,7 @@ import {
 	CloseOutlined,
 	ArrowRightOutlined,
 	CheckOutlined,
+	ArrowLeftOutlined,
 } from "@ant-design/icons"
 
 function BtnComp({
@@ -25,6 +26,8 @@ function BtnComp({
 	onForwardApplication,
 	param = 0,
 	showUpdateAndReset = true,
+	showSendToBM = false,
+	onSendBackToBM,
 }) {
 	return (
 		<div className="flex justify-center">
@@ -49,6 +52,17 @@ function BtnComp({
 			)}
 			{mode == "B" && (
 				<>
+					{showSendToBM && (
+						<button
+							type="button"
+							className="inline-flex items-center px-5 py-2.5 mt-4 mr-4 sm:mt-6 text-sm font-medium text-center text-white border border-teal-800 bg-teal-800 transition ease-in-out hover:bg-teal-700 duration-300 rounded-full  dark:focus:ring-primary-900"
+							onClick={onSendBackToBM}
+						>
+							<ArrowLeftOutlined className="mr-2" />
+							Send to BM
+						</button>
+					)}
+
 					{showReject && (
 						<button
 							type="button"

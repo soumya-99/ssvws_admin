@@ -29,6 +29,7 @@ function FamilyMemberDetailsForm({ memberDetails }) {
 	const [visible, setVisible] = useState(() => false)
 	const [visible2, setVisible2] = useState(() => false)
 	const [visible3, setVisible3] = useState(() => false)
+	const [visible4, setVisible4] = useState(() => false)
 
 	const [metadataArray, setMetadataArray] = useState(() => [])
 
@@ -255,6 +256,28 @@ function FamilyMemberDetailsForm({ memberDetails }) {
 	useEffect(() => {
 		fetchMetaData()
 	}, [])
+
+	const sendingBackToBM = async () => {
+		setLoading(true)
+		const creds = {
+			remarks: remarks,
+			modified_by: userDetails?.emp_id,
+			form_no: memberDetails?.form_no,
+			member_id: memberDetails?.member_code,
+		}
+		await axios
+			.post(`${url}/admin/back_to_bm`, creds)
+			.then((res) => {
+				Message("success", "Sending back to BM successsfully.")
+				console.log("Sending back to BM", res?.data)
+				navigate(routePaths.MIS_ASSISTANT_HOME)
+			})
+			.catch((err) => {
+				Message("error", "Error while sending back to bm")
+				console.log("Error while sending back to bm")
+			})
+		setLoading(false)
+	}
 
 	return (
 		<>
@@ -514,6 +537,8 @@ function FamilyMemberDetailsForm({ memberDetails }) {
 									onRejectApplication={() => setVisible2(true)}
 									showForward={true}
 									onForwardApplication={() => setVisible3(true)}
+									showSendToBM={true}
+									onSendBackToBM={() => setVisible4(true)}
 								/>
 							</div>
 						)}
@@ -603,6 +628,17 @@ function FamilyMemberDetailsForm({ memberDetails }) {
 					setVisible(!visible)
 				}}
 				onPressNo={() => setVisible(!visible)}
+			/>
+
+			<DialogBox
+				flag={4}
+				onPress={() => setVisible4(!visible4)}
+				visible={visible4}
+				onPressYes={() => {
+					sendingBackToBM()
+					setVisible4(!visible4)
+				}}
+				onPressNo={() => setVisible4(!visible4)}
 			/>
 		</>
 	)
