@@ -10,6 +10,8 @@ import Notfound from "./Screens/Notfound/Notfound"
 import { Democontext } from "./Context/Democontext"
 import Loader from "./Components/Loader"
 import CircularProgress from "@mui/material/CircularProgress"
+import MasterBanks from "./Screens/Master/MasterBanks"
+import EditMasterBank from "./Screens/Master/EditMasterBank"
 
 // import CatchError from "./Screens/CatchError"
 // import AuthMis from "./Screens/MISAssistant/AuthMis"
@@ -209,6 +211,14 @@ const router = createBrowserRouter([
 							{
 								path: "disburseloan/:id",
 								element: <EditDisburseFormBM />,
+							},
+							{
+								path: "masterbanks",
+								element: <MasterBanks />,
+							},
+							{
+								path: "masterbanks/:id",
+								element: <EditMasterBank />,
 							},
 							{
 								path: "disburseloanapprove",

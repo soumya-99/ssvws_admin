@@ -17,6 +17,7 @@ import {
 	SubnodeOutlined,
 	ThunderboltOutlined,
 	CheckCircleOutlined,
+	DatabaseOutlined,
 } from "@ant-design/icons"
 import { Menu } from "antd"
 import { Link } from "react-router-dom"
@@ -166,6 +167,30 @@ function MenusBr({ theme }) {
 						<Link to={"/homebm/disburseloanapprove"}>Disbursement Approve</Link>
 					),
 				},
+				// {
+				// 	key: "sub3-3",
+				// 	icon: <SubnodeOutlined />,
+				// 	label: <Link to={"/homebm/assignmember"}>Assign Member</Link>,
+				// },
+			],
+		},
+		{
+			key: "sub5",
+			icon: <DatabaseOutlined />,
+			label: "Master",
+			children: [
+				{
+					key: "sub5-1",
+					icon: <DatabaseOutlined />,
+					label: <Link to={"/homebm/masterbanks"}>Banks</Link>,
+				},
+				// {
+				// 	key: "sub4-2",
+				// 	icon: <CheckCircleOutlined />,
+				// 	label: (
+				// 		<Link to={"/homebm/disburseloanapprove"}>Disbursement Approve</Link>
+				// 	),
+				// },
 				// {
 				// 	key: "sub3-3",
 				// 	icon: <SubnodeOutlined />,
