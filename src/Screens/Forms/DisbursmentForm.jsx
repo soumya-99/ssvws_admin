@@ -56,6 +56,8 @@ function DisbursmentForm() {
 		b_memCode: "",
 		b_clientName: "",
 		b_groupName: "",
+		b_acc1: "",
+		b_acc2: "",
 		b_formNo: "",
 		b_grtApproveDate: "",
 		b_branch: "",
@@ -138,6 +140,8 @@ function DisbursmentForm() {
 			b_memCode: personalDetails?.member_code || "",
 			b_clientName: personalDetails?.client_name || "",
 			b_groupName: personalDetails?.group_name || "",
+			b_acc1: personalDetails?.acc_no1 || "",
+			b_acc2: personalDetails?.acc_no2 || "",
 			b_formNo: personalDetails?.form_no || "",
 			b_grtApproveDate: personalDetails?.grt_approve_date || "",
 			b_branch: personalDetails?.branch_name || "",
@@ -295,6 +299,8 @@ function DisbursmentForm() {
 					b_memCode: res?.data?.msg[0]?.member_code,
 					b_clientName: res?.data?.msg[0]?.client_name,
 					b_groupName: res?.data?.msg[0]?.group_name,
+					b_acc1: res?.data?.msg[0]?.acc_no1,
+					b_acc2: res?.data?.msg[0]?.acc_no2,
 					b_formNo: res?.data?.msg[0]?.form_no,
 					b_grtApproveDate: res?.data?.msg[0]?.grt_approve_date,
 					b_branch: res?.data?.msg[0]?.branch_name,
@@ -531,17 +537,43 @@ function DisbursmentForm() {
 								</div>
 							</div>
 							<div className="grid gap-4 sm:grid-cols-4 sm:gap-6">
-								<div className="sm:col-span-4 bg-slate-200 border-stone-200 text-lime-900 p-5 rounded-2xl">
-									<TDInputTemplateBr
-										placeholder="Group name..."
-										type="text"
-										label="Group Name"
-										name="b_groupName"
-										formControlName={personalDetailsData?.b_groupName}
-										handleChange={handleChangePersonalDetails}
-										mode={1}
-										disabled
-									/>
+								<div className="sm:col-span-4 bg-slate-200 border-stone-200 text-lime-900 p-5 rounded-2xl grid grid-cols-4 gap-5">
+									<div className="sm:col-span-2">
+										<TDInputTemplateBr
+											placeholder="Group name..."
+											type="text"
+											label="Group Name"
+											name="b_groupName"
+											formControlName={personalDetailsData?.b_groupName}
+											handleChange={handleChangePersonalDetails}
+											mode={1}
+											disabled
+										/>
+									</div>
+									<div>
+										<TDInputTemplateBr
+											placeholder="Account No. 1..."
+											type="text"
+											label="Account No. 1"
+											name="b_acc1"
+											formControlName={personalDetailsData?.b_acc1}
+											handleChange={handleChangePersonalDetails}
+											mode={1}
+											disabled
+										/>
+									</div>
+									<div>
+										<TDInputTemplateBr
+											placeholder="Account No. 2..."
+											type="text"
+											label="Account No. 2"
+											name="b_acc2"
+											formControlName={personalDetailsData?.b_acc2}
+											handleChange={handleChangePersonalDetails}
+											mode={1}
+											disabled
+										/>
+									</div>
 								</div>
 								<div>
 									<TDInputTemplateBr
@@ -1095,6 +1127,10 @@ function DisbursmentForm() {
 						!personalDetailsData.b_memCode ||
 						!personalDetailsData.b_clientName ||
 						!personalDetailsData.b_groupName ||
+						!personalDetails.acc_no1 ||
+						!+personalDetails.acc_no1 === 0 ||
+						!personalDetails.acc_no2 ||
+						!+personalDetails.acc_no2 === 0 ||
 						!personalDetailsData.b_formNo ||
 						!personalDetailsData.b_grtApproveDate ||
 						!personalDetailsData.b_branch ||
@@ -1117,7 +1153,10 @@ function DisbursmentForm() {
 						!transactionDetailsData.b_tnxMode ||
 						!transactionDetailsData.b_remarks
 					) {
-						Message("warning", "Fill all the values properly!")
+						Message(
+							"warning",
+							"Fill all the values properly OR Update the Account Numbers from Group!"
+						)
 						setVisible(false)
 						return
 					}
