@@ -17,6 +17,7 @@ import { formatDateToYYYYMMDD } from "../../Utils/formateDate"
 import DialogBox from "../../Components/DialogBox"
 // import { disableInputArray } from "./disableInputArray"
 import { disableCondition } from "./disableCondition"
+import { getOrdinalSuffix } from "../../Utils/ordinalSuffix"
 
 function DisbursmentForm() {
 	const params = useParams()
@@ -87,6 +88,7 @@ function DisbursmentForm() {
 		b_disburseAmt: "",
 		b_bankCharges: 0,
 		b_processingCharges: 0,
+		b_dayOfRecovery: "",
 	})
 
 	const handleChangeDisburseDetails = (e) => {
@@ -356,6 +358,7 @@ function DisbursmentForm() {
 					b_roi: res?.data?.loan_dt?.curr_roi || "",
 					b_mode: res?.data?.loan_dt?.period_mode || "",
 					b_disburseAmt: res?.data?.loan_dt?.prn_disb_amt || "",
+					b_dayOfRecovery: res?.data?.loan_dt?.recovery_day || "",
 					b_bankCharges: res?.data?.loan_trans?.bank_charge || 0,
 					b_processingCharges: res?.data?.loan_trans?.proc_charge || 0,
 				})
@@ -452,6 +455,7 @@ function DisbursmentForm() {
 			prn_disb_amt: disbursementDetailsData?.b_disburseAmt || "",
 			old_prn_amt: "0",
 			od_intt_amt: "0",
+			recovery_date: disbursementDetailsData?.b_dayOfRecovery || "",
 			period_mode: disbursementDetailsData?.b_mode || "",
 			created_by: userDetails?.emp_id || "",
 			loan_code: params?.id || "",
@@ -468,6 +472,8 @@ function DisbursmentForm() {
 			// bill_no: "",
 			// trn_lat: "",
 			// trn_long: "",
+
+			///////////////////////////////////////////////////////
 		}
 		await axios
 			.post(`${url}/admin/save_loan_transaction`, creds)
@@ -874,6 +880,30 @@ function DisbursmentForm() {
 										}
 									/>
 								</div>
+								<div>
+									<TDInputTemplateBr
+										placeholder="Day of Recovery..."
+										type="number"
+										label={`Day of Recovery ${
+											disbursementDetailsData.b_dayOfRecovery
+												? `(${getOrdinalSuffix(
+														disbursementDetailsData.b_dayOfRecovery
+												  )} of every month)`
+												: ""
+										}`}
+										name="b_dayOfRecovery"
+										formControlName={disbursementDetailsData.b_dayOfRecovery}
+										handleChange={handleChangeDisburseDetails}
+										mode={1}
+										disabled={
+											!disbursementDetailsData?.b_scheme || disburseOrNot
+										}
+									/>
+									{(disbursementDetailsData.b_dayOfRecovery < 1 ||
+										disbursementDetailsData.b_dayOfRecovery > 31) && (
+										<VError title={`Day should be between 1 to 31`} />
+									)}
+								</div>
 							</div>
 						</div>
 
@@ -1179,6 +1209,8 @@ function DisbursmentForm() {
 						!disbursementDetailsData.b_disburseAmt ||
 						!disbursementDetailsData.b_bankCharges ||
 						!disbursementDetailsData.b_processingCharges ||
+						disbursementDetailsData.b_dayOfRecovery < 1 ||
+						disbursementDetailsData.b_dayOfRecovery > 31 ||
 						!transactionDetailsData.b_tnxDate ||
 						!transactionDetailsData.b_bankName ||
 						!transactionDetailsData.b_chequeOrRefNo ||
