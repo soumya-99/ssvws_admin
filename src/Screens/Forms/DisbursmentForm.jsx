@@ -818,7 +818,7 @@ function DisbursmentForm() {
 										disabled
 									/>
 								</div>
-								<div>
+								{/* <div>
 									<TDInputTemplateBr
 										placeholder="Mode..."
 										type="text"
@@ -829,7 +829,31 @@ function DisbursmentForm() {
 										mode={1}
 										disabled
 									/>
+								</div> */}
+
+								<div>
+									<TDInputTemplateBr
+										placeholder="Select Mode"
+										type="text"
+										label="Mode"
+										name="b_mode"
+										formControlName={personalDetailsData?.b_mode}
+										handleChange={handleChangePersonalDetails}
+										data={[
+											{
+												code: "Monthly",
+												name: "Monthly",
+											},
+											{
+												code: "Weekly",
+												name: "Weekly",
+											},
+										]}
+										mode={2}
+										disabled={disburseOrNot}
+									/>
 								</div>
+
 								<div>
 									<TDInputTemplateBr
 										placeholder="Disburse Amount..."
