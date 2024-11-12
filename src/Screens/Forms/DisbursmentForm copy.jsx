@@ -42,7 +42,6 @@ function DisbursmentForm() {
 	const [funds, setFunds] = useState(() => [])
 	const [tnxTypes, setTnxTypes] = useState(() => [])
 	const [tnxModes, setTnxModes] = useState(() => [])
-	const [banks, setBanks] = useState(() => [])
 
 	const [fetchedLoanData, setFetchedLoanData] = useState(() => Object)
 	const [fetchedTnxData, setFetchedTnxData] = useState(() => Object)
@@ -135,22 +134,6 @@ function DisbursmentForm() {
 			[name]: value,
 		}))
 	}
-
-	const getBanks = async () => {
-		await axios
-			.get(`${url}/get_bank`)
-			.then((res) => {
-				setBanks(res?.data?.msg)
-			})
-			.catch((err) => {
-				Message("error", "Some error while fetching banks.")
-				console.log("******", err)
-			})
-	}
-
-	useEffect(() => {
-		getBanks()
-	}, [])
 
 	useEffect(() => {
 		setPersonalDetailsData({
@@ -886,7 +869,7 @@ function DisbursmentForm() {
 								</div>
 							</div>
 							<div className="grid gap-4 sm:grid-cols-4 sm:gap-6">
-								{/* <div className="sm:col-span-2">
+								<div className="sm:col-span-2">
 									<TDInputTemplateBr
 										placeholder="Bank Name..."
 										type="text"
@@ -895,22 +878,6 @@ function DisbursmentForm() {
 										formControlName={transactionDetailsData.b_bankName}
 										handleChange={handleChangeTnxDetailsDetails}
 										mode={1}
-										disabled={disburseOrNot}
-									/>
-								</div> */}
-								<div className="sm:col-span-2">
-									<TDInputTemplateBr
-										placeholder="Select Bank..."
-										type="text"
-										label="Bank"
-										name="b_bankName"
-										formControlName={transactionDetailsData.b_bankName}
-										handleChange={handleChangeTnxDetailsDetails}
-										data={banks?.map((item, _) => ({
-											code: item?.bank_code,
-											name: item?.bank_name,
-										}))}
-										mode={2}
 										disabled={disburseOrNot}
 									/>
 								</div>
