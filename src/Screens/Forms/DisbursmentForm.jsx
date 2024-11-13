@@ -233,17 +233,6 @@ function DisbursmentForm() {
 			.post(`${url}/admin/scheme_dtls`, creds)
 			.then((res) => {
 				console.log("PPP", res?.data)
-				// setDisbursementDetailsData({
-				// 	b_scheme: disbursementDetailsData.b_scheme,
-				// 	b_fund: disbursementDetailsData.b_fund,
-				// 	b_period: res?.data?.msg[0]?.max_period,
-				// 	b_roi: res?.data?.msg[0]?.roi,
-				// 	b_mode: res?.data?.msg[0]?.payment_mode,
-				// 	b_disburseAmt: "",
-				// 	b_bankCharges: "",
-				// 	b_processingCharges: "",
-				// })
-
 				setDisbursementDetailsData((prevData) => ({
 					...prevData,
 					b_scheme: prevData.b_scheme,
@@ -265,7 +254,9 @@ function DisbursmentForm() {
 	}
 
 	useEffect(() => {
-		getParticularScheme(disbursementDetailsData.b_scheme)
+		if (!disburseOrNot) {
+			getParticularScheme(disbursementDetailsData.b_scheme)
+		}
 	}, [disbursementDetailsData.b_scheme])
 
 	const getPurposeOfLoan = async () => {
@@ -837,8 +828,8 @@ function DisbursmentForm() {
 										type="text"
 										label="Mode"
 										name="b_mode"
-										formControlName={personalDetailsData?.b_mode}
-										handleChange={handleChangePersonalDetails}
+										formControlName={disbursementDetailsData?.b_mode}
+										handleChange={handleChangeDisburseDetails}
 										data={[
 											{
 												code: "Monthly",
