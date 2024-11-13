@@ -237,9 +237,15 @@ function DisbursmentForm() {
 					...prevData,
 					b_scheme: prevData.b_scheme,
 					b_fund: prevData.b_fund,
-					b_period: res?.data?.msg[0]?.max_period,
+					b_period:
+						disbursementDetailsData.b_mode === "Monthly"
+							? res?.data?.msg[0]?.max_period
+							: disbursementDetailsData.b_mode === "Weekly"
+							? res?.data?.msg[0]?.max_period_week
+							: "",
 					b_roi: res?.data?.msg[0]?.roi,
-					b_mode: res?.data?.msg[0]?.payment_mode,
+					// b_mode: res?.data?.msg[0]?.payment_mode,
+					b_mode: disbursementDetailsData.b_mode || "",
 
 					b_disburseAmt: prevData.b_disburseAmt || "",
 					b_bankCharges: prevData.b_bankCharges || "",
@@ -257,7 +263,7 @@ function DisbursmentForm() {
 		if (!disburseOrNot) {
 			getParticularScheme(disbursementDetailsData.b_scheme)
 		}
-	}, [disbursementDetailsData.b_scheme])
+	}, [disbursementDetailsData.b_scheme, disbursementDetailsData.b_mode])
 
 	const getPurposeOfLoan = async () => {
 		setLoading(true)
@@ -764,27 +770,32 @@ function DisbursmentForm() {
 										disabled={disburseOrNot}
 									/>
 								</div>
+
 								<div>
 									<TDInputTemplateBr
-										placeholder="Select Fund..."
+										placeholder="Select Mode"
 										type="text"
-										label="Fund"
-										name="b_fund"
-										formControlName={disbursementDetailsData.b_fund}
+										label="Mode"
+										name="b_mode"
+										formControlName={disbursementDetailsData?.b_mode}
 										handleChange={handleChangeDisburseDetails}
-										data={funds?.map((item, _) => ({
-											code: item?.fund_id,
-											name: item?.fund_name,
-										}))}
-										// data={[
-										// 	{ code: "F1", name: "Fund 1" },
-										// 	{ code: "F2", name: "Fund 2" },
-										// 	{ code: "F3", name: "Fund 3" },
-										// ]}
+										data={[
+											{
+												code: "Monthly",
+												name: "Monthly",
+											},
+											{
+												code: "Weekly",
+												name: "Weekly",
+											},
+										]}
 										mode={2}
-										disabled={disburseOrNot}
+										disabled={
+											!disbursementDetailsData.b_scheme || disburseOrNot
+										}
 									/>
 								</div>
+
 								<div>
 									<TDInputTemplateBr
 										placeholder="Period..."
@@ -809,37 +820,18 @@ function DisbursmentForm() {
 										disabled
 									/>
 								</div>
-								{/* <div>
-									<TDInputTemplateBr
-										placeholder="Mode..."
-										type="text"
-										label="Mode"
-										name="b_mode"
-										formControlName={disbursementDetailsData.b_mode}
-										handleChange={handleChangeDisburseDetails}
-										mode={1}
-										disabled
-									/>
-								</div> */}
-
 								<div>
 									<TDInputTemplateBr
-										placeholder="Select Mode"
+										placeholder="Select Fund..."
 										type="text"
-										label="Mode"
-										name="b_mode"
-										formControlName={disbursementDetailsData?.b_mode}
+										label="Fund"
+										name="b_fund"
+										formControlName={disbursementDetailsData.b_fund}
 										handleChange={handleChangeDisburseDetails}
-										data={[
-											{
-												code: "Monthly",
-												name: "Monthly",
-											},
-											{
-												code: "Weekly",
-												name: "Weekly",
-											},
-										]}
+										data={funds?.map((item, _) => ({
+											code: item?.fund_id,
+											name: item?.fund_name,
+										}))}
 										mode={2}
 										disabled={disburseOrNot}
 									/>
@@ -953,7 +945,7 @@ function DisbursmentForm() {
 										handleChange={handleChangeTnxDetailsDetails}
 										data={banks?.map((item, _) => ({
 											code: item?.bank_code,
-											name: item?.bank_name,
+											name: `${item?.bank_name} - ${item?.branch_name} - ${item?.ifsc}`,
 										}))}
 										mode={2}
 										disabled={disburseOrNot}
