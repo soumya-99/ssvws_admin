@@ -138,6 +138,37 @@ function DisbursmentForm() {
 		}))
 	}
 
+	const WEEKS = [
+		{
+			code: "1",
+			name: "Sunday",
+		},
+		{
+			code: "2",
+			name: "Monday",
+		},
+		{
+			code: "3",
+			name: "Tuesday",
+		},
+		{
+			code: "4",
+			name: "Wednesday",
+		},
+		{
+			code: "5",
+			name: "Thursday",
+		},
+		{
+			code: "6",
+			name: "Friday",
+		},
+		{
+			code: "7",
+			name: "Saturday",
+		},
+	]
+
 	const getBanks = async () => {
 		await axios
 			.get(`${url}/get_bank`)
@@ -833,7 +864,9 @@ function DisbursmentForm() {
 											name: item?.fund_name,
 										}))}
 										mode={2}
-										disabled={disburseOrNot}
+										disabled={
+											!disbursementDetailsData?.b_scheme || disburseOrNot
+										}
 									/>
 								</div>
 
@@ -887,30 +920,48 @@ function DisbursmentForm() {
 										}
 									/>
 								</div>
-								<div>
-									<TDInputTemplateBr
-										placeholder="Day of Recovery..."
-										type="number"
-										label={`Day of Recovery ${
-											disbursementDetailsData.b_dayOfRecovery
-												? `(${getOrdinalSuffix(
-														disbursementDetailsData.b_dayOfRecovery
-												  )} of every month)`
-												: ""
-										}`}
-										name="b_dayOfRecovery"
-										formControlName={disbursementDetailsData.b_dayOfRecovery}
-										handleChange={handleChangeDisburseDetails}
-										mode={1}
-										disabled={
-											!disbursementDetailsData?.b_scheme || disburseOrNot
-										}
-									/>
-									{(disbursementDetailsData.b_dayOfRecovery < 1 ||
-										disbursementDetailsData.b_dayOfRecovery > 31) && (
-										<VError title={`Day should be between 1 to 31`} />
-									)}
-								</div>
+								{disbursementDetailsData.b_mode === "Monthly" ? (
+									<div>
+										<TDInputTemplateBr
+											placeholder="Day of Recovery..."
+											type="number"
+											label={`Day of Recovery ${
+												disbursementDetailsData.b_dayOfRecovery
+													? `(${getOrdinalSuffix(
+															disbursementDetailsData.b_dayOfRecovery
+													  )} of every month)`
+													: ""
+											}`}
+											name="b_dayOfRecovery"
+											formControlName={disbursementDetailsData.b_dayOfRecovery}
+											handleChange={handleChangeDisburseDetails}
+											mode={1}
+											disabled={
+												!disbursementDetailsData?.b_scheme || disburseOrNot
+											}
+										/>
+										{(disbursementDetailsData.b_dayOfRecovery < 1 ||
+											disbursementDetailsData.b_dayOfRecovery > 31) && (
+											<VError title={`Day should be between 1 to 31`} />
+										)}
+									</div>
+								) : (
+									<div>
+										<TDInputTemplateBr
+											placeholder="Select Week"
+											type="text"
+											label="Day of Recovery"
+											name="b_dayOfRecovery"
+											formControlName={disbursementDetailsData?.b_dayOfRecovery}
+											handleChange={handleChangeDisburseDetails}
+											data={WEEKS}
+											mode={2}
+											disabled={
+												!disbursementDetailsData.b_scheme || disburseOrNot
+											}
+										/>
+									</div>
+								)}
 							</div>
 						</div>
 
