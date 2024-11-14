@@ -186,22 +186,23 @@ function DisbursmentForm() {
 	}, [])
 
 	useEffect(() => {
-		setPersonalDetailsData({
-			b_memCode: personalDetails?.member_code || "",
-			b_clientName: personalDetails?.client_name || "",
-			b_groupName: personalDetails?.group_name || "",
-			b_acc1: personalDetails?.acc_no1 || "",
-			b_acc2: personalDetails?.acc_no2 || "",
-			b_formNo: personalDetails?.form_no || "",
-			b_grtApproveDate: personalDetails?.grt_approve_date || "",
-			b_branch: personalDetails?.branch_name || "",
-			b_purpose: personalDetails?.purpose_id || "",
-			b_subPurpose: personalDetails?.sub_purp_name || "",
-			b_purposeId: personalDetails?.loan_purpose || "",
-			b_subPurposeId: personalDetails?.sub_pupose || "",
-			b_applicationDate: personalDetails?.application_date || "",
-			b_appliedAmt: personalDetails?.applied_amt || "",
-		})
+		if (!disburseOrNot)
+			setPersonalDetailsData({
+				b_memCode: personalDetails?.member_code || "",
+				b_clientName: personalDetails?.client_name || "",
+				b_groupName: personalDetails?.group_name || "",
+				b_acc1: personalDetails?.acc_no1 || "",
+				b_acc2: personalDetails?.acc_no2 || "",
+				b_formNo: personalDetails?.form_no || "",
+				b_grtApproveDate: personalDetails?.grt_approve_date || "",
+				b_branch: personalDetails?.branch_name || "",
+				b_purpose: personalDetails?.purpose_id || "",
+				b_subPurpose: personalDetails?.sub_pupose || "",
+				b_purposeId: personalDetails?.loan_purpose || "",
+				b_subPurposeId: personalDetails?.sub_pupose || "",
+				b_applicationDate: personalDetails?.application_date || "",
+				b_appliedAmt: personalDetails?.applied_amt || "",
+			})
 
 		console.log("?????????????????????", personalDetails)
 	}, [])
@@ -353,7 +354,7 @@ function DisbursmentForm() {
 					b_branch: res?.data?.msg[0]?.branch_name,
 					b_purpose: res?.data?.msg[0]?.purpose_id,
 					b_purposeId: res?.data?.msg[0]?.loan_purpose,
-					b_subPurpose: res?.data?.msg[0]?.sub_purp_name,
+					b_subPurpose: res?.data?.msg[0]?.sub_pupose,
 					b_subPurposeId: res?.data?.msg[0]?.sub_pupose,
 					b_applicationDate: res?.data?.msg[0]?.application_date,
 					b_appliedAmt: res?.data?.msg[0]?.applied_amt,
@@ -737,7 +738,7 @@ function DisbursmentForm() {
 										formControlName={personalDetailsData?.b_subPurpose}
 										handleChange={handleChangePersonalDetails}
 										data={subPurposeOfLoan?.map((item, _) => ({
-											code: item?.sub_pupose,
+											code: item?.sub_purp_id,
 											name: item?.sub_purp_name,
 										}))}
 										mode={2}
