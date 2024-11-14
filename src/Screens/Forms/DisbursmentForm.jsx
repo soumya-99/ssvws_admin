@@ -23,7 +23,8 @@ function DisbursmentForm() {
 	const params = useParams()
 	const [loading, setLoading] = useState(false)
 	const location = useLocation()
-	const personalDetails = location.state || {}
+	const personalDetails = location.state[0] || {}
+	const approvalStat = location.state[1] || "U"
 
 	const navigate = useNavigate()
 	const userDetails = JSON.parse(localStorage.getItem("user_details"))
@@ -53,6 +54,7 @@ function DisbursmentForm() {
 	console.log(params, "params")
 	console.log(location, "location")
 	// console.log(memberDetails, "memberDetails")
+	console.log("U/A", approvalStat)
 
 	const [personalDetailsData, setPersonalDetailsData] = useState({
 		b_memCode: "",
@@ -1224,16 +1226,18 @@ function DisbursmentForm() {
 										/>
 									</div>
 								</div>
-								<div className="mt-10">
-									<BtnComp
-										mode="N"
-										showUpdateAndReset={false}
-										showReject={true}
-										onRejectApplication={() => setVisible3(true)}
-										showForward={true}
-										onForwardApplication={() => setVisible2(true)}
-									/>
-								</div>
+								{approvalStat !== "A" && (
+									<div className="mt-10">
+										<BtnComp
+											mode="N"
+											showUpdateAndReset={false}
+											showReject={true}
+											onRejectApplication={() => setVisible3(true)}
+											showForward={true}
+											onForwardApplication={() => setVisible2(true)}
+										/>
+									</div>
+								)}
 							</div>
 						)}
 					</div>

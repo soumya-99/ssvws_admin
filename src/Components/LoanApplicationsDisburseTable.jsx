@@ -22,6 +22,7 @@ function LoanApplicationsDisburseTable({
 	showSearch = true,
 	isForwardLoan = false,
 	isRejected = false,
+	approvalStat = "U",
 }) {
 	const navigate = useNavigate()
 
@@ -213,7 +214,7 @@ function LoanApplicationsDisburseTable({
 												onClick={() => {
 													console.log("LLSKSIODFUISFH", item)
 													navigate(`/homebm/disburseloan/0`, {
-														state: item,
+														state: [item, approvalStat],
 													})
 												}}
 											>

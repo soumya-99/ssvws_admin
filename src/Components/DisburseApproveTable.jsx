@@ -22,6 +22,7 @@ function DisburseApproveTable({
 	showSearch = true,
 	isForwardLoan = false,
 	isRejected = false,
+	approvalStat = "U",
 }) {
 	const navigate = useNavigate()
 
@@ -227,7 +228,7 @@ function DisburseApproveTable({
 															item?.member_code || 0
 														}`,
 														{
-															state: item,
+															state: [item, approvalStat],
 														}
 													)
 												}}
