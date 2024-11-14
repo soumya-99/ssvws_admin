@@ -74,7 +74,7 @@ function Sidebar({ mode = 0 }) {
 						: mode === 1
 						? "fixed top-0 z-20 left-0 w-full h-auto transition-transform -translate-x-full sm:translate-x-0 p-4 justify-center bg-blue-800"
 						: mode === 2
-						? "fixed top-0 z-20 left-0 w-full h-auto transition-transform -translate-x-full sm:translate-x-0 p-4 justify-center bg-stone-800"
+						? "fixed top-0 z-20 left-0 w-full h-auto transition-transform -translate-x-full sm:translate-x-0 p-4 justify-center bg-slate-800"
 						: "fixed top-0 z-20 left-0 w-full h-auto transition-transform -translate-x-full sm:translate-x-0 p-4 justify-center bg-slate-800"
 				}
 				aria-label="Sidebar"
@@ -100,17 +100,17 @@ function Sidebar({ mode = 0 }) {
 			<div
 				className={`w-full ${
 					userDetails?.id == 1
-						? "bg-stone-300"
+						? "bg-slate-300"
 						: userDetails?.id == 2
-						? "bg-stone-300"
+						? "bg-slate-300"
 						: userDetails?.id == 3
 						? "bg-blue-300"
 						: "bg-slate-300"
 				} p-1 justify-center align-middle ${
 					userDetails?.id == 1
-						? "text-stone-800"
+						? "text-slate-800"
 						: userDetails?.id == 2
-						? "text-stone-800"
+						? "text-slate-800"
 						: userDetails?.id == 3
 						? "text-blue-800"
 						: "text-slate-800"

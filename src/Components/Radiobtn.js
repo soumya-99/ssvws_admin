@@ -27,7 +27,7 @@ function Radiobtn({ data, onChangeVal, val }) {
 				{data?.map((item) => (
 					<Radio
 						value={item.value}
-						className="text-stone-900 hover:bg-slate-100 border-2 border-white hover:border-2 hover:border-white hover:duration-300 hover:rounded-full font-bold
+						className="text-slate-900 hover:bg-slate-100 border-2 border-white hover:border-2 hover:border-white hover:duration-300 hover:rounded-full font-bold
       
        checked:bg-[#C4F1BE] checked:border-2 checked:border-white checked:duration-300 checked:rounded-full
       

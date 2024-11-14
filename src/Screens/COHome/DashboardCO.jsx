@@ -7,7 +7,7 @@ function DashboardCO() {
 	return (
 		<div>
 			<Sidebar mode={2} />
-			<div className="text-3xl text-stone-800 p-10">
+			<div className="text-3xl text-slate-800 p-10">
 				Hi, I'm Dashboard of CO! Coming soon...
 			</div>
 		</div>

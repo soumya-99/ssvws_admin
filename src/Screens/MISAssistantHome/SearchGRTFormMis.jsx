@@ -119,7 +119,7 @@ function SearchGRTFormMis() {
 							className={`bg-white border-1 border-gray-400 text-gray-800 text-sm rounded-lg ${
 								userDetails?.id == 3
 									? "active:border-blue-600 focus:ring-blue-600 focus:border-blue-800"
-									: "active:border-stone-600 focus:ring-stone-600 focus:border-stone-800"
+									: "active:border-slate-600 focus:ring-slate-600 focus:border-slate-800"
 							} focus:border-1 duration-500 block w-full p-2 dark:bg-bg-white dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500`}
 							onChange={(e) => setSearchKeywords(e.target.value)}
 						/>

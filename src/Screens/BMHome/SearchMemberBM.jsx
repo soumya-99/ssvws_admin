@@ -41,7 +41,7 @@ function SearchMemberBM() {
 			<Spin
 				indicator={<LoadingOutlined spin />}
 				size="large"
-				className="text-stone-800 dark:text-gray-400"
+				className="text-slate-800 dark:text-gray-400"
 				spinning={loading}
 			>
 				<main className="px-4 h-auto my-10 mx-32">
@@ -51,15 +51,15 @@ function SearchMemberBM() {
 							placeholder="Search by Member Name"
 							className={`bg-white border-1 border-gray-400 text-gray-800 text-sm rounded-lg ${
 								userDetails?.id == 3
-									? "active:border-stone-600 focus:ring-stone-600 focus:border-stone-800"
-									: "active:border-stone-600 focus:ring-stone-600 focus:border-stone-800"
+									? "active:border-slate-600 focus:ring-slate-600 focus:border-slate-800"
+									: "active:border-slate-600 focus:ring-slate-600 focus:border-slate-800"
 							} focus:border-1 duration-500 block w-full p-2 dark:bg-bg-white dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500`}
 							onChange={(e) => setSearchKeywords(e.target.value)}
 						/>
 						<button
 							icon={<SearchOutlined />}
 							iconPosition="end"
-							className="bg-stone-700 text-white hover:bg-stone-800 p-5 text-center text-sm border-none rounded-lg w-36 h-10 flex justify-center items-center align-middle gap-2 disabled:bg-gray-400 disabled:cursor-not-allowed active:ring-2 active:ring-blue-400"
+							className="bg-slate-700 text-white hover:bg-slate-800 p-5 text-center text-sm border-none rounded-lg w-36 h-10 flex justify-center items-center align-middle gap-2 disabled:bg-gray-400 disabled:cursor-not-allowed active:ring-2 active:ring-blue-400"
 							onClick={fetchSearchedMembers}
 							disabled={!searchKeywords}
 						>

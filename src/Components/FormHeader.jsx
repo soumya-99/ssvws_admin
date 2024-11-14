@@ -13,7 +13,7 @@ function FormHeader({ text, mode = 0, data, title }) {
 						: mode === 1
 						? "flex flex-col bg-blue-800 dark:bg-blue-800 w-full md:flex-row items-center align-middle justify-start gap-3 space-x-2 px-8 rounded-full py-3"
 						: mode === 2
-						? "flex flex-col bg-stone-800 dark:bg-stone-800 w-full md:flex-row items-center align-middle justify-start gap-3 space-x-2 px-8 rounded-full py-3"
+						? "flex flex-col bg-slate-800 dark:bg-slate-800 w-full md:flex-row items-center align-middle justify-start gap-3 space-x-2 px-8 rounded-full py-3"
 						: "flex flex-col bg-slate-800 dark:bg-slate-800 w-full md:flex-row items-center align-middle justify-start gap-3 space-x-2 px-8 rounded-full py-3"
 				}
 			>

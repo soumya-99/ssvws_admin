@@ -588,7 +588,7 @@ function DisbursmentForm() {
 								</div>
 							</div>
 							<div className="grid gap-4 sm:grid-cols-4 sm:gap-6">
-								<div className="sm:col-span-4 bg-slate-200 border-stone-200 text-lime-900 p-5 rounded-2xl grid grid-cols-4 gap-5">
+								<div className="sm:col-span-4 bg-slate-200 border-slate-200 text-lime-900 p-5 rounded-2xl grid grid-cols-4 gap-5">
 									<div className="sm:col-span-2">
 										<TDInputTemplateBr
 											placeholder="Group name..."

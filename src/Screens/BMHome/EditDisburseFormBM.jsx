@@ -21,7 +21,7 @@ function EditDisburseFormBM() {
 	return (
 		<>
 			<Sidebar mode={2} />
-			<section className="bg-stone-50 dark:bg-[#001529] flex justify-center align-middle p-5">
+			<section className="bg-slate-50 dark:bg-[#001529] flex justify-center align-middle p-5">
 				{/* {params.id>0 && data && <PrintComp toPrint={data} title={'Department'}/>} */}
 				{/* <HeadingTemplate
 				text={params.id > 0 ? "Update vendor" : "Add vendor"}

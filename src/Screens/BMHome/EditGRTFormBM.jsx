@@ -71,7 +71,7 @@ function EditGRTFormBM() {
 			<Sidebar mode={2} />
 			<section
 				className={`${
-					userDetails?.id === 3 ? "bg-blue-50" : "bg-stone-50"
+					userDetails?.id === 3 ? "bg-blue-50" : "bg-slate-50"
 				} dark:bg-[#001529] flex justify-center align-middle p-5`}
 			>
 				<div className=" bg-white p-5 w-4/5 min-h-screen rounded-3xl">
@@ -257,7 +257,7 @@ function EditGRTFormBM() {
 						indicator={<LoadingOutlined spin />}
 						size="large"
 						className={`${
-							userDetails?.id === 3 ? "text-blue-800" : "text-stone-800"
+							userDetails?.id === 3 ? "text-blue-800" : "text-slate-800"
 						} dark:text-gray-400`}
 						spinning={loading}
 					>

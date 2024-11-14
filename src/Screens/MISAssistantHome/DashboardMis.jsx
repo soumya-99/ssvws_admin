@@ -7,7 +7,7 @@ function DashboardMis() {
 	return (
 		<div>
 			<Sidebar mode={1} />
-			<div className="text-3xl text-stone-800 p-10">
+			<div className="text-3xl text-slate-800 p-10">
 				Hi, I'm Dashboard of Mis Assistant! Coming soon...
 			</div>
 		</div>

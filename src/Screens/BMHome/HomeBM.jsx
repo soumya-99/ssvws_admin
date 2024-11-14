@@ -20,7 +20,7 @@ function HomeBM() {
 		<div>
 			{/* <Header /> */}
 			<Sidebar mode={2} />
-			<div className="px-6 w-auto bg-stone-50 dark:bg-gray-800 min-h-screen ">
+			<div className="px-6 w-auto bg-slate-50 dark:bg-gray-800 min-h-screen ">
 				<div
 					className={
 						"p-4 h-auto rounded-3xl bg-transparent dark:border-gray-700 dark:bg-transparent dark:text-white min-w-screen-xl"
