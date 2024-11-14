@@ -72,15 +72,16 @@ function MasterBanks() {
 		setLoanApplications(
 			copyLoanApplications?.filter(
 				(e) =>
-					e?.form_no?.toString()?.toLowerCase().includes(word?.toLowerCase()) ||
-					e?.client_name
+					e?.bank_name
+						?.toString()
+						?.toLowerCase()
+						.includes(word?.toLowerCase()) ||
+					e?.branch_name
 						?.toString()
 						?.toLowerCase()
 						?.includes(word?.toLowerCase()) ||
-					e?.member_code
-						?.toString()
-						?.toLowerCase()
-						?.includes(word?.toLowerCase())
+					e?.ifsc?.toString()?.toLowerCase()?.includes(word?.toLowerCase()) ||
+					e?.sol_id?.toString()?.toLowerCase()?.includes(word?.toLowerCase())
 			)
 		)
 	}

@@ -948,7 +948,7 @@ function DisbursmentForm() {
 								) : (
 									<div>
 										<TDInputTemplateBr
-											placeholder="Select Week"
+											placeholder="Select Weekday"
 											type="text"
 											label="Day of Recovery"
 											name="b_dayOfRecovery"

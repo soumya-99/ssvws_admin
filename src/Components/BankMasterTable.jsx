@@ -59,61 +59,62 @@ function BankMasterTable({
 						flag === "MIS" ? "dark:bg-blue-800" : "dark:bg-slate-800"
 					} md:flex-row items-center justify-between space-y-3 md:space-y-0 md:space-x-4 p-3`}
 				>
-					<div className="w-full">
+					<div className="w-full flex flex-row-reverse justify-between items-center mx-4">
 						<button
-							className="bg-white w-20 h-12 rounded-lg float-right text-center ml-3"
+							className="bg-slate-100 p-3 h-11 rounded-full float-right text-center ml-3"
 							onClick={() => {
 								navigate(`/homebm/masterbanks/0`)
 							}}
 						>
 							<PlusOutlined className="text-xl" />
 						</button>
-						<div className="flex items-center justify-between">
-							<motion.h2
-								initial={{ opacity: 0, y: -50 }}
-								animate={{ opacity: 1, y: 0 }}
-								transition={{ delay: 1, type: "just" }}
-								className="text-xl w-48 capitalize text-nowrap font-bold text-white dark:text-white sm:block hidden mx-4"
-							>
-								{title}
-							</motion.h2>
+						{/* <div className="flex items-center justify-between"> */}
 
-							<label htmlFor="simple-search" className="sr-only">
+						{/* <label htmlFor="simple-search" className="sr-only">
 								Search
-							</label>
-							{showSearch && (
-								<div className="relative w-full -right-12 2xl:-right-12">
-									<div className="absolute inset-y-0 left-0 flex items-center md:ml-4 pl-3 pointer-events-none">
-										<svg
-											aria-hidden="true"
-											className="w-5 h-5 text-gray-500 dark:text-gray-400"
-											fill="currentColor"
-											viewBox="0 0 20 20"
-											xmlns="http://www.w3.org/2000/svg"
-										>
-											<path
-												fillRule="evenodd"
-												d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z"
-												clipRule="evenodd"
-											/>
-										</svg>
-									</div>
-									<motion.input
-										type="text"
-										id="simple-search"
-										initial={{ opacity: 0, width: 0 }}
-										animate={{ opacity: 1, width: "95%" }}
-										transition={{ delay: 1.1, type: "just" }}
-										className={`bg-white border rounded-lg ${
-											flag === "MIS" ? "border-blue-700" : "border-slate-700"
-										} text-gray-800 block w-full h-12 pl-10 dark:bg-gray-800 md:ml-4 duration-300 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white text-lg focus:border-blue-600`}
-										placeholder="Search"
-										required=""
-										onChange={(text) => setSearch(text.target.value)}
-									/>
+							</label> */}
+						{showSearch && (
+							<div className="relative w-full">
+								<div className="absolute inset-y-0 left-0 flex items-center md:ml-4 pl-3 pointer-events-none">
+									<svg
+										aria-hidden="true"
+										className="w-5 h-5 text-gray-500 dark:text-gray-400"
+										fill="currentColor"
+										viewBox="0 0 20 20"
+										xmlns="http://www.w3.org/2000/svg"
+									>
+										<path
+											fillRule="evenodd"
+											d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z"
+											clipRule="evenodd"
+										/>
+									</svg>
 								</div>
-							)}
-						</div>
+								<motion.input
+									type="text"
+									id="simple-search"
+									initial={{ opacity: 0, width: 0 }}
+									animate={{ opacity: 1, width: "95%" }}
+									transition={{ delay: 1.1, type: "just" }}
+									className={`bg-white border rounded-lg ${
+										flag === "MIS" ? "border-blue-700" : "border-slate-700"
+									} text-gray-800 block w-full h-12 pl-10 dark:bg-gray-800 md:ml-4 duration-300 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white text-lg focus:border-blue-600`}
+									placeholder="Search"
+									required=""
+									onChange={(text) => setSearch(text.target.value)}
+								/>
+							</div>
+						)}
+
+						<motion.h2
+							initial={{ opacity: 0, y: -50 }}
+							animate={{ opacity: 1, y: 0 }}
+							transition={{ delay: 1, type: "just" }}
+							className="text-xl w-48 capitalize text-nowrap font-bold text-white dark:text-white sm:block hidden"
+						>
+							{title}
+						</motion.h2>
+						{/* </div> */}
 					</div>
 				</div>
 			</motion.section>
