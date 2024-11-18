@@ -140,6 +140,29 @@ function DisbursmentForm() {
 		}))
 	}
 
+	const [recoveryDetailsData, setRecoveryDetailsData] = useState({
+		b_memberCode: "",
+		b_memberName: "",
+		b_loanId: "",
+		b_roi: "",
+		b_outstanding: "",
+		b_period: "",
+		b_periodMode: "",
+		b_installmentEndDate: "",
+		b_installmentPaid: "",
+		b_emi: "",
+		b_tnxDate: "",
+		b_amount: "",
+	})
+
+	const handleChangeRecoveryDetails = (e) => {
+		const { name, value } = e.target
+		setRecoveryDetailsData((prevData) => ({
+			...prevData,
+			[name]: value,
+		}))
+	}
+
 	const WEEKS = [
 		{
 			code: "1",
@@ -1125,6 +1148,141 @@ function DisbursmentForm() {
 													: ""
 											}
 											handleChange={handleChangeInstallmentDetails}
+											mode={1}
+											disabled
+										/>
+									</div>
+									<div className="sm:col-span-2">
+										<TDInputTemplateBr
+											placeholder="Installment End Date..."
+											type="text"
+											label="Installment End Date"
+											name="b_isntallmentEndDate"
+											formControlName={
+												installmentDetailsData?.b_isntallmentEndDate
+													? new Date(
+															installmentDetailsData?.b_isntallmentEndDate
+													  ).toLocaleDateString("en-GB")
+													: ""
+											}
+											handleChange={handleChangeInstallmentDetails}
+											mode={1}
+											disabled
+										/>
+									</div>
+									<div>
+										<TDInputTemplateBr
+											placeholder="Principle Amount..."
+											type="text"
+											label="Principle Amount"
+											name="b_principleDisbursedAmount"
+											formControlName={
+												installmentDetailsData?.b_principleDisbursedAmount
+											}
+											handleChange={handleChangeInstallmentDetails}
+											mode={1}
+											disabled
+										/>
+									</div>
+									<div>
+										<TDInputTemplateBr
+											placeholder="Interest Amount..."
+											type="text"
+											label="Interest Amount"
+											name="b_interestAmount"
+											formControlName={installmentDetailsData?.b_interestAmount}
+											handleChange={handleChangeInstallmentDetails}
+											mode={1}
+											disabled
+										/>
+									</div>
+									<div className="sm:col-span-2">
+										<TDInputTemplateBr
+											placeholder="Receivable..."
+											type="text"
+											label="Receivable"
+											name="b_receivable"
+											formControlName={installmentDetailsData?.b_receivable}
+											handleChange={handleChangeInstallmentDetails}
+											mode={1}
+											disabled
+										/>
+									</div>
+									<div>
+										<TDInputTemplateBr
+											placeholder="Principle EMI Amount..."
+											type="text"
+											label="Principle EMI Amount"
+											name="b_principleEMIAmount"
+											formControlName={
+												installmentDetailsData?.b_principleEMIAmount
+											}
+											handleChange={handleChangeInstallmentDetails}
+											mode={1}
+											disabled
+										/>
+									</div>
+									<div>
+										<TDInputTemplateBr
+											placeholder="Interest EMI..."
+											type="text"
+											label="Interest EMI"
+											name="b_interestEMIAmount"
+											formControlName={
+												installmentDetailsData?.b_interestEMIAmount
+											}
+											handleChange={handleChangeInstallmentDetails}
+											mode={1}
+											disabled
+										/>
+									</div>
+									<div className="sm:col-span-2">
+										<TDInputTemplateBr
+											placeholder="Total EMI Amount..."
+											type="text"
+											label="Total EMI Amount"
+											name="b_totalEMIAmount"
+											formControlName={installmentDetailsData?.b_totalEMIAmount}
+											handleChange={handleChangeInstallmentDetails}
+											mode={1}
+											disabled
+										/>
+									</div>
+								</div>
+								{approvalStat !== "A" && (
+									<div className="mt-10">
+										<BtnComp
+											mode="N"
+											showUpdateAndReset={false}
+											showReject={true}
+											onRejectApplication={() => setVisible3(true)}
+											showForward={true}
+											onForwardApplication={() => setVisible2(true)}
+										/>
+									</div>
+								)}
+							</div>
+						)}
+
+						{/* ////////////////////////////////////////////////////// */}
+
+						{approvalStat === "A" && (
+							<div>
+								<div className="w-full my-10 border-t-4 border-gray-500 border-dashed"></div>
+								<div className="grid gap-4 sm:grid-cols-2 sm:gap-6">
+									<div className="text-xl mb-2 text-lime-800 font-semibold underline">
+										5. Recovery Details
+									</div>
+								</div>
+								<div className="grid gap-4 sm:grid-cols-4 sm:gap-6">
+									<div className="sm:col-span-2">
+										<TDInputTemplateBr
+											placeholder="Member Code..."
+											type="text"
+											label="Member Code"
+											name="b_memberCode"
+											formControlName={recoveryDetailsData?.b_memberCode || ""}
+											handleChange={handleChangeRecoveryDetails}
 											mode={1}
 											disabled
 										/>
