@@ -116,7 +116,7 @@ function BtnComp({
 							onClick={onRejectApplication}
 						>
 							<CloseOutlined className="mr-2" />
-							Delete Application
+							Delete
 						</button>
 					)}
 
@@ -148,7 +148,7 @@ function BtnComp({
 							onClick={onForwardApplication}
 						>
 							<CheckOutlined className="mr-2" />
-							Approve Application
+							Approve
 						</button>
 					)}
 				</>

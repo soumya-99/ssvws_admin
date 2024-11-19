@@ -7,15 +7,16 @@ import { Spin } from "antd"
 import { LoadingOutlined } from "@ant-design/icons"
 import Radiobtn from "../../Components/Radiobtn"
 import DisburseApproveTable from "../../Components/DisburseApproveTable"
+import RecoveryApproveTable from "../../Components/RecoveryApproveTable"
 
 const options = [
 	{
-		label: "Un-approved",
-		value: "U",
+		label: "Disburse",
+		value: "D",
 	},
 	{
-		label: "Approved",
-		value: "A",
+		label: "Recovery",
+		value: "R",
 	},
 ]
 
@@ -25,10 +26,10 @@ function DisbursedLoanApproveBM() {
 	const [loanApplications, setLoanApplications] = useState(() => [])
 	const [copyLoanApplications, setCopyLoanApplications] = useState(() => [])
 
-	const [approvalStatus, setApprovalStatus] = useState("U")
+	const [loanType, setLoanType] = useState("D")
 	// const [value2, setValue2] = useState("S")
 
-	const fetchLoanApplications = async (approvalStat) => {
+	const fetchLoanApplications = async (loanType) => {
 		setLoading(true)
 
 		// const creds = {
@@ -39,7 +40,7 @@ function DisbursedLoanApproveBM() {
 
 		await axios
 			.post(`${url}/admin/fetch_loan_trans_dtls`, {
-				approval_status: approvalStat,
+				tr_type: loanType,
 			})
 			.then((res) => {
 				console.log("PPPPPPPPPPPPPPPPPPPP", res?.data)
@@ -60,8 +61,8 @@ function DisbursedLoanApproveBM() {
 	}
 
 	useEffect(() => {
-		fetchLoanApplications(approvalStatus)
-	}, [approvalStatus])
+		fetchLoanApplications(loanType)
+	}, [loanType])
 
 	const setSearch = (word) => {
 		setLoanApplications(
@@ -82,12 +83,12 @@ function DisbursedLoanApproveBM() {
 
 	const onChange = (e) => {
 		console.log("radio1 checked", e)
-		setApprovalStatus(e)
+		setLoanType(e)
 	}
 
 	useEffect(() => {
-		fetchLoanApplications(approvalStatus)
-	}, [approvalStatus])
+		fetchLoanApplications(loanType)
+	}, [loanType])
 
 	return (
 		<div>
@@ -103,18 +104,28 @@ function DisbursedLoanApproveBM() {
 
 					<Radiobtn
 						data={options}
-						val={approvalStatus}
+						val={loanType}
 						onChangeVal={(value) => {
 							onChange(value)
 						}}
 					/>
-					<DisburseApproveTable
-						flag="BM"
-						loanAppData={loanApplications}
-						title="Disbursed Loan Approve"
-						setSearch={(data) => setSearch(data)}
-						approvalStat={approvalStatus}
-					/>
+					{loanType === "D" ? (
+						<DisburseApproveTable
+							flag="BM"
+							loanAppData={loanApplications}
+							title="Approve Loan"
+							setSearch={(data) => setSearch(data)}
+							approvalStat={loanType}
+						/>
+					) : loanType === "R" ? (
+						<RecoveryApproveTable
+							flag="BM"
+							loanAppData={loanApplications}
+							title="Recovery Loan"
+							setSearch={(data) => setSearch(data)}
+							loanType={loanType}
+						/>
+					) : null}
 					{/* <DialogBox
 					visible={visible}
 					flag={flag}

@@ -187,9 +187,7 @@ function MenusBr({ theme }) {
 				{
 					key: "sub4-2",
 					icon: <CheckCircleOutlined />,
-					label: (
-						<Link to={"/homebm/disburseloanapprove"}>Disbursement Approve</Link>
-					),
+					label: <Link to={"/homebm/approveloan"}>Approve Loan</Link>,
 				},
 				// {
 				// 	key: "sub3-3",

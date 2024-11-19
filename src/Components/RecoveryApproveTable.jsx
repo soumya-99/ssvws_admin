@@ -14,7 +14,7 @@ import {
 import { useNavigate } from "react-router-dom"
 import { Tag } from "antd"
 
-function DisburseApproveTable({
+function RecoveryApproveTable({
 	loanAppData,
 	setSearch,
 	title,
@@ -22,7 +22,7 @@ function DisburseApproveTable({
 	showSearch = true,
 	isForwardLoan = false,
 	isRejected = false,
-	approvalStat = "U",
+	loanType = "R",
 }) {
 	const navigate = useNavigate()
 
@@ -138,9 +138,9 @@ function DisburseApproveTable({
 							<th scope="col" className="p-4">
 								Member
 							</th>
-							<th scope="col" className="p-4">
+							{/* <th scope="col" className="p-4">
 								Debit
-							</th>
+							</th> */}
 							{/* <th scope="col" className="p-4">
 								Status
 							</th> */}
@@ -192,7 +192,7 @@ function DisburseApproveTable({
 											: "Error"}
 									</td>
 									<td className="px-6 py-4">{item.client_name}</td>
-									<td className="px-6 py-4">{item.debit}</td>
+									{/* <td className="px-6 py-4">{item.debit}</td> */}
 									{/* <td className="px-6 py-4">{item.member_name}</td> */}
 									{/* <td className="px-6 py-4">
 										{item.branch_name}
@@ -224,9 +224,9 @@ function DisburseApproveTable({
 												onClick={() => {
 													console.log("LLSKSIODFUISFH", item)
 													navigate(
-														`/homebm/approveloan/${item?.member_code || 0}`,
+														`/homebm/recoveryloan/${item?.loan_id || 0}`,
 														{
-															state: [item, approvalStat],
+															state: [item, loanType],
 														}
 													)
 												}}
@@ -273,4 +273,4 @@ function DisburseApproveTable({
 	)
 }
 
-export default DisburseApproveTable
+export default RecoveryApproveTable
