@@ -154,6 +154,9 @@ function RecoveryForm() {
 		b_principalRecovery: "",
 		b_interestRecovery: "",
 		b_balance: "",
+		b_coName: "",
+		b_coLocation: "",
+		b_coCreatedAt: "",
 	})
 
 	const handleChangeRecoveryDetails = (e) => {
@@ -457,6 +460,9 @@ function RecoveryForm() {
 					b_principalRecovery: res?.data?.msg[0]?.principal_recovery,
 					b_interestRecovery: res?.data?.msg[0]?.interest_recovery,
 					b_balance: res?.data?.msg[0]?.balance,
+					b_coName: res?.data?.msg[0]?.created_by,
+					b_coLocation: res?.data?.msg[0]?.trn_addr,
+					b_coCreatedAt: res?.data?.msg[0]?.created_at,
 				})
 			})
 			.catch((err) => {
@@ -572,17 +578,28 @@ function RecoveryForm() {
 			{disburseOrNot && (
 				<Badge.Ribbon
 					className="bg-slate-500 absolute top-10 z-10"
-					text={"Disbursement Initiated"}
+					text={<div className="font-bold">Recovery Initiated</div>}
 					style={{
 						fontSize: 17,
 						width: 200,
-						height: 25,
+						height: 28,
 						justifyContent: "start",
 						alignItems: "center",
 						textAlign: "center",
 					}}
 				></Badge.Ribbon>
 			)}
+			{/* <div className="ml-14 mt-5 flex flex-col justify-start align-middle items-start gap-2">
+				<div className="text-sm text-wrap w-96 italic text-blue-800">
+					CO: {recoveryDetailsData?.b_coName || "Nil"}, AT:{" "}
+					{new Date(recoveryDetailsData?.b_coCreatedAt || "Nil").toLocaleString(
+						"en-GB"
+					)}
+				</div>
+				<div className="text-sm text-wrap w-96 italic text-blue-800">
+					CO Location: {recoveryDetailsData?.b_coLocation || "Nil"}
+				</div>
+			</div> */}
 			<Spin
 				indicator={<LoadingOutlined spin />}
 				size="large"
@@ -598,7 +615,7 @@ function RecoveryForm() {
 								</div>
 							</div>
 							<div className="grid gap-4 sm:grid-cols-4 sm:gap-6">
-								<div className="sm:col-span-4 bg-slate-200 border-slate-200 text-lime-900 p-5 rounded-2xl grid grid-cols-4 gap-5">
+								<div className="sm:col-span-4 bg-slate-200 border-slate-200 text-lime-900 p-5 h-32 rounded-2xl grid grid-cols-4 gap-5 items-center">
 									<div className="sm:col-span-2">
 										<TDInputTemplateBr
 											placeholder="Loan ID..."
