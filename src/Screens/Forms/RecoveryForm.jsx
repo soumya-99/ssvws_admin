@@ -1261,8 +1261,8 @@ function RecoveryForm() {
 										<BtnComp
 											mode="N"
 											showUpdateAndReset={false}
-											showReject={true}
-											onRejectApplication={() => setVisible2(true)}
+											// showReject={true}
+											// onRejectApplication={() => setVisible2(true)}
 											showForward={true}
 											onForwardApplication={() => setVisible(true)}
 										/>
