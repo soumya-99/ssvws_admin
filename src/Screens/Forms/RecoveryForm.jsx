@@ -881,12 +881,6 @@ function RecoveryForm() {
 											!disbursementDetailsData?.b_scheme || disburseOrNot
 										}
 									/>
-									{+disbursementDetailsData.b_disburseAmt >
-									+maxDisburseAmountForAScheme ? (
-										<VError
-											title={`Disburse amount must be less than ${maxDisburseAmountForAScheme}`}
-										/>
-									) : null}
 								</div>
 								{/* <div>
 									<TDInputTemplateBr
