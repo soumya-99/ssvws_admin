@@ -68,6 +68,7 @@ function ViewLoanForm({ groupDataArr }) {
 		g_micr: "",
 		g_acc1: "",
 		g_acc2: "",
+		g_branch_name: "",
 	}
 	const [formValues, setValues] = useState(initialValues)
 
@@ -91,16 +92,20 @@ function ViewLoanForm({ groupDataArr }) {
 	const fetchGroupDetails = async () => {
 		const creds = {
 			group_code: params?.id,
-			branch_code: userDetails?.brn_code,
 		}
 		await axios
-			.post(`${url}/admin/fetch_search_group_web`, creds)
+			.post(`${url}/admin/fetch_search_grp_view`, creds)
 			.then((res) => {
 				console.log("........>>>>>>>>>>", res?.data)
 				setValues({
 					g_group_name: res?.data?.msg[0]?.group_name,
 					g_group_type: res?.data?.msg[0]?.group_type,
-					g_address: res?.data?.msg[0]?.grp_addr,
+					g_address:
+						res?.data?.msg[0]?.grp_addr +
+						", " +
+						res?.data?.msg[0]?.block_name +
+						", " +
+						res?.data?.msg[0]?.pin_no,
 					g_pin: res?.data?.msg[0]?.pin_no,
 					g_group_block: res?.data?.msg[0]?.block,
 					g_phone1: res?.data?.msg[0]?.phone1,
@@ -112,6 +117,7 @@ function ViewLoanForm({ groupDataArr }) {
 					g_micr: res?.data?.msg[0]?.micr,
 					g_acc1: res?.data?.msg[0]?.acc_no1,
 					g_acc2: res?.data?.msg[0]?.acc_no2,
+					g_branch_name: res?.data?.msg[0]?.branch_name,
 				})
 				setGroupData(res?.data?.msg)
 				setBranch(
@@ -168,42 +174,42 @@ function ViewLoanForm({ groupDataArr }) {
 	// 	fetchGroupAndMembersDetails()
 	// }, [])
 
-	const handleFetchBranches = async () => {
-		setLoading(true)
-		await axios
-			.get(`${url}/admin/branch_name_mis?branch_code=${userDetails?.brn_code}`)
-			.then((res) => {
-				console.log("QQQQQQQQQQQQQQQQ", res?.data)
-				setBranches(res?.data?.msg)
-			})
-			.catch((err) => {
-				console.log("?????????????????????", err)
-			})
+	// const handleFetchBranches = async () => {
+	// 	setLoading(true)
+	// 	await axios
+	// 		.get(`${url}/admin/branch_name_mis?branch_code=${userDetails?.brn_code}`)
+	// 		.then((res) => {
+	// 			console.log("QQQQQQQQQQQQQQQQ", res?.data)
+	// 			setBranches(res?.data?.msg)
+	// 		})
+	// 		.catch((err) => {
+	// 			console.log("?????????????????????", err)
+	// 		})
 
-		setLoading(false)
-	}
+	// 	setLoading(false)
+	// }
 
-	useEffect(() => {
-		handleFetchBranches()
-	}, [])
+	// useEffect(() => {
+	// 	handleFetchBranches()
+	// }, [])
 
-	const handleFetchBlocks = async (brn) => {
-		setLoading(true)
-		await axios
-			.get(`${url}/get_block?dist_id=${brn}`)
-			.then((res) => {
-				console.log("******************", res?.data)
-				setBlocks(res?.data?.msg)
-			})
-			.catch((err) => {
-				console.log("!!!!!!!!!!!!!!!!", err)
-			})
-		setLoading(false)
-	}
+	// const handleFetchBlocks = async (brn) => {
+	// 	setLoading(true)
+	// 	await axios
+	// 		.get(`${url}/get_block?dist_id=${brn}`)
+	// 		.then((res) => {
+	// 			console.log("******************", res?.data)
+	// 			setBlocks(res?.data?.msg)
+	// 		})
+	// 		.catch((err) => {
+	// 			console.log("!!!!!!!!!!!!!!!!", err)
+	// 		})
+	// 	setLoading(false)
+	// }
 
-	useEffect(() => {
-		handleFetchBlocks(branch)
-	}, [branch])
+	// useEffect(() => {
+	// 	handleFetchBlocks(branch)
+	// }, [branch])
 
 	const onSubmit = async (values) => {
 		console.log("onsubmit called")
@@ -225,46 +231,46 @@ function ViewLoanForm({ groupDataArr }) {
 		validateOnMount: true,
 	})
 
-	const editGroup = async () => {
-		setLoading(true)
-		const creds = {
-			branch_code: branch?.split(",")[1],
-			group_name: formik.values.g_group_name,
-			group_type: formik.values.g_group_type,
-			// co_id: userDetails?.id,
-			phone1: formik.values.g_phone1,
-			phone2: formik.values.g_phone2,
-			email_id: formik.values.g_email,
-			grp_addr: formik.values.g_address,
-			// disctrict: groupDetails?.disctrict,
-			// block: formik.values.g_group_block,
-			pin_no: formik.values.g_pin,
-			bank_name: formik.values.g_bank_name,
-			branch_name: formik.values.g_bank_branch,
-			ifsc: formik.values.g_ifsc,
-			micr: formik.values.g_micr,
-			acc_no1: formik.values.g_acc1,
-			acc_no2: formik.values.g_acc2,
-			modified_by: userDetails?.emp_id,
-			// modified_at: formik.values.g_group_name,
-			group_code: params?.id,
-			district: branch?.split(",")[0], // this is dist_code, stored in selection of branch
-			block: block,
-			co_id: userDetails?.emp_id,
-		}
-		await axios
-			.post(`${url}/admin/edit_group_web`, creds)
-			.then((res) => {
-				Message("success", "Updated successfully.")
-				console.log("IIIIIIIIIIIIIIIIIIIIIII", res?.data)
-			})
-			.catch((err) => {
-				Message("error", "Some error occurred while updating.")
-				console.log("LLLLLLLLLLLLLLLLLLLLLLLL", err)
-			})
-		console.log("VVVVVVVVVVVVVVVVVVVVVVVV", creds)
-		setLoading(false)
-	}
+	// const editGroup = async () => {
+	// 	setLoading(true)
+	// 	const creds = {
+	// 		branch_code: branch?.split(",")[1],
+	// 		group_name: formik.values.g_group_name,
+	// 		group_type: formik.values.g_group_type,
+	// 		// co_id: userDetails?.id,
+	// 		phone1: formik.values.g_phone1,
+	// 		phone2: formik.values.g_phone2,
+	// 		email_id: formik.values.g_email,
+	// 		grp_addr: formik.values.g_address,
+	// 		// disctrict: groupDetails?.disctrict,
+	// 		// block: formik.values.g_group_block,
+	// 		pin_no: formik.values.g_pin,
+	// 		bank_name: formik.values.g_bank_name,
+	// 		branch_name: formik.values.g_bank_branch,
+	// 		ifsc: formik.values.g_ifsc,
+	// 		micr: formik.values.g_micr,
+	// 		acc_no1: formik.values.g_acc1,
+	// 		acc_no2: formik.values.g_acc2,
+	// 		modified_by: userDetails?.emp_id,
+	// 		// modified_at: formik.values.g_group_name,
+	// 		group_code: params?.id,
+	// 		district: branch?.split(",")[0], // this is dist_code, stored in selection of branch
+	// 		block: block,
+	// 		co_id: userDetails?.emp_id,
+	// 	}
+	// 	await axios
+	// 		.post(`${url}/admin/edit_group_web`, creds)
+	// 		.then((res) => {
+	// 			Message("success", "Updated successfully.")
+	// 			console.log("IIIIIIIIIIIIIIIIIIIIIII", res?.data)
+	// 		})
+	// 		.catch((err) => {
+	// 			Message("error", "Some error occurred while updating.")
+	// 			console.log("LLLLLLLLLLLLLLLLLLLLLLLL", err)
+	// 		})
+	// 	console.log("VVVVVVVVVVVVVVVVVVVVVVVV", creds)
+	// 	setLoading(false)
+	// }
 
 	return (
 		<>
@@ -277,7 +283,7 @@ function ViewLoanForm({ groupDataArr }) {
 				<form onSubmit={formik.handleSubmit}>
 					<div className="flex justify-start gap-5">
 						<div className="grid gap-4 sm:grid-cols-2 sm:gap-6 w-1/2">
-							{params?.id > 0 && (
+							{/* {params?.id > 0 && (
 								<div className="sm:col-span-2">
 									<TDInputTemplateBr
 										placeholder="Form filled by / CO Name"
@@ -289,7 +295,7 @@ function ViewLoanForm({ groupDataArr }) {
 										disabled
 									/>
 								</div>
-							)}
+							)} */}
 							<div>
 								<TDInputTemplateBr
 									placeholder="Group Name"
@@ -300,10 +306,11 @@ function ViewLoanForm({ groupDataArr }) {
 									handleBlur={formik.handleBlur}
 									formControlName={formik.values.g_group_name}
 									mode={1}
+									disabled
 								/>
-								{formik.errors.g_group_name && formik.touched.g_group_name ? (
+								{/* {formik.errors.g_group_name && formik.touched.g_group_name ? (
 									<VError title={formik.errors.g_group_name} />
-								) : null}
+								) : null} */}
 							</div>
 
 							<div>
@@ -326,16 +333,17 @@ function ViewLoanForm({ groupDataArr }) {
 										},
 									]}
 									mode={2}
+									disabled
 								/>
-								{formik.errors.g_group_type && formik.touched.g_group_type ? (
+								{/* {formik.errors.g_group_type && formik.touched.g_group_type ? (
 									<VError title={formik.errors.g_group_type} />
-								) : null}
+								) : null} */}
 							</div>
 
 							{/* {userDetails?.id === 3 && ( */}
 							<>
 								<div className="sm:col-span-2">
-									<TDInputTemplateBr
+									{/* <TDInputTemplateBr
 										placeholder="Choose Branch"
 										type="text"
 										label="Branch"
@@ -346,13 +354,25 @@ function ViewLoanForm({ groupDataArr }) {
 											console.log(e.target.value)
 										}}
 										data={branches?.map((item, i) => ({
-											code: item?.dist_code + "," + item?.branch_code,
+											code: item?.disctrict + "," + item?.branch_code,
 											name: item?.branch_name,
 										}))}
 										mode={2}
+										disabled
+									/> */}
+									<TDInputTemplateBr
+										placeholder="Branch Name"
+										type="text"
+										label="Branch Name"
+										name="g_branch_name"
+										handleChange={formik.handleChange}
+										handleBlur={formik.handleBlur}
+										formControlName={formik.values.g_branch_name}
+										mode={1}
+										disabled
 									/>
 								</div>
-								<div className="sm:col-span-2">
+								{/* <div className="sm:col-span-2">
 									<TDInputTemplateBr
 										placeholder="Group Block"
 										type="text"
@@ -366,7 +386,7 @@ function ViewLoanForm({ groupDataArr }) {
 										}))}
 										mode={2}
 									/>
-								</div>
+								</div> */}
 							</>
 							{/* )} */}
 
@@ -374,19 +394,20 @@ function ViewLoanForm({ groupDataArr }) {
 								<TDInputTemplateBr
 									placeholder="Type Address..."
 									type="text"
-									label={`Address`}
+									label={`Address, Block and PIN`}
 									name="g_address"
 									formControlName={formik.values.g_address}
 									handleChange={formik.handleChange}
 									handleBlur={formik.handleBlur}
 									mode={3}
+									disabled
 								/>
-								{formik.errors.g_address && formik.touched.g_address ? (
+								{/* {formik.errors.g_address && formik.touched.g_address ? (
 									<VError title={formik.errors.g_address} />
-								) : null}
+								) : null} */}
 							</div>
 
-							<div>
+							{/* <div>
 								<TDInputTemplateBr
 									placeholder="PIN No."
 									type="number"
@@ -400,7 +421,7 @@ function ViewLoanForm({ groupDataArr }) {
 								{formik.errors.g_pin && formik.touched.g_pin ? (
 									<VError title={formik.errors.g_pin} />
 								) : null}
-							</div>
+							</div> */}
 
 							<div>
 								<TDInputTemplateBr
@@ -412,10 +433,11 @@ function ViewLoanForm({ groupDataArr }) {
 									handleBlur={formik.handleBlur}
 									formControlName={formik.values.g_phone1}
 									mode={1}
+									disabled
 								/>
-								{formik.errors.g_phone1 && formik.touched.g_phone1 ? (
+								{/* {formik.errors.g_phone1 && formik.touched.g_phone1 ? (
 									<VError title={formik.errors.g_phone1} />
-								) : null}
+								) : null} */}
 							</div>
 
 							<div>
@@ -428,13 +450,14 @@ function ViewLoanForm({ groupDataArr }) {
 									handleBlur={formik.handleBlur}
 									formControlName={formik.values.g_phone2}
 									mode={1}
+									disabled
 								/>
-								{formik.errors.g_phone2 && formik.touched.g_phone2 ? (
+								{/* {formik.errors.g_phone2 && formik.touched.g_phone2 ? (
 									<VError title={formik.errors.g_phone2} />
-								) : null}
+								) : null} */}
 							</div>
 
-							<div>
+							{/* <div>
 								<TDInputTemplateBr
 									placeholder="Email"
 									type="email"
@@ -448,7 +471,7 @@ function ViewLoanForm({ groupDataArr }) {
 								{formik.errors.g_email && formik.touched.g_email ? (
 									<VError title={formik.errors.g_email} />
 								) : null}
-							</div>
+							</div> */}
 
 							<div>
 								<TDInputTemplateBr
@@ -461,9 +484,9 @@ function ViewLoanForm({ groupDataArr }) {
 									formControlName={formik.values.g_bank_name}
 									mode={1}
 								/>
-								{formik.errors.g_bank_name && formik.touched.g_bank_name ? (
+								{/* {formik.errors.g_bank_name && formik.touched.g_bank_name ? (
 									<VError title={formik.errors.g_bank_name} />
-								) : null}
+								) : null} */}
 							</div>
 
 							<div>
@@ -476,13 +499,14 @@ function ViewLoanForm({ groupDataArr }) {
 									handleBlur={formik.handleBlur}
 									formControlName={formik.values.g_bank_branch}
 									mode={1}
+									disabled
 								/>
-								{formik.errors.g_bank_branch && formik.touched.g_bank_branch ? (
+								{/* {formik.errors.g_bank_branch && formik.touched.g_bank_branch ? (
 									<VError title={formik.errors.g_bank_branch} />
-								) : null}
+								) : null} */}
 							</div>
 
-							<div>
+							{/* <div>
 								<TDInputTemplateBr
 									placeholder="IFSC"
 									type="text"
@@ -512,7 +536,7 @@ function ViewLoanForm({ groupDataArr }) {
 								{formik.errors.g_micr && formik.touched.g_micr ? (
 									<VError title={formik.errors.g_micr} />
 								) : null}
-							</div>
+							</div> */}
 
 							<div>
 								<TDInputTemplateBr
@@ -524,10 +548,11 @@ function ViewLoanForm({ groupDataArr }) {
 									handleBlur={formik.handleBlur}
 									formControlName={formik.values.g_acc1}
 									mode={1}
+									disabled
 								/>
-								{formik.errors.g_acc1 && formik.touched.g_acc1 ? (
+								{/* {formik.errors.g_acc1 && formik.touched.g_acc1 ? (
 									<VError title={formik.errors.g_acc1} />
-								) : null}
+								) : null} */}
 							</div>
 
 							<div>
@@ -540,10 +565,11 @@ function ViewLoanForm({ groupDataArr }) {
 									handleBlur={formik.handleBlur}
 									formControlName={formik.values.g_acc2}
 									mode={1}
+									disabled
 								/>
-								{formik.errors.g_acc2 && formik.touched.g_acc2 ? (
+								{/* {formik.errors.g_acc2 && formik.touched.g_acc2 ? (
 									<VError title={formik.errors.g_acc2} />
-								) : null}
+								) : null} */}
 							</div>
 						</div>
 						<Divider
@@ -592,7 +618,7 @@ function ViewLoanForm({ groupDataArr }) {
 							</div>
 						)}
 					</div>
-					<BtnComp
+					{/* <BtnComp
 						mode="A"
 						// rejectBtn={true}
 						// onReject={() => {
@@ -604,7 +630,7 @@ function ViewLoanForm({ groupDataArr }) {
 						// condition={fetchedFileDetails?.length > 0}
 						// showSave
 						param={params?.id}
-					/>
+					/> */}
 				</form>
 			</Spin>
 
@@ -613,7 +639,7 @@ function ViewLoanForm({ groupDataArr }) {
 				onPress={() => setVisible(!visible)}
 				visible={visible}
 				onPressYes={() => {
-					editGroup()
+					// editGroup()
 					setVisible(!visible)
 				}}
 				onPressNo={() => setVisible(!visible)}
