@@ -157,6 +157,9 @@ function RecoveryForm() {
 		b_coName: "",
 		b_coLocation: "",
 		b_coCreatedAt: "",
+		b_totalRecovery: "",
+		b_currOutstanding: "",
+		b_prevOutstanding: "",
 	})
 
 	const handleChangeRecoveryDetails = (e) => {
@@ -463,6 +466,9 @@ function RecoveryForm() {
 					b_coName: res?.data?.msg[0]?.created_by,
 					b_coLocation: res?.data?.msg[0]?.trn_addr,
 					b_coCreatedAt: res?.data?.msg[0]?.created_at,
+					b_totalRecovery: res?.data?.msg[0]?.total_emi_amount,
+					b_currOutstanding: res?.data?.msg[0]?.curr_outstanding,
+					b_prevOutstanding: res?.data?.msg[0]?.interest_total,
 				})
 			})
 			.catch((err) => {
@@ -548,6 +554,7 @@ function RecoveryForm() {
 	// }, [])
 
 	const recoveryLoanApprove = async () => {
+		setLoading(true)
 		const creds = {
 			approved_by: userDetails?.emp_id,
 			loan_id: params?.id,
@@ -562,6 +569,26 @@ function RecoveryForm() {
 			.catch((err) => {
 				console.log("ggggggggggggggg", err)
 			})
+		setLoading(false)
+	}
+
+	const recoveryLoanReject = async () => {
+		setLoading(true)
+		const creds = {
+			loan_id: params?.id,
+		}
+		await axios
+			.post(`${url}/admin/delete_recov_trans`, creds)
+			.then((res) => {
+				console.log("RESSSS DELELTEEE LOANNNNN TNXXXX", res?.data)
+
+				Message("success", res?.data?.msg)
+				navigate(-1)
+			})
+			.catch((err) => {
+				console.log("ERRRR TNXXX DEL", err)
+			})
+		setLoading(false)
 	}
 
 	//////////////////////////////////////////////////
@@ -1192,7 +1219,7 @@ function RecoveryForm() {
 											disabled
 										/>
 									</div>
-									<div>
+									{/* <div>
 										<TDInputTemplateBr
 											placeholder="Principal Recovery..."
 											type="text"
@@ -1214,6 +1241,34 @@ function RecoveryForm() {
 											name="b_interestRecovery"
 											formControlName={
 												recoveryDetailsData?.b_interestRecovery || ""
+											}
+											handleChange={handleChangeRecoveryDetails}
+											mode={1}
+											disabled
+										/>
+									</div> */}
+									<div>
+										<TDInputTemplateBr
+											placeholder="Previous Outstanding..."
+											type="text"
+											label="Previous Outstanding"
+											name="b_prevOutstanding"
+											formControlName={
+												recoveryDetailsData?.b_prevOutstanding || ""
+											}
+											handleChange={handleChangeRecoveryDetails}
+											mode={1}
+											disabled
+										/>
+									</div>
+									<div>
+										<TDInputTemplateBr
+											placeholder="Total Recovery..."
+											type="text"
+											label="Total Recovery"
+											name="b_totalRecovery"
+											formControlName={
+												recoveryDetailsData?.b_totalRecovery || ""
 											}
 											handleChange={handleChangeRecoveryDetails}
 											mode={1}
@@ -1250,11 +1305,13 @@ function RecoveryForm() {
 									</div> */}
 									<div>
 										<TDInputTemplateBr
-											placeholder="Balance..."
+											placeholder="Current Outstanding..."
 											type="text"
-											label="balance"
-											name="b_balance"
-											formControlName={recoveryDetailsData?.b_balance || ""}
+											label="Current Outstanding"
+											name="b_currOutstanding"
+											formControlName={
+												recoveryDetailsData?.b_currOutstanding || ""
+											}
 											handleChange={handleChangeRecoveryDetails}
 											mode={1}
 											disabled
@@ -1278,8 +1335,8 @@ function RecoveryForm() {
 										<BtnComp
 											mode="N"
 											showUpdateAndReset={false}
-											// showReject={true}
-											// onRejectApplication={() => setVisible2(true)}
+											showReject={true}
+											onRejectApplication={() => setVisible2(true)}
 											showForward={true}
 											onForwardApplication={() => setVisible(true)}
 										/>
@@ -1310,6 +1367,7 @@ function RecoveryForm() {
 				visible={visible2}
 				onPressYes={() => {
 					// handleApproveLoanDisbursement()
+					recoveryLoanReject()
 					setVisible2(!visible2)
 				}}
 				onPressNo={() => setVisible2(!visible2)}
