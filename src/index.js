@@ -13,6 +13,8 @@ import CircularProgress from "@mui/material/CircularProgress"
 import MasterBanks from "./Screens/Master/MasterBanks"
 import EditMasterBank from "./Screens/Master/EditMasterBank"
 import EditRecoveryApproveFormBM from "./Screens/BMHome/EditRecoveryApproveFormBM"
+import SearchViewLoanBM from "./Screens/BMHome/SearchViewLoanBM"
+import EditViewLoanFormBM from "./Screens/BMHome/EditViewLoanFormBM"
 
 // import CatchError from "./Screens/CatchError"
 // import AuthMis from "./Screens/MISAssistant/AuthMis"
@@ -232,6 +234,14 @@ const router = createBrowserRouter([
 							{
 								path: "recoveryloan/:id",
 								element: <EditRecoveryApproveFormBM />,
+							},
+							{
+								path: "viewloan",
+								element: <SearchViewLoanBM />,
+							},
+							{
+								path: "viewloan/:id",
+								element: <EditViewLoanFormBM />,
 							},
 							{
 								path: "editgrtform/:id",

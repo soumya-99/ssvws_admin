@@ -191,7 +191,7 @@ function MenusBr({ theme }) {
 					label: <Link to={"/homebm/approveloan"}>Approve Transaction</Link>,
 				},
 				{
-					key: "sub4-2",
+					key: "sub4-3",
 					icon: <EyeOutlined />,
 					label: <Link to={"/homebm/viewloan"}>View Loan</Link>,
 				},
