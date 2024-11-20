@@ -18,6 +18,7 @@ import {
 	ThunderboltOutlined,
 	CheckCircleOutlined,
 	DatabaseOutlined,
+	EyeOutlined,
 } from "@ant-design/icons"
 import { Menu } from "antd"
 import { Link } from "react-router-dom"
@@ -187,7 +188,12 @@ function MenusBr({ theme }) {
 				{
 					key: "sub4-2",
 					icon: <CheckCircleOutlined />,
-					label: <Link to={"/homebm/approveloan"}>Approve Loan</Link>,
+					label: <Link to={"/homebm/approveloan"}>Approve Transaction</Link>,
+				},
+				{
+					key: "sub4-2",
+					icon: <EyeOutlined />,
+					label: <Link to={"/homebm/viewloan"}>View Loan</Link>,
 				},
 				// {
 				// 	key: "sub3-3",

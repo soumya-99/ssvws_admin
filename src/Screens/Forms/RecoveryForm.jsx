@@ -160,6 +160,7 @@ function RecoveryForm() {
 		b_totalRecovery: "",
 		b_currOutstanding: "",
 		b_prevOutstanding: "",
+		b_tnxID: "",
 	})
 
 	const handleChangeRecoveryDetails = (e) => {
@@ -469,6 +470,7 @@ function RecoveryForm() {
 					b_totalRecovery: res?.data?.msg[0]?.total_emi_amount,
 					b_currOutstanding: res?.data?.msg[0]?.curr_outstanding,
 					b_prevOutstanding: res?.data?.msg[0]?.interest_total,
+					b_tnxID: res?.data?.msg[0]?.payment_id,
 				})
 			})
 			.catch((err) => {
@@ -576,6 +578,7 @@ function RecoveryForm() {
 		setLoading(true)
 		const creds = {
 			loan_id: params?.id,
+			payment_id: recoveryDetailsData?.b_tnxID,
 		}
 		await axios
 			.post(`${url}/admin/delete_recov_trans`, creds)
@@ -1249,9 +1252,9 @@ function RecoveryForm() {
 									</div> */}
 									<div>
 										<TDInputTemplateBr
-											placeholder="Previous Outstanding..."
+											placeholder="Amount..." // Previous Outstanding
 											type="text"
-											label="Previous Outstanding"
+											label="Amount"
 											name="b_prevOutstanding"
 											formControlName={
 												recoveryDetailsData?.b_prevOutstanding || ""
