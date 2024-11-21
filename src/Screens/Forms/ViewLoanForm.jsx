@@ -305,8 +305,8 @@ function ViewLoanForm({ groupDataArr }) {
 				spinning={loading}
 			>
 				<form onSubmit={formik.handleSubmit}>
-					<div className="flex justify-start gap-5">
-						<div className="grid gap-4 sm:grid-cols-2 sm:gap-6 w-1/2">
+					<div className="flex flex-col justify-start gap-5">
+						<div className="grid gap-4 sm:grid-cols-2 sm:gap-6">
 							{/* {params?.id > 0 && (
 								<div className="sm:col-span-2">
 									<TDInputTemplateBr
@@ -597,16 +597,17 @@ function ViewLoanForm({ groupDataArr }) {
 								) : null} */}
 							</div>
 						</div>
-						<Divider
+						{/* <Divider
 							type="vertical"
 							style={{
 								height: 650,
 							}}
-						/>
+						/> */}
 						{params?.id > 0 && (
-							<div className="w-1/2 gap-3 space-x-7">
+							<div className="gap-3">
+								<div className="w-full my-10 border-t-4 border-gray-400 border-dashed"></div>
 								<div>
-									<div className="text-blue-700 mb-2 font-bold">
+									<div className="text-blue-700 text-lg mb-2 font-bold">
 										Members in this Group
 									</div>
 
@@ -700,10 +701,13 @@ function ViewLoanForm({ groupDataArr }) {
 														</tr>
 													))}
 													<tr className="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
-														<td className="px-6 py-4 font-medium" colSpan={3}>
+														<td className="px-6 py-4 font-semibold" colSpan={3}>
 															Total Outstanding
 														</td>
-														<td className="px-6 py-4 text-left" colSpan={2}>
+														<td
+															className="px-6 py-4 text-left font-semibold"
+															colSpan={2}
+														>
 															{formValues?.g_total_outstanding}/-
 														</td>
 													</tr>

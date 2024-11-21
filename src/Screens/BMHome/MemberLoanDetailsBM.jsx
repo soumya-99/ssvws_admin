@@ -23,62 +23,6 @@ function MemberLoanDetailsBM() {
 	const { loanAppData } = location.state || {}
 	const navigate = useNavigate()
 
-	const [recoveryDetailsData, setRecoveryDetailsData] = useState({
-		b_loanId: "",
-		b_roi: "",
-		b_outstanding: "",
-		b_period: "",
-		b_periodMode: "",
-		b_installmentEndDate: "",
-		b_installmentPaid: "",
-		b_emi: "",
-		b_tnxDate: formatDateToYYYYMMDD(new Date()),
-		b_amount: "",
-		b_principalRecovery: "",
-		b_interestRecovery: "",
-		b_balance: "",
-		b_coName: "",
-		b_coLocation: "",
-		b_coCreatedAt: "",
-	})
-
-	const fetchRecoveryDetails = async () => {
-		const creds = {
-			loan_id: params?.id,
-		}
-		await axios
-			.post(`${url}/admin/view_unapprove_recovery_dtls`, creds)
-			.then((res) => {
-				console.log("=========Q-out-Q=========", res?.data)
-
-				setRecoveryDetailsData({
-					b_loanId: params?.id,
-					b_roi: "",
-					b_outstanding: "",
-					b_period: "",
-					b_periodMode: "",
-					b_installmentEndDate: "",
-					b_installmentPaid: "",
-					b_emi: "",
-					b_tnxDate: res?.data?.msg[0]?.txn_date,
-					b_amount: "",
-					b_principalRecovery: res?.data?.msg[0]?.principal_recovery,
-					b_interestRecovery: res?.data?.msg[0]?.interest_recovery,
-					b_balance: res?.data?.msg[0]?.balance,
-					b_coName: res?.data?.msg[0]?.created_by,
-					b_coLocation: res?.data?.msg[0]?.trn_addr,
-					b_coCreatedAt: res?.data?.msg[0]?.created_at,
-				})
-			})
-			.catch((err) => {
-				console.log("QQQQQQQQQQQQQQQ", err)
-			})
-	}
-
-	useEffect(() => {
-		fetchRecoveryDetails()
-	}, [])
-
 	return (
 		<>
 			<Sidebar mode={2} />

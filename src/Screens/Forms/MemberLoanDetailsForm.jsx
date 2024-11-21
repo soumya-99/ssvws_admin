@@ -454,6 +454,9 @@ function MemberLoanDetailsForm() {
 												<th scope="col" className="px-6 py-3 font-semibold">
 													Mode
 												</th>
+												<th scope="col" className="px-6 py-3 font-semibold">
+													Status
+												</th>
 												{/* <th scope="col" className="px-6 py-3 font-semibold">
 													<span className="sr-only">Action</span>
 												</th> */}
@@ -466,7 +469,7 @@ function MemberLoanDetailsForm() {
 												return (
 													<tr
 														key={i}
-														className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600"
+														className={`bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600`}
 													>
 														<th
 															scope="row"
@@ -501,6 +504,21 @@ function MemberLoanDetailsForm() {
 																? "Bank"
 																: item?.tr_mode === "C"
 																? "Cash"
+																: "Error"}
+														</td>
+														<td
+															className={`px-6 py-4 ${
+																item?.status === "A"
+																	? "text-green-600"
+																	: item?.status === "U"
+																	? "text-red-600"
+																	: ""
+															}`}
+														>
+															{item?.status === "A"
+																? "Approved"
+																: item?.status === "U"
+																? "Unapproved"
 																: "Error"}
 														</td>
 														{/* <td className="px-6 py-4 text-right">

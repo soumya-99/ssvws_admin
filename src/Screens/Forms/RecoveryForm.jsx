@@ -157,7 +157,7 @@ function RecoveryForm() {
 		b_coName: "",
 		b_coLocation: "",
 		b_coCreatedAt: "",
-		b_totalRecovery: "",
+		b_credit: "",
 		b_currOutstanding: "",
 		b_prevOutstanding: "",
 		b_tnxID: "",
@@ -467,8 +467,8 @@ function RecoveryForm() {
 					b_coName: res?.data?.msg[0]?.created_by,
 					b_coLocation: res?.data?.msg[0]?.trn_addr,
 					b_coCreatedAt: res?.data?.msg[0]?.created_at,
-					b_totalRecovery: res?.data?.msg[0]?.total_emi_amount,
-					b_currOutstanding: res?.data?.msg[0]?.curr_outstanding,
+					b_credit: res?.data?.msg[0]?.credit,
+					b_currOutstanding: res?.data?.msg[0]?.balance,
 					b_prevOutstanding: res?.data?.msg[0]?.interest_total,
 					b_tnxID: res?.data?.msg[0]?.payment_id,
 				})
@@ -608,7 +608,7 @@ function RecoveryForm() {
 			{disburseOrNot && (
 				<Badge.Ribbon
 					className="bg-slate-500 absolute top-10 z-10"
-					text={<div className="font-bold">Recovery Initiated</div>}
+					text={<div className="font-medium">Recovery Initiated</div>}
 					style={{
 						fontSize: 17,
 						width: 200,
@@ -1252,9 +1252,9 @@ function RecoveryForm() {
 									</div> */}
 									<div>
 										<TDInputTemplateBr
-											placeholder="Amount..." // Previous Outstanding
+											placeholder="Previous Outstanding..." // Previous Outstanding
 											type="text"
-											label="Amount"
+											label="Previous Outstanding"
 											name="b_prevOutstanding"
 											formControlName={
 												recoveryDetailsData?.b_prevOutstanding || ""
@@ -1266,13 +1266,11 @@ function RecoveryForm() {
 									</div>
 									<div>
 										<TDInputTemplateBr
-											placeholder="Total Recovery..."
+											placeholder="Credit..."
 											type="text"
-											label="Total Recovery"
-											name="b_totalRecovery"
-											formControlName={
-												recoveryDetailsData?.b_totalRecovery || ""
-											}
+											label="Credit"
+											name="b_credit"
+											formControlName={recoveryDetailsData?.b_credit || ""}
 											handleChange={handleChangeRecoveryDetails}
 											mode={1}
 											disabled
