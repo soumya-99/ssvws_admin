@@ -64,6 +64,7 @@ function MemberLoanDetailsForm() {
 		purpose: "",
 		subPurpose: "",
 		disbursementDate: "",
+		disburseAmount: "",
 		schemeName: "",
 		fundName: "",
 		outstanding: "",
@@ -105,6 +106,7 @@ function MemberLoanDetailsForm() {
 					purpose: res?.data?.msg[0]?.purpose_id || "",
 					subPurpose: res?.data?.msg[0]?.sub_purp_name || "",
 					disbursementDate: res?.data?.msg[0]?.disb_dt || "",
+					disburseAmount: res?.data?.msg[0]?.prn_disb_amt || "",
 					schemeName: res?.data?.msg[0]?.scheme_name || "",
 					fundName: res?.data?.msg[0]?.fund_name || "",
 					outstanding: res?.data?.msg[0]?.outstanding || "",
@@ -136,6 +138,9 @@ function MemberLoanDetailsForm() {
 
 		setVisible(true)
 	}
+
+	let totalCredit = 0
+	let totalDebit = 0
 
 	return (
 		<>
@@ -260,7 +265,23 @@ function MemberLoanDetailsForm() {
 										type="text"
 										label="Disbursement Date"
 										name="disbursementDate"
-										formControlName={memberLoanDetailsData.disbursementDate}
+										formControlName={
+											new Date(
+												memberLoanDetailsData.disbursementDate
+											).toLocaleDateString("en-GB") || ""
+										}
+										handleChange={handleChangeMemberLoanDetails}
+										mode={1}
+										disabled
+									/>
+								</div>
+								<div>
+									<TDInputTemplateBr
+										placeholder="Disbursement Amount..."
+										type="text"
+										label="Disbursement Amount"
+										name="disburseAmount"
+										formControlName={memberLoanDetailsData.disburseAmount || ""}
 										handleChange={handleChangeMemberLoanDetails}
 										mode={1}
 										disabled
@@ -292,6 +313,18 @@ function MemberLoanDetailsForm() {
 								</div>
 								<div>
 									<TDInputTemplateBr
+										placeholder="Period Mode..."
+										type="text"
+										label="Period Mode"
+										name="periodMode"
+										formControlName={memberLoanDetailsData.periodMode}
+										handleChange={handleChangeMemberLoanDetails}
+										mode={1}
+										disabled
+									/>
+								</div>
+								<div>
+									<TDInputTemplateBr
 										placeholder="Outstanding..."
 										type="text"
 										label="Outstanding"
@@ -314,19 +347,7 @@ function MemberLoanDetailsForm() {
 										disabled
 									/>
 								</div>
-								<div>
-									<TDInputTemplateBr
-										placeholder="Period Mode..."
-										type="text"
-										label="Period Mode"
-										name="periodMode"
-										formControlName={memberLoanDetailsData.periodMode}
-										handleChange={handleChangeMemberLoanDetails}
-										mode={1}
-										disabled
-									/>
-								</div>
-								<div>
+								{/* <div>
 									<TDInputTemplateBr
 										placeholder="Principal Amount..."
 										type="text"
@@ -373,8 +394,8 @@ function MemberLoanDetailsForm() {
 										mode={1}
 										disabled
 									/>
-								</div>
-								<div className="sm:col-span-2">
+								</div> */}
+								<div>
 									<TDInputTemplateBr
 										placeholder="Total EMI..."
 										type="text"
@@ -431,7 +452,7 @@ function MemberLoanDetailsForm() {
 													Chq. Date
 												</th>
 												<th scope="col" className="px-6 py-3 font-semibold">
-													Status
+													Mode
 												</th>
 												{/* <th scope="col" className="px-6 py-3 font-semibold">
 													<span className="sr-only">Action</span>
@@ -439,45 +460,50 @@ function MemberLoanDetailsForm() {
 											</tr>
 										</thead>
 										<tbody>
-											{tnxDetails?.map((item, i) => (
-												<tr
-													key={i}
-													className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600"
-												>
-													<th
-														scope="row"
-														className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white"
+											{tnxDetails?.map((item, i) => {
+												totalCredit += item?.credit
+												totalDebit += item?.debit
+												return (
+													<tr
+														key={i}
+														className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600"
 													>
-														{i + 1}
-													</th>
-													<td className="px-6 py-4">
-														{new Date(item?.payment_date).toLocaleDateString(
-															"en-GB"
-														) || ""}
-													</td>
-													<td className="px-6 py-4">{item?.debit}/-</td>
-													<td className="px-6 py-4">{item?.credit}/-</td>
-													<td className="px-6 py-4">{item?.balance}/-</td>
-													<td className="px-6 py-4">{item?.payment_id}</td>
-													{/* <td className="px-6 py-4">
+														<th
+															scope="row"
+															className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white"
+														>
+															{i + 1}
+														</th>
+														<td className="px-6 py-4">
+															{new Date(item?.payment_date).toLocaleDateString(
+																"en-GB"
+															) || ""}
+														</td>
+														<td className="px-6 py-4">{item?.debit}/-</td>
+														<td className="px-6 py-4">{item?.credit}/-</td>
+														<td className="px-6 py-4">{item?.balance}/-</td>
+														<td className="px-6 py-4">{item?.payment_id}</td>
+														{/* <td className="px-6 py-4">
 														{new Date(item?.payment_date).toLocaleDateString(
 															"en-GB"
 														) || ""}
 													</td> */}
-													<td className="px-6 py-4">{item?.cheque_id || 0}</td>
-													<td className="px-6 py-4">
-														{new Date(item?.chq_dt).toLocaleDateString(
-															"en-GB"
-														) || ""}
-													</td>
-													<td className="px-6 py-4">
-														{item?.tr_type === "D"
-															? "Disbursement"
-															: item?.tr_type === "R"
-															? "Recovery"
-															: "Error"}
-													</td>
-													{/* <td className="px-6 py-4 text-right">
+														<td className="px-6 py-4">
+															{item?.cheque_id || 0}
+														</td>
+														<td className="px-6 py-4">
+															{new Date(item?.chq_dt).toLocaleDateString(
+																"en-GB"
+															) || ""}
+														</td>
+														<td className="px-6 py-4">
+															{item?.tr_mode === "B"
+																? "Bank"
+																: item?.tr_mode === "C"
+																? "Cash"
+																: "Error"}
+														</td>
+														{/* <td className="px-6 py-4 text-right">
 														<button
 															onClick={() => {
 																navigate(
@@ -489,8 +515,9 @@ function MemberLoanDetailsForm() {
 															Edit
 														</button>
 													</td> */}
-												</tr>
-											))}
+													</tr>
+												)
+											})}
 											{/* <tr className="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
 												<td className="px-6 py-4 font-medium" colSpan={3}>
 													Total Outstanding
@@ -499,6 +526,23 @@ function MemberLoanDetailsForm() {
 													564654
 												</td>
 											</tr> */}
+											<tr className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
+												<td colSpan={2} className="px-6 py-4 font-semibold">
+													Total
+												</td>
+												<td
+													colSpan={1}
+													className="px-6 py-4 text-left font-semibold"
+												>
+													{totalDebit}/-
+												</td>
+												<td
+													colSpan={6}
+													className="px-6 py-4 text-left font-semibold"
+												>
+													{totalCredit}/-
+												</td>
+											</tr>
 										</tbody>
 									</table>
 								</div>
