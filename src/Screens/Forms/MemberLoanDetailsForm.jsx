@@ -391,7 +391,8 @@ function MemberLoanDetailsForm() {
 
 						{/* ///////////////////////// */}
 
-						<div className="grid gap-4 sm:grid-cols-2 sm:gap-6">
+						<div>
+							<div className="w-full my-10 border-t-4 border-gray-500 border-dashed"></div>
 							<div className="text-xl mb-2 mt-5 text-lime-800 font-semibold underline">
 								2. Transaction Details
 							</div>
