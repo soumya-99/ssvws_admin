@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react"
+import React, { useEffect, useRef, useState } from "react"
 import "../LoanForm/LoanForm.css"
 import { useParams } from "react-router"
 import BtnComp from "../../Components/BtnComp"
@@ -51,6 +51,25 @@ function ViewLoanForm({ groupDataArr }) {
 	const [memberDetails, setMemberDetails] = useState(() => [])
 	const [visible, setVisible] = useState(() => false)
 
+	const containerRef = useRef(null)
+
+	const [isHovered, setIsHovered] = useState(false)
+
+	const handleWheel = (event) => {
+		if (isHovered && containerRef.current) {
+			containerRef.current.scrollLeft += event.deltaY
+			event.preventDefault()
+		}
+	}
+
+	const handleMouseEnter = () => {
+		setIsHovered(true)
+	}
+
+	const handleMouseLeave = () => {
+		setIsHovered(false)
+	}
+
 	console.log(params, "paramsssssssssssssss")
 	console.log(location, "location")
 
@@ -92,6 +111,7 @@ function ViewLoanForm({ groupDataArr }) {
 	})
 
 	const fetchGroupDetails = async () => {
+		setLoading(true)
 		const creds = {
 			group_code: params?.id,
 		}
@@ -131,6 +151,7 @@ function ViewLoanForm({ groupDataArr }) {
 			.catch((err) => {
 				Message("error", "Some error occurred while fetching group form")
 			})
+		setLoading(false)
 	}
 
 	useEffect(() => {
@@ -619,69 +640,77 @@ function ViewLoanForm({ groupDataArr }) {
 										</Tag>
 									))} */}
 
-									<div className="relative overflow-x-auto shadow-md sm:rounded-lg">
-										<table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
-											<thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
-												<tr>
-													<th scope="col" className="px-6 py-3 font-semibold">
-														Member Name
-													</th>
-													<th scope="col" className="px-6 py-3 font-semibold">
-														Loan ID
-													</th>
-													<th scope="col" className="px-6 py-3 font-semibold">
-														Member Code
-													</th>
-													<th scope="col" className="px-6 py-3 font-semibold">
-														Outstanding
-													</th>
-													<th scope="col" className="px-6 py-3 font-semibold">
-														<span className="sr-only">Action</span>
-													</th>
-												</tr>
-											</thead>
-											<tbody>
-												{groupData[0]?.memb_dt?.map((item, i) => (
-													<tr
-														key={i}
-														className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600"
-													>
-														<th
-															scope="row"
-															className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white"
-														>
-															{item?.client_name}
+									<Spin spinning={loading}>
+										<div
+											ref={containerRef}
+											className={`relative overflow-x-auto shadow-md sm:rounded-lg`}
+											onWheel={handleWheel}
+											onMouseEnter={handleMouseEnter}
+											onMouseLeave={handleMouseLeave}
+										>
+											<table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
+												<thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+													<tr>
+														<th scope="col" className="px-6 py-3 font-semibold">
+															Member Name
 														</th>
-														<td className="px-6 py-4">{item?.loan_id}</td>
-														<td className="px-6 py-4">{item?.member_code}</td>
-														<td className="px-6 py-4">
-															{item?.curr_outstanding}/-
-														</td>
-														<td className="px-6 py-4 text-right">
-															<button
-																onClick={() => {
-																	navigate(
-																		`/homebm/editgrtform/${item?.form_no}`
-																	)
-																}}
-																className="font-medium text-blue-600 dark:text-blue-500 hover:underline"
+														<th scope="col" className="px-6 py-3 font-semibold">
+															Loan ID
+														</th>
+														<th scope="col" className="px-6 py-3 font-semibold">
+															Member Code
+														</th>
+														<th scope="col" className="px-6 py-3 font-semibold">
+															Outstanding
+														</th>
+														<th scope="col" className="px-6 py-3 font-semibold">
+															<span className="sr-only">Action</span>
+														</th>
+													</tr>
+												</thead>
+												<tbody>
+													{groupData[0]?.memb_dt?.map((item, i) => (
+														<tr
+															key={i}
+															className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600"
+														>
+															<th
+																scope="row"
+																className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white"
 															>
-																<EyeOutlined />
-															</button>
+																{item?.client_name}
+															</th>
+															<td className="px-6 py-4">{item?.loan_id}</td>
+															<td className="px-6 py-4">{item?.member_code}</td>
+															<td className="px-6 py-4">
+																{item?.curr_outstanding}/-
+															</td>
+															<td className="px-6 py-4 text-right">
+																<button
+																	onClick={() => {
+																		navigate(
+																			`/homebm/memberloandetails/${item?.loan_id}`
+																		)
+																	}}
+																	className="font-medium text-blue-600 dark:text-blue-500 hover:underline"
+																>
+																	<EyeOutlined />
+																</button>
+															</td>
+														</tr>
+													))}
+													<tr className="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
+														<td className="px-6 py-4 font-medium" colSpan={3}>
+															Total Outstanding
+														</td>
+														<td className="px-6 py-4 text-left" colSpan={2}>
+															{formValues?.g_total_outstanding}/-
 														</td>
 													</tr>
-												))}
-												<tr className="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
-													<td className="px-6 py-4 font-medium" colSpan={3}>
-														Total Outstanding
-													</td>
-													<td className="px-6 py-4 text-left" colSpan={2}>
-														{formValues?.g_total_outstanding}/-
-													</td>
-												</tr>
-											</tbody>
-										</table>
-									</div>
+												</tbody>
+											</table>
+										</div>
+									</Spin>
 								</div>
 							</div>
 						)}

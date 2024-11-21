@@ -15,6 +15,7 @@ import EditMasterBank from "./Screens/Master/EditMasterBank"
 import EditRecoveryApproveFormBM from "./Screens/BMHome/EditRecoveryApproveFormBM"
 import SearchViewLoanBM from "./Screens/BMHome/SearchViewLoanBM"
 import EditViewLoanFormBM from "./Screens/BMHome/EditViewLoanFormBM"
+import MemberLoanDetailsBM from "./Screens/BMHome/MemberLoanDetailsBM"
 
 // import CatchError from "./Screens/CatchError"
 // import AuthMis from "./Screens/MISAssistant/AuthMis"
@@ -242,6 +243,10 @@ const router = createBrowserRouter([
 							{
 								path: "viewloan/:id",
 								element: <EditViewLoanFormBM />,
+							},
+							{
+								path: "memberloandetails/:id",
+								element: <MemberLoanDetailsBM />,
 							},
 							{
 								path: "editgrtform/:id",
