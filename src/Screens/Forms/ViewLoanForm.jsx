@@ -21,6 +21,7 @@ import {
 	ClockCircleOutlined,
 	ArrowRightOutlined,
 	UserOutlined,
+	EyeOutlined,
 } from "@ant-design/icons"
 import FormHeader from "../../Components/FormHeader"
 import { routePaths } from "../../Assets/Data/Routes"
@@ -69,6 +70,7 @@ function ViewLoanForm({ groupDataArr }) {
 		g_acc1: "",
 		g_acc2: "",
 		g_branch_name: "",
+		g_total_outstanding: "",
 	}
 	const [formValues, setValues] = useState(initialValues)
 
@@ -118,6 +120,7 @@ function ViewLoanForm({ groupDataArr }) {
 					g_acc1: res?.data?.msg[0]?.acc_no1,
 					g_acc2: res?.data?.msg[0]?.acc_no2,
 					g_branch_name: res?.data?.msg[0]?.branch_name,
+					g_total_outstanding: res?.data?.msg[0]?.total_outstanding,
 				})
 				setGroupData(res?.data?.msg)
 				setBranch(
@@ -483,6 +486,7 @@ function ViewLoanForm({ groupDataArr }) {
 									handleBlur={formik.handleBlur}
 									formControlName={formik.values.g_bank_name}
 									mode={1}
+									disabled
 								/>
 								{/* {formik.errors.g_bank_name && formik.touched.g_bank_name ? (
 									<VError title={formik.errors.g_bank_name} />
@@ -587,7 +591,7 @@ function ViewLoanForm({ groupDataArr }) {
 
 									{console.log("+++++++++++++++++++++++++++++", memberDetails)}
 
-									{groupData[0]?.memb_dt?.map((item, i) => (
+									{/* {groupData[0]?.memb_dt?.map((item, i) => (
 										<Tag
 											key={i}
 											icon={<UserOutlined />}
@@ -613,7 +617,71 @@ function ViewLoanForm({ groupDataArr }) {
 										>
 											{item?.client_name}
 										</Tag>
-									))}
+									))} */}
+
+									<div className="relative overflow-x-auto shadow-md sm:rounded-lg">
+										<table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
+											<thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+												<tr>
+													<th scope="col" className="px-6 py-3 font-semibold">
+														Member Name
+													</th>
+													<th scope="col" className="px-6 py-3 font-semibold">
+														Loan ID
+													</th>
+													<th scope="col" className="px-6 py-3 font-semibold">
+														Member Code
+													</th>
+													<th scope="col" className="px-6 py-3 font-semibold">
+														Outstanding
+													</th>
+													<th scope="col" className="px-6 py-3 font-semibold">
+														<span className="sr-only">Action</span>
+													</th>
+												</tr>
+											</thead>
+											<tbody>
+												{groupData[0]?.memb_dt?.map((item, i) => (
+													<tr
+														key={i}
+														className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600"
+													>
+														<th
+															scope="row"
+															className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white"
+														>
+															{item?.client_name}
+														</th>
+														<td className="px-6 py-4">{item?.loan_id}</td>
+														<td className="px-6 py-4">{item?.member_code}</td>
+														<td className="px-6 py-4">
+															{item?.curr_outstanding}/-
+														</td>
+														<td className="px-6 py-4 text-right">
+															<button
+																onClick={() => {
+																	navigate(
+																		`/homebm/editgrtform/${item?.form_no}`
+																	)
+																}}
+																className="font-medium text-blue-600 dark:text-blue-500 hover:underline"
+															>
+																<EyeOutlined />
+															</button>
+														</td>
+													</tr>
+												))}
+												<tr className="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
+													<td className="px-6 py-4 font-medium" colSpan={3}>
+														Total Outstanding
+													</td>
+													<td className="px-6 py-4 text-left" colSpan={2}>
+														{formValues?.g_total_outstanding}/-
+													</td>
+												</tr>
+											</tbody>
+										</table>
+									</div>
 								</div>
 							</div>
 						)}
