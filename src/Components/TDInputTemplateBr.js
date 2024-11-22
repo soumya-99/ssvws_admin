@@ -44,7 +44,7 @@ function TDInputTemplateBr(props) {
 			{props.mode == 2 && (
 				// <Select
 				//   showSearch
-				//   className="bg-gray-50 border text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full dark:bg-bg-white dark:border-gray-600 dark:placeholder-gray-400 "
+				//   className="bg-slate-50 border text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full dark:bg-bg-white dark:border-gray-600 dark:placeholder-gray-400 "
 				//   name={props.name}
 				//   value={props.formControlName}
 				//   placeholder={props.placeholder}
@@ -55,7 +55,7 @@ function TDInputTemplateBr(props) {
 				//   options={props.data}
 				// />
 				// <Dropdown
-				// className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg  focus:border-red-800 active:border-red-800 focus:ring-green-900 focus:border-1 duration-300 block w-full p-1.5 dark:bg-bg-white dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
+				// className="bg-slate-50 border border-gray-300 text-gray-900 text-sm rounded-lg  focus:border-red-800 active:border-red-800 focus:ring-green-900 focus:border-1 duration-300 block w-full p-1.5 dark:bg-bg-white dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
 				// filter
 				// value={props.formControlName}
 				// onChange={props.handleChange}
