@@ -48,6 +48,7 @@ function MemberLoanDetailsForm() {
 
 	const [fetchedLoanData, setFetchedLoanData] = useState(() => Object)
 	const [fetchedTnxData, setFetchedTnxData] = useState(() => Object)
+	const [tnxDetails, setTnxDetails] = useState([])
 
 	// const formattedDob = formatDateToYYYYMMDD(memberDetails?.dob)
 
@@ -61,13 +62,16 @@ function MemberLoanDetailsForm() {
 		memberName: "",
 		memberCode: "",
 		groupName: "",
+		purposeId: "",
 		purpose: "",
+		subPurposeId: "",
 		subPurpose: "",
 		disbursementDate: "",
 		disburseAmount: "",
 		schemeName: "",
+		fundId: "",
 		fundName: "",
-		outstanding: "",
+		principalBalance: "",
 		period: "",
 		periodMode: "",
 		principalAmount: "",
@@ -85,8 +89,6 @@ function MemberLoanDetailsForm() {
 		}))
 	}
 
-	const [tnxDetails, setTnxDetails] = useState([])
-
 	const handleFetchMemberLoanDetails = async () => {
 		setLoading(true)
 		const creds = {
@@ -103,13 +105,16 @@ function MemberLoanDetailsForm() {
 					memberName: res?.data?.msg[0]?.client_name || "",
 					memberCode: res?.data?.msg[0]?.member_code || "",
 					groupName: res?.data?.msg[0]?.group_name || "",
+					purposeId: res?.data?.msg[0]?.purpose || "",
 					purpose: res?.data?.msg[0]?.purpose_id || "",
+					subPurposeId: res?.data?.msg[0]?.sub_purpose || "",
 					subPurpose: res?.data?.msg[0]?.sub_purp_name || "",
 					disbursementDate: res?.data?.msg[0]?.disb_dt || "",
 					disburseAmount: res?.data?.msg[0]?.prn_disb_amt || "",
 					schemeName: res?.data?.msg[0]?.scheme_name || "",
+					fundId: res?.data?.msg[0]?.fund_id || "",
 					fundName: res?.data?.msg[0]?.fund_name || "",
-					outstanding: res?.data?.msg[0]?.outstanding || "",
+					principalBalance: res?.data?.msg[0]?.prn_amt || "",
 					period: res?.data?.msg[0]?.period || "",
 					periodMode: res?.data?.msg[0]?.period_mode || "",
 					principalAmount: res?.data?.msg[0]?.prn_disb_amt || "",
@@ -129,6 +134,81 @@ function MemberLoanDetailsForm() {
 	useEffect(() => {
 		handleFetchMemberLoanDetails()
 	}, [])
+
+	const getPurposeOfLoan = async () => {
+		setLoading(true)
+		await axios
+			.get(`${url}/get_purpose`)
+			.then((res) => {
+				console.log("------XXXX------", res?.data)
+				setPurposeOfLoan(res?.data?.msg)
+			})
+			.catch((err) => {
+				console.log("+==========+", err)
+			})
+		setLoading(false)
+	}
+
+	useEffect(() => {
+		getPurposeOfLoan()
+	}, [])
+
+	const getSubPurposeOfLoan = async (purpId) => {
+		setLoading(true)
+		await axios
+			.get(`${url}/get_sub_purpose?purp_id=${purpId}`)
+			.then((res) => {
+				console.log("------------", res?.data)
+				setSubPurposeOfLoan(res?.data?.msg)
+			})
+			.catch((err) => {
+				console.log("+==========+", err)
+			})
+		setLoading(false)
+	}
+
+	useEffect(() => {
+		getSubPurposeOfLoan(memberLoanDetailsData?.purposeId)
+	}, [memberLoanDetailsData?.purposeId])
+
+	const getFunds = async () => {
+		setLoading(true)
+		await axios
+			.get(`${url}/get_fund`)
+			.then((res) => {
+				console.log("--------------", res?.data)
+				setFunds(res?.data?.msg)
+			})
+			.catch((err) => {
+				console.log("err", err)
+			})
+		setLoading(false)
+	}
+
+	useEffect(() => {
+		getFunds()
+	}, [])
+
+	const saveLoanDetails = async () => {
+		const creds = {
+			purpose: memberLoanDetailsData?.purposeId,
+			sub_purpose: memberLoanDetailsData?.subPurposeId,
+			fund_id: memberLoanDetailsData?.fundId,
+			tot_emi: memberLoanDetailsData?.totalEMI,
+			modified_by: userDetails?.emp_id,
+			loan_id: params?.id,
+		}
+		console.log("DSDS", creds)
+		await axios
+			.post(`${url}/admin/save_loan_details`, creds)
+			.then((res) => {
+				console.log("SAVE LOAN DTLSSSS", res?.data)
+				Message("success", res?.data?.msg)
+			})
+			.catch((err) => {
+				console.log("ERRR:S:S:S", err)
+			})
+	}
 
 	//////////////////////////////////////////////////
 	//////////////////////////////////////////////////
@@ -235,7 +315,7 @@ function MemberLoanDetailsForm() {
 										disabled
 									/>
 								</div>
-								<div>
+								{/* <div>
 									<TDInputTemplateBr
 										placeholder="Purpose..."
 										type="text"
@@ -246,8 +326,23 @@ function MemberLoanDetailsForm() {
 										mode={1}
 										disabled
 									/>
-								</div>
+								</div> */}
 								<div>
+									<TDInputTemplateBr
+										placeholder="Select Purpose"
+										type="text"
+										label="Purpose"
+										name="purposeId"
+										formControlName={memberLoanDetailsData?.purposeId}
+										handleChange={handleChangeMemberLoanDetails}
+										data={purposeOfLoan?.map((item, _) => ({
+											code: item?.purp_id,
+											name: item?.purpose_id,
+										}))}
+										mode={2}
+									/>
+								</div>
+								{/* <div>
 									<TDInputTemplateBr
 										placeholder="Sub Purpose..."
 										type="text"
@@ -257,6 +352,21 @@ function MemberLoanDetailsForm() {
 										handleChange={handleChangeMemberLoanDetails}
 										mode={1}
 										disabled
+									/>
+								</div> */}
+								<div>
+									<TDInputTemplateBr
+										placeholder="Select Sub Purpose"
+										type="text"
+										label="Sub Purpose"
+										name="subPurposeId"
+										formControlName={memberLoanDetailsData?.subPurposeId}
+										handleChange={handleChangeMemberLoanDetails}
+										data={subPurposeOfLoan?.map((item, _) => ({
+											code: item?.sub_purp_id,
+											name: item?.sub_purp_name,
+										}))}
+										mode={2}
 									/>
 								</div>
 								<div>
@@ -299,7 +409,7 @@ function MemberLoanDetailsForm() {
 										disabled
 									/>
 								</div>
-								<div>
+								{/* <div>
 									<TDInputTemplateBr
 										placeholder="Fund Name..."
 										type="text"
@@ -309,6 +419,21 @@ function MemberLoanDetailsForm() {
 										handleChange={handleChangeMemberLoanDetails}
 										mode={1}
 										disabled
+									/>
+								</div> */}
+								<div>
+									<TDInputTemplateBr
+										placeholder="Select Fund..."
+										type="text"
+										label="Fund"
+										name="fundId"
+										formControlName={memberLoanDetailsData.fundId}
+										handleChange={handleChangeMemberLoanDetails}
+										data={funds?.map((item, _) => ({
+											code: item?.fund_id,
+											name: item?.fund_name,
+										}))}
+										mode={2}
 									/>
 								</div>
 								<div>
@@ -325,11 +450,11 @@ function MemberLoanDetailsForm() {
 								</div>
 								<div>
 									<TDInputTemplateBr
-										placeholder="Outstanding..."
+										placeholder="Balance..."
 										type="text"
-										label="Outstanding"
-										name="outstanding"
-										formControlName={memberLoanDetailsData.outstanding}
+										label="Balance"
+										name="principalBalance"
+										formControlName={memberLoanDetailsData.principalBalance}
 										handleChange={handleChangeMemberLoanDetails}
 										mode={1}
 										disabled
@@ -404,9 +529,17 @@ function MemberLoanDetailsForm() {
 										formControlName={memberLoanDetailsData.totalEMI}
 										handleChange={handleChangeMemberLoanDetails}
 										mode={1}
-										disabled
 									/>
 								</div>
+							</div>
+							<div className="text-center mt-6">
+								<button
+									className="p-2 px-6 bg-slate-700 text-slate-50 rounded-xl hover:bg-slate-600 active:ring-2 active:ring-slate-500"
+									type="button"
+									onClick={() => setVisible(true)}
+								>
+									UPDATE
+								</button>
 							</div>
 						</div>
 
@@ -434,6 +567,12 @@ function MemberLoanDetailsForm() {
 													Date
 												</th>
 												<th scope="col" className="px-6 py-3 font-semibold">
+													Tnx. ID.
+												</th>
+												<th scope="col" className="px-6 py-3 font-semibold">
+													Tnx. Type
+												</th>
+												<th scope="col" className="px-6 py-3 font-semibold">
 													Debit
 												</th>
 												<th scope="col" className="px-6 py-3 font-semibold">
@@ -442,17 +581,18 @@ function MemberLoanDetailsForm() {
 												<th scope="col" className="px-6 py-3 font-semibold">
 													Balance
 												</th>
-												<th scope="col" className="px-6 py-3 font-semibold">
-													Tnx. ID.
-												</th>
-												<th scope="col" className="px-6 py-3 font-semibold">
+
+												{/* <th scope="col" className="px-6 py-3 font-semibold">
 													Chq. ID.
 												</th>
 												<th scope="col" className="px-6 py-3 font-semibold">
 													Chq. Date
-												</th>
+												</th> */}
 												<th scope="col" className="px-6 py-3 font-semibold">
 													Mode
+												</th>
+												<th scope="col" className="px-6 py-3 font-semibold">
+													Particulars
 												</th>
 												<th scope="col" className="px-6 py-3 font-semibold">
 													Status
@@ -482,23 +622,33 @@ function MemberLoanDetailsForm() {
 																"en-GB"
 															) || ""}
 														</td>
+														<td className="px-6 py-4">{item?.payment_id}</td>
+														<td className="px-6 py-4">
+															{item?.tr_type === "D"
+																? "Disbursement"
+																: item?.tr_type === "I"
+																? "Interest"
+																: item?.tr_type === "R"
+																? "Recovery"
+																: "Error"}
+														</td>
 														<td className="px-6 py-4">{item?.debit}/-</td>
 														<td className="px-6 py-4">{item?.credit}/-</td>
 														<td className="px-6 py-4">{item?.balance}/-</td>
-														<td className="px-6 py-4">{item?.payment_id}</td>
+
 														{/* <td className="px-6 py-4">
 														{new Date(item?.payment_date).toLocaleDateString(
 															"en-GB"
 														) || ""}
 													</td> */}
-														<td className="px-6 py-4">
+														{/* <td className="px-6 py-4">
 															{item?.cheque_id || 0}
 														</td>
 														<td className="px-6 py-4">
 															{new Date(item?.chq_dt).toLocaleDateString(
 																"en-GB"
 															) || ""}
-														</td>
+														</td> */}
 														<td className="px-6 py-4">
 															{item?.tr_mode === "B"
 																? "Bank"
@@ -506,6 +656,7 @@ function MemberLoanDetailsForm() {
 																? "Cash"
 																: "Error"}
 														</td>
+														<td className="px-6 py-4">{item?.particulars}</td>
 														<td
 															className={`px-6 py-4 ${
 																item?.status === "A"
@@ -545,20 +696,20 @@ function MemberLoanDetailsForm() {
 												</td>
 											</tr> */}
 											<tr className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
-												<td colSpan={2} className="px-6 py-4 font-semibold">
+												<td colSpan={4} className="px-6 py-4 font-semibold">
 													Total
 												</td>
 												<td
 													colSpan={1}
 													className="px-6 py-4 text-left font-semibold"
 												>
-													{totalDebit}/-
+													{totalDebit?.toFixed(2)}/-
 												</td>
 												<td
 													colSpan={6}
 													className="px-6 py-4 text-left font-semibold"
 												>
-													{totalCredit}/-
+													{totalCredit?.toFixed(2)}/-
 												</td>
 											</tr>
 										</tbody>
@@ -577,15 +728,16 @@ function MemberLoanDetailsForm() {
 				flag={4}
 				onPress={() => setVisible(!visible)}
 				visible={visible}
-				onPressYes={() => {
+				onPressYes={async () => {
 					// recoveryLoanApprove()
+					await saveLoanDetails()
 					setVisible(!visible)
 				}}
 				onPressNo={() => setVisible(!visible)}
 			/>
 
 			{/* For Reject */}
-			<DialogBox
+			{/* <DialogBox
 				flag={4}
 				onPress={() => setVisible2(!visible2)}
 				visible={visible2}
@@ -595,7 +747,7 @@ function MemberLoanDetailsForm() {
 					setVisible2(!visible2)
 				}}
 				onPressNo={() => setVisible2(!visible2)}
-			/>
+			/> */}
 
 			{/* <DialogBox
 				flag={4}
