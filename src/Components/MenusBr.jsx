@@ -211,6 +211,17 @@ function MenusBr({ theme }) {
 			label: "Reports",
 			key: "sub6",
 			icon: <BarsOutlined />,
+			children: [
+				{
+					key: "sub6-1",
+					icon: <EyeOutlined />,
+					label: (
+						<Link to={"/homebm/memberwiserecoveryreport"}>
+							Memberwise Recovery
+						</Link>
+					),
+				},
+			],
 		},
 	]
 

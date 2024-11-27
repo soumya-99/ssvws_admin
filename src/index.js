@@ -16,6 +16,7 @@ import EditRecoveryApproveFormBM from "./Screens/BMHome/EditRecoveryApproveFormB
 import SearchViewLoanBM from "./Screens/BMHome/SearchViewLoanBM"
 import EditViewLoanFormBM from "./Screens/BMHome/EditViewLoanFormBM"
 import MemberLoanDetailsBM from "./Screens/BMHome/MemberLoanDetailsBM"
+import MemberwiseRecoveryReport from "./Screens/Reports/MemberwiseRecoveryReport"
 
 // import CatchError from "./Screens/CatchError"
 // import AuthMis from "./Screens/MISAssistant/AuthMis"
@@ -251,6 +252,10 @@ const router = createBrowserRouter([
 							{
 								path: "editgrtform/:id",
 								element: <EditGRTFormBM />,
+							},
+							{
+								path: "memberwiserecoveryreport",
+								element: <MemberwiseRecoveryReport />,
 							},
 						],
 					},
