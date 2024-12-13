@@ -69,8 +69,8 @@ function EditGRTFormMis() {
 	return (
 		<>
 			<Sidebar mode={1} />
-			<section className="bg-blue-50 dark:bg-[#001529] flex justify-center align-middle p-5">
-				<div className=" bg-white p-5 w-4/5 min-h-screen rounded-3xl">
+			<section className=" dark:bg-[#001529] flex justify-center align-middle p-5">
+				<div className=" p-5 w-4/5 min-h-screen rounded-3xl">
 					{userDetails?.id === 3 &&
 						memberDetailsData?.approval_status === "S" && (
 							<div className="flex justify-between">
@@ -212,7 +212,7 @@ function EditGRTFormMis() {
 						className="text-blue-800 dark:text-gray-400"
 						spinning={loading}
 					>
-						<div className="card">
+						<div className="card bg-white w-10/12 rounded-3xl p-3 pt-5 mx-auto">
 							<Stepper
 								ref={stepperRef}
 								style={{ flexBasis: "50rem" }}
@@ -228,7 +228,7 @@ function EditGRTFormMis() {
 									</div>
 									<div className="flex py-4">
 										<Button
-											className="rounded-full p-5 text-white bg-blue-800 border-blue-800 gap-2 ring-blue-500"
+											className="rounded-full p-5 text-white bg-teal-500 border-teal-500 hover:bg-green-600 hover:border-green-600 gap-2 ring-blue-500"
 											onClick={() => stepperRef.current.nextCallback()}
 										>
 											<ArrowRightOutlined />
@@ -245,13 +245,13 @@ function EditGRTFormMis() {
 									</div>
 									<div className="flex py-4 gap-2">
 										<Button
-											className="rounded-full p-5 text-white bg-red-800 border-red-800 gap-2 ring-red-500"
+											className="rounded-full p-5 text-white bg-[#DA4167]  border-[#DA4167] hover:bg-[#ac3246] hover:border-[#ac3246] gap-2 ring-red-500"
 											onClick={() => stepperRef.current.prevCallback()}
 										>
 											<ArrowLeftOutlined />
 										</Button>
 										<Button
-											className="rounded-full p-5 text-white bg-blue-800 border-blue-800 gap-2 ring-blue-500"
+											className="rounded-full p-5 text-white bg-teal-500 border-teal-500 hover:bg-green-600 hover:border-green-600 gap-2 ring-blue-500"
 											onClick={() => stepperRef.current.nextCallback()}
 										>
 											<ArrowRightOutlined />
@@ -266,13 +266,13 @@ function EditGRTFormMis() {
 									</div>
 									<div className="flex py-4 gap-2">
 										<Button
-											className="rounded-full p-5 text-white bg-red-800 border-red-800 gap-2 ring-red-500"
+											className="rounded-full p-5 text-white bg-[#DA4167]  border-[#DA4167] hover:bg-[#ac3246] hover:border-[#ac3246] gap-2 ring-red-500"
 											onClick={() => stepperRef.current.prevCallback()}
 										>
 											<ArrowLeftOutlined />
 										</Button>
 										<Button
-											className="rounded-full p-5 text-white bg-blue-800 border-blue-800 gap-2 ring-blue-500"
+											className="rounded-full p-5 text-white bg-teal-500 border-teal-500 hover:bg-green-600 hover:border-green-600 gap-2 ring-blue-500"
 											onClick={() => stepperRef.current.nextCallback()}
 										>
 											<ArrowRightOutlined />
@@ -289,7 +289,7 @@ function EditGRTFormMis() {
 									</div>
 									<div className="flex py-4">
 										<Button
-											className="rounded-full p-5 text-white bg-red-800 border-red-800 gap-2 ring-red-500"
+											className="rounded-full p-5 text-white bg-[#DA4167]  border-[#DA4167] hover:bg-[#ac3246] hover:border-[#ac3246] gap-2 ring-red-500"
 											onClick={() => stepperRef.current.prevCallback()}
 										>
 											<ArrowLeftOutlined />

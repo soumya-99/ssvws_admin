@@ -35,7 +35,7 @@ function BtnComp({
 				<>
 					<button
 						type="reset"
-						className="inline-flex items-center px-5 py-2.5 mt-4 mr-2 sm:mt-6 text-sm font-medium text-center text-gray-800 border border-yellow-300 bg-yellow-300 transition ease-in-out hover:bg-yellow-200 duration-300 rounded-full  dark:focus:ring-primary-900"
+						className="inline-flex items-center px-5 py-2.5 mt-4 mr-2 sm:mt-6 text-sm font-medium text-center text-white border border-[#DA4167] bg-[#DA4167] transition ease-in-out hover:bg-[#ac3246] hover:border-[#ac3246] duration-300 rounded-full  dark:focus:ring-primary-900"
 						onClick={onReset}
 					>
 						<ReloadOutlined className="mr-2" />
@@ -43,7 +43,7 @@ function BtnComp({
 					</button>
 					<button
 						type="submit"
-						className=" disabled:bg-gray-400 disabled:dark:bg-gray-400 inline-flex items-center px-5 py-2.5 mt-4 sm:mt-6 text-sm font-medium text-center text-white bg-[#6457A6] transition ease-in-out hover:bg-[#4e4480] duration-300  rounded-full focus:ring-gray-600  dark:focus:ring-primary-900 dark:bg-[#92140C] dark:hover:bg-gray-600"
+						className="inline-flex items-center px-5 py-2.5 mt-4 ml-2 sm:mt-6 text-sm font-medium text-center text-white border hover:border-green-600 border-teal-500 bg-teal-500 transition ease-in-out hover:bg-green-600 duration-300 rounded-full  dark:focus:ring-primary-900"
 					>
 						<SaveOutlined className="mr-2" />
 						{param?.id > 0 ? "Update" : "Submit"}
@@ -78,7 +78,7 @@ function BtnComp({
 						<>
 							<button
 								type="button"
-								className="inline-flex items-center px-5 py-2.5 mt-4 mr-2 sm:mt-6 text-sm font-medium text-center text-gray-800 border border-yellow-300 bg-yellow-300 transition ease-in-out hover:bg-yellow-200 duration-300 rounded-full  dark:focus:ring-primary-900"
+								className="inline-flex items-center px-5 py-2.5 mt-4 mr-2 sm:mt-6 text-sm font-medium text-center text-white border border-[#DA4167] bg-[#DA4167] transition ease-in-out hover:bg-[#ac4326] hover:border-[#ac4326] duration-300 rounded-full  dark:focus:ring-primary-900"
 								onClick={onReset}
 							>
 								<ReloadOutlined className="mr-2" />
@@ -86,7 +86,7 @@ function BtnComp({
 							</button>
 							<button
 								type="button"
-								className=" disabled:bg-gray-400 disabled:dark:bg-gray-400 inline-flex items-center px-5 py-2.5 mt-4 sm:mt-6 text-sm font-medium text-center text-white bg-[#6457A6] transition ease-in-out hover:bg-[#4e4480] duration-300  rounded-full focus:ring-gray-600  dark:focus:ring-primary-900 dark:bg-[#92140C] dark:hover:bg-gray-600"
+								className="inline-flex items-center px-5 py-2.5 mt-4 ml-2 sm:mt-6 text-sm font-medium text-center text-white border hover:border-green-600 border-teal-500 bg-teal-500 transition ease-in-out hover:bg-green-600 duration-300 rounded-full  dark:focus:ring-primary-900"
 								onClick={onPressSubmit}
 							>
 								<SaveOutlined className="mr-2" />
@@ -98,7 +98,7 @@ function BtnComp({
 					{showForward && (
 						<button
 							type="button"
-							className="inline-flex items-center px-5 py-2.5 mt-4 ml-2 sm:mt-6 text-sm font-medium text-center text-white border border-blue-800 bg-blue-800 transition ease-in-out hover:bg-blue-700 duration-300 rounded-full  dark:focus:ring-primary-900"
+							className="inline-flex items-center px-5 py-2.5 mt-4 ml-2 sm:mt-6 text-sm font-medium text-center text-white border hover:border-green-600 border-teal-500 bg-teal-500 transition ease-in-out hover:bg-green-600 duration-300 rounded-full  dark:focus:ring-primary-900"
 							onClick={onForwardApplication}
 						>
 							<CheckOutlined className="mr-2" />
@@ -112,7 +112,7 @@ function BtnComp({
 					{showReject && (
 						<button
 							type="button"
-							className="inline-flex items-center px-5 py-2.5 mt-4 mr-2 sm:mt-6 text-sm font-medium text-center text-white border border-red-800 bg-red-800 transition ease-in-out hover:bg-red-700 duration-300 rounded-full  dark:focus:ring-primary-900"
+							className="inline-flex items-center px-5 py-2.5 mt-4 mr-2 sm:mt-6 text-sm font-medium text-center text-white border border-[#DA4167] bg-[#DA4167] transition ease-in-out hover:bg-[#ac324b] hover:border-[#ac324b] duration-300 rounded-full  dark:focus:ring-primary-900"
 							onClick={onRejectApplication}
 						>
 							<CloseOutlined className="mr-2" />
@@ -124,7 +124,7 @@ function BtnComp({
 						<>
 							<button
 								type="button"
-								className="inline-flex items-center px-5 py-2.5 mt-4 mr-2 sm:mt-6 text-sm font-medium text-center text-gray-800 border border-yellow-300 bg-yellow-300 transition ease-in-out hover:bg-yellow-200 duration-300 rounded-full  dark:focus:ring-primary-900"
+								className="inline-flex items-center px-5 py-2.5 mt-4 mr-2 sm:mt-6 text-sm font-medium text-center text-white border border-[#DA4167] bg-[#DA4167] transition ease-in-out hover:bg-yellow-500 hover:border-yellow-500 duration-300 rounded-full  dark:focus:ring-primary-900"
 								onClick={onReset}
 							>
 								<ReloadOutlined className="mr-2" />
@@ -132,7 +132,7 @@ function BtnComp({
 							</button>
 							<button
 								type="button"
-								className=" disabled:bg-gray-400 disabled:dark:bg-gray-400 inline-flex items-center px-5 py-2.5 mt-4 sm:mt-6 text-sm font-medium text-center text-white bg-[#6457A6] transition ease-in-out hover:bg-[#4e4480] duration-300  rounded-full focus:ring-gray-600  dark:focus:ring-primary-900 dark:bg-[#92140C] dark:hover:bg-gray-600"
+								className="inline-flex items-center px-5 py-2.5 mt-4 ml-2 sm:mt-6 text-sm font-medium text-center text-white border hover:border-green-600 border-teal-500 bg-teal-500 transition ease-in-out hover:bg-green-600 duration-300 rounded-full  dark:focus:ring-primary-900"
 								onClick={onPressSubmit}
 							>
 								<SaveOutlined className="mr-2" />
@@ -144,7 +144,7 @@ function BtnComp({
 					{showForward && (
 						<button
 							type="button"
-							className="inline-flex items-center px-5 py-2.5 mt-4 ml-2 sm:mt-6 text-sm font-medium text-center text-white border border-blue-800 bg-blue-800 transition ease-in-out hover:bg-blue-700 duration-300 rounded-full  dark:focus:ring-primary-900"
+							className="inline-flex items-center px-5 py-2.5 mt-4 ml-2 sm:mt-6 text-sm font-medium text-center text-white border hover:border-green-600 border-teal-500 bg-teal-500 transition ease-in-out hover:bg-green-600 duration-300 rounded-full  dark:focus:ring-primary-900"
 							onClick={onForwardApplication}
 						>
 							<CheckOutlined className="mr-2" />
@@ -156,7 +156,7 @@ function BtnComp({
 			{mode == "E" && (
 				<button
 					type="button"
-					className="inline-flex items-center px-5 py-2.5 mt-4 mr-2 sm:mt-6 text-sm font-medium text-center text-white border border-[#92140C] bg-[#92140C] transition ease-in-out hover:bg-[#a73b34] duration-300 rounded-full  dark:focus:ring-primary-900"
+					className="inline-flex items-center px-5 py-2.5 mt-4 mr-2 sm:mt-6 text-sm font-medium text-center text-white border border-[#DA4167] bg-[#DA4167] transition ease-in-out hover:bg-[#ac324b] hover:border-[#ac324b] duration-300 rounded-full  dark:focus:ring-primary-900"
 					onClick={onDelete}
 				>
 					<DeleteOutlined className="mr-2" />
@@ -176,7 +176,7 @@ function BtnComp({
 			{showSave && (
 				<button
 					type="submit"
-					className=" disabled:bg-gray-400 disabled:dark:bg-gray-400 inline-flex items-center px-5 py-2.5 mt-4 sm:mt-6 text-sm font-medium text-center text-white bg-[#6457A6] transition ease-in-out hover:bg-[#4e4480] duration-300  rounded-full focus:ring-gray-600  dark:focus:ring-primary-900 dark:bg-[#92140C] dark:hover:bg-gray-600"
+					className=" disabled:bg-gray-400 disabled:dark:bg-gray-400 inline-flex items-center px-5 py-2.5 mt-4 sm:mt-6 text-sm font-medium text-center text-white bg-teal-500 transition ease-in-out hover:bg-teal-600 duration-300  rounded-full focus:ring-gray-600  dark:focus:ring-primary-900 dark:bg-[#92140C] dark:hover:bg-gray-600"
 				>
 					<SaveOutlined className="mr-2" />
 					Save Application

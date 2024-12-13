@@ -25,7 +25,7 @@ function RecoveryForm() {
 	const location = useLocation()
 	const personalDetails = location.state[0] || {}
 	const loanType = location.state[1] || "R"
-
+    const [memb_recov_details,setMembRecovDetails] = useState([])
 	const navigate = useNavigate()
 	const userDetails = JSON.parse(localStorage.getItem("user_details"))
 
@@ -45,7 +45,7 @@ function RecoveryForm() {
 	const [tnxTypes, setTnxTypes] = useState(() => [])
 	const [tnxModes, setTnxModes] = useState(() => [])
 	const [banks, setBanks] = useState(() => [])
-
+    
 	const [fetchedLoanData, setFetchedLoanData] = useState(() => Object)
 	const [fetchedTnxData, setFetchedTnxData] = useState(() => Object)
 
@@ -401,13 +401,13 @@ function RecoveryForm() {
 
 	const fetchRecoveryDetails = async () => {
 		const creds = {
-			loan_id: params?.id,
+			group_code: params?.id,
 		}
 		await axios
 			.post(`${url}/admin/view_unapprove_recovery_dtls`, creds)
 			.then((res) => {
 				console.log("=========QQ=========", res?.data)
-
+                setMembRecovDetails(res?.data?.memb_dtls_recov)
 				setPersonalDetailsData({
 					b_memCode: res?.data?.msg[0]?.member_code,
 					b_clientName: res?.data?.msg[0]?.client_name,
@@ -459,7 +459,7 @@ function RecoveryForm() {
 					b_installmentEndDate: "",
 					b_installmentPaid: "",
 					b_emi: "",
-					b_tnxDate: res?.data?.msg[0]?.txn_date,
+					b_tnxDate: res?.data?.msg[0]?.transaction_date,
 					b_amount: "",
 					b_principalRecovery: res?.data?.msg[0]?.principal_recovery,
 					b_interestRecovery: res?.data?.msg[0]?.interest_recovery,
@@ -559,8 +559,10 @@ function RecoveryForm() {
 		setLoading(true)
 		const creds = {
 			approved_by: userDetails?.emp_id,
-			loan_id: params?.id,
+			// loan_id: params?.id,
+			loan_id: memb_recov_details.map(e=>e.loan_id),
 		}
+		console.log(creds)
 		await axios
 			.post(`${url}/admin/approve_recovery_loan`, creds)
 			.then((res) => {
@@ -605,31 +607,7 @@ function RecoveryForm() {
 
 	return (
 		<>
-			{disburseOrNot && (
-				<Badge.Ribbon
-					className="bg-slate-500 absolute top-10 z-10"
-					text={<div className="font-medium">Recovery Initiated</div>}
-					style={{
-						fontSize: 17,
-						width: 200,
-						height: 28,
-						justifyContent: "start",
-						alignItems: "center",
-						textAlign: "center",
-					}}
-				></Badge.Ribbon>
-			)}
-			{/* <div className="ml-14 mt-5 flex flex-col justify-start align-middle items-start gap-2">
-				<div className="text-sm text-wrap w-96 italic text-blue-800">
-					CO: {recoveryDetailsData?.b_coName || "Nil"}, AT:{" "}
-					{new Date(recoveryDetailsData?.b_coCreatedAt || "Nil").toLocaleString(
-						"en-GB"
-					)}
-				</div>
-				<div className="text-sm text-wrap w-96 italic text-blue-800">
-					CO Location: {recoveryDetailsData?.b_coLocation || "Nil"}
-				</div>
-			</div> */}
+			
 			<Spin
 				indicator={<LoadingOutlined spin />}
 				size="large"
@@ -638,509 +616,16 @@ function RecoveryForm() {
 			>
 				<form onSubmit={onSubmit}>
 					<div>
-						<div>
-							<div className="grid gap-4 sm:grid-cols-2 sm:gap-6">
-								<div className="text-xl mb-2 text-lime-800 font-semibold underline">
-									1. Personal Details
-								</div>
-							</div>
-							<div className="grid gap-4 sm:grid-cols-4 sm:gap-6">
-								<div className="sm:col-span-4 bg-slate-200 border-slate-200 text-lime-900 p-5 h-32 rounded-2xl grid grid-cols-4 gap-5 items-center">
-									<div className="sm:col-span-2">
-										<TDInputTemplateBr
-											placeholder="Loan ID..."
-											type="text"
-											label="Loan ID"
-											name="b_loanId"
-											formControlName={recoveryDetailsData?.b_loanId}
-											handleChange={handleChangeRecoveryDetails}
-											mode={1}
-											disabled
-										/>
-									</div>
-									<div className="sm:col-span-2">
-										<TDInputTemplateBr
-											placeholder="Group name..."
-											type="text"
-											label="Group Name"
-											name="b_groupName"
-											formControlName={personalDetailsData?.b_groupName}
-											handleChange={handleChangePersonalDetails}
-											mode={1}
-											disabled
-										/>
-									</div>
-								</div>
-								<div>
-									<TDInputTemplateBr
-										placeholder="Member Code"
-										type="text"
-										label="Member Code"
-										name="b_memCode"
-										formControlName={personalDetailsData?.b_memCode}
-										handleChange={handleChangePersonalDetails}
-										mode={1}
-										disabled
-									/>
-								</div>
-
-								<div>
-									<TDInputTemplateBr
-										placeholder="Type member name..."
-										type="text"
-										label="Member Name"
-										name="b_clientName"
-										formControlName={personalDetailsData?.b_clientName}
-										handleChange={handleChangePersonalDetails}
-										mode={1}
-										disabled
-									/>
-								</div>
-
-								{/* <div>
-										<TDInputTemplateBr
-											placeholder="Form Number"
-											type="text"
-											label="Form Number"
-											name="b_formNo"
-											formControlName={personalDetailsData?.b_formNo}
-											mode={1}
-											disabled
-										/>
-									</div> */}
-
-								{/* <div>
-									<TDInputTemplateBr
-										placeholder="GRT Approve date..."
-										type="text"
-										label="GRT Approve Date"
-										name="b_grtApproveDate"
-										formControlName={personalDetailsData?.b_grtApproveDate}
-										handleChange={handleChangePersonalDetails}
-										mode={1}
-										disabled
-									/>
-								</div> */}
-								<div className="sm:col-span-2">
-									<TDInputTemplateBr
-										placeholder="Branch..."
-										type="text"
-										label="Branch"
-										name="b_branch"
-										formControlName={personalDetailsData?.b_branch}
-										handleChange={handleChangePersonalDetails}
-										mode={1}
-										disabled
-									/>
-								</div>
-								{/* <div>
-									<TDInputTemplateBr
-										placeholder="Purpose..."
-										type="text"
-										label="Purpose"
-										name="b_purpose"
-										formControlName={personalDetailsData?.b_purpose}
-										handleChange={handleChangePersonalDetails}
-										mode={1}
-										disabled
-									/>
-								</div> */}
-								{/* <div>
-									<TDInputTemplateBr
-										placeholder="Select Purpose"
-										type="text"
-										label="Purpose"
-										name="b_purpose"
-										formControlName={personalDetailsData?.b_purpose}
-										handleChange={handleChangePersonalDetails}
-										data={purposeOfLoan?.map((item, _) => ({
-											code: item?.loan_purpose,
-											name: item?.purpose_id,
-										}))}
-										mode={2}
-										disabled={disburseOrNot}
-									/>
-								</div> */}
-								{/* <div className="sm:col-span-2">
-									<TDInputTemplateBr
-										placeholder="Sub Purpose..."
-										type="text"
-										label="Sub Purpose"
-										name="b_subPurpose"
-										formControlName={personalDetailsData?.b_subPurpose}
-										handleChange={handleChangePersonalDetails}
-										mode={1}
-										disabled
-									/>
-								</div> */}
-								{/* <div className="sm:col-span-2">
-									<TDInputTemplateBr
-										placeholder="Select Sub Purpose"
-										type="text"
-										label="Sub Purpose"
-										name="b_subPurpose"
-										formControlName={personalDetailsData?.b_subPurpose}
-										handleChange={handleChangePersonalDetails}
-										data={subPurposeOfLoan?.map((item, _) => ({
-											code: item?.sub_purp_id,
-											name: item?.sub_purp_name,
-										}))}
-										mode={2}
-										disabled={disburseOrNot}
-									/>
-								</div> */}
-								{/* <div className="sm:col-span-2">
-									<TDInputTemplateBr
-										placeholder="Application Date..."
-										type="text"
-										label="Application Date"
-										name="b_applicationDate"
-										formControlName={personalDetailsData?.b_applicationDate}
-										handleChange={handleChangePersonalDetails}
-										mode={1}
-										disabled
-									/>
-								</div> */}
-								{/* <div className="sm:col-span-2">
-									<TDInputTemplateBr
-										placeholder="Applied Amount..."
-										type="text"
-										label="Applied Amount"
-										name="b_appliedAmt"
-										formControlName={personalDetailsData?.b_appliedAmt}
-										handleChange={handleChangePersonalDetails}
-										mode={1}
-										disabled
-									/>
-								</div> */}
-							</div>
-						</div>
-
-						{/* ///////////////////////// */}
-
-						<div>
-							<div className="grid gap-4 sm:grid-cols-2 sm:gap-6">
-								<div className="text-xl mb-2 mt-5 text-lime-800 font-semibold underline">
-									2. Disbursement Details
-								</div>
-							</div>
-							<div className="grid gap-4 sm:grid-cols-4 sm:gap-6">
-								<div>
-									<TDInputTemplateBr
-										placeholder="Select Scheme..."
-										type="text"
-										label="Scheme"
-										name="b_scheme"
-										formControlName={disbursementDetailsData.b_scheme}
-										handleChange={handleChangeDisburseDetails}
-										data={schemes?.map((item, _) => ({
-											code: item?.scheme_id,
-											name: item?.scheme_name,
-										}))}
-										// data={[
-										// 	{ code: "S1", name: "Scheme 1" },
-										// 	{ code: "S1", name: "Scheme 2" },
-										// 	{ code: "S3", name: "Scheme 3" },
-										// ]}
-										mode={2}
-										disabled={disburseOrNot}
-									/>
-								</div>
-
-								<div>
-									<TDInputTemplateBr
-										placeholder="Select Mode"
-										type="text"
-										label="Mode"
-										name="b_mode"
-										formControlName={disbursementDetailsData?.b_mode}
-										handleChange={handleChangeDisburseDetails}
-										data={[
-											{
-												code: "Monthly",
-												name: "Monthly",
-											},
-											{
-												code: "Weekly",
-												name: "Weekly",
-											},
-										]}
-										mode={2}
-										disabled={
-											!disbursementDetailsData.b_scheme || disburseOrNot
-										}
-									/>
-								</div>
-
-								<div>
-									<TDInputTemplateBr
-										placeholder="Period..."
-										type="text"
-										label="Period"
-										name="b_period"
-										formControlName={disbursementDetailsData.b_period}
-										handleChange={handleChangeDisburseDetails}
-										mode={1}
-										disabled
-									/>
-								</div>
-								<div>
-									<TDInputTemplateBr
-										placeholder="R.O.I..."
-										type="text"
-										label="Rate of Interest"
-										name="b_roi"
-										formControlName={disbursementDetailsData.b_roi}
-										handleChange={handleChangeDisburseDetails}
-										mode={1}
-										disabled
-									/>
-								</div>
-								<div className="sm:col-span-2">
-									<TDInputTemplateBr
-										placeholder="Select Fund..."
-										type="text"
-										label="Fund"
-										name="b_fund"
-										formControlName={disbursementDetailsData.b_fund}
-										handleChange={handleChangeDisburseDetails}
-										data={funds?.map((item, _) => ({
-											code: item?.fund_id,
-											name: item?.fund_name,
-										}))}
-										mode={2}
-										disabled={
-											!disbursementDetailsData?.b_scheme || disburseOrNot
-										}
-									/>
-								</div>
-
-								<div className="sm:col-span-2">
-									<TDInputTemplateBr
-										placeholder="Disburse Amount..."
-										type="number"
-										label={`Disburse Amount`}
-										name="b_disburseAmt"
-										formControlName={disbursementDetailsData.b_disburseAmt}
-										handleChange={handleChangeDisburseDetails}
-										mode={1}
-										disabled={
-											!disbursementDetailsData?.b_scheme || disburseOrNot
-										}
-									/>
-								</div>
-								{/* <div>
-									<TDInputTemplateBr
-										placeholder="Bank charges..."
-										type="number"
-										label="Bank Charges"
-										name="b_bankCharges"
-										formControlName={disbursementDetailsData.b_bankCharges}
-										handleChange={handleChangeDisburseDetails}
-										mode={1}
-										disabled={
-											!disbursementDetailsData?.b_scheme || disburseOrNot
-										}
-									/>
-								</div>
-								<div>
-									<TDInputTemplateBr
-										placeholder="Processing charges..."
-										type="number"
-										label="Processing Charges"
-										name="b_processingCharges"
-										formControlName={
-											disbursementDetailsData.b_processingCharges
-										}
-										handleChange={handleChangeDisburseDetails}
-										mode={1}
-										disabled={
-											!disbursementDetailsData?.b_scheme || disburseOrNot
-										}
-									/>
-								</div> */}
-								{/* {disbursementDetailsData.b_mode === "Monthly" ? (
-									<div>
-										<TDInputTemplateBr
-											placeholder="Day of Recovery..."
-											type="number"
-											label={`Day of Recovery ${
-												disbursementDetailsData.b_dayOfRecovery
-													? `(${getOrdinalSuffix(
-															disbursementDetailsData.b_dayOfRecovery
-													  )} of every month)`
-													: ""
-											}`}
-											name="b_dayOfRecovery"
-											formControlName={disbursementDetailsData.b_dayOfRecovery}
-											handleChange={handleChangeDisburseDetails}
-											mode={1}
-											disabled={
-												!disbursementDetailsData?.b_scheme || disburseOrNot
-											}
-										/>
-										{(disbursementDetailsData.b_dayOfRecovery < 1 ||
-											disbursementDetailsData.b_dayOfRecovery > 31) && (
-											<VError title={`Day should be between 1 to 31`} />
-										)}
-									</div>
-								) : (
-									<div>
-										<TDInputTemplateBr
-											placeholder="Select Weekday"
-											type="text"
-											label="Day of Recovery"
-											name="b_dayOfRecovery"
-											formControlName={disbursementDetailsData?.b_dayOfRecovery}
-											handleChange={handleChangeDisburseDetails}
-											data={WEEKS}
-											mode={2}
-											disabled={
-												!disbursementDetailsData.b_scheme || disburseOrNot
-											}
-										/>
-									</div>
-								)} */}
-							</div>
-						</div>
-
-						{/* ///////////////////////// */}
-
-						{disburseOrNot && params?.id > 0 && (
-							<div>
-								<div className="w-full my-10 border-t-4 border-gray-500 border-dashed"></div>
-								<div className="grid gap-4 sm:grid-cols-2 sm:gap-6">
-									<div className="text-xl mb-2 text-lime-800 font-semibold underline">
-										3. Installment Details
-									</div>
-								</div>
-								<div className="grid gap-4 sm:grid-cols-4 sm:gap-6">
-									<div className="sm:col-span-2">
-										<TDInputTemplateBr
-											placeholder="Installment Start Date..."
-											type="text"
-											label="Installment Start Date"
-											name="b_isntallmentStartDate"
-											formControlName={
-												installmentDetailsData?.b_isntallmentStartDate
-													? new Date(
-															installmentDetailsData?.b_isntallmentStartDate
-													  ).toLocaleDateString("en-GB")
-													: ""
-											}
-											handleChange={handleChangeInstallmentDetails}
-											mode={1}
-											disabled
-										/>
-									</div>
-									<div className="sm:col-span-2">
-										<TDInputTemplateBr
-											placeholder="Installment End Date..."
-											type="text"
-											label="Installment End Date"
-											name="b_isntallmentEndDate"
-											formControlName={
-												installmentDetailsData?.b_isntallmentEndDate
-													? new Date(
-															installmentDetailsData?.b_isntallmentEndDate
-													  ).toLocaleDateString("en-GB")
-													: ""
-											}
-											handleChange={handleChangeInstallmentDetails}
-											mode={1}
-											disabled
-										/>
-									</div>
-									<div>
-										<TDInputTemplateBr
-											placeholder="Principle Amount..."
-											type="text"
-											label="Principle Amount"
-											name="b_principleDisbursedAmount"
-											formControlName={
-												installmentDetailsData?.b_principleDisbursedAmount
-											}
-											handleChange={handleChangeInstallmentDetails}
-											mode={1}
-											disabled
-										/>
-									</div>
-									<div>
-										<TDInputTemplateBr
-											placeholder="Interest Amount..."
-											type="text"
-											label="Interest Amount"
-											name="b_interestAmount"
-											formControlName={installmentDetailsData?.b_interestAmount}
-											handleChange={handleChangeInstallmentDetails}
-											mode={1}
-											disabled
-										/>
-									</div>
-									{/* <div className="sm:col-span-2">
-										<TDInputTemplateBr
-											placeholder="Receivable..."
-											type="text"
-											label="Receivable"
-											name="b_receivable"
-											formControlName={installmentDetailsData?.b_receivable}
-											handleChange={handleChangeInstallmentDetails}
-											mode={1}
-											disabled
-										/>
-									</div> */}
-									<div>
-										<TDInputTemplateBr
-											placeholder="Principle EMI Amount..."
-											type="text"
-											label="Principle EMI Amount"
-											name="b_principleEMIAmount"
-											formControlName={
-												installmentDetailsData?.b_principleEMIAmount
-											}
-											handleChange={handleChangeInstallmentDetails}
-											mode={1}
-											disabled
-										/>
-									</div>
-									<div>
-										<TDInputTemplateBr
-											placeholder="Interest EMI..."
-											type="text"
-											label="Interest EMI"
-											name="b_interestEMIAmount"
-											formControlName={
-												installmentDetailsData?.b_interestEMIAmount
-											}
-											handleChange={handleChangeInstallmentDetails}
-											mode={1}
-											disabled
-										/>
-									</div>
-									<div className="sm:col-span-2">
-										<TDInputTemplateBr
-											placeholder="Total EMI Amount..."
-											type="text"
-											label="Total EMI Amount"
-											name="b_totalEMIAmount"
-											formControlName={installmentDetailsData?.b_totalEMIAmount}
-											handleChange={handleChangeInstallmentDetails}
-											mode={1}
-											disabled
-										/>
-									</div>
-								</div>
-							</div>
-						)}
+					
 
 						{/* ////////////////////////////////////////////////////// */}
 
 						{loanType === "R" && (
 							<div>
-								<div className="w-full my-10 border-t-4 border-gray-500 border-dashed"></div>
+								{/* <div className="w-full my-10 border-t-4 border-gray-500 border-dashed"></div> */}
 								<div className="grid gap-4 sm:grid-cols-2 sm:gap-6">
-									<div className="text-xl mb-2 text-lime-800 font-semibold underline">
-										4. Recovery Details
+									<div className="text-xl mb-2 text-[#DA4167] font-semibold underline">
+										Recovery Details
 									</div>
 								</div>
 								<div className="grid gap-4 sm:grid-cols-4 sm:gap-6">
@@ -1204,11 +689,11 @@ function RecoveryForm() {
 											disabled
 										/>
 									</div> */}
-									<div>
+									<div className="sm:col-span-4">
 										<TDInputTemplateBr
 											placeholder="Transaction Date..."
 											type="text"
-											label="Txn Date"
+											label="Transaction Date"
 											name="b_tnxDate"
 											formControlName={
 												recoveryDetailsData?.b_tnxDate
@@ -1250,7 +735,8 @@ function RecoveryForm() {
 											disabled
 										/>
 									</div> */}
-									<div>
+									{/* ================Somnath====================== */}
+									{/* <div>
 										<TDInputTemplateBr
 											placeholder="Previous Outstanding..." // Previous Outstanding
 											type="text"
@@ -1275,7 +761,8 @@ function RecoveryForm() {
 											mode={1}
 											disabled
 										/>
-									</div>
+									</div> */}
+									{/* =======================Somnath=============== */}
 									{/* <div>
 										<TDInputTemplateBr
 											placeholder="Installment End Date..."
@@ -1304,7 +791,8 @@ function RecoveryForm() {
 											disabled
 										/>
 									</div> */}
-									<div>
+									{/* ==============Somnath================================= */}
+									{/* <div>
 										<TDInputTemplateBr
 											placeholder="Current Outstanding..."
 											type="text"
@@ -1317,7 +805,12 @@ function RecoveryForm() {
 											mode={1}
 											disabled
 										/>
-									</div>
+									</div> */}
+									{/* =====================Somnath================================ */}
+									
+
+
+
 									{/* <div className="sm:col-span-2">
 										<TDInputTemplateBr
 											placeholder="Collected Amount..."
@@ -1331,6 +824,77 @@ function RecoveryForm() {
 										/>
 									</div> */}
 								</div>
+								<div class="relative overflow-x-auto">
+    <table class="w-full text-sm  rounded-t-md my-3 text-left rtl:text-right text-gray-500 dark:text-gray-400">
+        <thead class="text-[12px] rounded-t-md text-gray-200 uppercase bg-slate-800 dark:bg-gray-700 dark:text-gray-400">
+            <tr>
+			<th scope="col" class="px-6 py-3">
+                    Member
+                </th>
+               
+                <th scope="col" class="px-6 py-3">
+                    Previous Outstanding
+                </th>
+                <th scope="col" class="px-6 py-3">
+                    Principle
+                </th>
+                <th scope="col" class="px-6 py-3">
+                    Interest
+                </th>
+				<th scope="col" class="px-6 py-3">
+                    Current Outstanding
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+           {memb_recov_details.map(item=> <tr class="bg-white border-2 border-b-pink-200 dark:bg-gray-800 dark:border-gray-700">
+                <th scope="row" class="px-6 py-3 font-bold text-[#DA4167] whitespace-nowrap dark:text-white">
+                    {item.client_name}
+                </th>
+                <td class="px-6 py-3">
+                    {item.prev_outstanding}
+                </td>
+                <td class="px-6 py-3">
+                    {item.prn_amt}
+                </td>
+                <td class="px-6 py-3">
+                    {item.intt_amt}
+                </td>
+				<td class="px-6 py-3">
+                    {item.curr_outstanding}
+                </td>
+            </tr>)}
+            {/* <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
+                <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                    Microsoft Surface Pro
+                </th>
+                <td class="px-6 py-4">
+                    White
+                </td>
+                <td class="px-6 py-4">
+                    Laptop PC
+                </td>
+                <td class="px-6 py-4">
+                    $1999
+                </td>
+            </tr>
+            <tr class="bg-white dark:bg-gray-800">
+                <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                    Magic Mouse 2
+                </th>
+                <td class="px-6 py-4">
+                    Black
+                </td>
+                <td class="px-6 py-4">
+                    Accessories
+                </td>
+                <td class="px-6 py-4">
+                    $99
+                </td>
+            </tr> */}
+        </tbody>
+    </table>
+</div>
 								{loanType === "R" && (
 									<div className="mt-10">
 										<BtnComp

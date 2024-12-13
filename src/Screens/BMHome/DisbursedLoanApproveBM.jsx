@@ -68,12 +68,8 @@ function DisbursedLoanApproveBM() {
 		setLoanApplications(
 			copyLoanApplications?.filter(
 				(e) =>
-					e?.form_no?.toString()?.toLowerCase().includes(word?.toLowerCase()) ||
-					e?.client_name
-						?.toString()
-						?.toLowerCase()
-						?.includes(word?.toLowerCase()) ||
-					e?.member_code
+					e?.group_code?.toString()?.toLowerCase().includes(word?.toLowerCase()) ||
+					e?.group_name
 						?.toString()
 						?.toLowerCase()
 						?.includes(word?.toLowerCase())

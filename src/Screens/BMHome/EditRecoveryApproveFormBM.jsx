@@ -3,7 +3,7 @@ import "../LoanForm/LoanForm.css"
 import "./EditLoanFormBMStyles.css"
 import { useParams } from "react-router"
 import { useNavigate } from "react-router-dom"
-import { Spin } from "antd"
+import { Spin, Tag } from "antd"
 import { LoadingOutlined } from "@ant-design/icons"
 import FormHeader from "../../Components/FormHeader"
 import { useLocation } from "react-router"
@@ -43,7 +43,7 @@ function EditRecoveryApproveFormBM() {
 
 	const fetchRecoveryDetails = async () => {
 		const creds = {
-			loan_id: params?.id,
+			group_code: params?.id,
 		}
 		await axios
 			.post(`${url}/admin/view_unapprove_recovery_dtls`, creds)
@@ -81,7 +81,7 @@ function EditRecoveryApproveFormBM() {
 	return (
 		<>
 			<Sidebar mode={2} />
-			<section className="bg-slate-50 dark:bg-[#001529] flex justify-center align-middle p-5">
+			<section className=" dark:bg-[#001529] flex justify-center align-middle p-5">
 				{/* {params.id>0 && data && <PrintComp toPrint={data} title={'Department'}/>} */}
 				{/* <HeadingTemplate
 				text={params.id > 0 ? "Update vendor" : "Add vendor"}
@@ -90,20 +90,31 @@ function EditRecoveryApproveFormBM() {
 				data={params.id && data ? data : ""}
 			/> */}
 				{/* {JSON.stringify(loanAppData)} */}
-				<div className=" bg-white p-5 w-4/5 min-h-screen rounded-3xl">
-					<div className="ml-14 mt-5 flex flex-col justify-start align-middle items-start gap-2">
-						<div className="text-sm text-wrap w-96 italic text-blue-800">
+				<div className=" p-2 mt-7 w-4/5 min-h-screen rounded-3xl">
+					{/* <div className=" mt-5 gap-4 -ml-5 flex flex-col justify-end  items-end">
+					<Tag color="#DA4167" className=" p-1 -ml-5">
+					
 							CO: {recoveryDetailsData?.b_coName || "Nil"}, AT:{" "}
 							{new Date(
 								recoveryDetailsData?.b_coCreatedAt || "Nil"
 							).toLocaleString("en-GB")}
-						</div>
-						<div className="text-sm text-wrap w-96 italic text-blue-800">
-							CO Location: {recoveryDetailsData?.b_coLocation || "Nil"}
-						</div>
-					</div>
+					{" "}|{" "}
+						{"  "}	CO Location: {recoveryDetailsData?.b_coLocation || "Nil"}
+						</Tag>
+					</div> */}
 					<div className="w-auto mx-14 my-4">
 						<FormHeader text="Recovery Form" mode={2} />
+					</div>
+					<div className=" mt-5 gap-4 -ml-5 -mb-1 flex flex-col justify-end  items-end">
+					<Tag color="#0694A2" className=" py-1 px-3 mr-[6.6%] rounded-t-2xl ">
+					
+							CO: {recoveryDetailsData?.b_coName || "Nil"}, AT:{" "}
+							{new Date(
+								recoveryDetailsData?.b_coCreatedAt || "Nil"
+							).toLocaleString("en-GB")}
+					{" "}|{" "}
+						{"  "}	CO Location: {recoveryDetailsData?.b_coLocation || "Nil"}
+						</Tag>
 					</div>
 					<Spin
 						indicator={<LoadingOutlined spin />}
@@ -111,7 +122,7 @@ function EditRecoveryApproveFormBM() {
 						className="text-blue-800 dark:text-gray-400"
 						spinning={loading}
 					>
-						<div className="card border-2 p-5 mx-16 border-dashed rounded-3xl surface-border border-round surface-ground flex-auto font-medium">
+						<div className="card border-2 p-5 mx-16  rounded-l-3xl rounded-br-3xl rounded-tr-none surface-border bg-white shadow-lg border-round surface-ground flex-auto font-medium">
 							<RecoveryForm />
 						</div>
 					</Spin>

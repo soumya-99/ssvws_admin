@@ -51,11 +51,9 @@ function MembersTableViewBr({
 				transition={{ delay: 0.5, type: "spring", stiffness: 30 }}
 			>
 				<div
-					className={`flex flex-col p-1 ${
-						flag !== "BM" ? "bg-blue-800" : "bg-slate-800"
-					} rounded-lg my-3 ${
-						flag !== "BM" ? "dark:bg-blue-800" : "dark:bg-slate-800"
-					} md:flex-row items-center justify-between space-y-3 md:space-y-0 md:space-x-4 p-3`}
+					className={`flex flex-col bg-slate-800
+					 rounded-lg my-3 dark:bg-slate-800
+					 md:flex-row items-center justify-between space-y-3 md:space-y-0 md:space-x-4 p-1.5`}
 				>
 					<div className="w-full">
 						<div className="flex items-center justify-between">
@@ -94,9 +92,8 @@ function MembersTableViewBr({
 										initial={{ opacity: 0, width: 0 }}
 										animate={{ opacity: 1, width: "95%" }}
 										transition={{ delay: 1.1, type: "just" }}
-										className={`bg-white border rounded-lg ${
-											flag !== "BM" ? "border-blue-700" : "border-slate-700"
-										} text-gray-800 block w-full h-12 pl-10 dark:bg-gray-800 md:ml-4 duration-300 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white text-lg focus:border-blue-600`}
+										className={`bg-white border rounded-lg border-slate-700
+										text-gray-800 block w-full h-12 pl-10 dark:bg-gray-800 md:ml-4 duration-300 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white text-lg focus:border-blue-600`}
 										placeholder="Search"
 										required=""
 										onChange={(text) => setSearch(text.target.value)}
@@ -114,9 +111,8 @@ function MembersTableViewBr({
 			>
 				<table className="w-full text-sm text-left rtl:text-right shadow-lg text-green-900dark:text-gray-400">
 					<thead
-						className={`text-md text-gray-700 capitalize ${
-							flag !== "BM" ? "bg-blue-100" : "bg-slate-100"
-						} dark:bg-gray-700 dark:text-gray-400`}
+						className={`text-md text-gray-700 capitalize bg-slate-300
+						}dark:bg-gray-700 dark:text-gray-400`}
 					>
 						<tr>
 							{/* <th scope="col" className="p-4">
@@ -156,19 +152,19 @@ function MembersTableViewBr({
 							loanAppData?.slice(first, rows + first).map((item, i) => (
 								<tr
 									className={
-										"bg-white border-b dark:bg-gray-800 dark:border-gray-700"
+										"bg-white border-b-pink-200 border-2 dark:bg-gray-800 dark:border-gray-700"
 									}
 									key={i}
 								>
 									{/* <th
 										scope="row"
-										className="px-3 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white"
+										className="px-3 py-3 font-medium text-gray-900 whitespace-nowrap dark:text-white"
 									>
 										{item.sl_no}
 									</th> */}
-									<td className="px-6 py-4">{item.member_code || "-----"}</td>
-									<td className="px-6 py-4">{item.client_name}</td>
-									<td className="px-6 py-4">
+									<td className="px-6 py-3 font-bold text-slate-800">{item.member_code || "-----"}</td>
+									<td className="px-6 py-3 text-slate-700">{item.client_name}</td>
+									<td className="px-6 py-3">
 										{flag !== "BM" ? (
 											// <Link
 											// 	to={
@@ -190,9 +186,8 @@ function MembersTableViewBr({
 												}}
 											>
 												<EditOutlined
-													className={`text-md ${
-														flag !== "BM" ? "text-blue-800" : "text-slate-800"
-													}`}
+													className={`text-md text-[#DA4167]
+													`}
 												/>
 											</button>
 										) : (

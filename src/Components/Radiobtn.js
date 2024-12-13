@@ -21,7 +21,7 @@ function Radiobtn({ data, onChangeVal, val }) {
 		>
 			<Radio.Group
 				onChange={onChange}
-				className=" mt-7 mb-4 bg-white rounded-full p-2 shadow-lg gap-4"
+				className=" mt-7 mb-4 bg-white rounded-lg p-2 shadow-lg gap-4"
 				value={value}
 			>
 				{data?.map((item) => (

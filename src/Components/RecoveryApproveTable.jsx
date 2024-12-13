@@ -56,7 +56,7 @@ function RecoveryApproveTable({
 						flag === "MIS" ? "bg-blue-800" : "bg-slate-800"
 					} rounded-lg my-3 ${
 						flag === "MIS" ? "dark:bg-blue-800" : "dark:bg-slate-800"
-					} md:flex-row items-center justify-between space-y-3 md:space-y-0 md:space-x-4 p-3`}
+					} md:flex-row items-center justify-between space-y-3 md:space-y-0 md:space-x-4 p-1.5`}
 				>
 					<div className="w-full">
 						<div className="flex items-center justify-between">
@@ -93,7 +93,7 @@ function RecoveryApproveTable({
 										type="text"
 										id="simple-search"
 										initial={{ opacity: 0, width: 0 }}
-										animate={{ opacity: 1, width: "95%" }}
+										animate={{ opacity: 1, width: "92%" }}
 										transition={{ delay: 1.1, type: "just" }}
 										className={`bg-white border rounded-lg ${
 											flag === "MIS" ? "border-blue-700" : "border-slate-700"
@@ -116,27 +116,36 @@ function RecoveryApproveTable({
 				<table className="w-full text-sm text-left rtl:text-right shadow-lg text-green-900dark:text-gray-400">
 					<thead
 						className={`text-md text-gray-700 capitalize ${
-							flag === "MIS" ? "bg-blue-100" : "bg-slate-100"
+							flag === "MIS" ? "bg-blue-100" : "bg-slate-300"
 						} dark:bg-gray-700 dark:text-gray-400`}
 					>
 						<tr>
 							{/* <th scope="col" className="p-4">
 								#
 							</th> */}
-							<th scope="col" className="p-4">
+							{/* <th scope="col" className="p-4">
 								Txn. ID.
+							</th> */}
+								<th scope="col" className="p-4">
+								Sl No.
 							</th>
 							<th scope="col" className="p-4">
 								Txn. Date
 							</th>
-							<th scope="col" className="p-4">
+							{/* <th scope="col" className="p-4">
 								Loan ID
+							</th> */}
+							<th scope="col" className="p-4">
+								Group ID
 							</th>
 							<th scope="col" className="p-4">
 								Txn. Type
 							</th>
-							<th scope="col" className="p-4">
+							{/* <th scope="col" className="p-4">
 								Member
+							</th> */}
+							<th scope="col" className="p-4">
+								Group
 							</th>
 							{/* <th scope="col" className="p-4">
 								Debit
@@ -163,7 +172,7 @@ function RecoveryApproveTable({
 							loanAppData?.slice(first, rows + first).map((item, i) => (
 								<tr
 									className={
-										"bg-white border-b dark:bg-gray-800 dark:border-gray-700"
+										"bg-white border-2 border-b-pink-200 dark:bg-gray-800 dark:border-gray-700"
 									}
 									key={i}
 								>
@@ -173,16 +182,16 @@ function RecoveryApproveTable({
 									>
 										{item.sl_no}
 									</th> */}
-									<td className="px-6 py-4">
-										{item.transaction_id || "-----"}
+									<td className="px-4 py-3 font-bold text-slate-800">
+										{i+1}
 									</td>
-									<td className="px-6 py-4">
+									<td className="px-4 py-3">
 										{new Date(item?.transaction_date).toLocaleDateString(
 											"en-GB"
 										)}
 									</td>
-									<td className="px-6 py-4">{item.loan_id}</td>
-									<td className="px-6 py-4">
+									<td className="px-4 py-3">{item.group_code}</td>
+									<td className="px-4 py-3">
 										{item.tr_type == "D"
 											? "Disbursement"
 											: item.tr_type == "R"
@@ -191,15 +200,15 @@ function RecoveryApproveTable({
 											? "Interest"
 											: "Error"}
 									</td>
-									<td className="px-6 py-4">{item.client_name}</td>
-									{/* <td className="px-6 py-4">{item.debit}</td> */}
-									{/* <td className="px-6 py-4">{item.member_name}</td> */}
-									{/* <td className="px-6 py-4">
+									<td className="px-4 py-3">{item.group_name}</td>
+									{/* <td className="px-4 py-3">{item.debit}</td> */}
+									{/* <td className="px-4 py-3">{item.member_name}</td> */}
+									{/* <td className="px-4 py-3">
 										{item.branch_name}
 									</td>
-									<td className="px-6 py-4">{item.loan_type_name}</td> */}
-									{/* <td className="px-6 py-4">{item.member_name}</td> */}
-									<td className="px-6 py-4">
+									<td className="px-4 py-3">{item.loan_type_name}</td> */}
+									{/* <td className="px-4 py-3">{item.member_name}</td> */}
+									<td className="px-4 py-3">
 										{flag === "MIS" ? (
 											<button
 												// to={routePaths.BM_EDIT_GRT + item?.form_no}
@@ -213,7 +222,7 @@ function RecoveryApproveTable({
 											>
 												<EditOutlined
 													className={`text-md ${
-														flag === "MIS" ? "text-blue-800" : "text-slate-800"
+														flag === "MIS" ? "text-blue-800" : "text-[#DA4167]"
 													}`}
 												/>
 											</button>
@@ -224,7 +233,7 @@ function RecoveryApproveTable({
 												onClick={() => {
 													console.log("LLSKSIODFUISFH", item)
 													navigate(
-														`/homebm/recoveryloan/${item?.loan_id || 0}`,
+														`/homebm/recoveryloan/${item?.group_code || 0}`,
 														{
 															state: [item, loanType],
 														}
@@ -233,7 +242,7 @@ function RecoveryApproveTable({
 											>
 												<EditOutlined
 													className={`text-md ${
-														flag === "MIS" ? "text-blue-800" : "text-slate-800"
+														flag === "MIS" ? "text-blue-800" : "text-[#DA4167]"
 													}`}
 												/>
 											</button>
@@ -251,7 +260,7 @@ function RecoveryApproveTable({
 											>
 												<EditOutlined
 													className={`text-md ${
-														flag === "MIS" ? "text-blue-800" : "text-slate-800"
+														flag === "MIS" ? "text-blue-800" : "text-[#DA4167]"
 													}`}
 												/>
 											</button>

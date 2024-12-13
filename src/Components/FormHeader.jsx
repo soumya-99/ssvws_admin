@@ -8,13 +8,7 @@ function FormHeader({ text, mode = 0, data, title }) {
 		<div className="bg-transparent dark:bg-gray-800 relative overflow-hidden mb-5">
 			<div
 				className={
-					mode === 0
-						? "flex flex-col bg-red-800 dark:bg-red-800 w-full md:flex-row items-center align-middle justify-start gap-3 space-x-2 px-8 rounded-full py-3"
-						: mode === 1
-						? "flex flex-col bg-blue-800 dark:bg-blue-800 w-full md:flex-row items-center align-middle justify-start gap-3 space-x-2 px-8 rounded-full py-3"
-						: mode === 2
-						? "flex flex-col bg-slate-800 dark:bg-slate-800 w-full md:flex-row items-center align-middle justify-start gap-3 space-x-2 px-8 rounded-full py-3"
-						: "flex flex-col bg-slate-800 dark:bg-slate-800 w-full md:flex-row items-center align-middle justify-start gap-3 space-x-2 px-8 rounded-full py-3"
+					"flex flex-col bg-slate-800 dark:bg-slate-800 w-full md:flex-row items-center align-middle justify-start gap-3 space-x-2 px-8 rounded-full py-2"
 				}
 			>
 				<Backbtn />
@@ -23,7 +17,7 @@ function FormHeader({ text, mode = 0, data, title }) {
 					initial={{ opacity: 0, y: -50 }}
 					animate={{ opacity: 1, y: 0 }}
 					transition={{ delay: 0.2, type: "just" }}
-					className="md:text-2xl sm:text-xl font-semibold text-white capitalize dark:text-gray-400 "
+					className="md:text-lg sm:text-md font-semibold text-white capitalize dark:text-gray-400 "
 				>
 					{text}
 				</motion.h2>

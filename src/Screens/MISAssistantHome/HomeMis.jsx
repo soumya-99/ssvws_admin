@@ -21,7 +21,7 @@ function HomeMis() {
 		<div>
 			{/* <Header /> */}
 			<Sidebar mode={1} />
-			<div className={`px-6 w-auto bg-blue-50 dark:bg-gray-800 min-h-screen`}>
+			<div className={`px-6 w-auto bg-slate-200 dark:bg-gray-800 min-h-screen`}>
 				<div
 					className={
 						"p-4 h-auto rounded-3xl bg-transparent dark:border-gray-700 dark:bg-transparent dark:text-white min-w-screen-xl"
@@ -35,7 +35,7 @@ function HomeMis() {
 							console.error(error)
 						}}
 					>
-						<ScrollTop className="bg-blue-800" />
+						<ScrollTop className="bg-[#DA4167]" />
 
 						<Outlet />
 					</ErrorBoundary>

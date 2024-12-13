@@ -261,7 +261,7 @@ function MemberLoanDetailsForm() {
 
 						<div>
 							<div className="grid gap-4 sm:grid-cols-2 sm:gap-6">
-								<div className="text-xl mb-2 mt-5 text-lime-800 font-semibold underline">
+								<div className="text-xl mb-2 mt-5 text-[#DA4167] font-semibold underline">
 									1. Full Loan Details
 								</div>
 							</div>
@@ -534,7 +534,7 @@ function MemberLoanDetailsForm() {
 							</div>
 							<div className="text-center mt-6">
 								<button
-									className="p-2 px-6 bg-slate-700 text-slate-50 rounded-xl hover:bg-slate-600 active:ring-2 active:ring-slate-500"
+									className="p-2 px-6 bg-teal-500 text-slate-50 rounded-xl hover:bg-green-500 active:ring-2 active:ring-slate-500"
 									type="button"
 									onClick={() => setVisible(true)}
 								>
@@ -547,7 +547,7 @@ function MemberLoanDetailsForm() {
 
 						<div>
 							<div className="w-full my-10 border-t-4 border-gray-500 border-dashed"></div>
-							<div className="text-xl mb-2 mt-5 text-lime-800 font-semibold underline">
+							<div className="text-xl mb-2 mt-5 text-[#DA4167] font-semibold underline">
 								2. Transaction Details
 							</div>
 						</div>

@@ -84,8 +84,8 @@ function SigninMis() {
 	})
 
 	return (
-		<div className="bg-blue-800 p-20 flex justify-center min-h-screen min-w-screen">
-			<div className="bg-white p-44 rounded-3xl flex flex-col gap-8 justify-center items-center">
+		<div className="bg-slate-800 p-16 flex justify-center min-h-screen min-w-screen">
+			<div className="bg-white p-20 rounded-3xl flex flex-col gap-8 justify-center items-center">
 				<div className="absolute top-32">
 					<motion.img
 						initial={{ opacity: 0 }}
@@ -96,13 +96,13 @@ function SigninMis() {
 						alt="Flowbite Logo"
 					/>
 				</div>
-				<div className="text-4xl text-center font-thin text-blue-800">
+				<div className="text-4xl text-center font-bold text-slate-800">
 					LOGIN
 				</div>
 
 				<form
 					onSubmit={formik.handleSubmit}
-					className="flex flex-col justify-center items-center gap-5"
+					className="flex flex-col justify-center items-center gap-3"
 				>
 					<div
 						style={{
@@ -143,18 +143,18 @@ function SigninMis() {
 						) : null}
 					</div>
 					<div
-						className="pt-2 flex justify-between gap-5"
+						className="flex justify-between gap-5"
 						style={{
 							width: 280,
 						}}
 					>
 						<Link to={routePaths.SIGN_UP}>
-							<p className="text-sm text-blue-800 hover:underline py-2 cursor-pointer">
+							<p className="text-sm text-[#DA4167] font-bold hover:underline cursor-pointer">
 								Sign Up
 							</p>
 						</Link>
 						<Link to={routePaths.FORGOTPASS}>
-							<p className="text-sm text-blue-800 hover:underline py-2 cursor-pointer">
+							<p className="text-sm text-[#DA4167] font-bold hover:underline cursor-pointer">
 								Forgot password?
 							</p>
 						</Link>
@@ -166,7 +166,7 @@ function SigninMis() {
 						spinning={loading}
 					>
 						<div
-							className="pt-4 pb-4 flex justify-center text-sm"
+							className="pt-2 pb-1 flex justify-center text-sm"
 							style={{
 								width: 280,
 							}}
@@ -174,7 +174,7 @@ function SigninMis() {
 							<button
 								disabled={!formik.isValid}
 								type="submit"
-								className="bg-blue-800 hover:duration-500 w-full hover:scale-105 text-white p-3 rounded-full"
+								className="bg-[#DA4167] hover:duration-500 w-full hover:scale-105 text-white p-3 rounded-full"
 							>
 								Sign In
 							</button>

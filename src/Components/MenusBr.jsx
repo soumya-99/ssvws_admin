@@ -214,10 +214,28 @@ function MenusBr({ theme }) {
 			children: [
 				{
 					key: "sub6-1",
-					icon: <EyeOutlined />,
+					icon: <BarChartOutlined />,
 					label: (
 						<Link to={"/homebm/memberwiserecoveryreport"}>
 							Memberwise Recovery
+						</Link>
+					),
+				},
+				{
+					key: "sub6-2",
+					icon: <BarChartOutlined />,
+					label: (
+						<Link to={"/homebm/groupwiserecoveryreport"}>
+							Groupwise Recovery
+						</Link>
+					),
+				},
+				{
+					key: "sub6-2",
+					icon: <BarChartOutlined />,
+					label: (
+						<Link to={"/homebm/demandreport"}>
+							Demand
 						</Link>
 					),
 				},
@@ -338,17 +356,17 @@ function MenusBr({ theme }) {
 				<Tooltip title="Profile" placement="bottom">
 					<button
 						onClick={() => setVisibleModal2(!visibleModal2)}
-						className="w-10 h-10 bg-yellow-50 flex self-center justify-center items-center rounded-full mr-2"
+						className="w-10 h-10 bg-[#DA4167] text-slate-50 flex self-center justify-center items-center rounded-full mr-2"
 					>
-						<UserOutlined className="text-purple-800 text-lg self-center" />
+						<UserOutlined className="text-slate-50 text-lg self-center" />
 					</button>
 				</Tooltip>
 				<Tooltip title="Log Out" placement="bottom">
 					<button
 						onClick={() => setVisibleModal(!visibleModal)}
-						className="w-10 h-10 bg-yellow-50 flex self-center justify-center items-center rounded-full mr-2"
+						className="w-10 h-10 bg-teal-500 flex self-center justify-center items-center rounded-full mr-2"
 					>
-						<LogoutOutlined className="text-purple-800 text-lg self-center" />
+						<LogoutOutlined className="text-slate-50 text-lg self-center" />
 					</button>
 				</Tooltip>
 			</div>

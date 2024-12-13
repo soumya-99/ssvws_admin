@@ -21,6 +21,7 @@ import {
 	ClockCircleOutlined,
 	ArrowRightOutlined,
 	UserOutlined,
+	InfoCircleFilled,
 } from "@ant-design/icons"
 import FormHeader from "../../Components/FormHeader"
 import { routePaths } from "../../Assets/Data/Routes"
@@ -29,6 +30,7 @@ import Sidebar from "../../Components/Sidebar"
 import DialogBox from "../../Components/DialogBox"
 import TDInputTemplateBr from "../../Components/TDInputTemplateBr"
 import TimelineComp from "../../Components/TimelineComp"
+import { PendingActionsOutlined } from "@mui/icons-material"
 
 function GroupExtendedForm({ groupDataArr }) {
 	const params = useParams()
@@ -276,7 +278,7 @@ function GroupExtendedForm({ groupDataArr }) {
 			>
 				<form onSubmit={formik.handleSubmit}>
 					<div className="flex justify-start gap-5">
-						<div className="grid gap-4 sm:grid-cols-2 sm:gap-6 w-1/2">
+						<div className={params.id>0?"grid gap-4 sm:grid-cols-2 sm:gap-6 w-1/2":"grid gap-4 sm:grid-cols-2 sm:gap-6 w-full"}>
 							{params?.id > 0 && (
 								<div className="sm:col-span-2">
 									<TDInputTemplateBr
@@ -546,23 +548,80 @@ function GroupExtendedForm({ groupDataArr }) {
 								) : null}
 							</div>
 						</div>
-						<Divider
+						{params.id>0 && <Divider
 							type="vertical"
 							style={{
 								height: 650,
 							}}
-						/>
+						/>}
 						{params?.id > 0 && (
 							<div className="w-1/2 gap-3 space-x-7">
 								<div>
-									<div className="text-blue-700 mb-2 font-bold">
+									<Tag color="#DA4167" className="text-white mb-2 font-bold">
 										Members in this Group
-									</div>
+									</Tag>
 
 									{console.log("+++++++++++++++++++++++++++++", memberDetails)}
 
-									{groupData[0]?.memb_dt?.map((item, i) => (
-										<Tag
+										
+
+<div class="relative overflow-x-auto">
+    <table class="w-full text-sm shadow-lg text-left rtl:text-right text-gray-500 dark:text-gray-400">
+        <thead class="text-xs text-white uppercase bg-slate-800 dark:text-gray-400">
+            <tr>
+                <th scope="col" class="px-6 py-3">
+                    Name
+                </th>
+               
+                <th scope="col" class="px-6 py-3">
+                    {/* Price */}
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+		{groupData[0]?.memb_dt?.map((item, i) => (
+            <tr 
+			onClick={
+				userDetails?.id == 2
+					? () =>
+							navigate(`/homebm/editgrtform/${item?.form_no}`, {
+								state: item,
+							})
+					: () =>
+							navigate(`/homeco/editgrtform/${item?.form_no}`, {
+								state: item,
+							})
+			}
+			
+			class="bg-white hover:bg-slate-200 cursor-pointer dark:bg-gray-800 border-b-slate-200 border-2">
+                <th scope="row" class="px-6 py-3  font-bold whitespace-nowrap dark:text-white text-slate-800 ">
+                    {item.client_name}
+                </th>
+				<td class="px-6 py-3">
+
+				{(item?.approval_status === "U" ||(userDetails?.id == 3 && item?.approval_status === "S"))
+												? <InfoCircleFilled className="text-teal-500"/>:
+												<PendingActionsOutlined className="text-[#DA4167]"/>
+													
+				}
+
+				</td>
+                {/* <td class="px-6 py-4">
+                    Silver
+                </td>
+                <td class="px-6 py-4">
+                    Laptop
+                </td>
+                <td class="px-6 py-4">
+                    $2999
+                </td> */}
+            </tr>
+		))}
+        </tbody>
+    </table>
+</div>
+
+										{/* <Tag
 											key={i}
 											icon={<UserOutlined />}
 											color={
@@ -586,8 +645,8 @@ function GroupExtendedForm({ groupDataArr }) {
 											}
 										>
 											{item?.client_name}
-										</Tag>
-									))}
+										</Tag> */}
+									{/* ))} */}
 								</div>
 							</div>
 						)}

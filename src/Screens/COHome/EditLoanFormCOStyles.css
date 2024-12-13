@@ -1,8 +1,10 @@
 .p-stepper-separator {
-	background-color: navy;
+	background-color: rgb(160, 160, 163);
+
 }
 
 .p-stepper-number {
-	background-color: #58b3d1;
-	color: #2f0a28;
+	background-color: #DA4167;
+	color:white;
 }
+

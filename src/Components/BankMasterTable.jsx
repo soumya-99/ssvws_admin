@@ -53,11 +53,8 @@ function BankMasterTable({
 				transition={{ delay: 0.5, type: "spring", stiffness: 30 }}
 			>
 				<div
-					className={`flex flex-col p-1 ${
-						flag === "MIS" ? "bg-blue-800" : "bg-slate-800"
-					} rounded-lg my-3 ${
-						flag === "MIS" ? "dark:bg-blue-800" : "dark:bg-slate-800"
-					} md:flex-row items-center justify-between space-y-3 md:space-y-0 md:space-x-4 p-3`}
+					className={`flex flex-col bg-slate-800
+					 rounded-lg my-3 md:flex-row items-center justify-between space-y-3 md:space-y-0 md:space-x-4 p-1.5`}
 				>
 					<div className="w-full flex flex-row-reverse justify-between items-center mx-4">
 						<button
@@ -96,9 +93,8 @@ function BankMasterTable({
 									initial={{ opacity: 0, width: 0 }}
 									animate={{ opacity: 1, width: "95%" }}
 									transition={{ delay: 1.1, type: "just" }}
-									className={`bg-white border rounded-lg ${
-										flag === "MIS" ? "border-blue-700" : "border-slate-700"
-									} text-gray-800 block w-full h-12 pl-10 dark:bg-gray-800 md:ml-4 duration-300 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white text-lg focus:border-blue-600`}
+									className={`border rounded-lg  border-slate-700 bg-white
+									 text-gray-800 block w-full h-12 pl-10 dark:bg-gray-800 md:ml-4 duration-300 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white text-lg `}
 									placeholder="Search"
 									required=""
 									onChange={(text) => setSearch(text.target.value)}
@@ -125,9 +121,8 @@ function BankMasterTable({
 			>
 				<table className="w-full text-sm text-left rtl:text-right shadow-lg text-green-900dark:text-gray-400">
 					<thead
-						className={`text-md text-gray-700 capitalize ${
-							flag === "MIS" ? "bg-blue-100" : "bg-slate-100"
-						} dark:bg-gray-700 dark:text-gray-400`}
+						className={`text-md text-gray-700 capitalize  bg-slate-300
+						 dark:bg-gray-700 dark:text-gray-400`}
 					>
 						<tr>
 							{/* <th scope="col" className="p-4">
@@ -155,7 +150,7 @@ function BankMasterTable({
 							loanAppData?.slice(first, rows + first).map((item, i) => (
 								<tr
 									className={
-										"bg-white border-b dark:bg-gray-800 dark:border-gray-700"
+										"bg-white border-b-pink-200 border-2 dark:bg-gray-800 dark:border-gray-700"
 									}
 									key={i}
 								>
@@ -165,12 +160,12 @@ function BankMasterTable({
 									>
 										{item.sl_no}
 									</th> */}
-									<td className="px-6 py-4">{item?.bank_name}</td>
-									<td className="px-6 py-4">{item?.branch_name}</td>
-									<td className="px-6 py-4">{item?.ifsc}</td>
-									<td className="px-6 py-4">{item?.sol_id}</td>
+									<td className="px-6 py-3 text-slate-800 font-bold">{item?.bank_name}</td>
+									<td className="px-6 py-3 text-slate-700">{item?.branch_name}</td>
+									<td className="px-6 py-3  text-slate-700">{item?.ifsc}</td>
+									<td className="px-6 py-3 text-slate-700">{item?.sol_id}</td>
 
-									<td className="px-6 py-4">
+									<td className="px-6 py-3 text-slate-700">
 										{flag === "BM" && (
 											// </Link>
 											<button
@@ -186,9 +181,8 @@ function BankMasterTable({
 												}}
 											>
 												<EditOutlined
-													className={`text-md ${
-														flag === "MIS" ? "text-blue-800" : "text-slate-800"
-													}`}
+													className={`text-md  text-[#DA4167]
+													`}
 												/>
 											</button>
 										)}

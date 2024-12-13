@@ -49,13 +49,13 @@
   color: #1F2937;
 } */
 .p-steps li{
-  background-color: #1F2937
+  background-color: #4a4b4d
 }
 .p-stepper-number{
-  color: #1F2937
+  color: #ffffff
 }
 .p-stepper-separator{
-  background-color: #1F2937
+  background-color: #DA4167
 }
 /* .p-stepper-action{ */
   /* background-color: #1F2937 */
@@ -95,7 +95,7 @@
 } */
 
 .p-stepper-number{
-  background-color: #eb8d00;
+  background-color: #DA4167;
   color:'white'
 }
 

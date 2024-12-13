@@ -55,7 +55,7 @@ function GroupsTableViewBr({
 						flag !== "BM" ? "bg-slate-800" : "bg-slate-800"
 					} rounded-lg my-3 ${
 						flag !== "BM" ? "dark:bg-slate-800" : "dark:bg-slate-800"
-					} md:flex-row items-center justify-between space-y-3 md:space-y-0 md:space-x-4 p-3`}
+					} md:flex-row items-center justify-between space-y-3 md:space-y-0 md:space-x-4 p-1.5`}
 				>
 					<div className="w-full">
 						<div className="flex items-center justify-between">
@@ -115,7 +115,7 @@ function GroupsTableViewBr({
 				<table className="w-full text-sm text-left rtl:text-right shadow-lg text-green-900dark:text-gray-400">
 					<thead
 						className={`text-md text-gray-700 capitalize ${
-							flag !== "BM" ? "bg-slate-100" : "bg-slate-100"
+							flag !== "BM" ? "bg-slate-300" : "bg-slate-300"
 						} dark:bg-gray-700 dark:text-gray-400`}
 					>
 						<tr>
@@ -159,7 +159,7 @@ function GroupsTableViewBr({
 							loanAppData?.slice(first, rows + first).map((item, i) => (
 								<tr
 									className={
-										"bg-white border-b dark:bg-gray-800 dark:border-gray-700"
+										"bg-white border-2 border-b-pink-200 dark:bg-gray-800 dark:border-gray-700"
 									}
 									key={i}
 								>
@@ -169,12 +169,12 @@ function GroupsTableViewBr({
 									>
 										{item.sl_no}
 									</th> */}
-									<td className="px-6 py-4">{item.group_code || "-----"}</td>
-									<td className="px-6 py-4">{item.group_name}</td>
-									<td className="px-6 py-4">
+									<td className="px-6 py-3 font-bold text-slate-800">{item.group_code || "-----"}</td>
+									<td className="px-6 py-3 text-slate-700">{item.group_name}</td>
+									<td className="px-6 py-3 text-slate-700">
 										{item.group_type === "J" ? "JLG" : "SHG"}
 									</td>
-									<td className="px-6 py-4">
+									<td className="px-6 py-3 text-slate-700">
 										{flag !== "BM" ? (
 											// <Link
 											// 	to={

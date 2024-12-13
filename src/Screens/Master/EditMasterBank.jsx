@@ -22,7 +22,7 @@ function EditMasterBank() {
 	return (
 		<>
 			<Sidebar mode={2} />
-			<section className="bg-slate-50 dark:bg-[#001529] flex justify-center align-middle p-5">
+			<section className="dark:bg-[#001529] flex justify-center align-middle p-5">
 				{/* {params.id>0 && data && <PrintComp toPrint={data} title={'Department'}/>} */}
 				{/* <HeadingTemplate
 				text={params.id > 0 ? "Update vendor" : "Add vendor"}
@@ -31,7 +31,7 @@ function EditMasterBank() {
 				data={params.id && data ? data : ""}
 			/> */}
 				{/* {JSON.stringify(loanAppData)} */}
-				<div className=" bg-white p-5 w-4/5 min-h-screen rounded-3xl">
+				<div className="px-1 py-5 w-4/5 min-h-screen rounded-3xl">
 					<div className="w-auto mx-14 my-4">
 						<FormHeader text="Add/Edit Bank Master" mode={2} />
 					</div>
@@ -41,7 +41,7 @@ function EditMasterBank() {
 						className="text-blue-800 dark:text-gray-400"
 						spinning={loading}
 					>
-						<div className="card border-2 p-5 mx-16 border-dashed rounded-3xl surface-border border-round surface-ground flex-auto font-medium">
+						<div className="card shadow-lg bg-white border-2 p-5 mx-16  rounded-3xl surface-border border-round surface-ground flex-auto font-medium">
 							<BankMasterForm />
 						</div>
 					</Spin>

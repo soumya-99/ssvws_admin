@@ -94,8 +94,15 @@ function BankMasterForm() {
 		setVisible(true)
 	}
 
-	const onReset = async () => {
-		return
+	const onReset = () => {
+		setMasterBankData({
+			bank_name: "",
+			branch_name: "",
+			ifsc: "",
+			branch_addr: "",
+			sol_id: "",
+			phone_no: "",
+		})
 	}
 
 	return (
