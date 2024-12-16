@@ -105,8 +105,8 @@ function DemandReportScreen() {
             <div className="text-3xl text-slate-800">Demand Report</div>
           </div>
 
-          <div className="grid grid-cols-2 gap-5 mt-5">
-            <div className="sm:col-span-2">
+          <div className="grid grid-cols-2 gap-5">
+            <div className="sm:col-span-2 my-3">
               <TDInputTemplateBr
                 placeholder="From Date"
                 type="date"
