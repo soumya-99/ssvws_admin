@@ -70,7 +70,9 @@ function EditGRTFormBM() {
 		<>
 			<Sidebar mode={2} />
 			<section
-				className={ "dark:bg-[#001529] mt-10 flex justify-center align-middle p-5"}
+				className={
+					"dark:bg-[#001529] mt-10 flex justify-center align-middle p-5"
+				}
 			>
 				<div className=" p-5 w-4/5 min-h-screen rounded-3xl">
 					{userDetails?.id === 2 &&
