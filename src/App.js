@@ -23,6 +23,10 @@ function App() {
 						Steps: {
 							colorPrimary: "#22543d",
 						},
+						Button: {
+							colorPrimary: "#da4167",
+							colorPrimaryHover: "#da4167cc",
+						},
 						Timeline: {
 							// dotBg: "#22543d",
 							// tailColor: "#22543d",

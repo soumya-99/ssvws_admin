@@ -3,11 +3,20 @@ import Sidebar from "../../../Components/Sidebar"
 import axios from "axios"
 import { url } from "../../../Address/BaseUrl"
 import { Message } from "../../../Components/Message"
-import { Spin, Button, Modal } from "antd"
-import { LoadingOutlined, SearchOutlined } from "@ant-design/icons"
+import { Spin, Button, Modal, Tooltip } from "antd"
+import {
+	LoadingOutlined,
+	SearchOutlined,
+	PrinterOutlined,
+	FileExcelOutlined,
+} from "@ant-design/icons"
 import Radiobtn from "../../../Components/Radiobtn"
 import TDInputTemplateBr from "../../../Components/TDInputTemplateBr"
 import { formatDateToYYYYMMDD } from "../../../Utils/formateDate"
+
+import { saveAs } from "file-saver"
+import * as XLSX from "xlsx"
+import { printTable } from "../../../Utils/printTable"
 
 const options = [
 	{
@@ -137,6 +146,24 @@ function LoanStatementMain() {
 		setReportTxnData(() => [])
 	}, [searchType])
 
+	const exportToExcel = async (data) => {
+		const wb = XLSX.utils.book_new()
+		const ws = XLSX.utils.json_to_sheet(data)
+		await XLSX.utils.book_append_sheet(wb, ws, "Sheet1")
+		const wbout = XLSX.write(wb, { bookType: "xlsx", type: "binary" })
+		const blob = new Blob([s2ab(wbout)], { type: "application/octet-stream" })
+		saveAs(blob, "loan_statement_report.xlsx")
+	}
+
+	const s2ab = (s) => {
+		const buf = new ArrayBuffer(s.length)
+		const view = new Uint8Array(buf)
+		for (let i = 0; i < s.length; i++) {
+			view[i] = s.charCodeAt(i) & 0xff
+		}
+		return buf
+	}
+
 	return (
 		<div>
 			<Sidebar mode={2} />
@@ -148,7 +175,9 @@ function LoanStatementMain() {
 			>
 				<main className="px-4 pb-5 bg-slate-50 rounded-lg shadow-lg h-auto my-10 mx-32">
 					<div className="flex flex-row gap-3 mt-20  py-3 rounded-xl">
-						<div className="text-3xl text-teal-700">LOAN STATEMENTS</div>
+						<div className="text-3xl text-slate-700 font-bold">
+							LOAN STATEMENTS
+						</div>
 					</div>
 
 					<div className="mb-2">
@@ -358,9 +387,25 @@ function LoanStatementMain() {
 						title="View Transaction Details"
 						centered
 						open={openModal}
-						onOk={() => setOpenModal(false)}
-						onCancel={() => setOpenModal(false)}
+						onOk={() => {
+							setOpenModal(false)
+						}}
+						onCancel={async () => {
+							// await exportToExcel(reportTxnData)
+							setOpenModal(false)
+						}}
 						width={1500}
+						// okButtonProps={{
+						// 	icon: <PrinterOutlined />,
+						// }}
+						okText={"OK"}
+						cancelText={"Cancel"}
+						// cancelButtonProps={{
+						// 	icon: <FileExcelOutlined />,
+						// }}
+						// onClose={() => {
+						// 	setOpenModal(false)
+						// }}
 					>
 						{/* For memberwise */}
 
@@ -539,6 +584,34 @@ function LoanStatementMain() {
 										</tbody>
 									</table>
 								</div>
+							</div>
+						)}
+						{reportTxnData.length !== 0 && (
+							<div className="flex gap-4">
+								<Tooltip title="Export to Excel">
+									<button
+										onClick={async () => await exportToExcel(reportTxnData)}
+										className="mt-5 justify-center items-center rounded-full text-green-900"
+									>
+										<FileExcelOutlined
+											style={{
+												fontSize: 30,
+											}}
+										/>
+									</button>
+								</Tooltip>
+								<Tooltip title="Print">
+									<button
+										onClick={() => printTable(reportTxnData, "Loan Statements")}
+										className="mt-5 justify-center items-center rounded-full text-pink-600"
+									>
+										<PrinterOutlined
+											style={{
+												fontSize: 30,
+											}}
+										/>
+									</button>
+								</Tooltip>
 							</div>
 						)}
 

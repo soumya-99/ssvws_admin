@@ -21,7 +21,7 @@ const options = [
 	},
 ]
 function GroupwiseRecoveryReport() {
-    const userDetails = JSON.parse(localStorage.getItem("user_details")) || ""
+	const userDetails = JSON.parse(localStorage.getItem("user_details")) || ""
 	const [loading, setLoading] = useState(false)
 
 	// const [approvalStatus, setApprovalStatus] = useState("S")
@@ -30,7 +30,7 @@ function GroupwiseRecoveryReport() {
 	const [fromDate, setFromDate] = useState()
 	const [toDate, setToDate] = useState()
 	const [reportData, setReportData] = useState(() => [])
-    const [tot_sum,setTotSum] = useState(0)
+	const [tot_sum, setTotSum] = useState(0)
 
 	const onChange = (e) => {
 		console.log("radio1 checked", e)
@@ -43,15 +43,14 @@ function GroupwiseRecoveryReport() {
 			from_dt: formatDateToYYYYMMDD(fromDate),
 			to_dt: formatDateToYYYYMMDD(toDate),
 			tr_mode: txnMode,
-            branch_code:JSON.parse(localStorage.getItem('user_details'))?.brn_code
+			branch_code: JSON.parse(localStorage.getItem("user_details"))?.brn_code,
 		}
 		await axios
 			.post(`${url}/admin/group_wise_recov_web`, creds)
 			.then((res) => {
 				console.log("RESSSSS======>>>>", res?.data)
 				setReportData(res?.data?.msg)
-                setTotSum(res?.data?.msg.reduce((n, {credit}) => n + credit, 0))
-
+				setTotSum(res?.data?.msg.reduce((n, { credit }) => n + credit, 0))
 			})
 			.catch((err) => {
 				console.log("ERRRR>>>", err)
@@ -74,8 +73,8 @@ function GroupwiseRecoveryReport() {
 				className="text-slate-800 dark:text-gray-400"
 				spinning={loading}
 			>
-				<main className="px-4 bg-slate-50 rounded-lg shadow-lg h-auto my-10 mx-32">
-                <div className="flex flex-row gap-3 mt-20  py-3 rounded-xl">
+				<main className="px-4 bg-slate-50 rounded-lg shadow-lg h-auto my-10 mx-32 pb-5">
+					<div className="flex flex-row gap-3 mt-20  py-3 rounded-xl">
 						<div className="text-3xl text-slate-800">
 							Groupwise Recovery Report
 						</div>
@@ -132,7 +131,8 @@ function GroupwiseRecoveryReport() {
 					</div>
 
 					{/* <Spin spinning={loading}> */}
-						{reportData.length>0 && <div className={`relative overflow-x-auto shadow-md sm:rounded-lg`}>
+					{reportData.length > 0 && (
+						<div className={`relative overflow-x-auto shadow-md sm:rounded-lg`}>
 							<table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
 								<thead className="w-full text-xs text-slate-50 uppercase bg-slate-700 dark:bg-gray-700 dark:text-gray-400">
 									<tr>
@@ -145,7 +145,7 @@ function GroupwiseRecoveryReport() {
 										<th scope="col" className="px-6 py-3 font-semibold">
 											Group Name
 										</th>
-										
+
 										<th scope="col" className="px-6 py-3 font-semibold">
 											Credit
 										</th>
@@ -172,19 +172,22 @@ function GroupwiseRecoveryReport() {
 												<td className="px-6 py-4">{item?.credit}/-</td>
 												<td className="px-6 py-4">{item?.balance}/-</td>
 											</tr>
-                                           
 										)
 									})}
-                                     <tr >
-												<td colSpan={3} className="px-6 py-4 font-bold"> Total Credit:</td>
+									<tr>
+										<td colSpan={3} className="px-6 py-4 font-bold">
+											{" "}
+											Total Credit:
+										</td>
 
-												<td colspan="4" className="px-6 py-4 font-bold">{tot_sum}/-</td>
-
-
-                                            </tr>
+										<td colspan="4" className="px-6 py-4 font-bold">
+											{tot_sum}/-
+										</td>
+									</tr>
 								</tbody>
 							</table>
-						</div>}
+						</div>
+					)}
 					{/* </Spin> */}
 
 					{/* <ViewLoanTableBr
