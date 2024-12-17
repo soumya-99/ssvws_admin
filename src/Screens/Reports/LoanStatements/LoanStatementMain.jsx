@@ -44,6 +44,8 @@ function LoanStatementMain() {
 	// const [tot_sum, setTotSum] = useState(0)
 	const [search, setSearch] = useState("")
 
+	const [metadataDtls, setMetadataDtls] = useState(() => null)
+
 	const onChange = (e) => {
 		console.log("radio1 checked", e)
 		setSearchType(e)
@@ -144,6 +146,7 @@ function LoanStatementMain() {
 	useEffect(() => {
 		setReportData(() => [])
 		setReportTxnData(() => [])
+		setMetadataDtls(() => null)
 	}, [searchType])
 
 	const exportToExcel = async (data) => {
@@ -287,6 +290,7 @@ function LoanStatementMain() {
 																await handleFetchLoanViewMemberwise(
 																	item?.loan_id
 																)
+																setMetadataDtls(item)
 																setOpenModal(true)
 															}}
 															className="text-pink-600 disabled:text-pink-400 disabled:cursor-not-allowed"
@@ -364,6 +368,7 @@ function LoanStatementMain() {
 																await handleFetchLoanViewGroupwise(
 																	item?.group_code
 																)
+																setMetadataDtls(item)
 																setOpenModal(true)
 															}}
 															className="text-pink-600 disabled:text-pink-400 disabled:cursor-not-allowed"
@@ -384,7 +389,7 @@ function LoanStatementMain() {
 					{/* ///////////////////////////////////////////////////////////////// */}
 
 					<Modal
-						title="View Transaction Details"
+						title="Loan Statement"
 						centered
 						open={openModal}
 						onOk={() => {
@@ -407,6 +412,43 @@ function LoanStatementMain() {
 						// 	setOpenModal(false)
 						// }}
 					>
+						{searchType === "M" && (
+							<div className="text-sm text-slate-700">
+								<div className="italic">
+									Member: {metadataDtls?.client_name},{" "}
+									{metadataDtls?.member_code}
+								</div>
+								<div className="italic">
+									Branch: {metadataDtls?.branch_name},{" "}
+									{metadataDtls?.branch_code}
+								</div>
+								<div className="italic">
+									Group: {metadataDtls?.group_name}, {metadataDtls?.group_code}
+								</div>
+								<div className="italic">
+									Showing results from{" "}
+									{new Date(fromDate)?.toLocaleDateString("en-GB")} to{" "}
+									{new Date(toDate)?.toLocaleDateString("en-GB")}
+								</div>
+								<div className="italic">Loan ID: {metadataDtls?.loan_id}</div>
+							</div>
+						)}
+						{searchType === "G" && (
+							<div className="text-sm text-slate-700">
+								<div className="italic">
+									Group: {metadataDtls?.group_name}, {metadataDtls?.group_code}
+								</div>
+								<div className="italic">
+									Showing results from{" "}
+									{new Date(fromDate)?.toLocaleDateString("en-GB")} to{" "}
+									{new Date(toDate)?.toLocaleDateString("en-GB")}
+								</div>
+								<div className="italic">
+									Branch: {metadataDtls?.branch_name},{" "}
+									{metadataDtls?.branch_code}
+								</div>
+							</div>
+						)}
 						{/* For memberwise */}
 
 						{searchType === "M" && reportTxnData.length > 0 && (
@@ -481,13 +523,15 @@ function LoanStatementMain() {
 																? "Disbursement"
 																: item?.tr_type === "R"
 																? "Recovery"
+																: item?.tr_type === "I"
+																? "Interest"
 																: "Error"}
 														</td>
 														<td className="px-6 py-3">
 															{item?.tr_mode === "C"
 																? "Cash"
 																: item?.tr_mode === "B"
-																? "UPI"
+																? "Bank"
 																: "Error"}
 														</td>
 													</tr>
@@ -602,7 +646,16 @@ function LoanStatementMain() {
 								</Tooltip>
 								<Tooltip title="Print">
 									<button
-										onClick={() => printTable(reportTxnData, "Loan Statements")}
+										onClick={() =>
+											printTable(
+												reportTxnData,
+												"Loan Statement",
+                                                searchType,
+												metadataDtls,
+												fromDate,
+												toDate
+											)
+										}
 										className="mt-5 justify-center items-center rounded-full text-pink-600"
 									>
 										<PrinterOutlined

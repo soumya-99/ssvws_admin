@@ -214,29 +214,29 @@ function MenusBr({ theme }) {
 			key: "sub6",
 			icon: <BarsOutlined />,
 			children: [
-				{
-					key: "sub6-1",
-					icon: <BarChartOutlined />,
-					label: (
-						<Link to={"/homebm/memberwiserecoveryreport"}>
-							Memberwise Recovery
-						</Link>
-					),
-				},
-				{
-					key: "sub6-2",
-					icon: <BarChartOutlined />,
-					label: (
-						<Link to={"/homebm/groupwiserecoveryreport"}>
-							Groupwise Recovery
-						</Link>
-					),
-				},
-				{
-					key: "sub6-3",
-					icon: <BarChartOutlined />,
-					label: <Link to={"/homebm/demandreport"}>Demand</Link>,
-				},
+				// {
+				// 	key: "sub6-1",
+				// 	icon: <BarChartOutlined />,
+				// 	label: (
+				// 		<Link to={"/homebm/memberwiserecoveryreport"}>
+				// 			Memberwise Recovery
+				// 		</Link>
+				// 	),
+				// },
+				// {
+				// 	key: "sub6-2",
+				// 	icon: <BarChartOutlined />,
+				// 	label: (
+				// 		<Link to={"/homebm/groupwiserecoveryreport"}>
+				// 			Groupwise Recovery
+				// 		</Link>
+				// 	),
+				// },
+				// {
+				// 	key: "sub6-3",
+				// 	icon: <BarChartOutlined />,
+				// 	label: <Link to={"/homebm/demandreport"}>Demand</Link>,
+				// },
 				{
 					key: "sub6-4",
 					icon: <BarChartOutlined />,

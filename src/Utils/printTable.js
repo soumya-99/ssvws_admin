@@ -1,4 +1,11 @@
-export const printTable = (dataArray, title) => {
+export const printTable = (
+	dataArray,
+	title,
+	searchType,
+	metadata,
+	fromDate,
+	toDate
+) => {
 	// Step 1: Generate HTML table string
 	const tableHTML = `
     <html>
@@ -13,9 +20,54 @@ export const printTable = (dataArray, title) => {
             width: 100%;
             border-collapse: collapse;
             }
+            .center-div {
+              display: flex;
+              justify-content: center;
+              align-items: center;
+              flex-direction: column;
+              margin-bottom: 20px;
+            }
+            .italic {
+              font-style: italic;
+            }
         </style>
       </head>
       <body>
+      <h2 style="text-align: center">SSVWS</h2>
+      ${
+				searchType === "G"
+					? `<div class="center-div">
+        <div class="italic">
+          Group: ${metadata?.group_name}, ${metadata?.group_code}
+        </div>
+        <div class="italic">
+          Showing results from ${new Date(fromDate)?.toLocaleDateString(
+						"en-GB"
+					)} to ${new Date(toDate)?.toLocaleDateString("en-GB")}
+        </div>
+        <div class="italic">
+          Branch: ${metadata?.branch_name}, ${metadata?.branch_code}
+        </div>
+      </div>`
+					: `<div class="center-div">
+        <div class="italic">
+									Member: ${metadata?.client_name}, ${metadata?.member_code}
+								</div>
+								<div class="italic">
+									Branch: ${metadata?.branch_name}, ${metadata?.branch_code}
+								</div>
+								<div class="italic">
+									Group: ${metadata?.group_name}, ${metadata?.group_code}
+								</div>
+								<div class="italic">
+									Showing results from ${new Date(fromDate)?.toLocaleDateString(
+										"en-GB"
+									)} to ${new Date(toDate)?.toLocaleDateString("en-GB")}
+								</div>
+								<div class="italic">Loan ID: ${metadata?.loan_id}</div>
+      </div>`
+			}
+
         <table>
           <thead>
             <tr>
