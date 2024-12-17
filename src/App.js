@@ -121,6 +121,10 @@ function App() {
 						// Badge: {
 						// 	statusSize: 20,
 						// },
+						Modal: {
+							titleFontSize: 25,
+							titleColor: "#eb8d00",
+						},
 					},
 				}}
 			>

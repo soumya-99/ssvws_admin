@@ -10,15 +10,28 @@ import Notfound from "./Screens/Notfound/Notfound"
 import { Democontext } from "./Context/Democontext"
 import Loader from "./Components/Loader"
 import CircularProgress from "@mui/material/CircularProgress"
-const MasterBanks =lazy(()=>import("./Screens/Master/MasterBanks"))
-const EditMasterBank =lazy(()=>import("./Screens/Master/EditMasterBank"))
-const EditRecoveryApproveFormBM =lazy(()=>import("./Screens/BMHome/EditRecoveryApproveFormBM"))
-const SearchViewLoanBM =lazy(()=>import("./Screens/BMHome/SearchViewLoanBM"))
-const EditViewLoanFormBM =lazy(()=>import("./Screens/BMHome/EditViewLoanFormBM"))
-const MemberLoanDetailsBM =lazy(()=>import("./Screens/BMHome/MemberLoanDetailsBM"))
-const MemberwiseRecoveryReport =lazy(()=>import("./Screens/Reports/MemberwiseRecoveryReport"))
-const GroupwiseRecoveryReport =lazy(()=>import("./Screens/Reports/GroupwiseRecoveryReport"))
-const DemandReportScreen =lazy(()=>import("./Screens/Reports/DemandReportScreen"))
+import LoanStatementMain from "./Screens/Reports/LoanStatements/LoanStatementMain"
+const MasterBanks = lazy(() => import("./Screens/Master/MasterBanks"))
+const EditMasterBank = lazy(() => import("./Screens/Master/EditMasterBank"))
+const EditRecoveryApproveFormBM = lazy(() =>
+	import("./Screens/BMHome/EditRecoveryApproveFormBM")
+)
+const SearchViewLoanBM = lazy(() => import("./Screens/BMHome/SearchViewLoanBM"))
+const EditViewLoanFormBM = lazy(() =>
+	import("./Screens/BMHome/EditViewLoanFormBM")
+)
+const MemberLoanDetailsBM = lazy(() =>
+	import("./Screens/BMHome/MemberLoanDetailsBM")
+)
+const MemberwiseRecoveryReport = lazy(() =>
+	import("./Screens/Reports/MemberwiseRecoveryReport")
+)
+const GroupwiseRecoveryReport = lazy(() =>
+	import("./Screens/Reports/GroupwiseRecoveryReport")
+)
+const DemandReportScreen = lazy(() =>
+	import("./Screens/Reports/DemandReportScreen")
+)
 
 // import CatchError from "./Screens/CatchError"
 // import AuthMis from "./Screens/MISAssistant/AuthMis"
@@ -266,6 +279,10 @@ const router = createBrowserRouter([
 							{
 								path: "demandreport",
 								element: <DemandReportScreen />,
+							},
+							{
+								path: "loanstatements",
+								element: <LoanStatementMain />,
 							},
 						],
 					},
