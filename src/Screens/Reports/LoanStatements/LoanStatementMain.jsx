@@ -40,7 +40,7 @@ function LoanStatementMain() {
 		setSearchType(e)
 	}
 
-	const handleFetchReportForMembers = async () => {
+	const handleFetchReportMemberwise = async () => {
 		setLoading(true)
 		const creds = {
 			memb: search,
@@ -60,13 +60,27 @@ function LoanStatementMain() {
 		setLoading(false)
 	}
 
-	useEffect(() => {
-		if (searchType && search.length > 2) {
-			handleFetchReportForMembers()
+	const handleFetchReportGroupwise = async () => {
+		setLoading(true)
+		const creds = {
+			grp: search,
 		}
-	}, [searchType, search])
 
-	const handleFetchLoanView = async (loanId) => {
+		await axios
+			.post(`${url}/loan_statement_group_dtls`, creds)
+			.then((res) => {
+				console.log("RESSSSS======>>>>", res?.data)
+				setReportData(res?.data?.msg)
+				// setTotSum(res?.data?.msg.reduce((n, { credit }) => n + credit, 0))
+			})
+			.catch((err) => {
+				console.log("ERRRR>>>", err)
+			})
+
+		setLoading(false)
+	}
+
+	const handleFetchLoanViewMemberwise = async (loanId) => {
 		setLoading(true)
 		const creds = {
 			from_dt: formatDateToYYYYMMDD(fromDate),
@@ -88,7 +102,40 @@ function LoanStatementMain() {
 		setLoading(false)
 	}
 
-	// useEffect(() => {}, [fromDate, toDate])
+	const handleFetchLoanViewGroupwise = async (grpCode) => {
+		setLoading(true)
+		const creds = {
+			from_dt: formatDateToYYYYMMDD(fromDate),
+			to_dt: formatDateToYYYYMMDD(toDate),
+			group_code: grpCode || "",
+		}
+
+		await axios
+			.post(`${url}/loan_statement_group_report`, creds)
+			.then((res) => {
+				console.log("RESSSSS XX======>>>>", res?.data)
+				setReportTxnData(res?.data?.msg)
+				// setTotSum(res?.data?.msg.reduce((n, { credit }) => n + credit, 0))
+			})
+			.catch((err) => {
+				console.log("ERRRR>>>>>>>", err)
+			})
+
+		setLoading(false)
+	}
+
+	useEffect(() => {
+		if (searchType === "M" && search.length > 2) {
+			handleFetchReportMemberwise()
+		} else if (searchType === "G" && search.length > 2) {
+			handleFetchReportGroupwise()
+		}
+	}, [searchType, search])
+
+	useEffect(() => {
+		setReportData(() => [])
+		setReportTxnData(() => [])
+	}, [searchType])
 
 	return (
 		<div>
@@ -159,9 +206,19 @@ function LoanStatementMain() {
 						</div>
 					)}
 
-					{reportData.length > 0 && (
+					{/* For memberwise search */}
+
+					{reportData.length > 0 && searchType === "M" && (
 						<div
-							className={`relative overflow-x-auto shadow-md sm:rounded-lg mt-5 max-h-96`}
+							className={`relative overflow-x-auto shadow-md sm:rounded-lg mt-5 max-h-96
+                                [&::-webkit-scrollbar]:w-1
+                                [&::-webkit-scrollbar-track]:rounded-full
+                                [&::-webkit-scrollbar-track]:bg-transparent
+                                [&::-webkit-scrollbar-thumb]:rounded-full
+                                [&::-webkit-scrollbar-thumb]:bg-gray-300
+                                dark:[&::-webkit-scrollbar-track]:bg-transparent
+                                dark:[&::-webkit-scrollbar-thumb]:bg-neutral-500
+                            `}
 						>
 							<div
 								className={`w-full text-xs dark:bg-gray-700 dark:text-gray-400`}
@@ -170,10 +227,10 @@ function LoanStatementMain() {
 									<thead className="w-full text-xs uppercase text-slate-50 bg-slate-800 dark:bg-gray-700 dark:text-gray-400 sticky top-0">
 										<tr>
 											<th scope="col" className="px-6 py-3 font-semibold ">
-												{searchType === "M" ? "Member Code" : "Group Code"}
+												Member Code
 											</th>
 											<th scope="col" className="px-6 py-3 font-semibold ">
-												{searchType === "M" ? "Member Name" : "Group Name"}
+												Member Name
 											</th>
 											<th scope="col" className="px-6 py-3 font-semibold ">
 												Loan ID
@@ -197,9 +254,87 @@ function LoanStatementMain() {
 													<td className="px-6 py-3">{item?.loan_id}</td>
 													<td className="px-6 py-3">
 														<button
-															// onClick={() => handleFetchLoanView(item?.loan_id)}
 															onClick={async () => {
-																await handleFetchLoanView(item?.loan_id)
+																await handleFetchLoanViewMemberwise(
+																	item?.loan_id
+																)
+																setOpenModal(true)
+															}}
+															className="text-pink-600 disabled:text-pink-400 disabled:cursor-not-allowed"
+															disabled={!fromDate || !toDate}
+														>
+															View
+														</button>
+													</td>
+												</tr>
+											)
+										})}
+									</tbody>
+								</table>
+							</div>
+						</div>
+					)}
+
+					{/* For Groupwise search */}
+
+					{reportData.length > 0 && searchType === "G" && (
+						<div
+							className={`relative overflow-x-auto shadow-md sm:rounded-lg mt-5 max-h-96
+                                [&::-webkit-scrollbar]:w-1
+                                [&::-webkit-scrollbar-track]:rounded-full
+                                [&::-webkit-scrollbar-track]:bg-transparent
+                                [&::-webkit-scrollbar-thumb]:rounded-full
+                                [&::-webkit-scrollbar-thumb]:bg-gray-300
+                                dark:[&::-webkit-scrollbar-track]:bg-transparent
+                                dark:[&::-webkit-scrollbar-thumb]:bg-neutral-500
+                            `}
+						>
+							<div
+								className={`w-full text-xs dark:bg-gray-700 dark:text-gray-400`}
+							>
+								<table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
+									<thead className="w-full text-xs uppercase text-slate-50 bg-slate-800 dark:bg-gray-700 dark:text-gray-400 sticky top-0">
+										<tr>
+											<th scope="col" className="px-6 py-3 font-semibold ">
+												Branch Code
+											</th>
+											<th scope="col" className="px-6 py-3 font-semibold ">
+												Group Code
+											</th>
+											<th scope="col" className="px-6 py-3 font-semibold ">
+												Group Name
+											</th>
+											<th scope="col" className="px-6 py-3 font-semibold ">
+												Outstanding
+											</th>
+											<th scope="col" className="px-6 py-3 font-semibold ">
+												Branch Name
+											</th>
+											<th scope="col" className="px-6 py-3 font-semibold ">
+												Action
+											</th>
+										</tr>
+									</thead>
+									<tbody>
+										{reportData?.map((item, i) => {
+											return (
+												<tr
+													key={i}
+													className={
+														i % 2 === 0 ? "bg-slate-200 text-slate-900" : ""
+													}
+												>
+													<td className="px-6 py-3">{item?.branch_code}</td>
+													<td className="px-6 py-3">{item?.group_code}</td>
+													<td className="px-6 py-3">{item?.group_name}</td>
+													<td className="px-6 py-3">{item?.outstanding}</td>
+													<td className="px-6 py-3">{item?.branch_name}</td>
+													<td className="px-6 py-3">
+														<button
+															onClick={async () => {
+																await handleFetchLoanViewGroupwise(
+																	item?.group_code
+																)
 																setOpenModal(true)
 															}}
 															className="text-pink-600 disabled:text-pink-400 disabled:cursor-not-allowed"
@@ -227,9 +362,19 @@ function LoanStatementMain() {
 						onCancel={() => setOpenModal(false)}
 						width={1500}
 					>
-						{reportTxnData.length > 0 && (
+						{/* For memberwise */}
+
+						{searchType === "M" && reportTxnData.length > 0 && (
 							<div
-								className={`relative overflow-x-auto shadow-md sm:rounded-lg mt-5 max-h-96`}
+								className={`relative overflow-x-auto shadow-md sm:rounded-lg mt-5 max-h-96
+                                    [&::-webkit-scrollbar]:w-1
+                                    [&::-webkit-scrollbar-track]:rounded-full
+                                    [&::-webkit-scrollbar-track]:bg-transparent
+                                    [&::-webkit-scrollbar-thumb]:rounded-full
+                                    [&::-webkit-scrollbar-thumb]:bg-gray-300
+                                    dark:[&::-webkit-scrollbar-track]:bg-transparent
+                                    dark:[&::-webkit-scrollbar-thumb]:bg-neutral-500
+                                `}
 							>
 								<div
 									className={`w-full text-xs dark:bg-gray-700 dark:text-gray-400`}
@@ -308,6 +453,96 @@ function LoanStatementMain() {
 								</div>
 							</div>
 						)}
+
+						{/* For Groupwise */}
+
+						{searchType === "G" && reportTxnData.length > 0 && (
+							<div
+								className={`relative overflow-x-auto shadow-md sm:rounded-lg mt-5 max-h-96
+                                    [&::-webkit-scrollbar]:w-1
+                                    [&::-webkit-scrollbar-track]:rounded-full
+                                    [&::-webkit-scrollbar-track]:bg-transparent
+                                    [&::-webkit-scrollbar-thumb]:rounded-full
+                                    [&::-webkit-scrollbar-thumb]:bg-gray-300
+                                    dark:[&::-webkit-scrollbar-track]:bg-transparent
+                                    dark:[&::-webkit-scrollbar-thumb]:bg-neutral-500
+                                `}
+							>
+								<div
+									className={`w-full text-xs dark:bg-gray-700 dark:text-gray-400`}
+								>
+									<table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
+										<thead className="w-full text-xs uppercase text-slate-50 bg-slate-800 dark:bg-gray-700 dark:text-gray-400 sticky top-0">
+											<tr>
+												<th scope="col" className="px-6 py-3 font-semibold ">
+													Txn. Date
+												</th>
+												<th scope="col" className="px-6 py-3 font-semibold ">
+													Txn. No.
+												</th>
+												<th scope="col" className="px-6 py-3 font-semibold ">
+													Credit
+												</th>
+												<th scope="col" className="px-6 py-3 font-semibold ">
+													Debit
+												</th>
+												<th scope="col" className="px-6 py-3 font-semibold ">
+													Bank Charge
+												</th>
+												<th scope="col" className="px-6 py-3 font-semibold ">
+													Processing Charge
+												</th>
+												<th scope="col" className="px-6 py-3 font-semibold ">
+													Total
+												</th>
+												<th scope="col" className="px-6 py-3 font-semibold ">
+													Particulars
+												</th>
+												<th scope="col" className="px-6 py-3 font-semibold ">
+													Txn. Type
+												</th>
+											</tr>
+										</thead>
+										<tbody>
+											{reportTxnData?.map((item, i) => {
+												return (
+													<tr
+														key={i}
+														className={
+															i % 2 === 0 ? "bg-slate-200 text-slate-900" : ""
+														}
+													>
+														<td className="px-6 py-3">
+															{new Date(item?.trans_date)?.toLocaleDateString(
+																"en-GB"
+															)}
+														</td>
+														<td className="px-6 py-3">{item?.trans_id}</td>
+														<td className="px-6 py-3">{item?.credit}</td>
+														<td className="px-6 py-3">{item?.debit}</td>
+														<td className="px-6 py-3">{item?.bank_charge}</td>
+														<td className="px-6 py-3">{item?.proc_charge}</td>
+														<td className="px-6 py-3">{item?.total}</td>
+														<td className="px-6 py-3">{item?.particulars}</td>
+														<td className="px-6 py-3">
+															{item?.tr_type === "D"
+																? "Disbursement"
+																: item?.tr_type === "R"
+																? "Recovery"
+																: item?.tr_type === "I"
+																? "Interest"
+																: "Err"}
+														</td>
+													</tr>
+												)
+											})}
+										</tbody>
+									</table>
+								</div>
+							</div>
+						)}
+
+						{reportTxnData.length === 0 && "No data found."}
 					</Modal>
 				</main>
 			</Spin>
