@@ -1,4 +1,4 @@
-export const printTable = (
+export const printTableLoanTransactions = (
 	dataArray,
 	title,
 	searchType,
@@ -24,7 +24,7 @@ export const printTable = (
               justify-content: center;
               align-items: center;
               flex-direction: column;
-              margin-bottom: 20px;
+              margin-bottom: 5px;
             }
             .italic {
               font-style: italic;
@@ -33,39 +33,23 @@ export const printTable = (
       </head>
       <body>
       <h2 style="text-align: center">SSVWS</h2>
-      ${
-				searchType === "G"
-					? `<div class="center-div">
-        <div class="italic">
-          Group: ${metadata?.group_name}, ${metadata?.group_code}
+      <h3 style="text-align: center">${title}</h3>
+      
+        <div class="italic center-div">
+          ${
+						searchType === "D"
+							? "Disbursement Report"
+							: searchType === "R"
+							? "Collection Report"
+							: "Err"
+					}
         </div>
-        <div class="italic">
+        <div class="italic center-div">
           Showing results from ${new Date(fromDate)?.toLocaleDateString(
 						"en-GB"
 					)} to ${new Date(toDate)?.toLocaleDateString("en-GB")}
         </div>
-        <div class="italic">
-          Branch: ${metadata?.branch_name}, ${metadata?.branch_code}
-        </div>
-      </div>`
-					: `<div class="center-div">
-        <div class="italic">
-									Member: ${metadata?.client_name}, ${metadata?.member_code}
-								</div>
-								<div class="italic">
-									Branch: ${metadata?.branch_name}, ${metadata?.branch_code}
-								</div>
-								<div class="italic">
-									Group: ${metadata?.group_name}, ${metadata?.group_code}
-								</div>
-								<div class="italic">
-									Showing results from ${new Date(fromDate)?.toLocaleDateString(
-										"en-GB"
-									)} to ${new Date(toDate)?.toLocaleDateString("en-GB")}
-								</div>
-								<div class="italic">Loan ID: ${metadata?.loan_id}</div>
-      </div>`
-			}
+      </div>
 
         <table>
           <thead>

@@ -11,6 +11,7 @@ import { Democontext } from "./Context/Democontext"
 import Loader from "./Components/Loader"
 import CircularProgress from "@mui/material/CircularProgress"
 import LoanStatementMain from "./Screens/Reports/LoanStatements/LoanStatementMain"
+import LoanTransactionsMain from "./Screens/Reports/LoanTransactions/LoanTransactionsMain"
 const MasterBanks = lazy(() => import("./Screens/Master/MasterBanks"))
 const EditMasterBank = lazy(() => import("./Screens/Master/EditMasterBank"))
 const EditRecoveryApproveFormBM = lazy(() =>
@@ -283,6 +284,10 @@ const router = createBrowserRouter([
 							{
 								path: "loanstatements",
 								element: <LoanStatementMain />,
+							},
+							{
+								path: "loantxns",
+								element: <LoanTransactionsMain />,
 							},
 						],
 					},

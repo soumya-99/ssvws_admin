@@ -242,6 +242,11 @@ function MenusBr({ theme }) {
 					icon: <BarChartOutlined />,
 					label: <Link to={"/homebm/loanstatements"}>Loan Statements</Link>,
 				},
+				{
+					key: "sub6-5",
+					icon: <BarChartOutlined />,
+					label: <Link to={"/homebm/loantxns"}>Loan Transactions</Link>,
+				},
 			],
 		},
 		{

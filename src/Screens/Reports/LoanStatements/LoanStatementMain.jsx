@@ -16,7 +16,7 @@ import { formatDateToYYYYMMDD } from "../../../Utils/formateDate"
 
 import { saveAs } from "file-saver"
 import * as XLSX from "xlsx"
-import { printTable } from "../../../Utils/printTable"
+import { printTableLoanStatement } from "../../../Utils/printTableLoanStatement"
 
 const options = [
 	{
@@ -701,7 +701,7 @@ function LoanStatementMain() {
 								<Tooltip title="Print">
 									<button
 										onClick={() =>
-											printTable(
+											printTableLoanStatement(
 												reportTxnData,
 												"Loan Statement",
 												searchType,
