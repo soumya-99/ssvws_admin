@@ -149,10 +149,10 @@ function LoanStatementMain() {
 		setMetadataDtls(() => null)
 	}, [searchType])
 
-	const exportToExcel = async (data) => {
+	const exportToExcel = (data) => {
 		const wb = XLSX.utils.book_new()
 		const ws = XLSX.utils.json_to_sheet(data)
-		await XLSX.utils.book_append_sheet(wb, ws, "Sheet1")
+		XLSX.utils.book_append_sheet(wb, ws, "Sheet1")
 		const wbout = XLSX.write(wb, { bookType: "xlsx", type: "binary" })
 		const blob = new Blob([s2ab(wbout)], { type: "application/octet-stream" })
 		saveAs(blob, "loan_statement_report.xlsx")
@@ -634,7 +634,7 @@ function LoanStatementMain() {
 							<div className="flex gap-4">
 								<Tooltip title="Export to Excel">
 									<button
-										onClick={async () => await exportToExcel(reportTxnData)}
+										onClick={() => exportToExcel(reportTxnData)}
 										className="mt-5 justify-center items-center rounded-full text-green-900"
 									>
 										<FileExcelOutlined
@@ -650,7 +650,7 @@ function LoanStatementMain() {
 											printTable(
 												reportTxnData,
 												"Loan Statement",
-                                                searchType,
+												searchType,
 												metadataDtls,
 												fromDate,
 												toDate
