@@ -167,6 +167,12 @@ function LoanStatementMain() {
 		return buf
 	}
 
+	let totalRecovery = 0
+	let totalCredit = 0
+	let totalDebit = 0
+	let totalCreditGrpwise = 0
+	let totalDebitGrpwise = 0
+
 	return (
 		<div>
 			<Sidebar mode={2} />
@@ -476,10 +482,13 @@ function LoanStatementMain() {
 													Txn. No.
 												</th>
 												<th scope="col" className="px-6 py-3 font-semibold ">
-													Credit
+													Txn. Type
 												</th>
 												<th scope="col" className="px-6 py-3 font-semibold ">
 													Debit
+												</th>
+												<th scope="col" className="px-6 py-3 font-semibold ">
+													Credit
 												</th>
 												<th scope="col" className="px-6 py-3 font-semibold ">
 													Bank Charge
@@ -491,15 +500,15 @@ function LoanStatementMain() {
 													Balance
 												</th>
 												<th scope="col" className="px-6 py-3 font-semibold ">
-													Txn. Type
-												</th>
-												<th scope="col" className="px-6 py-3 font-semibold ">
 													Txn. Mode
 												</th>
 											</tr>
 										</thead>
 										<tbody>
 											{reportTxnData?.map((item, i) => {
+												totalCredit += +item?.credit
+												totalDebit += +item?.debit
+
 												return (
 													<tr
 														key={i}
@@ -513,11 +522,6 @@ function LoanStatementMain() {
 															)}
 														</td>
 														<td className="px-6 py-3">{item?.trans_no}</td>
-														<td className="px-6 py-3">{item?.credit}</td>
-														<td className="px-6 py-3">{item?.debit}</td>
-														<td className="px-6 py-3">{item?.bank_charge}</td>
-														<td className="px-6 py-3">{item?.proc_charge}</td>
-														<td className="px-6 py-3">{item?.balance}</td>
 														<td className="px-6 py-3">
 															{item?.tr_type === "D"
 																? "Disbursement"
@@ -527,6 +531,11 @@ function LoanStatementMain() {
 																? "Interest"
 																: "Error"}
 														</td>
+														<td className="px-6 py-3">{item?.debit}</td>
+														<td className="px-6 py-3">{item?.credit}</td>
+														<td className="px-6 py-3">{item?.bank_charge}</td>
+														<td className="px-6 py-3">{item?.proc_charge}</td>
+														<td className="px-6 py-3">{item?.balance}</td>
 														<td className="px-6 py-3">
 															{item?.tr_mode === "C"
 																? "Cash"
@@ -537,6 +546,27 @@ function LoanStatementMain() {
 													</tr>
 												)
 											})}
+											<tr
+												className={"text-slate-50 bg-slate-700 sticky bottom-0"}
+											>
+												<td className="px-6 py-3" colSpan={3}>
+													Total:
+												</td>
+												<td className="px-6 py-3" colSpan={1}>
+													{totalDebit?.toFixed(2)}
+												</td>
+												<td className="px-6 py-3" colSpan={4}>
+													{totalCredit?.toFixed(2)}
+												</td>
+												<td className="px-6 py-3" colSpan={2}>
+													Total Recovery:{" "}
+													{
+														reportTxnData?.filter(
+															(item, i) => item?.tr_type === "R"
+														)?.length
+													}
+												</td>
+											</tr>
 										</tbody>
 									</table>
 								</div>
@@ -566,14 +596,17 @@ function LoanStatementMain() {
 												<th scope="col" className="px-6 py-3 font-semibold ">
 													Txn. Date
 												</th>
-												<th scope="col" className="px-6 py-3 font-semibold ">
+												{/* <th scope="col" className="px-6 py-3 font-semibold ">
 													Txn. No.
-												</th>
+												</th> */}
 												<th scope="col" className="px-6 py-3 font-semibold ">
-													Credit
+													Txn. Type
 												</th>
 												<th scope="col" className="px-6 py-3 font-semibold ">
 													Debit
+												</th>
+												<th scope="col" className="px-6 py-3 font-semibold ">
+													Credit
 												</th>
 												<th scope="col" className="px-6 py-3 font-semibold ">
 													Bank Charge
@@ -582,18 +615,18 @@ function LoanStatementMain() {
 													Processing Charge
 												</th>
 												<th scope="col" className="px-6 py-3 font-semibold ">
-													Total
+													Balance
 												</th>
 												<th scope="col" className="px-6 py-3 font-semibold ">
 													Particulars
-												</th>
-												<th scope="col" className="px-6 py-3 font-semibold ">
-													Txn. Type
 												</th>
 											</tr>
 										</thead>
 										<tbody>
 											{reportTxnData?.map((item, i) => {
+												totalCredit += +item?.credit
+												totalDebit += +item?.debit
+
 												return (
 													<tr
 														key={i}
@@ -606,13 +639,7 @@ function LoanStatementMain() {
 																"en-GB"
 															)}
 														</td>
-														<td className="px-6 py-3">{item?.trans_id}</td>
-														<td className="px-6 py-3">{item?.credit}</td>
-														<td className="px-6 py-3">{item?.debit}</td>
-														<td className="px-6 py-3">{item?.bank_charge}</td>
-														<td className="px-6 py-3">{item?.proc_charge}</td>
-														<td className="px-6 py-3">{item?.total}</td>
-														<td className="px-6 py-3">{item?.particulars}</td>
+														{/* <td className="px-6 py-3">{item?.trans_id}</td> */}
 														<td className="px-6 py-3">
 															{item?.tr_type === "D"
 																? "Disbursement"
@@ -622,9 +649,36 @@ function LoanStatementMain() {
 																? "Interest"
 																: "Err"}
 														</td>
+														<td className="px-6 py-3">{item?.debit}</td>
+														<td className="px-6 py-3">{item?.credit}</td>
+														<td className="px-6 py-3">{item?.bank_charge}</td>
+														<td className="px-6 py-3">{item?.proc_charge}</td>
+														<td className="px-6 py-3">{item?.balance}</td>
+														<td className="px-6 py-3">{item?.particulars}</td>
 													</tr>
 												)
 											})}
+											<tr
+												className={"text-slate-50 bg-slate-700 sticky bottom-0"}
+											>
+												<td className="px-6 py-3" colSpan={2}>
+													Total:
+												</td>
+												<td className="px-6 py-3" colSpan={1}>
+													{totalDebit?.toFixed(2)}
+												</td>
+												<td className="px-6 py-3" colSpan={4}>
+													{totalCredit?.toFixed(2)}
+												</td>
+												<td className="px-6 py-3" colSpan={1}>
+													Total Recovery:{" "}
+													{
+														reportTxnData?.filter(
+															(item, i) => item?.tr_type === "R"
+														)?.length
+													}
+												</td>
+											</tr>
 										</tbody>
 									</table>
 								</div>
