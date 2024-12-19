@@ -129,6 +129,10 @@ function App() {
 							titleFontSize: 25,
 							titleColor: "#eb8d00",
 						},
+						DatePicker: {
+							colorPrimary: "#0694a2",
+							cellActiveWithRangeBg: "#CCFBF177",
+						},
 					},
 				}}
 			>

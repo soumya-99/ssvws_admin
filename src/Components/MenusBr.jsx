@@ -247,6 +247,11 @@ function MenusBr({ theme }) {
 					icon: <BarChartOutlined />,
 					label: <Link to={"/homebm/loantxns"}>Loan Transactions</Link>,
 				},
+				{
+					key: "sub6-5",
+					icon: <BarChartOutlined />,
+					label: <Link to={"/homebm/demandreport"}>Demand Report</Link>,
+				},
 			],
 		},
 		{

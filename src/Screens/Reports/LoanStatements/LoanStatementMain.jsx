@@ -3,7 +3,7 @@ import Sidebar from "../../../Components/Sidebar"
 import axios from "axios"
 import { url } from "../../../Address/BaseUrl"
 import { Message } from "../../../Components/Message"
-import { Spin, Button, Modal, Tooltip } from "antd"
+import { Spin, Button, Modal, Tooltip, DatePicker } from "antd"
 import {
 	LoadingOutlined,
 	SearchOutlined,
@@ -17,6 +17,9 @@ import { formatDateToYYYYMMDD } from "../../../Utils/formateDate"
 import { saveAs } from "file-saver"
 import * as XLSX from "xlsx"
 import { printTableLoanStatement } from "../../../Utils/printTableLoanStatement"
+
+const { RangePicker } = DatePicker
+const dateFormat = "YYYY/MM/DD"
 
 const options = [
 	{
@@ -217,7 +220,7 @@ function LoanStatementMain() {
 
 					{reportData.length > 0 && (
 						<div className="grid grid-cols-2 gap-5 mt-5">
-							<div>
+							{/* <div>
 								<TDInputTemplateBr
 									placeholder="From Date"
 									type="date"
@@ -240,7 +243,17 @@ function LoanStatementMain() {
 									min={"1900-12-31"}
 									mode={1}
 								/>
-							</div>
+							</div> */}
+							<RangePicker
+								className="p-2 shadow-md"
+								format={dateFormat}
+								onChange={(dates, dateStrings) => {
+									console.log("-------dates", dates)
+									console.log("-------dateStrings", dateStrings)
+									setFromDate(dateStrings[0])
+									setToDate(dateStrings[1])
+								}}
+							/>
 						</div>
 					)}
 

@@ -34,7 +34,7 @@ const options = [
 	},
 ]
 
-function LoanTransactionsMain() {
+function DemandReportsMain() {
 	const userDetails = JSON.parse(localStorage.getItem("user_details")) || ""
 	const [loading, setLoading] = useState(false)
 
@@ -151,12 +151,12 @@ function LoanTransactionsMain() {
 				<main className="px-4 pb-5 bg-slate-50 rounded-lg shadow-lg h-auto my-10 mx-32">
 					<div className="flex flex-row gap-3 mt-20  py-3 rounded-xl">
 						<div className="text-3xl text-slate-700 font-bold">
-							LOAN TRANSACTIONS
+							DEMAND REPORT
 						</div>
 					</div>
 
 					<div className="mb-2 flex justify-between items-center">
-						<div>
+						{/* <div>
 							<Radiobtn
 								data={options}
 								val={searchType}
@@ -164,8 +164,8 @@ function LoanTransactionsMain() {
 									onChange(value)
 								}}
 							/>
-						</div>
-						<div>
+						</div> */}
+						<div className="mt-5">
 							<div className="text-slate-800">Choose Date:</div>
 							<RangePicker
 								className="p-2 shadow-md"
@@ -718,4 +718,4 @@ function LoanTransactionsMain() {
 	)
 }
 
-export default LoanTransactionsMain
+export default DemandReportsMain

@@ -12,6 +12,7 @@ import Loader from "./Components/Loader"
 import CircularProgress from "@mui/material/CircularProgress"
 import LoanStatementMain from "./Screens/Reports/LoanStatements/LoanStatementMain"
 import LoanTransactionsMain from "./Screens/Reports/LoanTransactions/LoanTransactionsMain"
+import DemandReportsMain from "./Screens/Reports/DemandReports/DemandReportsMain"
 const MasterBanks = lazy(() => import("./Screens/Master/MasterBanks"))
 const EditMasterBank = lazy(() => import("./Screens/Master/EditMasterBank"))
 const EditRecoveryApproveFormBM = lazy(() =>
@@ -277,10 +278,10 @@ const router = createBrowserRouter([
 								path: "groupwiserecoveryreport",
 								element: <GroupwiseRecoveryReport />,
 							},
-							{
-								path: "demandreport",
-								element: <DemandReportScreen />,
-							},
+							// {
+							// 	path: "demandreport",
+							// 	element: <DemandReportScreen />,
+							// },
 							{
 								path: "loanstatements",
 								element: <LoanStatementMain />,
@@ -288,6 +289,10 @@ const router = createBrowserRouter([
 							{
 								path: "loantxns",
 								element: <LoanTransactionsMain />,
+							},
+							{
+								path: "demandreport",
+								element: <DemandReportsMain />,
 							},
 						],
 					},
