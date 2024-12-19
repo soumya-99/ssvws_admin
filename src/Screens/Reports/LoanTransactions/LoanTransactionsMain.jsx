@@ -34,16 +34,16 @@ function LoanTransactionsMain() {
 	const userDetails = JSON.parse(localStorage.getItem("user_details")) || ""
 	const [loading, setLoading] = useState(false)
 
-	const [openModal, setOpenModal] = useState(false)
+	// const [openModal, setOpenModal] = useState(false)
 	// const [approvalStatus, setApprovalStatus] = useState("S")
 	const [searchType, setSearchType] = useState(() => "D")
 
 	const [fromDate, setFromDate] = useState()
 	const [toDate, setToDate] = useState()
 	const [reportData, setReportData] = useState(() => [])
-	const [reportTxnData, setReportTxnData] = useState(() => [])
+	// const [reportTxnData, setReportTxnData] = useState(() => [])
 	// const [tot_sum, setTotSum] = useState(0)
-	const [search, setSearch] = useState("")
+	// const [search, setSearch] = useState("")
 
 	const [metadataDtls, setMetadataDtls] = useState(() => null)
 
@@ -52,13 +52,13 @@ function LoanTransactionsMain() {
 		setSearchType(e)
 	}
 
-	const handleFetchReport = async () => {
+	const handleFetchReportRecovery = async () => {
 		setLoading(true)
 		const creds = {
 			from_dt: formatDateToYYYYMMDD(fromDate),
 			to_dt: formatDateToYYYYMMDD(toDate),
 			branch_code: userDetails?.brn_code,
-			tr_type: searchType,
+			tr_type: "R",
 		}
 
 		await axios
@@ -75,79 +75,39 @@ function LoanTransactionsMain() {
 		setLoading(false)
 	}
 
-	// const handleFetchReportGroupwise = async () => {
-	// 	setLoading(true)
-	// 	const creds = {
-	// 		grp: search,
-	// 	}
+	const handleFetchReportDisbursement = async () => {
+		setLoading(true)
+		const creds = {
+			from_dt: formatDateToYYYYMMDD(fromDate),
+			to_dt: formatDateToYYYYMMDD(toDate),
+			branch_code: userDetails?.brn_code,
+			tr_type: "D",
+		}
 
-	// 	await axios
-	// 		.post(`${url}/loan_statement_group_dtls`, creds)
-	// 		.then((res) => {
-	// 			console.log("RESSSSS======>>>>", res?.data)
-	// 			setReportData(res?.data?.msg)
-	// 			// setTotSum(res?.data?.msg.reduce((n, { credit }) => n + credit, 0))
-	// 		})
-	// 		.catch((err) => {
-	// 			console.log("ERRRR>>>", err)
-	// 		})
+		await axios
+			.post(`${url}/disb_loan_trans_report`, creds)
+			.then((res) => {
+				console.log("RESSSSS======>>>>", res?.data)
+				setReportData(res?.data?.msg)
+				// setTotSum(res?.data?.msg.reduce((n, { credit }) => n + credit, 0))
+			})
+			.catch((err) => {
+				console.log("ERRRR>>>", err)
+			})
 
-	// 	setLoading(false)
-	// }
-
-	// const handleFetchLoanViewMemberwise = async (loanId) => {
-	// 	setLoading(true)
-	// 	const creds = {
-	// 		from_dt: formatDateToYYYYMMDD(fromDate),
-	// 		to_dt: formatDateToYYYYMMDD(toDate),
-	// 		loan_id: loanId || "",
-	// 	}
-
-	// 	await axios
-	// 		.post(`${url}/loan_statement_report`, creds)
-	// 		.then((res) => {
-	// 			console.log("RESSSSS XX======>>>>", res?.data)
-	// 			setReportTxnData(res?.data?.msg)
-	// 			// setTotSum(res?.data?.msg.reduce((n, { credit }) => n + credit, 0))
-	// 		})
-	// 		.catch((err) => {
-	// 			console.log("ERRRR>>>>>>>", err)
-	// 		})
-
-	// 	setLoading(false)
-	// }
-
-	// const handleFetchLoanViewGroupwise = async (grpCode) => {
-	// 	setLoading(true)
-	// 	const creds = {
-	// 		from_dt: formatDateToYYYYMMDD(fromDate),
-	// 		to_dt: formatDateToYYYYMMDD(toDate),
-	// 		group_code: grpCode || "",
-	// 	}
-
-	// 	await axios
-	// 		.post(`${url}/loan_statement_group_report`, creds)
-	// 		.then((res) => {
-	// 			console.log("RESSSSS XX======>>>>", res?.data)
-	// 			setReportTxnData(res?.data?.msg)
-	// 			// setTotSum(res?.data?.msg.reduce((n, { credit }) => n + credit, 0))
-	// 		})
-	// 		.catch((err) => {
-	// 			console.log("ERRRR>>>>>>>", err)
-	// 		})
-
-	// 	setLoading(false)
-	// }
+		setLoading(false)
+	}
 
 	useEffect(() => {
-		if (fromDate && toDate) {
-			handleFetchReport()
+		if (searchType === "R" && fromDate && toDate) {
+			handleFetchReportRecovery()
+		} else if (searchType === "D" && fromDate && toDate) {
+			handleFetchReportDisbursement()
 		}
 	}, [searchType, fromDate, toDate])
 
 	useEffect(() => {
 		setReportData(() => [])
-		setReportTxnData(() => [])
 		setMetadataDtls(() => null)
 	}, [searchType])
 
@@ -169,11 +129,11 @@ function LoanTransactionsMain() {
 		return buf
 	}
 
-	let totalRecovery = 0
-	let totalCredit = 0
-	let totalDebit = 0
-	let totalCreditGrpwise = 0
-	let totalDebitGrpwise = 0
+	// let totalRecovery = 0
+	// let totalCredit = 0
+	// let totalDebit = 0
+	// let totalCreditGrpwise = 0
+	// let totalDebitGrpwise = 0
 
 	return (
 		<div>
@@ -244,7 +204,9 @@ function LoanTransactionsMain() {
 						</div>
 					</div>
 
-					{reportData.length > 0 && (
+					{/* For Recovery/Collection Results */}
+
+					{searchType === "R" && reportData.length > 0 && (
 						<div
 							className={`relative overflow-x-auto shadow-md sm:rounded-lg mt-5 max-h-[500px]
                                 [&::-webkit-scrollbar]:w-1
@@ -346,9 +308,11 @@ function LoanTransactionsMain() {
 														{item?.payment_id || "---"}
 													</td>
 													<td className="px-6 py-3">
-														{new Date(item?.payment_date)?.toLocaleDateString(
-															"en-GB"
-														) || "---"}
+														{item?.payment_date
+															? new Date(
+																	item?.payment_date
+															  )?.toLocaleDateString("en-GB")
+															: "---"}
 													</td>
 													<td className="px-6 py-3">
 														{item?.particulars || "---"}
@@ -379,10 +343,297 @@ function LoanTransactionsMain() {
 														{item?.collec_name || "---"}
 													</td>
 													<td className="px-6 py-3">
-														{item?.created_at ??
-															new Date(item?.created_at)?.toLocaleDateString(
-																"en-GB"
-															)}
+														{item?.created_at
+															? new Date(item?.created_at)?.toLocaleDateString(
+																	"en-GB"
+															  )
+															: "---"}
+													</td>
+												</tr>
+											)
+										})}
+									</tbody>
+								</table>
+							</div>
+						</div>
+					)}
+
+					{/* For Disbursement Results */}
+
+					{searchType === "D" && reportData.length > 0 && (
+						<div
+							className={`relative overflow-x-auto shadow-md sm:rounded-lg mt-5 max-h-[500px]
+                                [&::-webkit-scrollbar]:w-1
+                                [&::-webkit-scrollbar-track]:rounded-full
+                                [&::-webkit-scrollbar-track]:bg-transparent
+                                [&::-webkit-scrollbar-thumb]:rounded-full
+                                [&::-webkit-scrollbar-thumb]:bg-gray-300
+                                dark:[&::-webkit-scrollbar-track]:bg-transparent
+                                dark:[&::-webkit-scrollbar-thumb]:bg-neutral-500
+                            `}
+						>
+							<div
+								className={`w-full text-xs dark:bg-gray-700 dark:text-gray-400`}
+							>
+								<table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
+									<thead className="w-full text-xs uppercase text-slate-50 bg-slate-800 dark:bg-gray-700 dark:text-gray-400 sticky top-0">
+										<tr>
+											<th scope="col" className="px-6 py-3 font-semibold ">
+												Member Code
+											</th>
+											<th scope="col" className="px-6 py-3 font-semibold ">
+												Member Name
+											</th>
+											<th scope="col" className="px-6 py-3 font-semibold ">
+												Member Address
+											</th>
+											<th scope="col" className="px-6 py-3 font-semibold ">
+												Member Mobile
+											</th>
+											<th scope="col" className="px-6 py-3 font-semibold ">
+												Aadhaar No.
+											</th>
+											<th scope="col" className="px-6 py-3 font-semibold ">
+												PAN No.
+											</th>
+											<th scope="col" className="px-6 py-3 font-semibold ">
+												Guardian Name
+											</th>
+											<th scope="col" className="px-6 py-3 font-semibold ">
+												Group Code
+											</th>
+											<th scope="col" className="px-6 py-3 font-semibold ">
+												Group Name
+											</th>
+											<th scope="col" className="px-6 py-3 font-semibold ">
+												Loan ID
+											</th>
+											<th scope="col" className="px-6 py-3 font-semibold ">
+												Acc No.
+											</th>
+											<th scope="col" className="px-6 py-3 font-semibold ">
+												Payment Date
+											</th>
+											<th scope="col" className="px-6 py-3 font-semibold ">
+												Purpose
+											</th>
+											<th scope="col" className="px-6 py-3 font-semibold ">
+												Sub Purpose
+											</th>
+											<th scope="col" className="px-6 py-3 font-semibold ">
+												Scheme
+											</th>
+											<th scope="col" className="px-6 py-3 font-semibold ">
+												Fund
+											</th>
+											<th scope="col" className="px-6 py-3 font-semibold ">
+												Applied Date
+											</th>
+											<th scope="col" className="px-6 py-3 font-semibold ">
+												Applied Amount
+											</th>
+											<th scope="col" className="px-6 py-3 font-semibold ">
+												Disbursement Date
+											</th>
+											<th scope="col" className="px-6 py-3 font-semibold ">
+												Interest Payable
+											</th>
+											<th scope="col" className="px-6 py-3 font-semibold ">
+												Principal Disbursement Amount
+											</th>
+											<th scope="col" className="px-6 py-3 font-semibold ">
+												Current R.O.I
+											</th>
+											<th scope="col" className="px-6 py-3 font-semibold ">
+												Period Mode
+											</th>
+											<th scope="col" className="px-6 py-3 font-semibold ">
+												Installment End Date
+											</th>
+											<th scope="col" className="px-6 py-3 font-semibold ">
+												Principal Amount
+											</th>
+											<th scope="col" className="px-6 py-3 font-semibold ">
+												Interest Amount
+											</th>
+											<th scope="col" className="px-6 py-3 font-semibold ">
+												Outstanding
+											</th>
+											{/* <th scope="col" className="px-6 py-3 font-semibold ">
+												Txn. Mode
+											</th>
+											<th scope="col" className="px-6 py-3 font-semibold ">
+												Txn. Address
+											</th>
+											<th scope="col" className="px-6 py-3 font-semibold ">
+												Bank
+											</th>
+											<th scope="col" className="px-6 py-3 font-semibold ">
+												Credit
+											</th>
+											<th scope="col" className="px-6 py-3 font-semibold ">
+												Balance
+											</th>
+											<th scope="col" className="px-6 py-3 font-semibold ">
+												Cheque ID.
+											</th> */}
+											<th scope="col" className="px-6 py-3 font-semibold ">
+												Collector Code
+											</th>
+											<th scope="col" className="px-6 py-3 font-semibold ">
+												Collector Name
+											</th>
+											<th scope="col" className="px-6 py-3 font-semibold ">
+												Created At
+											</th>
+											<th scope="col" className="px-6 py-3 font-semibold ">
+												Approved By
+											</th>
+											<th scope="col" className="px-6 py-3 font-semibold ">
+												Approved At
+											</th>
+										</tr>
+									</thead>
+									<tbody>
+										{reportData?.map((item, i) => {
+											return (
+												<tr
+													key={i}
+													className={
+														i % 2 === 0 ? "bg-slate-200 text-slate-900" : ""
+													}
+												>
+													<td className="px-6 py-3">
+														{item?.member_code || "---"}
+													</td>
+													<td className="px-6 py-3">
+														{item?.client_name || "---"}
+													</td>
+													<td className="px-6 py-3">
+														{item?.client_addr || "---"}
+													</td>
+													<td className="px-6 py-3">
+														{item?.client_mobile || "---"}
+													</td>
+													<td className="px-6 py-3">
+														{item?.aadhar_no || "---"}
+													</td>
+													<td className="px-6 py-3">{item?.pan_no || "---"}</td>
+													<td className="px-6 py-3">
+														{item?.gurd_name || "---"}
+													</td>
+													<td className="px-6 py-3">
+														{item?.group_code || "---"}
+													</td>
+													<td className="px-6 py-3">
+														{item?.group_name || "---"}
+													</td>
+													<td className="px-6 py-3">
+														{item?.loan_id || "---"}
+													</td>
+													<td className="px-6 py-3">{item?.acc_no || "---"}</td>
+													<td className="px-6 py-3">
+														{item?.payment_date
+															? new Date(
+																	item?.payment_date
+															  )?.toLocaleDateString("en-GB")
+															: "---"}
+													</td>
+													<td className="px-6 py-3">
+														{item?.purpose_id || "---"}
+													</td>
+													<td className="px-6 py-3">
+														{item?.sub_purp_name || "---"}
+													</td>
+													<td className="px-6 py-3">
+														{item?.scheme_name || "---"}
+													</td>
+													<td className="px-6 py-3">
+														{item?.fund_name || "---"}
+													</td>
+													<td className="px-6 py-3">
+														{item?.applied_dt
+															? new Date(item?.applied_dt)?.toLocaleDateString(
+																	"en-GB"
+															  )
+															: "---"}
+													</td>
+													<td className="px-6 py-3">
+														{item?.applied_amt || "---"}
+													</td>
+													<td className="px-6 py-3">
+														{item?.disb_dt
+															? new Date(item?.disb_dt)?.toLocaleDateString(
+																	"en-GB"
+															  )
+															: "---"}
+													</td>
+													<td className="px-6 py-3">
+														{item?.intt_payable || "---"}
+													</td>
+													<td className="px-6 py-3">
+														{item?.prn_disb_amt || "---"}
+													</td>
+													<td className="px-6 py-3">
+														{item?.curr_roi || "---"}
+													</td>
+													<td className="px-6 py-3">
+														{item?.period_mode || "---"}
+													</td>
+													<td className="px-6 py-3">
+														{item?.instl_end_dt
+															? new Date(
+																	item?.instl_end_dt
+															  )?.toLocaleDateString("en-GB")
+															: "---"}
+													</td>
+													<td className="px-6 py-3">
+														{item?.prn_amt || "---"}
+													</td>
+													<td className="px-6 py-3">
+														{item?.intt_amt || "---"}
+													</td>
+													<td className="px-6 py-3">
+														{item?.outstanding || "---"}
+													</td>
+													{/* <td className="px-6 py-3">
+														{item?.tr_mode || "---"}
+													</td>
+													<td className="px-6 py-3">
+														{item?.trn_addr || "---"}
+													</td>
+													<td className="px-6 py-3">
+														{item?.bank_name || "---"}
+													</td>
+													<td className="px-6 py-3">{item?.credit || "---"}</td>
+													<td className="px-6 py-3">
+														{item?.balance || "---"}
+													</td>
+													<td className="px-6 py-3">
+														{item?.cheque_id || "---"}
+													</td> */}
+													<td className="px-6 py-3">
+														{item?.collector_code || "---"}
+													</td>
+													<td className="px-6 py-3">
+														{item?.collec_name || "---"}
+													</td>
+													<td className="px-6 py-3">
+														{item?.created_at
+															? new Date(item?.created_at)?.toLocaleDateString(
+																	"en-GB"
+															  )
+															: "---"}
+													</td>
+													<td className="px-6 py-3">
+														{item?.approved_by || "---"}
+													</td>
+													<td className="px-6 py-3">
+														{item?.approved_at
+															? new Date(item?.approved_at)?.toLocaleDateString(
+																	"en-GB"
+															  )
+															: "---"}
 													</td>
 												</tr>
 											)
