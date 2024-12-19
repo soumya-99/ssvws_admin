@@ -38,7 +38,7 @@ export const printTableDemandReport = (
         <div class="italic center-div">
           ${title}
         </div>
-        <div class="italic center-div">${metadata || ""}</div>
+        
         <div class="italic center-div">
           Showing results from ${new Date(fromDate)?.toLocaleDateString(
 						"en-GB"
