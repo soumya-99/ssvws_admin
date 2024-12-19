@@ -103,9 +103,21 @@ function LoanTransactionsMain() {
 	}
 
 	useEffect(() => {
-		if (searchType === "R" && fromDate && toDate) {
+		if (
+			searchType === "R" &&
+			fromDate &&
+			toDate &&
+			new Date(fromDate)?.toLocaleDateString()?.length === 10 &&
+			new Date(toDate)?.toLocaleDateString()?.length === 10
+		) {
 			handleFetchReportRecovery()
-		} else if (searchType === "D" && fromDate && toDate) {
+		} else if (
+			searchType === "D" &&
+			fromDate &&
+			toDate &&
+			new Date(fromDate)?.toLocaleDateString()?.length === 10 &&
+			new Date(toDate)?.toLocaleDateString()?.length === 10
+		) {
 			handleFetchReportDisbursement()
 		}
 	}, [searchType, fromDate, toDate])

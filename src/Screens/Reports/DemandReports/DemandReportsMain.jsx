@@ -86,7 +86,13 @@ function DemandReportsMain() {
 	}, [])
 
 	useEffect(() => {
-		if (fromDate && toDate) {
+		console.log("AAAAAAAAAAAAAAAAAAAAAAA", fromDate, toDate)
+		if (
+			fromDate &&
+			toDate &&
+			new Date(fromDate)?.toLocaleDateString()?.length === 10 &&
+			new Date(toDate)?.toLocaleDateString()?.length === 10
+		) {
 			handleFetchReportDemand()
 		}
 		// else if (searchType === "D" && fromDate && toDate) {
@@ -234,6 +240,12 @@ function DemandReportsMain() {
 									<thead className="w-full text-xs uppercase text-slate-50 bg-slate-800 dark:bg-gray-700 dark:text-gray-400 sticky top-0">
 										<tr>
 											<th scope="col" className="px-6 py-3 font-semibold ">
+												Sl. No.
+											</th>
+											<th scope="col" className="px-6 py-3 font-semibold ">
+												Loan ID
+											</th>
+											<th scope="col" className="px-6 py-3 font-semibold ">
 												Member Code
 											</th>
 											<th scope="col" className="px-6 py-3 font-semibold ">
@@ -245,9 +257,9 @@ function DemandReportsMain() {
 											<th scope="col" className="px-6 py-3 font-semibold ">
 												Group Name
 											</th>
-											<th scope="col" className="px-6 py-3 font-semibold ">
+											{/* <th scope="col" className="px-6 py-3 font-semibold ">
 												Loan ID
-											</th>
+											</th> */}
 											<th scope="col" className="px-6 py-3 font-semibold ">
 												Disbursement Date
 											</th>
@@ -258,7 +270,13 @@ function DemandReportsMain() {
 												Period
 											</th>
 											<th scope="col" className="px-6 py-3 font-semibold ">
+												Installment End Date
+											</th>
+											<th scope="col" className="px-6 py-3 font-semibold ">
 												Period Mode
+											</th>
+											<th scope="col" className="px-6 py-3 font-semibold ">
+												Total EMI
 											</th>
 											<th scope="col" className="px-6 py-3 font-semibold ">
 												Balance
@@ -278,6 +296,10 @@ function DemandReportsMain() {
 														i % 2 === 0 ? "bg-slate-200 text-slate-900" : ""
 													}
 												>
+													<td className="px-6 py-3">{i++}</td>
+													<td className="px-6 py-3">
+														{item?.loan_id || "---"}
+													</td>
 													<td className="px-6 py-3">
 														{item?.member_code || "---"}
 													</td>
@@ -290,9 +312,9 @@ function DemandReportsMain() {
 													<td className="px-6 py-3">
 														{item?.group_name || "---"}
 													</td>
-													<td className="px-6 py-3">
+													{/* <td className="px-6 py-3">
 														{item?.loan_id || "---"}
-													</td>
+													</td> */}
 													<td className="px-6 py-3">
 														{item?.disb_dt
 															? new Date(item?.disb_dt)?.toLocaleDateString(
@@ -306,23 +328,35 @@ function DemandReportsMain() {
 													</td>
 													<td className="px-6 py-3">{item?.period || "---"}</td>
 													<td className="px-6 py-3">
+														{item?.instl_end_dt
+															? new Date(
+																	item?.instl_end_dt
+															  )?.toLocaleDateString("en-GB")
+															: "---"}
+													</td>
+													<td className="px-6 py-3">
 														{item?.period_mode || "---"}
+													</td>
+													<td className="px-6 py-3">
+														{parseFloat(item?.tot_emi)?.toFixed(2) || "---"}
 													</td>
 													<td className="px-6 py-3">
 														{item?.balance_dt || "---"}
 													</td>
-													<td className="px-6 py-3">{item?.demand || "---"}</td>
+													<td className="px-6 py-3">
+														{parseFloat(item?.demand)?.toFixed(2) || "---"}
+													</td>
 												</tr>
 											)
 										})}
 										<tr
 											className={"text-slate-50 bg-slate-700 sticky bottom-0"}
 										>
-											<td className="px-6 py-3" colSpan={10}>
+											<td className="px-6 py-3" colSpan={13}>
 												Total Demand:
 											</td>
 											<td className="px-6 py-3" colSpan={1}>
-												{totalDemand}
+												{parseFloat(totalDemand)?.toFixed(2)}
 											</td>
 										</tr>
 									</tbody>
