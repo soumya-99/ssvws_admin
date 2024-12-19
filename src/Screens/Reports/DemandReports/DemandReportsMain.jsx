@@ -18,7 +18,7 @@ import { formatDateToYYYYMMDD } from "../../../Utils/formateDate"
 import { saveAs } from "file-saver"
 import * as XLSX from "xlsx"
 import { printTableLoanStatement } from "../../../Utils/printTableLoanStatement"
-import { printTableLoanTransactions } from "../../../Utils/printTableLoanTransactions"
+import { printTableDemandReport } from "../../../Utils/printTableDemandReport"
 
 // const { RangePicker } = DatePicker
 // const dateFormat = "YYYY/MM/DD"
@@ -384,7 +384,7 @@ function DemandReportsMain() {
 							<Tooltip title="Print">
 								<button
 									onClick={() =>
-										printTableLoanTransactions(
+										printTableDemandReport(
 											reportData,
 											"Loan Demand Report",
 											searchType,
