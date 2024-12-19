@@ -2,7 +2,7 @@ export const printTableLoanTransactions = (
 	dataArray,
 	title,
 	searchType,
-	metadata,
+	metadata = "",
 	fromDate,
 	toDate
 ) => {
@@ -44,6 +44,7 @@ export const printTableLoanTransactions = (
 							: "Err"
 					}
         </div>
+        <div class="italic center-div">${metadata || ""}</div>
         <div class="italic center-div">
           Showing results from ${new Date(fromDate)?.toLocaleDateString(
 						"en-GB"

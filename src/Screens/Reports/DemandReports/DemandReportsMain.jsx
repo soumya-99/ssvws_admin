@@ -20,8 +20,8 @@ import * as XLSX from "xlsx"
 import { printTableLoanStatement } from "../../../Utils/printTableLoanStatement"
 import { printTableLoanTransactions } from "../../../Utils/printTableLoanTransactions"
 
-const { RangePicker } = DatePicker
-const dateFormat = "YYYY/MM/DD"
+// const { RangePicker } = DatePicker
+// const dateFormat = "YYYY/MM/DD"
 
 const options = [
 	{
@@ -56,40 +56,15 @@ function DemandReportsMain() {
 		setSearchType(e)
 	}
 
-	const handleFetchReportRecovery = async () => {
+	const handleFetchReportDemand = async () => {
 		setLoading(true)
 		const creds = {
 			from_dt: formatDateToYYYYMMDD(fromDate),
 			to_dt: formatDateToYYYYMMDD(toDate),
-			branch_code: userDetails?.brn_code,
-			tr_type: "R",
 		}
 
 		await axios
-			.post(`${url}/recov_loan_trans_report`, creds)
-			.then((res) => {
-				console.log("RESSSSS======>>>>", res?.data)
-				setReportData(res?.data?.msg)
-				// setTotSum(res?.data?.msg.reduce((n, { credit }) => n + credit, 0))
-			})
-			.catch((err) => {
-				console.log("ERRRR>>>", err)
-			})
-
-		setLoading(false)
-	}
-
-	const handleFetchReportDisbursement = async () => {
-		setLoading(true)
-		const creds = {
-			from_dt: formatDateToYYYYMMDD(fromDate),
-			to_dt: formatDateToYYYYMMDD(toDate),
-			branch_code: userDetails?.brn_code,
-			tr_type: "D",
-		}
-
-		await axios
-			.post(`${url}/disb_loan_trans_report`, creds)
+			.post(`${url}/loan_demand_report`, creds)
 			.then((res) => {
 				console.log("RESSSSS======>>>>", res?.data)
 				setReportData(res?.data?.msg)
@@ -103,12 +78,21 @@ function DemandReportsMain() {
 	}
 
 	useEffect(() => {
-		if (searchType === "R" && fromDate && toDate) {
-			handleFetchReportRecovery()
-		} else if (searchType === "D" && fromDate && toDate) {
-			handleFetchReportDisbursement()
+		// setMetadataDtls(
+		// 	JSON.parse({
+		// 		branchName: userDetails?.branch_name,
+		// 	})
+		// )
+	}, [])
+
+	useEffect(() => {
+		if (fromDate && toDate) {
+			handleFetchReportDemand()
 		}
-	}, [searchType, fromDate, toDate])
+		// else if (searchType === "D" && fromDate && toDate) {
+		// 	handleFetchReportDisbursement()
+		// }
+	}, [fromDate, toDate])
 
 	useEffect(() => {
 		setReportData(() => [])
@@ -137,7 +121,7 @@ function DemandReportsMain() {
 	// let totalCredit = 0
 	// let totalDebit = 0
 	// let totalCreditGrpwise = 0
-	// let totalDebitGrpwise = 0
+	let totalDemand = 0
 
 	return (
 		<div>
@@ -165,7 +149,10 @@ function DemandReportsMain() {
 								}}
 							/>
 						</div> */}
-						<div className="mt-5">
+
+						{/* R.I.P Sweet bro */}
+
+						{/* <div className="mt-5">
 							<div className="text-slate-800">Choose Date:</div>
 							<RangePicker
 								className="p-2 shadow-md"
@@ -177,7 +164,7 @@ function DemandReportsMain() {
 									setToDate(dateStrings[1])
 								}}
 							/>
-						</div>
+						</div> */}
 					</div>
 
 					{/* <div class="my-4 mx-auto">
@@ -195,18 +182,11 @@ function DemandReportsMain() {
 							mode={1}
 						/>
 					</div> */}
+					<div className="text-slate-800 italic">
+						Branch: {userDetails?.branch_name}
+					</div>
 
-					{/* <RangePicker
-						format={dateFormat}
-						onChange={(dates, dateStrings) => {
-							console.log("-------dates", dates)
-							console.log("-------dateStrings", dateStrings)
-							setFromDate(dateStrings[0])
-							setToDate(dateStrings[1])
-						}}
-					/> */}
-
-					{/* <div className="grid grid-cols-2 gap-5 mt-5">
+					<div className="grid grid-cols-2 gap-5 mt-5">
 						<div>
 							<TDInputTemplateBr
 								placeholder="From Date"
@@ -231,11 +211,11 @@ function DemandReportsMain() {
 								mode={1}
 							/>
 						</div>
-					</div> */}
+					</div>
 
-					{/* For Recovery/Collection Results */}
+					{/* For Demand Results */}
 
-					{searchType === "R" && reportData.length > 0 && (
+					{reportData.length > 0 && (
 						<div
 							className={`relative overflow-x-auto shadow-md sm:rounded-lg mt-5 max-h-[500px]
                                 [&::-webkit-scrollbar]:w-1
@@ -267,264 +247,30 @@ function DemandReportsMain() {
 											</th>
 											<th scope="col" className="px-6 py-3 font-semibold ">
 												Loan ID
-											</th>
-											<th scope="col" className="px-6 py-3 font-semibold ">
-												Payment ID
-											</th>
-											<th scope="col" className="px-6 py-3 font-semibold ">
-												Payment Date
-											</th>
-											<th scope="col" className="px-6 py-3 font-semibold ">
-												Particulars
-											</th>
-											<th scope="col" className="px-6 py-3 font-semibold ">
-												Scheme
-											</th>
-											<th scope="col" className="px-6 py-3 font-semibold ">
-												Txn. Mode
-											</th>
-											<th scope="col" className="px-6 py-3 font-semibold ">
-												Txn. Address
-											</th>
-											<th scope="col" className="px-6 py-3 font-semibold ">
-												Bank
-											</th>
-											<th scope="col" className="px-6 py-3 font-semibold ">
-												Credit
-											</th>
-											<th scope="col" className="px-6 py-3 font-semibold ">
-												Balance
-											</th>
-											<th scope="col" className="px-6 py-3 font-semibold ">
-												Cheque ID.
-											</th>
-											<th scope="col" className="px-6 py-3 font-semibold ">
-												Collector Code
-											</th>
-											<th scope="col" className="px-6 py-3 font-semibold ">
-												Collector Name
-											</th>
-											<th scope="col" className="px-6 py-3 font-semibold ">
-												Created At
-											</th>
-										</tr>
-									</thead>
-									<tbody>
-										{reportData?.map((item, i) => {
-											return (
-												<tr
-													key={i}
-													className={
-														i % 2 === 0 ? "bg-slate-200 text-slate-900" : ""
-													}
-												>
-													<td className="px-6 py-3">
-														{item?.member_code || "---"}
-													</td>
-													<td className="px-6 py-3">
-														{item?.client_name || "---"}
-													</td>
-													<td className="px-6 py-3">
-														{item?.group_code || "---"}
-													</td>
-													<td className="px-6 py-3">
-														{item?.group_name || "---"}
-													</td>
-													<td className="px-6 py-3">
-														{item?.loan_id || "---"}
-													</td>
-													<td className="px-6 py-3">
-														{item?.payment_id || "---"}
-													</td>
-													<td className="px-6 py-3">
-														{item?.payment_date
-															? new Date(
-																	item?.payment_date
-															  )?.toLocaleDateString("en-GB")
-															: "---"}
-													</td>
-													<td className="px-6 py-3">
-														{item?.particulars || "---"}
-													</td>
-													<td className="px-6 py-3">
-														{item?.scheme_name || "---"}
-													</td>
-													<td className="px-6 py-3">
-														{item?.tr_mode || "---"}
-													</td>
-													<td className="px-6 py-3">
-														{item?.trn_addr || "---"}
-													</td>
-													<td className="px-6 py-3">
-														{item?.bank_name || "---"}
-													</td>
-													<td className="px-6 py-3">{item?.credit || "---"}</td>
-													<td className="px-6 py-3">
-														{item?.balance || "---"}
-													</td>
-													<td className="px-6 py-3">
-														{item?.cheque_id || "---"}
-													</td>
-													<td className="px-6 py-3">
-														{item?.collector_code || "---"}
-													</td>
-													<td className="px-6 py-3">
-														{item?.collec_name || "---"}
-													</td>
-													<td className="px-6 py-3">
-														{item?.created_at
-															? new Date(item?.created_at)?.toLocaleDateString(
-																	"en-GB"
-															  )
-															: "---"}
-													</td>
-												</tr>
-											)
-										})}
-									</tbody>
-								</table>
-							</div>
-						</div>
-					)}
-
-					{/* For Disbursement Results */}
-
-					{searchType === "D" && reportData.length > 0 && (
-						<div
-							className={`relative overflow-x-auto shadow-md sm:rounded-lg mt-5 max-h-[500px]
-                                [&::-webkit-scrollbar]:w-1
-                                [&::-webkit-scrollbar-track]:rounded-full
-                                [&::-webkit-scrollbar-track]:bg-transparent
-                                [&::-webkit-scrollbar-thumb]:rounded-full
-                                [&::-webkit-scrollbar-thumb]:bg-gray-300
-                                dark:[&::-webkit-scrollbar-track]:bg-transparent
-                                dark:[&::-webkit-scrollbar-thumb]:bg-neutral-500
-                            `}
-						>
-							<div
-								className={`w-full text-xs dark:bg-gray-700 dark:text-gray-400`}
-							>
-								<table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
-									<thead className="w-full text-xs uppercase text-slate-50 bg-slate-800 dark:bg-gray-700 dark:text-gray-400 sticky top-0">
-										<tr>
-											<th scope="col" className="px-6 py-3 font-semibold ">
-												Member Code
-											</th>
-											<th scope="col" className="px-6 py-3 font-semibold ">
-												Member Name
-											</th>
-											<th scope="col" className="px-6 py-3 font-semibold ">
-												Member Address
-											</th>
-											<th scope="col" className="px-6 py-3 font-semibold ">
-												Member Mobile
-											</th>
-											<th scope="col" className="px-6 py-3 font-semibold ">
-												Aadhaar No.
-											</th>
-											<th scope="col" className="px-6 py-3 font-semibold ">
-												PAN No.
-											</th>
-											<th scope="col" className="px-6 py-3 font-semibold ">
-												Guardian Name
-											</th>
-											<th scope="col" className="px-6 py-3 font-semibold ">
-												Group Code
-											</th>
-											<th scope="col" className="px-6 py-3 font-semibold ">
-												Group Name
-											</th>
-											<th scope="col" className="px-6 py-3 font-semibold ">
-												Loan ID
-											</th>
-											<th scope="col" className="px-6 py-3 font-semibold ">
-												Acc No.
-											</th>
-											<th scope="col" className="px-6 py-3 font-semibold ">
-												Payment Date
-											</th>
-											<th scope="col" className="px-6 py-3 font-semibold ">
-												Purpose
-											</th>
-											<th scope="col" className="px-6 py-3 font-semibold ">
-												Sub Purpose
-											</th>
-											<th scope="col" className="px-6 py-3 font-semibold ">
-												Scheme
-											</th>
-											<th scope="col" className="px-6 py-3 font-semibold ">
-												Fund
-											</th>
-											<th scope="col" className="px-6 py-3 font-semibold ">
-												Applied Date
-											</th>
-											<th scope="col" className="px-6 py-3 font-semibold ">
-												Applied Amount
 											</th>
 											<th scope="col" className="px-6 py-3 font-semibold ">
 												Disbursement Date
 											</th>
 											<th scope="col" className="px-6 py-3 font-semibold ">
-												Interest Payable
-											</th>
-											<th scope="col" className="px-6 py-3 font-semibold ">
-												Principal Disbursement Amount
-											</th>
-											<th scope="col" className="px-6 py-3 font-semibold ">
 												Current R.O.I
+											</th>
+											<th scope="col" className="px-6 py-3 font-semibold ">
+												Period
 											</th>
 											<th scope="col" className="px-6 py-3 font-semibold ">
 												Period Mode
 											</th>
 											<th scope="col" className="px-6 py-3 font-semibold ">
-												Installment End Date
-											</th>
-											<th scope="col" className="px-6 py-3 font-semibold ">
-												Principal Amount
-											</th>
-											<th scope="col" className="px-6 py-3 font-semibold ">
-												Interest Amount
-											</th>
-											<th scope="col" className="px-6 py-3 font-semibold ">
-												Outstanding
-											</th>
-											{/* <th scope="col" className="px-6 py-3 font-semibold ">
-												Txn. Mode
-											</th>
-											<th scope="col" className="px-6 py-3 font-semibold ">
-												Txn. Address
-											</th>
-											<th scope="col" className="px-6 py-3 font-semibold ">
-												Bank
-											</th>
-											<th scope="col" className="px-6 py-3 font-semibold ">
-												Credit
-											</th>
-											<th scope="col" className="px-6 py-3 font-semibold ">
 												Balance
 											</th>
 											<th scope="col" className="px-6 py-3 font-semibold ">
-												Cheque ID.
-											</th> */}
-											<th scope="col" className="px-6 py-3 font-semibold ">
-												Collector Code
-											</th>
-											<th scope="col" className="px-6 py-3 font-semibold ">
-												Collector Name
-											</th>
-											<th scope="col" className="px-6 py-3 font-semibold ">
-												Created At
-											</th>
-											<th scope="col" className="px-6 py-3 font-semibold ">
-												Approved By
-											</th>
-											<th scope="col" className="px-6 py-3 font-semibold ">
-												Approved At
+												Demand
 											</th>
 										</tr>
 									</thead>
 									<tbody>
 										{reportData?.map((item, i) => {
+											totalDemand += +item?.demand
 											return (
 												<tr
 													key={i}
@@ -539,19 +285,6 @@ function DemandReportsMain() {
 														{item?.client_name || "---"}
 													</td>
 													<td className="px-6 py-3">
-														{item?.client_addr || "---"}
-													</td>
-													<td className="px-6 py-3">
-														{item?.client_mobile || "---"}
-													</td>
-													<td className="px-6 py-3">
-														{item?.aadhar_no || "---"}
-													</td>
-													<td className="px-6 py-3">{item?.pan_no || "---"}</td>
-													<td className="px-6 py-3">
-														{item?.gurd_name || "---"}
-													</td>
-													<td className="px-6 py-3">
 														{item?.group_code || "---"}
 													</td>
 													<td className="px-6 py-3">
@@ -559,36 +292,6 @@ function DemandReportsMain() {
 													</td>
 													<td className="px-6 py-3">
 														{item?.loan_id || "---"}
-													</td>
-													<td className="px-6 py-3">{item?.acc_no || "---"}</td>
-													<td className="px-6 py-3">
-														{item?.payment_date
-															? new Date(
-																	item?.payment_date
-															  )?.toLocaleDateString("en-GB")
-															: "---"}
-													</td>
-													<td className="px-6 py-3">
-														{item?.purpose_id || "---"}
-													</td>
-													<td className="px-6 py-3">
-														{item?.sub_purp_name || "---"}
-													</td>
-													<td className="px-6 py-3">
-														{item?.scheme_name || "---"}
-													</td>
-													<td className="px-6 py-3">
-														{item?.fund_name || "---"}
-													</td>
-													<td className="px-6 py-3">
-														{item?.applied_dt
-															? new Date(item?.applied_dt)?.toLocaleDateString(
-																	"en-GB"
-															  )
-															: "---"}
-													</td>
-													<td className="px-6 py-3">
-														{item?.applied_amt || "---"}
 													</td>
 													<td className="px-6 py-3">
 														{item?.disb_dt
@@ -597,76 +300,31 @@ function DemandReportsMain() {
 															  )
 															: "---"}
 													</td>
-													<td className="px-6 py-3">
-														{item?.intt_payable || "---"}
-													</td>
-													<td className="px-6 py-3">
-														{item?.prn_disb_amt || "---"}
-													</td>
+
 													<td className="px-6 py-3">
 														{item?.curr_roi || "---"}
 													</td>
+													<td className="px-6 py-3">{item?.period || "---"}</td>
 													<td className="px-6 py-3">
 														{item?.period_mode || "---"}
 													</td>
 													<td className="px-6 py-3">
-														{item?.instl_end_dt
-															? new Date(
-																	item?.instl_end_dt
-															  )?.toLocaleDateString("en-GB")
-															: "---"}
+														{item?.balance_dt || "---"}
 													</td>
-													<td className="px-6 py-3">
-														{item?.prn_amt || "---"}
-													</td>
-													<td className="px-6 py-3">
-														{item?.intt_amt || "---"}
-													</td>
-													<td className="px-6 py-3">
-														{item?.outstanding || "---"}
-													</td>
-													{/* <td className="px-6 py-3">
-														{item?.tr_mode || "---"}
-													</td>
-													<td className="px-6 py-3">
-														{item?.trn_addr || "---"}
-													</td>
-													<td className="px-6 py-3">
-														{item?.bank_name || "---"}
-													</td>
-													<td className="px-6 py-3">{item?.credit || "---"}</td>
-													<td className="px-6 py-3">
-														{item?.balance || "---"}
-													</td>
-													<td className="px-6 py-3">
-														{item?.cheque_id || "---"}
-													</td> */}
-													<td className="px-6 py-3">
-														{item?.collector_code || "---"}
-													</td>
-													<td className="px-6 py-3">
-														{item?.collec_name || "---"}
-													</td>
-													<td className="px-6 py-3">
-														{item?.created_at
-															? new Date(item?.created_at)?.toLocaleDateString(
-																	"en-GB"
-															  )
-															: "---"}
-													</td>
-													<td className="px-6 py-3">
-														{item?.approved_by || "---"}
-													</td>
-													<td className="px-6 py-3">
-														{item?.approved_at
-															? new Date(item?.approved_at)?.toLocaleDateString(
-																	"en-GB"
-															  )
-															: "---"}
-													</td>
+													<td className="px-6 py-3">{item?.demand || "---"}</td>
 												</tr>
 											)
 										})}
+										<tr
+											className={"text-slate-50 bg-slate-700 sticky bottom-0"}
+										>
+											<td className="px-6 py-3" colSpan={10}>
+												Total Demand:
+											</td>
+											<td className="px-6 py-3" colSpan={1}>
+												{totalDemand}
+											</td>
+										</tr>
 									</tbody>
 								</table>
 							</div>
@@ -694,9 +352,9 @@ function DemandReportsMain() {
 									onClick={() =>
 										printTableLoanTransactions(
 											reportData,
-											"Loan Transaction",
+											"Loan Demand Report",
 											searchType,
-											metadataDtls,
+											userDetails?.branch_name,
 											fromDate,
 											toDate
 										)

@@ -18,8 +18,8 @@ import { saveAs } from "file-saver"
 import * as XLSX from "xlsx"
 import { printTableLoanStatement } from "../../../Utils/printTableLoanStatement"
 
-const { RangePicker } = DatePicker
-const dateFormat = "YYYY/MM/DD"
+// const { RangePicker } = DatePicker
+// const dateFormat = "YYYY/MM/DD"
 
 const options = [
 	{
@@ -220,7 +220,7 @@ function LoanStatementMain() {
 
 					{reportData.length > 0 && (
 						<div className="grid grid-cols-2 gap-5 mt-5">
-							{/* <div>
+							<div>
 								<TDInputTemplateBr
 									placeholder="From Date"
 									type="date"
@@ -243,8 +243,11 @@ function LoanStatementMain() {
 									min={"1900-12-31"}
 									mode={1}
 								/>
-							</div> */}
-							<RangePicker
+							</div>
+
+							{/* R.I.P Sweet bro */}
+
+							{/* <RangePicker
 								className="p-2 shadow-md"
 								format={dateFormat}
 								onChange={(dates, dateStrings) => {
@@ -253,7 +256,7 @@ function LoanStatementMain() {
 									setFromDate(dateStrings[0])
 									setToDate(dateStrings[1])
 								}}
-							/>
+							/> */}
 						</div>
 					)}
 
