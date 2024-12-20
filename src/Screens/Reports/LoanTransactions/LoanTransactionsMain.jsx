@@ -103,20 +103,39 @@ function LoanTransactionsMain() {
 	}
 
 	useEffect(() => {
+		console.log("Effect called...")
+		console.log(
+			"Effect called cond 1...",
+			searchType === "R" &&
+				fromDate &&
+				toDate &&
+				new Date(fromDate)?.toLocaleDateString()?.length === 10 &&
+				new Date(toDate)?.toLocaleDateString()?.length === 10
+		)
+		console.log(
+			"OOOOOOOOOOO",
+			searchType,
+			fromDate,
+			toDate,
+			new Date(fromDate)?.toLocaleDateString()?.length,
+			new Date(toDate)?.toLocaleDateString()?.length
+		)
 		if (
 			searchType === "R" &&
 			fromDate &&
-			toDate &&
-			new Date(fromDate)?.toLocaleDateString()?.length === 10 &&
-			new Date(toDate)?.toLocaleDateString()?.length === 10
+			toDate
+			// &&
+			// new Date(fromDate)?.toLocaleDateString()?.length === 10 &&
+			// new Date(toDate)?.toLocaleDateString()?.length === 10
 		) {
 			handleFetchReportRecovery()
 		} else if (
 			searchType === "D" &&
 			fromDate &&
-			toDate &&
-			new Date(fromDate)?.toLocaleDateString()?.length === 10 &&
-			new Date(toDate)?.toLocaleDateString()?.length === 10
+			toDate
+			// &&
+			// new Date(fromDate)?.toLocaleDateString()?.length === 10 &&
+			// new Date(toDate)?.toLocaleDateString()?.length === 10
 		) {
 			handleFetchReportDisbursement()
 		}
