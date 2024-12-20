@@ -252,6 +252,13 @@ function MenusBr({ theme }) {
 					icon: <BarChartOutlined />,
 					label: <Link to={"/homebm/demandreport"}>Demand Report</Link>,
 				},
+				{
+					key: "sub6-7",
+					icon: <BarChartOutlined />,
+					label: (
+						<Link to={"/homebm/outstasndingreport"}>Outstanding Report</Link>
+					),
+				},
 			],
 		},
 		{

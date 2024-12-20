@@ -13,6 +13,7 @@ import CircularProgress from "@mui/material/CircularProgress"
 import LoanStatementMain from "./Screens/Reports/LoanStatements/LoanStatementMain"
 import LoanTransactionsMain from "./Screens/Reports/LoanTransactions/LoanTransactionsMain"
 import DemandReportsMain from "./Screens/Reports/DemandReports/DemandReportsMain"
+import OutstaningReportMain from "./Screens/Reports/OutstandingReports/OutstaningReportMain"
 const MasterBanks = lazy(() => import("./Screens/Master/MasterBanks"))
 const EditMasterBank = lazy(() => import("./Screens/Master/EditMasterBank"))
 const EditRecoveryApproveFormBM = lazy(() =>
@@ -293,6 +294,10 @@ const router = createBrowserRouter([
 							{
 								path: "demandreport",
 								element: <DemandReportsMain />,
+							},
+							{
+								path: "outstasndingreport",
+								element: <OutstaningReportMain />,
 							},
 						],
 					},

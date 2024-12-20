@@ -58,6 +58,7 @@ function LoanStatementMain() {
 		setLoading(true)
 		const creds = {
 			memb: search,
+			branch_code: userDetails?.brn_code,
 		}
 
 		await axios
@@ -78,6 +79,7 @@ function LoanStatementMain() {
 		setLoading(true)
 		const creds = {
 			grp: search,
+			branch_code: userDetails?.brn_code,
 		}
 
 		await axios
@@ -518,6 +520,18 @@ function LoanStatementMain() {
 												<th scope="col" className="px-6 py-3 font-semibold ">
 													Txn. Mode
 												</th>
+												<th scope="col" className="px-6 py-3 font-semibold ">
+													Current R.O.I
+												</th>
+												<th scope="col" className="px-6 py-3 font-semibold ">
+													Period
+												</th>
+												<th scope="col" className="px-6 py-3 font-semibold ">
+													Period Mode
+												</th>
+												<th scope="col" className="px-6 py-3 font-semibold ">
+													Total EMI
+												</th>
 											</tr>
 										</thead>
 										<tbody>
@@ -559,6 +573,18 @@ function LoanStatementMain() {
 																? "Bank"
 																: "Error"}
 														</td>
+														<td className="px-6 py-3">
+															{item?.curr_roi || "---"}
+														</td>
+														<td className="px-6 py-3">
+															{item?.period || "---"}
+														</td>
+														<td className="px-6 py-3">
+															{item?.period_mode || "---"}
+														</td>
+														<td className="px-6 py-3">
+															{item?.tot_emi || "---"}
+														</td>
 													</tr>
 												)
 											})}
@@ -574,7 +600,7 @@ function LoanStatementMain() {
 												<td className="px-6 py-3" colSpan={4}>
 													{totalCredit?.toFixed(2)}
 												</td>
-												<td className="px-6 py-3" colSpan={2}>
+												<td className="px-6 py-3" colSpan={6}>
 													Total Recovery:{" "}
 													{
 														reportTxnData?.filter(
@@ -636,6 +662,23 @@ function LoanStatementMain() {
 												<th scope="col" className="px-6 py-3 font-semibold ">
 													Particulars
 												</th>
+												<th scope="col" className="px-6 py-3 font-semibold ">
+													Current R.O.I
+												</th>
+												<th scope="col" className="px-6 py-3 font-semibold ">
+													Period
+												</th>
+												<th scope="col" className="px-6 py-3 font-semibold ">
+													Period Mode
+												</th>
+												<th scope="col" className="px-6 py-3 font-semibold ">
+													Total EMI
+												</th>
+
+												{/* "curr_roi": 13.6,
+												"period": 24,
+												"period_mode": "Monthly",
+												"tot_emi": 2650 */}
 											</tr>
 										</thead>
 										<tbody>
@@ -665,12 +708,36 @@ function LoanStatementMain() {
 																? "Interest"
 																: "Err"}
 														</td>
-														<td className="px-6 py-3">{item?.debit}</td>
-														<td className="px-6 py-3">{item?.credit}</td>
-														<td className="px-6 py-3">{item?.bank_charge}</td>
-														<td className="px-6 py-3">{item?.proc_charge}</td>
-														<td className="px-6 py-3">{item?.balance}</td>
-														<td className="px-6 py-3">{item?.particulars}</td>
+														<td className="px-6 py-3">
+															{item?.debit || "---"}
+														</td>
+														<td className="px-6 py-3">
+															{item?.credit || "---"}
+														</td>
+														<td className="px-6 py-3">
+															{item?.bank_charge || "---"}
+														</td>
+														<td className="px-6 py-3">
+															{item?.proc_charge || "---"}
+														</td>
+														<td className="px-6 py-3">
+															{item?.balance || "---"}
+														</td>
+														<td className="px-6 py-3">
+															{item?.particulars || "---"}
+														</td>
+														<td className="px-6 py-3">
+															{item?.curr_roi || "---"}
+														</td>
+														<td className="px-6 py-3">
+															{item?.period || "---"}
+														</td>
+														<td className="px-6 py-3">
+															{item?.period_mode || "---"}
+														</td>
+														<td className="px-6 py-3">
+															{item?.tot_emi || "---"}
+														</td>
 													</tr>
 												)
 											})}
@@ -686,7 +753,7 @@ function LoanStatementMain() {
 												<td className="px-6 py-3" colSpan={4}>
 													{totalCredit?.toFixed(2)}
 												</td>
-												<td className="px-6 py-3" colSpan={1}>
+												<td className="px-6 py-3" colSpan={5}>
 													Total Recovery:{" "}
 													{
 														reportTxnData?.filter(

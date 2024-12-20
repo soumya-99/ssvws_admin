@@ -1,0 +1,735 @@
+import React, { useEffect, useState } from "react"
+import Sidebar from "../../../Components/Sidebar"
+import axios from "axios"
+import { url } from "../../../Address/BaseUrl"
+import { Message } from "../../../Components/Message"
+import { Spin, Button, Modal, Tooltip, DatePicker, Progress } from "antd"
+import dayjs from "dayjs"
+import {
+	LoadingOutlined,
+	SearchOutlined,
+	PrinterOutlined,
+	FileExcelOutlined,
+} from "@ant-design/icons"
+import Radiobtn from "../../../Components/Radiobtn"
+import TDInputTemplateBr from "../../../Components/TDInputTemplateBr"
+import { formatDateToYYYYMMDD } from "../../../Utils/formateDate"
+
+import { saveAs } from "file-saver"
+import * as XLSX from "xlsx"
+import { printTableLoanStatement } from "../../../Utils/printTableLoanStatement"
+import { printTableLoanTransactions } from "../../../Utils/printTableLoanTransactions"
+import { printTableOutstandingReport } from "../../../Utils/printTableOutstandingReport"
+
+// const { RangePicker } = DatePicker
+// const dateFormat = "YYYY/MM/DD"
+
+const options = [
+	{
+		label: "Memberwise",
+		value: "M",
+	},
+	{
+		label: "Groupwise",
+		value: "G",
+	},
+]
+
+function OutstaningReportMain() {
+	const userDetails = JSON.parse(localStorage.getItem("user_details")) || ""
+	const [loading, setLoading] = useState(false)
+
+	// const [openModal, setOpenModal] = useState(false)
+	// const [approvalStatus, setApprovalStatus] = useState("S")
+	const [searchType, setSearchType] = useState(() => "M")
+
+	const [fromDate, setFromDate] = useState()
+	const [toDate, setToDate] = useState()
+	const [reportData, setReportData] = useState(() => [])
+	// const [reportTxnData, setReportTxnData] = useState(() => [])
+	// const [tot_sum, setTotSum] = useState(0)
+	// const [search, setSearch] = useState("")
+	const [progress, setProgress] = useState(0)
+
+	const [metadataDtls, setMetadataDtls] = useState(() => null)
+
+	const [breakFromLoop, setBreakFromLoop] = useState(() => false)
+
+	const onChange = (e) => {
+		console.log("radio1 checked", e)
+		setSearchType(e)
+	}
+
+	const handleFetchReportOutstandingMemberwise = async () => {
+		let min = 0
+		const maxBatchSize = 20
+
+		const increment = 5
+
+		setLoading(true)
+
+		while (true) {
+			const creds = {
+				os_dt: formatDateToYYYYMMDD(fromDate),
+				branch_code: userDetails?.brn_code,
+				min: min,
+				max: min + maxBatchSize,
+			}
+
+			try {
+				const res = await axios.post(
+					`${url}/loan_outstanding_report_memberwise`,
+					creds
+				)
+				const data = res?.data?.msg || []
+				if (data.length === 0) {
+					break
+				}
+				// if (breakFromLoop) {
+				// 	break
+				// }
+				setReportData((prev) => [...prev, ...data])
+				min += maxBatchSize
+
+				setProgress((prev) => Math.min(100, prev + increment))
+
+				setLoading(false)
+			} catch (err) {
+				console.log("ERRRR>>>", err)
+				break
+			}
+		}
+
+		setLoading(false)
+	}
+
+	const handleFetchReportOutstandingGroupwise = async () => {
+		let min = 0
+		const maxBatchSize = 20
+
+		const increment = 5
+
+		setLoading(true)
+
+		while (true) {
+			const creds = {
+				os_dt: formatDateToYYYYMMDD(fromDate),
+				branch_code: userDetails?.brn_code,
+				min: min,
+				max: min + maxBatchSize,
+			}
+
+			try {
+				const res = await axios.post(
+					`${url}/loan_outstanding_report_groupwise`,
+					creds
+				)
+				const data = res?.data?.msg || []
+				if (data.length === 0) {
+					break
+				}
+				setReportData((prev) => [...prev, ...data])
+				min += maxBatchSize
+
+				setProgress((prev) => Math.min(100, prev + increment))
+
+				setLoading(false)
+			} catch (err) {
+				console.log("ERRRR>>>", err)
+				break
+			}
+		}
+
+		setLoading(false)
+	}
+
+	useEffect(() => {
+		if (
+			searchType === "M" &&
+			fromDate &&
+			new Date(fromDate)?.toLocaleDateString()?.length === 10
+		) {
+			handleFetchReportOutstandingMemberwise()
+		} else if (
+			searchType === "G" &&
+			fromDate &&
+			new Date(fromDate)?.toLocaleDateString()?.length === 10
+		) {
+			handleFetchReportOutstandingGroupwise()
+		}
+	}, [searchType, fromDate])
+
+	useEffect(() => {
+		setReportData(() => [])
+		setMetadataDtls(() => null)
+		totalBal = 0
+		totalODBal = 0
+		totalInterestBal = 0
+		setProgress(0)
+		// setBreakFromLoop(true)
+	}, [searchType])
+
+	const exportToExcel = (data) => {
+		const wb = XLSX.utils.book_new()
+		const ws = XLSX.utils.json_to_sheet(data)
+		XLSX.utils.book_append_sheet(wb, ws, "Sheet1")
+		const wbout = XLSX.write(wb, { bookType: "xlsx", type: "binary" })
+		const blob = new Blob([s2ab(wbout)], { type: "application/octet-stream" })
+		saveAs(blob, "outstanding_report.xlsx")
+	}
+
+	const s2ab = (s) => {
+		const buf = new ArrayBuffer(s.length)
+		const view = new Uint8Array(buf)
+		for (let i = 0; i < s.length; i++) {
+			view[i] = s.charCodeAt(i) & 0xff
+		}
+		return buf
+	}
+
+	let totalBal = 0
+	let totalODBal = 0
+	let totalInterestBal = 0
+
+	return (
+		<div>
+			<Sidebar mode={2} />
+			<Spin
+				indicator={<LoadingOutlined spin />}
+				size="large"
+				className="text-slate-800 dark:text-gray-400"
+				spinning={loading}
+			>
+				<main className="px-4 pb-5 bg-slate-50 rounded-lg shadow-lg h-auto my-10 mx-32">
+					{/* <div>
+						<Progress
+							type="line"
+							percent={progress}
+							size="default"
+							strokeColor={"#0694a2"}
+							strokeWidth={5}
+							showInfo={false}
+						/>
+					</div> */}
+					<div className="flex flex-row gap-3 mt-20  py-3 rounded-xl">
+						<div className="text-3xl text-slate-700 font-bold">
+							Outstanding Report
+						</div>
+					</div>
+
+					<div className="text-slate-800 italic">
+						Branch: {userDetails?.branch_name}
+					</div>
+
+					<div className="mb-2 flex justify-between items-center">
+						<div>
+							<Radiobtn
+								data={options}
+								val={searchType}
+								onChangeVal={(value) => {
+									onChange(value)
+								}}
+							/>
+						</div>
+
+						{/* R.I.P Sweet bro */}
+
+						{/* <div>
+							<div className="text-slate-800">Choose Date:</div>
+							<RangePicker
+								className="p-2 shadow-md"
+								format={dateFormat}
+								onChange={(dates, dateStrings) => {
+									console.log("-------dates", dates)
+									console.log("-------dateStrings", dateStrings)
+									setFromDate(dateStrings[0])
+									setToDate(dateStrings[1])
+								}}
+							/>
+						</div> */}
+					</div>
+
+					{reportData?.length !== 0 && (
+						<div className="flex justify-center items-center">
+							<Progress
+								type="dashboard"
+								percent={progress}
+								size="default"
+								strokeColor={"#0694a2"}
+								strokeWidth={10}
+							/>
+						</div>
+					)}
+					{/* <div class="my-4 mx-auto">
+						<TDInputTemplateBr
+							placeholder={
+								searchType === "M" ? `Member Name / ID` : `Group Name / ID`
+							}
+							type="text"
+							label={
+								searchType === "M" ? `Member Name / ID` : `Group Name / ID`
+							}
+							name="search_val"
+							handleChange={(txt) => setSearch(txt.target.value)}
+							formControlName={search}
+							mode={1}
+						/>
+					</div> */}
+
+					{/* <RangePicker
+						format={dateFormat}
+						onChange={(dates, dateStrings) => {
+							console.log("-------dates", dates)
+							console.log("-------dateStrings", dateStrings)
+							setFromDate(dateStrings[0])
+							setToDate(dateStrings[1])
+						}}
+					/> */}
+
+					<div className="grid grid-cols-2 gap-5 mt-5 align-middle items-center">
+						<div>
+							<TDInputTemplateBr
+								placeholder="From Date"
+								type="date"
+								label="From Date"
+								name="fromDate"
+								formControlName={fromDate}
+								handleChange={(e) => setFromDate(e.target.value)}
+								min={"1900-12-31"}
+								mode={1}
+							/>
+						</div>
+						{/* <div>
+							<TDInputTemplateBr
+								placeholder="To Date"
+								type="date"
+								label="To Date"
+								name="toDate"
+								formControlName={toDate}
+								handleChange={(e) => setToDate(e.target.value)}
+								min={"1900-12-31"}
+								mode={1}
+							/>
+						</div> */}
+						{/* <div>
+							<Progress
+								type="dashboard"
+								percent={progress}
+								size="default"
+								strokeColor={"#0694a2"}
+								strokeWidth={10}
+							/>
+						</div> */}
+					</div>
+
+					{/* For Recovery/Collection Results */}
+
+					{searchType === "M" && reportData.length > 0 && (
+						<div
+							className={`relative overflow-x-auto shadow-md sm:rounded-lg mt-5 max-h-[500px]
+                                [&::-webkit-scrollbar]:w-1
+                                [&::-webkit-scrollbar-track]:rounded-full
+                                [&::-webkit-scrollbar-track]:bg-transparent
+                                [&::-webkit-scrollbar-thumb]:rounded-full
+                                [&::-webkit-scrollbar-thumb]:bg-gray-300
+                                dark:[&::-webkit-scrollbar-track]:bg-transparent
+                                dark:[&::-webkit-scrollbar-thumb]:bg-neutral-500
+                            `}
+						>
+							<div
+								className={`w-full text-xs dark:bg-gray-700 dark:text-gray-400`}
+							>
+								<table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
+									<thead className="w-full text-xs uppercase text-slate-50 bg-slate-800 dark:bg-gray-700 dark:text-gray-400 sticky top-0">
+										<tr>
+											<th scope="col" className="px-6 py-3 font-semibold ">
+												Member Code
+											</th>
+											<th scope="col" className="px-6 py-3 font-semibold ">
+												Member Name
+											</th>
+											<th scope="col" className="px-6 py-3 font-semibold ">
+												Group Code
+											</th>
+											<th scope="col" className="px-6 py-3 font-semibold ">
+												Group Name
+											</th>
+											<th scope="col" className="px-6 py-3 font-semibold ">
+												Loan ID
+											</th>
+											<th scope="col" className="px-6 py-3 font-semibold ">
+												Disbursement Date
+											</th>
+											<th scope="col" className="px-6 py-3 font-semibold ">
+												Current R.O.I
+											</th>
+											<th scope="col" className="px-6 py-3 font-semibold ">
+												Period Mode
+											</th>
+											<th scope="col" className="px-6 py-3 font-semibold ">
+												Total EMI
+											</th>
+											<th scope="col" className="px-6 py-3 font-semibold ">
+												Installment End Date
+											</th>
+											<th scope="col" className="px-6 py-3 font-semibold ">
+												Balance
+											</th>
+											<th scope="col" className="px-6 py-3 font-semibold ">
+												OD Balance
+											</th>
+											<th scope="col" className="px-6 py-3 font-semibold ">
+												Interest Balance
+											</th>
+											<th scope="col" className="px-6 py-3 font-semibold ">
+												Outstanding
+											</th>
+										</tr>
+									</thead>
+									<tbody>
+										{reportData?.map((item, i) => {
+											totalBal += item?.balance
+											totalODBal += item?.od_balance
+											totalInterestBal += item?.intt_balance
+											return (
+												<tr
+													key={i}
+													className={
+														i % 2 === 0 ? "bg-slate-200 text-slate-900" : ""
+													}
+												>
+													<td className="px-6 py-3">
+														{item?.member_code || "---"}
+													</td>
+													<td className="px-6 py-3">
+														{item?.client_name || "---"}
+													</td>
+													<td className="px-6 py-3">
+														{item?.group_code || "---"}
+													</td>
+													<td className="px-6 py-3">
+														{item?.group_name || "---"}
+													</td>
+													<td className="px-6 py-3">
+														{item?.loan_id || "---"}
+													</td>
+													<td className="px-6 py-3">
+														{item?.disb_dt
+															? new Date(item?.disb_dt)?.toLocaleDateString(
+																	"en-GB"
+															  )
+															: "---"}
+													</td>
+													<td className="px-6 py-3">
+														{item?.curr_roi || "---"}
+													</td>
+													<td className="px-6 py-3">
+														{item?.period_mode || "---"}
+													</td>
+													<td className="px-6 py-3">
+														{item?.tot_emi || "---"}
+													</td>
+													<td className="px-6 py-3">
+														{item?.instl_end_dt
+															? new Date(
+																	item?.instl_end_dt
+															  )?.toLocaleDateString("en-GB")
+															: "---"}
+													</td>
+													<td className="px-6 py-3">
+														{item?.balance || "---"}
+													</td>
+													<td className="px-6 py-3">
+														{item?.od_balance || "---"}
+													</td>
+													<td className="px-6 py-3">
+														{item?.intt_balance || "---"}
+													</td>
+													<td className="px-6 py-3">
+														{+item?.intt_balance +
+															+item?.od_balance +
+															+item?.balance || "---"}
+													</td>
+												</tr>
+											)
+										})}
+										<tr
+											className={"text-slate-50 bg-slate-700 sticky bottom-0"}
+										>
+											<td className="px-6 py-3" colSpan={10}>
+												Total:
+											</td>
+											<td className="px-6 py-3" colSpan={1}>
+												{parseFloat(totalBal)?.toFixed(2)}
+											</td>
+											<td className="px-6 py-3" colSpan={1}>
+												{parseFloat(totalODBal)?.toFixed(2)}
+											</td>
+											<td className="px-6 py-3" colSpan={1}>
+												{parseFloat(totalInterestBal)?.toFixed(2)}
+											</td>
+											<td className="px-6 py-3" colSpan={1}>
+												{parseFloat(
+													totalBal + totalODBal + totalInterestBal
+												)?.toFixed(2)}
+											</td>
+										</tr>
+									</tbody>
+								</table>
+							</div>
+						</div>
+					)}
+
+					{/* For Group Results */}
+
+					{searchType === "G" && reportData.length > 0 && (
+						<div
+							className={`relative overflow-x-auto shadow-md sm:rounded-lg mt-5 max-h-[500px]
+                                [&::-webkit-scrollbar]:w-1
+                                [&::-webkit-scrollbar-track]:rounded-full
+                                [&::-webkit-scrollbar-track]:bg-transparent
+                                [&::-webkit-scrollbar-thumb]:rounded-full
+                                [&::-webkit-scrollbar-thumb]:bg-gray-300
+                                dark:[&::-webkit-scrollbar-track]:bg-transparent
+                                dark:[&::-webkit-scrollbar-thumb]:bg-neutral-500
+                            `}
+						>
+							<div
+								className={`w-full text-xs dark:bg-gray-700 dark:text-gray-400`}
+							>
+								<table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
+									<thead className="w-full text-xs uppercase text-slate-50 bg-slate-800 dark:bg-gray-700 dark:text-gray-400 sticky top-0">
+										<tr>
+											<th scope="col" className="px-6 py-3 font-semibold ">
+												Loan ID
+											</th>
+											<th scope="col" className="px-6 py-3 font-semibold ">
+												Group Code
+											</th>
+											<th scope="col" className="px-6 py-3 font-semibold ">
+												Group Name
+											</th>
+											<th scope="col" className="px-6 py-3 font-semibold ">
+												Loan ID
+											</th>
+											<th scope="col" className="px-6 py-3 font-semibold ">
+												Purpose
+											</th>
+											<th scope="col" className="px-6 py-3 font-semibold ">
+												Sub Purpose
+											</th>
+											<th scope="col" className="px-6 py-3 font-semibold ">
+												Scheme
+											</th>
+											<th scope="col" className="px-6 py-3 font-semibold ">
+												Fund
+											</th>
+											<th scope="col" className="px-6 py-3 font-semibold ">
+												Applied Date
+											</th>
+											<th scope="col" className="px-6 py-3 font-semibold ">
+												Applied Amount
+											</th>
+											<th scope="col" className="px-6 py-3 font-semibold ">
+												Principal Disbursement Amount
+											</th>
+											<th scope="col" className="px-6 py-3 font-semibold ">
+												Disbursement Date
+											</th>
+											<th scope="col" className="px-6 py-3 font-semibold ">
+												Current R.O.I
+											</th>
+											<th scope="col" className="px-6 py-3 font-semibold ">
+												Installment Start Date
+											</th>
+											<th scope="col" className="px-6 py-3 font-semibold ">
+												Period Mode
+											</th>
+											<th scope="col" className="px-6 py-3 font-semibold ">
+												Total EMI
+											</th>
+											<th scope="col" className="px-6 py-3 font-semibold ">
+												Installment End Date
+											</th>
+											<th scope="col" className="px-6 py-3 font-semibold ">
+												Total Balance
+											</th>
+											<th scope="col" className="px-6 py-3 font-semibold ">
+												Total OD Balance
+											</th>
+											<th scope="col" className="px-6 py-3 font-semibold ">
+												Total Interest Balance
+											</th>
+										</tr>
+									</thead>
+									<tbody>
+										{reportData?.map((item, i) => {
+											totalBal += item?.total_balance
+											totalODBal += item?.total_od_balance
+											totalInterestBal += item?.total_intt_balance
+											return (
+												<tr
+													key={i}
+													className={
+														i % 2 === 0 ? "bg-slate-200 text-slate-900" : ""
+													}
+												>
+													<td className="px-6 py-3">
+														{item?.loan_id || "---"}
+													</td>
+													<td className="px-6 py-3">
+														{item?.group_code || "---"}
+													</td>
+													<td className="px-6 py-3">
+														{item?.group_name || "---"}
+													</td>
+													<td className="px-6 py-3">
+														{item?.loan_id || "---"}
+													</td>
+													<td className="px-6 py-3">
+														{item?.purpose_name || "---"}
+													</td>
+													<td className="px-6 py-3">
+														{item?.sub_purp_name || "---"}
+													</td>
+													<td className="px-6 py-3">
+														{item?.scheme_name || "---"}
+													</td>
+													<td className="px-6 py-3">
+														{item?.fund_name || "---"}
+													</td>
+													<td className="px-6 py-3">
+														{item?.applied_dt
+															? new Date(item?.applied_dt)?.toLocaleDateString(
+																	"en-GB"
+															  )
+															: "---"}
+													</td>
+													<td className="px-6 py-3">
+														{item?.applied_amt || "---"}
+													</td>
+													<td className="px-6 py-3">
+														{item?.prn_disb_amt || "---"}
+													</td>
+													<td className="px-6 py-3">
+														{item?.disb_dt
+															? new Date(item?.disb_dt)?.toLocaleDateString(
+																	"en-GB"
+															  )
+															: "---"}
+													</td>
+													<td className="px-6 py-3">
+														{item?.curr_roi || "---"}
+													</td>
+													<td className="px-6 py-3">
+														{item?.instl_start_dt
+															? new Date(
+																	item?.instl_start_dt
+															  )?.toLocaleDateString("en-GB")
+															: "---"}
+													</td>
+													<td className="px-6 py-3">
+														{item?.period_mode || "---"}
+													</td>
+													<td className="px-6 py-3">
+														{item?.tot_emi || "---"}
+													</td>
+													<td className="px-6 py-3">
+														{item?.instl_end_dt
+															? new Date(
+																	item?.instl_end_dt
+															  )?.toLocaleDateString("en-GB")
+															: "---"}
+													</td>
+													<td className="px-6 py-3">
+														{item?.total_balance || "---"}
+													</td>
+													<td className="px-6 py-3">
+														{item?.total_od_balance || "---"}
+													</td>
+													<td className="px-6 py-3">
+														{item?.total_intt_balance || "---"}
+													</td>
+													{/* <td className="px-6 py-3">
+														{+item?.total_balance +
+															+item?.total_od_balance +
+															+item?.total_intt_balance || "---"}
+													</td> */}
+												</tr>
+											)
+										})}
+										<tr
+											className={"text-slate-50 bg-slate-700 sticky bottom-0"}
+										>
+											<td className="px-6 py-3" colSpan={17}>
+												Total:
+											</td>
+											<td className="px-6 py-3" colSpan={1}>
+												{parseFloat(totalBal)?.toFixed(2)}
+											</td>
+											<td className="px-6 py-3" colSpan={1}>
+												{parseFloat(totalODBal)?.toFixed(2)}
+											</td>
+											<td className="px-6 py-3" colSpan={1}>
+												{parseFloat(totalInterestBal)?.toFixed(2)}
+											</td>
+											{/* <td className="px-6 py-3" colSpan={1}>
+												{parseFloat(
+													totalBal + totalODBal + totalInterestBal
+												)?.toFixed(2)}
+											</td> */}
+										</tr>
+									</tbody>
+								</table>
+							</div>
+						</div>
+					)}
+
+					{/* ///////////////////////////////////////////////////////////////// */}
+
+					{reportData.length !== 0 && (
+						<div className="flex gap-4">
+							<Tooltip title="Export to Excel">
+								<button
+									onClick={() => exportToExcel(reportData)}
+									className="mt-5 justify-center items-center rounded-full text-green-900 disabled:text-green-300"
+									disabled={progress < 100}
+								>
+									<FileExcelOutlined
+										style={{
+											fontSize: 30,
+										}}
+									/>
+								</button>
+							</Tooltip>
+							<Tooltip title="Print">
+								<button
+									onClick={() =>
+										printTableOutstandingReport(
+											reportData,
+											"Outstanding Report",
+											searchType,
+											userDetails?.branch_name,
+											fromDate,
+											toDate
+										)
+									}
+									className="mt-5 justify-center items-center rounded-full text-pink-600 disabled:text-pink-300"
+									disabled={progress < 100}
+								>
+									<PrinterOutlined
+										style={{
+											fontSize: 30,
+										}}
+									/>
+								</button>
+							</Tooltip>
+						</div>
+					)}
+				</main>
+			</Spin>
+		</div>
+	)
+}
+
+export default OutstaningReportMain
