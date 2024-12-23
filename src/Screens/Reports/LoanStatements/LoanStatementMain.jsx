@@ -506,7 +506,13 @@ function LoanStatementMain() {
 													Debit
 												</th>
 												<th scope="col" className="px-6 py-3 font-semibold ">
-													Credit
+													Principal Credit
+												</th>
+												<th scope="col" className="px-6 py-3 font-semibold ">
+													Interest Credit
+												</th>
+												<th scope="col" className="px-6 py-3 font-semibold ">
+													Total Credit
 												</th>
 												<th scope="col" className="px-6 py-3 font-semibold ">
 													Bank Charge
@@ -514,8 +520,17 @@ function LoanStatementMain() {
 												<th scope="col" className="px-6 py-3 font-semibold ">
 													Processing Charge
 												</th>
-												<th scope="col" className="px-6 py-3 font-semibold ">
+												{/* <th scope="col" className="px-6 py-3 font-semibold ">
 													Balance
+												</th> */}
+												<th scope="col" className="px-6 py-3 font-semibold ">
+													Principal Balance
+												</th>
+												<th scope="col" className="px-6 py-3 font-semibold ">
+													Interest Balance
+												</th>
+												<th scope="col" className="px-6 py-3 font-semibold ">
+													Total Balance
 												</th>
 												<th scope="col" className="px-6 py-3 font-semibold ">
 													Txn. Mode
@@ -562,14 +577,26 @@ function LoanStatementMain() {
 																: "Error"}
 														</td>
 														<td className="px-6 py-3">{item?.debit}</td>
+														<td className="px-6 py-3">{item?.prn_recov}</td>
+														<td className="px-6 py-3">{item?.intt_recov}</td>
 														<td className="px-6 py-3">{item?.credit}</td>
 														<td className="px-6 py-3">{item?.bank_charge}</td>
 														<td className="px-6 py-3">{item?.proc_charge}</td>
-														<td className="px-6 py-3">{item?.balance}</td>
+														{/* <td className="px-6 py-3">{item?.balance}</td> */}
+														<td className="px-6 py-3">{item?.prn_bal}</td>
+														<td className="px-6 py-3">{item?.intt_bal}</td>
+														<td className="px-6 py-3">{item?.total}</td>
 														<td className="px-6 py-3">
-															{item?.tr_mode === "C"
+															{/* {item?.tr_mode === "C"
 																? "Cash"
-																: item?.tr_mode === "B"
+																: item?.tr_mode === "U"
+																? "Bank"
+																: "Error"} */}
+															{item?.tr_type === "D"
+																? "---"
+																: item?.tr_mode === "C"
+																? "Cash"
+																: item?.tr_mode === "U"
 																? "Bank"
 																: "Error"}
 														</td>
@@ -597,10 +624,11 @@ function LoanStatementMain() {
 												<td className="px-6 py-3" colSpan={1}>
 													{totalDebit?.toFixed(2)}
 												</td>
-												<td className="px-6 py-3" colSpan={4}>
+												<td className="px-6 py-3" colSpan={2}></td>
+												<td className="px-6 py-3" colSpan={1}>
 													{totalCredit?.toFixed(2)}
 												</td>
-												<td className="px-6 py-3" colSpan={6}>
+												<td className="px-6 py-3" colSpan={10}>
 													Total Recovery:{" "}
 													{
 														reportTxnData?.filter(

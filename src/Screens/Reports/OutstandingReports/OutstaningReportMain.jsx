@@ -62,9 +62,9 @@ function OutstaningReportMain() {
 
 	const handleFetchReportOutstandingMemberwise = async () => {
 		let min = 0
-		const maxBatchSize = 20
+		const maxBatchSize = 50
 
-		const increment = 5
+		const increment = 10
 
 		setLoading(true)
 
@@ -83,11 +83,10 @@ function OutstaningReportMain() {
 				)
 				const data = res?.data?.msg || []
 				if (data.length === 0) {
+					setProgress(100)
 					break
 				}
-				// if (breakFromLoop) {
-				// 	break
-				// }
+
 				setReportData((prev) => [...prev, ...data])
 				min += maxBatchSize
 
@@ -105,9 +104,9 @@ function OutstaningReportMain() {
 
 	const handleFetchReportOutstandingGroupwise = async () => {
 		let min = 0
-		const maxBatchSize = 20
+		const maxBatchSize = 50
 
-		const increment = 5
+		const increment = 10
 
 		setLoading(true)
 
@@ -126,6 +125,7 @@ function OutstaningReportMain() {
 				)
 				const data = res?.data?.msg || []
 				if (data.length === 0) {
+					setProgress(100)
 					break
 				}
 				setReportData((prev) => [...prev, ...data])
@@ -165,6 +165,7 @@ function OutstaningReportMain() {
 		totalBal = 0
 		totalODBal = 0
 		totalInterestBal = 0
+		totalOutstandingBal = 0
 		setProgress(0)
 		// setBreakFromLoop(true)
 	}, [searchType])
@@ -190,6 +191,7 @@ function OutstaningReportMain() {
 	let totalBal = 0
 	let totalODBal = 0
 	let totalInterestBal = 0
+	let totalOutstandingBal = 0
 
 	return (
 		<div>
@@ -322,7 +324,7 @@ function OutstaningReportMain() {
 						</div> */}
 					</div>
 
-					{/* For Recovery/Collection Results */}
+					{/* For Memberwise Results */}
 
 					{searchType === "M" && reportData.length > 0 && (
 						<div
@@ -342,6 +344,9 @@ function OutstaningReportMain() {
 								<table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
 									<thead className="w-full text-xs uppercase text-slate-50 bg-slate-800 dark:bg-gray-700 dark:text-gray-400 sticky top-0">
 										<tr>
+											<th scope="col" className="px-6 py-3 font-semibold ">
+												Sl. No.
+											</th>
 											<th scope="col" className="px-6 py-3 font-semibold ">
 												Member Code
 											</th>
@@ -370,6 +375,9 @@ function OutstaningReportMain() {
 												Total EMI
 											</th>
 											<th scope="col" className="px-6 py-3 font-semibold ">
+												Period
+											</th>
+											<th scope="col" className="px-6 py-3 font-semibold ">
 												Installment End Date
 											</th>
 											<th scope="col" className="px-6 py-3 font-semibold ">
@@ -382,7 +390,7 @@ function OutstaningReportMain() {
 												Interest Balance
 											</th>
 											<th scope="col" className="px-6 py-3 font-semibold ">
-												Outstanding
+												Total Outstanding
 											</th>
 										</tr>
 									</thead>
@@ -391,6 +399,7 @@ function OutstaningReportMain() {
 											totalBal += item?.balance
 											totalODBal += item?.od_balance
 											totalInterestBal += item?.intt_balance
+											totalOutstandingBal += item?.total_outstanding
 											return (
 												<tr
 													key={i}
@@ -398,6 +407,7 @@ function OutstaningReportMain() {
 														i % 2 === 0 ? "bg-slate-200 text-slate-900" : ""
 													}
 												>
+													<td className="px-6 py-3">{i + 1}</td>
 													<td className="px-6 py-3">
 														{item?.member_code || "---"}
 													</td>
@@ -429,6 +439,7 @@ function OutstaningReportMain() {
 													<td className="px-6 py-3">
 														{item?.tot_emi || "---"}
 													</td>
+													<td className="px-6 py-3">{item?.period || "---"}</td>
 													<td className="px-6 py-3">
 														{item?.instl_end_dt
 															? new Date(
@@ -436,19 +447,15 @@ function OutstaningReportMain() {
 															  )?.toLocaleDateString("en-GB")
 															: "---"}
 													</td>
+													<td className="px-6 py-3">{item?.balance || "0"}</td>
 													<td className="px-6 py-3">
-														{item?.balance || "---"}
+														{item?.od_balance || "0"}
 													</td>
 													<td className="px-6 py-3">
-														{item?.od_balance || "---"}
+														{item?.intt_balance || "0"}
 													</td>
 													<td className="px-6 py-3">
-														{item?.intt_balance || "---"}
-													</td>
-													<td className="px-6 py-3">
-														{+item?.intt_balance +
-															+item?.od_balance +
-															+item?.balance || "---"}
+														{+item?.total_outstanding || "---"}
 													</td>
 												</tr>
 											)
@@ -456,7 +463,7 @@ function OutstaningReportMain() {
 										<tr
 											className={"text-slate-50 bg-slate-700 sticky bottom-0"}
 										>
-											<td className="px-6 py-3" colSpan={10}>
+											<td className="px-6 py-3" colSpan={12}>
 												Total:
 											</td>
 											<td className="px-6 py-3" colSpan={1}>
@@ -469,9 +476,7 @@ function OutstaningReportMain() {
 												{parseFloat(totalInterestBal)?.toFixed(2)}
 											</td>
 											<td className="px-6 py-3" colSpan={1}>
-												{parseFloat(
-													totalBal + totalODBal + totalInterestBal
-												)?.toFixed(2)}
+												{parseFloat(totalOutstandingBal)?.toFixed(2)}
 											</td>
 										</tr>
 									</tbody>
@@ -500,6 +505,9 @@ function OutstaningReportMain() {
 								<table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
 									<thead className="w-full text-xs uppercase text-slate-50 bg-slate-800 dark:bg-gray-700 dark:text-gray-400 sticky top-0">
 										<tr>
+											<th scope="col" className="px-6 py-3 font-semibold ">
+												Sl. No.
+											</th>
 											<th scope="col" className="px-6 py-3 font-semibold ">
 												Loan ID
 											</th>
@@ -560,13 +568,17 @@ function OutstaningReportMain() {
 											<th scope="col" className="px-6 py-3 font-semibold ">
 												Total Interest Balance
 											</th>
+											<th scope="col" className="px-6 py-3 font-semibold ">
+												Total Outstanding
+											</th>
 										</tr>
 									</thead>
 									<tbody>
 										{reportData?.map((item, i) => {
-											totalBal += item?.total_balance
-											totalODBal += item?.total_od_balance
-											totalInterestBal += item?.total_intt_balance
+											totalBal += item?.balance
+											totalODBal += +item?.od_balance
+											totalInterestBal += +item?.intt_balance
+											totalOutstandingBal += +item?.total_outstanding
 											return (
 												<tr
 													key={i}
@@ -574,6 +586,7 @@ function OutstaningReportMain() {
 														i % 2 === 0 ? "bg-slate-200 text-slate-900" : ""
 													}
 												>
+													<td className="px-6 py-3">{i + 1}</td>
 													<td className="px-6 py-3">
 														{item?.loan_id || "---"}
 													</td>
@@ -641,27 +654,23 @@ function OutstaningReportMain() {
 															  )?.toLocaleDateString("en-GB")
 															: "---"}
 													</td>
+													<td className="px-6 py-3">{item?.balance || "0"}</td>
 													<td className="px-6 py-3">
-														{item?.total_balance || "---"}
+														{item?.od_balance || "0"}
 													</td>
 													<td className="px-6 py-3">
-														{item?.total_od_balance || "---"}
+														{item?.intt_balance || "0"}
 													</td>
 													<td className="px-6 py-3">
-														{item?.total_intt_balance || "---"}
+														{item?.total_outstanding || "---"}
 													</td>
-													{/* <td className="px-6 py-3">
-														{+item?.total_balance +
-															+item?.total_od_balance +
-															+item?.total_intt_balance || "---"}
-													</td> */}
 												</tr>
 											)
 										})}
 										<tr
 											className={"text-slate-50 bg-slate-700 sticky bottom-0"}
 										>
-											<td className="px-6 py-3" colSpan={17}>
+											<td className="px-6 py-3" colSpan={18}>
 												Total:
 											</td>
 											<td className="px-6 py-3" colSpan={1}>
@@ -673,11 +682,9 @@ function OutstaningReportMain() {
 											<td className="px-6 py-3" colSpan={1}>
 												{parseFloat(totalInterestBal)?.toFixed(2)}
 											</td>
-											{/* <td className="px-6 py-3" colSpan={1}>
-												{parseFloat(
-													totalBal + totalODBal + totalInterestBal
-												)?.toFixed(2)}
-											</td> */}
+											<td className="px-6 py-3" colSpan={1}>
+												{parseFloat(+totalOutstandingBal)?.toFixed(2)}
+											</td>
 										</tr>
 									</tbody>
 								</table>
