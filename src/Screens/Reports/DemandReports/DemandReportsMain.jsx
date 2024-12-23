@@ -89,9 +89,10 @@ function DemandReportsMain() {
 		console.log("AAAAAAAAAAAAAAAAAAAAAAA", fromDate, toDate)
 		if (
 			fromDate &&
-			toDate &&
-			new Date(fromDate)?.toLocaleDateString()?.length === 10 &&
-			new Date(toDate)?.toLocaleDateString()?.length === 10
+			toDate
+			// &&
+			// new Date(fromDate)?.toLocaleDateString()?.length === 10 &&
+			// new Date(toDate)?.toLocaleDateString()?.length === 10
 		) {
 			handleFetchReportDemand()
 		}
