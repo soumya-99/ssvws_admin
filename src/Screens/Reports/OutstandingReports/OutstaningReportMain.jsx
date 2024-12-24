@@ -76,16 +76,24 @@ function OutstaningReportMain() {
 				max: min + maxBatchSize,
 			}
 
+			console.log("--------------- WHILE CREDS ---------------", creds)
+
 			try {
 				const res = await axios.post(
 					`${url}/loan_outstanding_report_memberwise`,
 					creds
 				)
 				const data = res?.data?.msg || []
-				if (data.length === 0) {
+				if (data?.length === 0) {
+					console.log(
+						"--------------- LOOP BREAKS ---------------",
+						data?.length
+					)
 					setProgress(100)
 					break
 				}
+
+				console.log("---------- DATA MEMWISE -----------", data)
 
 				setReportData((prev) => [...prev, ...data])
 				min += maxBatchSize
@@ -118,6 +126,8 @@ function OutstaningReportMain() {
 				max: min + maxBatchSize,
 			}
 
+			console.log("--------------- WHILE CREDS ---------------", creds)
+
 			try {
 				const res = await axios.post(
 					`${url}/loan_outstanding_report_groupwise`,
@@ -125,9 +135,16 @@ function OutstaningReportMain() {
 				)
 				const data = res?.data?.msg || []
 				if (data.length === 0) {
+					console.log(
+						"--------------- LOOP BREAKS ---------------",
+						data?.length
+					)
 					setProgress(100)
 					break
 				}
+
+				console.log("---------- DATA GROUPWISE -----------", data)
+
 				setReportData((prev) => [...prev, ...data])
 				min += maxBatchSize
 
