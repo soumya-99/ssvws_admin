@@ -64,7 +64,7 @@ function OutstaningReportMain() {
 		let min = 0
 		const maxBatchSize = 50
 
-		const increment = 10
+		const increment = 5
 
 		setLoading(true)
 
@@ -114,7 +114,7 @@ function OutstaningReportMain() {
 		let min = 0
 		const maxBatchSize = 50
 
-		const increment = 10
+		const increment = 5
 
 		setLoading(true)
 
@@ -502,7 +502,7 @@ function OutstaningReportMain() {
 						</div>
 					)}
 
-					{/* For Group Results */}
+					{/* For Groupwise Results */}
 
 					{searchType === "G" && reportData.length > 0 && (
 						<div
@@ -525,18 +525,18 @@ function OutstaningReportMain() {
 											<th scope="col" className="px-6 py-3 font-semibold ">
 												Sl. No.
 											</th>
-											<th scope="col" className="px-6 py-3 font-semibold ">
+											{/* <th scope="col" className="px-6 py-3 font-semibold ">
 												Loan ID
-											</th>
+											</th> */}
 											<th scope="col" className="px-6 py-3 font-semibold ">
 												Group Code
 											</th>
 											<th scope="col" className="px-6 py-3 font-semibold ">
 												Group Name
 											</th>
-											<th scope="col" className="px-6 py-3 font-semibold ">
+											{/* <th scope="col" className="px-6 py-3 font-semibold ">
 												Loan ID
-											</th>
+											</th> */}
 											<th scope="col" className="px-6 py-3 font-semibold ">
 												Purpose
 											</th>
@@ -604,18 +604,18 @@ function OutstaningReportMain() {
 													}
 												>
 													<td className="px-6 py-3">{i + 1}</td>
-													<td className="px-6 py-3">
+													{/* <td className="px-6 py-3">
 														{item?.loan_id || "---"}
-													</td>
+													</td> */}
 													<td className="px-6 py-3">
 														{item?.group_code || "---"}
 													</td>
 													<td className="px-6 py-3">
 														{item?.group_name || "---"}
 													</td>
-													<td className="px-6 py-3">
+													{/* <td className="px-6 py-3">
 														{item?.loan_id || "---"}
-													</td>
+													</td> */}
 													<td className="px-6 py-3">
 														{item?.purpose_name || "---"}
 													</td>
@@ -687,7 +687,7 @@ function OutstaningReportMain() {
 										<tr
 											className={"text-slate-50 bg-slate-700 sticky bottom-0"}
 										>
-											<td className="px-6 py-3" colSpan={18}>
+											<td className="px-6 py-3" colSpan={16}>
 												Total:
 											</td>
 											<td className="px-6 py-3" colSpan={1}>
