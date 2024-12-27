@@ -66,6 +66,7 @@ function BasicDetailsForm({ memberDetails }) {
 		b_groupCode: "",
 		b_groupCodeName: "",
 		b_dob: "",
+		b_grtDate: "",
 	}
 	const [formValues, setValues] = useState({
 		b_clientName: "",
@@ -87,6 +88,7 @@ function BasicDetailsForm({ memberDetails }) {
 		b_groupCode: "",
 		b_groupCodeName: "",
 		b_dob: "",
+		b_grtDate: "",
 	})
 
 	const validationSchema = Yup.object({
@@ -122,6 +124,7 @@ function BasicDetailsForm({ memberDetails }) {
 		b_otherEducation: Yup.string(),
 		b_groupCode: Yup.string().required("Group code is required"),
 		b_dob: Yup.string().required("DOB is required"),
+		b_grtDate: Yup.string().required("GRT Date is required"),
 	})
 
 	const onSubmit = async (values) => {
@@ -196,6 +199,7 @@ function BasicDetailsForm({ memberDetails }) {
 					b_groupCode: res?.data?.msg[0]?.prov_grp_code,
 					b_groupCodeName: "",
 					b_dob: formatDateToYYYYMMDD(res?.data?.msg[0]?.dob),
+					b_grtDate: formatDateToYYYYMMDD(res?.data?.msg[0]?.grt_date),
 				})
 			})
 			.catch((err) => {
@@ -236,6 +240,7 @@ function BasicDetailsForm({ memberDetails }) {
 			other_religion: formik.values.b_otherReligion || "",
 			other_caste: formik.values.b_otherCaste || "",
 			other_education: formik.values.b_otherEducation || "",
+			grt_date: formik.values.b_grtDate,
 		}
 		await axios
 			.post(`${url}/admin/edit_basic_dtls_web`, creds)
@@ -484,7 +489,26 @@ function BasicDetailsForm({ memberDetails }) {
 									<VError title={formik.errors.b_clientName} />
 								) : null}
 							</div>
-							<div className="sm:col-span-2">
+							<div>
+								<TDInputTemplateBr
+									placeholder="Type GRT Date..."
+									type="date"
+									label="GRT Date"
+									name="b_grtDate"
+									formControlName={formik.values.b_grtDate}
+									handleChange={formik.handleChange}
+									handleBlur={formik.handleBlur}
+									mode={1}
+									disabled={disableCondition(
+										userDetails?.id,
+										memberDetails?.approval_status
+									)}
+								/>
+								{formik.errors.b_grtDate && formik.touched.b_grtDate ? (
+									<VError title={formik.errors.b_grtDate} />
+								) : null}
+							</div>
+							<div>
 								<TDInputTemplateBr
 									placeholder="Type DOB..."
 									type="date"

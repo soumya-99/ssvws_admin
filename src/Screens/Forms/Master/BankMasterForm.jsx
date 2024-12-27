@@ -80,6 +80,7 @@ function BankMasterForm() {
 			.post(`${url}/admin/save_bank_dtls`, creds)
 			.then((res) => {
 				console.log("bank details saved.", res?.data)
+				Message("success", "Bank details saved.")
 				navigate(-1)
 			})
 			.catch((err) => {
