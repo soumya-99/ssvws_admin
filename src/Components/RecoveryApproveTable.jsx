@@ -6,13 +6,17 @@ import { Paginator } from "primereact/paginator"
 import { motion } from "framer-motion"
 import {
 	CheckCircleOutlined,
+	LoadingOutlined,
 	ClockCircleOutlined,
 	EditOutlined,
 	FileTextOutlined,
 	SyncOutlined,
 } from "@ant-design/icons"
 import { useNavigate } from "react-router-dom"
-import { Tag } from "antd"
+import { Tag, Spin } from "antd"
+import axios from "axios"
+import DialogBox from "./DialogBox"
+import { url } from "../Address/BaseUrl"
 
 function RecoveryApproveTable({
 	loanAppData,
@@ -28,24 +32,42 @@ function RecoveryApproveTable({
 
 	const [first, setFirst] = useState(0)
 	const [rows, setRows] = useState(10)
+	const [visible, setVisible] = useState(() => false)
+
+	const [loading, setLoading] = useState(() => false)
+	const [cachedPaymentId, setCachedPaymentId] = useState("")
 
 	const onPageChange = (event) => {
 		setFirst(event.first)
 		setRows(event.rows)
 	}
 
-	// const goTo = (item) => {
-	// 	navigate(`${routePaths.EDIT_APPLICATION}`, {
-	// 		state: { loanAppData: item },
-	// 	})
-	// }
+	const userDetails = JSON.parse(localStorage.getItem("user_details")) || ""
 
-	// useEffect(() => {
-	// 	goTo()
-	// })
+	const approveRecoveryTransaction = async (paymentId) => {
+		setLoading(true)
+		const creds = {
+			approved_by: userDetails?.emp_id,
+			payment_id: paymentId,
+		}
+		await axios
+			.post(`${url}/admin/approve_recovery_loan`, creds)
+			.then((res) => {
+				console.log("RESSS approveRecoveryTransaction", res?.data)
+			})
+			.catch((err) => {
+				console.log("ERRR approveRecoveryTransaction", err)
+			})
+		setLoading(false)
+	}
 
 	return (
-		<>
+		<Spin
+			indicator={<LoadingOutlined spin />}
+			size="large"
+			className="text-blue-800 dark:text-gray-400"
+			spinning={loading}
+		>
 			<motion.section
 				initial={{ opacity: 0 }}
 				animate={{ opacity: 1 }}
@@ -120,50 +142,32 @@ function RecoveryApproveTable({
 						} dark:bg-gray-700 dark:text-gray-400`}
 					>
 						<tr>
-							{/* <th scope="col" className="p-4">
-								#
-							</th> */}
-							{/* <th scope="col" className="p-4">
-								Txn. ID.
-							</th> */}
-								<th scope="col" className="p-4">
+							<th scope="col" className="p-4">
 								Sl No.
 							</th>
 							<th scope="col" className="p-4">
-								Txn. Date
-							</th>
-							{/* <th scope="col" className="p-4">
-								Loan ID
-							</th> */}
-							<th scope="col" className="p-4">
-								Group ID
+								Payment Date
 							</th>
 							<th scope="col" className="p-4">
-								Txn. Type
-							</th>
-							{/* <th scope="col" className="p-4">
-								Member
-							</th> */}
-							<th scope="col" className="p-4">
-								Group
-							</th>
-							{/* <th scope="col" className="p-4">
-								Debit
-							</th> */}
-							{/* <th scope="col" className="p-4">
-								Status
-							</th> */}
-							{/* <th scope="col" className="p-4">
-								Branch
+								Payment ID
 							</th>
 							<th scope="col" className="p-4">
-								Loan Type
-							</th> */}
-							{/* <th scope="col" className="p-4">
+								Group - Loan ID (Member)
+							</th>
+							<th scope="col" className="p-4">
+								Total EMI
+							</th>
+							<th scope="col" className="p-4">
+								Amount
+							</th>
+							<th scope="col" className="p-4">
+								Outstanding
+							</th>
+							<th scope="col" className="p-4">
 								Created By
-							</th> */}
+							</th>
 							<th scope="col" className="p-4">
-								Action
+								Approve
 							</th>
 						</tr>
 					</thead>
@@ -176,21 +180,16 @@ function RecoveryApproveTable({
 									}
 									key={i}
 								>
-									{/* <th
-										scope="row"
-										className="px-3 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white"
-									>
-										{item.sl_no}
-									</th> */}
 									<td className="px-4 py-3 font-bold text-slate-800">
-										{i+1}
+										{i + 1}
 									</td>
 									<td className="px-4 py-3">
 										{new Date(item?.transaction_date).toLocaleDateString(
 											"en-GB"
 										)}
 									</td>
-									<td className="px-4 py-3">{item.group_code}</td>
+									<td className="px-4 py-3">{item?.payment_id}</td>
+									{/* <td className="px-4 py-3">{item.group_code}</td>
 									<td className="px-4 py-3">
 										{item.tr_type == "D"
 											? "Disbursement"
@@ -199,8 +198,13 @@ function RecoveryApproveTable({
 											: item.tr_type == "I"
 											? "Interest"
 											: "Error"}
-									</td>
-									<td className="px-4 py-3">{item.group_name}</td>
+									</td> */}
+									<td className="px-4 py-3">{`${item.group_name} - ${item.loan_id} (${item?.client_name})`}</td>
+									{/* <td className="px-4 py-3">{item.loan_id}</td> */}
+									<td className="px-4 py-3">{item.tot_emi}</td>
+									<td className="px-4 py-3">{`${item.amt} - (${item?.tr_mode})`}</td>
+									<td className="px-4 py-3">{`${item.outstanding}`}</td>
+									<td className="px-4 py-3">{item.created_by}</td>
 									{/* <td className="px-4 py-3">{item.debit}</td> */}
 									{/* <td className="px-4 py-3">{item.member_name}</td> */}
 									{/* <td className="px-4 py-3">
@@ -209,59 +213,16 @@ function RecoveryApproveTable({
 									<td className="px-4 py-3">{item.loan_type_name}</td> */}
 									{/* <td className="px-4 py-3">{item.member_name}</td> */}
 									<td className="px-4 py-3">
-										{flag === "MIS" ? (
+										{flag === "BM" && (
 											<button
-												// to={routePaths.BM_EDIT_GRT + item?.form_no}
 												onClick={() => {
-													console.log("LLSKSIODFUISFH", item)
-													navigate(`/homemis/editgrtform/${item?.form_no}`, {
-														state: item,
-													})
-												}}
-												disabled
-											>
-												<EditOutlined
-													className={`text-md ${
-														flag === "MIS" ? "text-blue-800" : "text-[#DA4167]"
-													}`}
-												/>
-											</button>
-										) : flag === "BM" ? (
-											// </Link>
-											<button
-												// to={routePaths.BM_EDIT_GRT + item?.form_no}
-												onClick={() => {
-													console.log("LLSKSIODFUISFH", item)
-													navigate(
-														`/homebm/recoveryloan/${item?.group_code || 0}`,
-														{
-															state: [item, loanType],
-														}
-													)
+													setCachedPaymentId(item?.payment_id)
+													setVisible(true)
 												}}
 											>
-												<EditOutlined
-													className={`text-md ${
-														flag === "MIS" ? "text-blue-800" : "text-[#DA4167]"
-													}`}
-												/>
-											</button>
-										) : (
-											// </Link>
-											<button
-												// to={routePaths.BM_EDIT_GRT + item?.form_no}
-												onClick={() => {
-													console.log("LLSKSIODFUISFH", item)
-													navigate(`/homeco/disburseloan/0`, {
-														state: item,
-													})
-												}}
-												disabled
-											>
-												<EditOutlined
-													className={`text-md ${
-														flag === "MIS" ? "text-blue-800" : "text-[#DA4167]"
-													}`}
+												{/* DA4167 */}
+												<CheckCircleOutlined
+													className={`text-2xl bg-[#0694a2] w-20 h-10 text-[#ffeaef] rounded-sm flex justify-center items-center`}
 												/>
 											</button>
 										)}
@@ -278,7 +239,19 @@ function RecoveryApproveTable({
 					onPageChange={onPageChange}
 				/>
 			</motion.section>
-		</>
+
+			<DialogBox
+				flag={4}
+				onPress={() => setVisible(!visible)}
+				visible={visible}
+				onPressYes={async () => {
+					// editGroup()
+					await approveRecoveryTransaction(cachedPaymentId)
+					setVisible(!visible)
+				}}
+				onPressNo={() => setVisible(!visible)}
+			/>
+		</Spin>
 	)
 }
 

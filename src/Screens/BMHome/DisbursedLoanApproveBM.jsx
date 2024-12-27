@@ -41,6 +41,7 @@ function DisbursedLoanApproveBM() {
 		await axios
 			.post(`${url}/admin/fetch_loan_trans_dtls`, {
 				tr_type: loanType,
+				branch_code: userDetails?.brn_code,
 			})
 			.then((res) => {
 				console.log("PPPPPPPPPPPPPPPPPPPP", res?.data)
@@ -68,7 +69,10 @@ function DisbursedLoanApproveBM() {
 		setLoanApplications(
 			copyLoanApplications?.filter(
 				(e) =>
-					e?.group_code?.toString()?.toLowerCase().includes(word?.toLowerCase()) ||
+					e?.group_code
+						?.toString()
+						?.toLowerCase()
+						.includes(word?.toLowerCase()) ||
 					e?.group_name
 						?.toString()
 						?.toLowerCase()
