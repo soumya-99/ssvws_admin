@@ -124,6 +124,7 @@ function DisbursedLoanApproveBM() {
 							title="Approve Transaction"
 							setSearch={(data) => setSearch(data)}
 							loanType={loanType}
+							fetchLoanApplications={fetchLoanApplications}
 						/>
 					) : null}
 					{/* <DialogBox

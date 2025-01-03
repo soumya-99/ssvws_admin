@@ -106,8 +106,8 @@ function DisbursmentForm() {
 		b_bankName: "",
 		b_chequeOrRefNo: "",
 		b_chequeOrRefDate: formatDateToYYYYMMDD(new Date()),
-		b_tnxType: "D",
-		b_tnxMode: "",
+		b_tnxType: "D", // (D, R)
+		b_tnxMode: "", // (C, B)
 		b_remarks: "",
 	})
 
@@ -505,7 +505,10 @@ function DisbursmentForm() {
 			tr_type: transactionDetailsData?.b_tnxType || "",
 			tr_mode: transactionDetailsData?.b_tnxMode || "",
 			cheque_id: transactionDetailsData?.b_chequeOrRefNo || "",
-			chq_dt: transactionDetailsData?.b_chequeOrRefDate || "",
+			chq_dt:
+				transactionDetailsData.b_tnxMode === "B"
+					? transactionDetailsData?.b_chequeOrRefDate
+					: "",
 			// deposit_by: "",
 			// bill_no: "",
 			// trn_lat: "",
@@ -1027,33 +1030,39 @@ function DisbursmentForm() {
 									/>
 								</div>
 
-								<div>
-									<TDInputTemplateBr
-										placeholder="Cheque/Ref. no..."
-										type="text"
-										label="Cheque/Ref. No."
-										name="b_chequeOrRefNo"
-										formControlName={transactionDetailsData.b_chequeOrRefNo}
-										handleChange={handleChangeTnxDetailsDetails}
-										mode={1}
-										disabled={disburseOrNot}
-									/>
-								</div>
+								{transactionDetailsData.b_tnxMode === "B" && (
+									<>
+										<div>
+											<TDInputTemplateBr
+												placeholder="Cheque/Ref. no..."
+												type="text"
+												label="Cheque/Ref. No."
+												name="b_chequeOrRefNo"
+												formControlName={transactionDetailsData.b_chequeOrRefNo}
+												handleChange={handleChangeTnxDetailsDetails}
+												mode={1}
+												disabled={disburseOrNot}
+											/>
+										</div>
 
-								<div>
-									<TDInputTemplateBr
-										placeholder="Cheque/Ref. Date..."
-										type="date"
-										label="Cheque/Ref. Date"
-										name="b_chequeOrRefDate"
-										formControlName={transactionDetailsData.b_chequeOrRefDate}
-										handleChange={handleChangeTnxDetailsDetails}
-										min={"1900-12-31"}
-										max={formatDateToYYYYMMDD(new Date())}
-										mode={1}
-										disabled={disburseOrNot}
-									/>
-								</div>
+										<div>
+											<TDInputTemplateBr
+												placeholder="Cheque/Ref. Date..."
+												type="date"
+												label="Cheque/Ref. Date"
+												name="b_chequeOrRefDate"
+												formControlName={
+													transactionDetailsData.b_chequeOrRefDate
+												}
+												handleChange={handleChangeTnxDetailsDetails}
+												min={"1900-12-31"}
+												max={formatDateToYYYYMMDD(new Date())}
+												mode={1}
+												disabled={disburseOrNot}
+											/>
+										</div>
+									</>
+								)}
 
 								<div>
 									<TDInputTemplateBr
@@ -1283,8 +1292,9 @@ function DisbursmentForm() {
 						disbursementDetailsData.b_dayOfRecovery > 31 ||
 						!transactionDetailsData.b_tnxDate ||
 						!transactionDetailsData.b_bankName ||
-						!transactionDetailsData.b_chequeOrRefNo ||
-						!transactionDetailsData.b_chequeOrRefDate ||
+						(transactionDetailsData.b_tnxMode === "B" &&
+							(!transactionDetailsData.b_chequeOrRefNo ||
+								!transactionDetailsData.b_chequeOrRefDate)) ||
 						!transactionDetailsData.b_tnxMode ||
 						!transactionDetailsData.b_remarks
 					) {

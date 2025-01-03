@@ -27,6 +27,7 @@ function RecoveryApproveTable({
 	isForwardLoan = false,
 	isRejected = false,
 	loanType = "R",
+	fetchLoanApplications,
 }) {
 	const navigate = useNavigate()
 
@@ -247,6 +248,12 @@ function RecoveryApproveTable({
 				onPressYes={async () => {
 					// editGroup()
 					await approveRecoveryTransaction(cachedPaymentId)
+						.then(() => {
+							fetchLoanApplications("R")
+						})
+						.catch((err) => {
+							console.log("Err in RecoveryApproveTable.jsx", err)
+						})
 					setVisible(!visible)
 				}}
 				onPressNo={() => setVisible(!visible)}
