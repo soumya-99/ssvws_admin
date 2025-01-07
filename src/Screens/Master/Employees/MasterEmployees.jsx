@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from "react"
-import Sidebar from "../../Components/Sidebar"
+import Sidebar from "../../../Components/Sidebar"
 import axios from "axios"
-import { url } from "../../Address/BaseUrl"
-import { Message } from "../../Components/Message"
+import { url } from "../../../Address/BaseUrl"
+import { Message } from "../../../Components/Message"
 import { Spin } from "antd"
 import { LoadingOutlined } from "@ant-design/icons"
-import BankMasterTable from "../../Components/BankMasterTable"
+import EmployeeMasterTable from "../../../Components/Master/EmployeeMasterTable"
 
 // const options = [
 // 	{
@@ -26,7 +26,7 @@ import BankMasterTable from "../../Components/BankMasterTable"
 // 	},
 // ]
 
-function MasterBanks() {
+function MasterEmployees() {
 	const userDetails = JSON.parse(localStorage.getItem("user_details")) || ""
 	const [loading, setLoading] = useState(false)
 	const [loanApplications, setLoanApplications] = useState(() => [])
@@ -58,7 +58,7 @@ function MasterBanks() {
 				}
 			})
 			.catch((err) => {
-				Message("error", "Some error occurred while fetching banks!")
+				Message("error", "Some error occurred while fetching employees!")
 				console.log("ERRR", err)
 			})
 		setLoading(false)
@@ -114,10 +114,10 @@ function MasterBanks() {
 							onChange(value)
 						}}
 					/> */}
-					<BankMasterTable
+					<EmployeeMasterTable
 						flag="BM"
 						loanAppData={loanApplications}
-						title="Bank Master"
+						title="Employee Master"
 						setSearch={(data) => setSearch(data)}
 					/>
 					{/* <DialogBox
@@ -131,4 +131,4 @@ function MasterBanks() {
 	)
 }
 
-export default MasterBanks
+export default MasterEmployees

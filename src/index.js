@@ -14,8 +14,12 @@ import LoanStatementMain from "./Screens/Reports/LoanStatements/LoanStatementMai
 import LoanTransactionsMain from "./Screens/Reports/LoanTransactions/LoanTransactionsMain"
 import DemandReportsMain from "./Screens/Reports/DemandReports/DemandReportsMain"
 import OutstaningReportMain from "./Screens/Reports/OutstandingReports/OutstaningReportMain"
-const MasterBanks = lazy(() => import("./Screens/Master/MasterBanks"))
-const EditMasterBank = lazy(() => import("./Screens/Master/EditMasterBank"))
+import MasterEmployees from "./Screens/Master/Employees/MasterEmployees"
+import EditMasterEmployee from "./Screens/Master/Employees/EditMasterEmployee"
+const MasterBanks = lazy(() => import("./Screens/Master/Banks/MasterBanks"))
+const EditMasterBank = lazy(() =>
+	import("./Screens/Master/Banks/EditMasterBank")
+)
 const EditRecoveryApproveFormBM = lazy(() =>
 	import("./Screens/BMHome/EditRecoveryApproveFormBM")
 )
@@ -242,6 +246,14 @@ const router = createBrowserRouter([
 							{
 								path: "masterbanks/:id",
 								element: <EditMasterBank />,
+							},
+							{
+								path: "masteremployees",
+								element: <MasterEmployees />,
+							},
+							{
+								path: "masteremployees/:id",
+								element: <EditMasterEmployee />,
 							},
 							{
 								path: "approveloan",
