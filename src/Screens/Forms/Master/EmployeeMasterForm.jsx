@@ -81,7 +81,7 @@ function EmployeeMasterForm() {
 	const handleFetchBranches = async () => {
 		setLoading(true)
 		await axios
-			.get(`${url}/admin/branch_name_mis?branch_code=${userDetails?.brn_code}`)
+			.get(`${url}/fetch_all_branch_dt`)
 			.then((res) => {
 				console.log("QQQQQQQQQQQQQQQQ", res?.data)
 				setBranches(res?.data?.msg)
@@ -170,28 +170,45 @@ function EmployeeMasterForm() {
 
 	const handleSaveForm = async () => {
 		setLoading(true)
-		// const creds = {
-		// 	bank_name: masterEmployeeData?.bank_name,
-		// 	branch_name: masterEmployeeData?.branch_name,
-		// 	ifsc: masterEmployeeData?.ifsc,
-		// 	branch_addr: masterEmployeeData?.branch_addr,
-		// 	sol_id: masterEmployeeData?.sol_id,
-		// 	phone_no: masterEmployeeData?.phone_no,
-		// 	modified_by: userDetails?.emp_id,
-		// 	bank_code: params?.id,
-		// 	created_by: userDetails?.emp_id,
-		// }
-		// await axios
-		// 	.post(`${url}/admin/save_bank_dtls`, creds)
-		// 	.then((res) => {
-		// 		console.log("bank details saved.", res?.data)
-		// 		Message("success", "Bank details saved.")
-		// 		navigate(-1)
-		// 	})
-		// 	.catch((err) => {
-		// 		Message("error", "Some error occurred.")
-		// 		console.log("ERR", err)
-		// 	})
+		const creds = {
+			branch_code: masterEmployeeData.branch_name || 0,
+			emp_name: masterEmployeeData.emp_name || "",
+			gender: masterEmployeeData.gender || "",
+			guardian_name: masterEmployeeData.guard_name || "",
+			addr:
+				masterEmployeeData.address + ", " + masterEmployeeData.district || "",
+			pin_code: masterEmployeeData.pin_code || "",
+			phone_home: masterEmployeeData.mobile_1 || "",
+			phone_mobile: masterEmployeeData.mobile_2 || "",
+			email: masterEmployeeData.email || "",
+			nationality: masterEmployeeData.nationality || "",
+			dob: masterEmployeeData.dob || "",
+			married: masterEmployeeData.marital_status || "",
+			language_known: masterEmployeeData.language_known || "",
+			doj: masterEmployeeData.date_of_joining || "",
+			prob_period: masterEmployeeData.probation_period || "",
+			retairment_age: masterEmployeeData.retirement_age || "",
+			conf_dt: masterEmployeeData.confirm_date || "",
+			retair_dt: masterEmployeeData.retire_date || "",
+			blood_grp: masterEmployeeData.blood_group || "",
+			voter_id: masterEmployeeData.voter_no || "",
+			pan_no: masterEmployeeData.pan_no || "",
+			aadhar_no: masterEmployeeData.aadhaar_no || "",
+			active_flag: masterEmployeeData.active_flag || "",
+			created_by: localStorage.getItem("user_id") || "",
+		}
+		console.log("***************#################", creds)
+		await axios
+			.post(`${url}/save_employee`, creds)
+			.then((res) => {
+				console.log("Employee details saved.", res?.data)
+				Message("success", "Employee details saved.")
+				navigate(-1)
+			})
+			.catch((err) => {
+				Message("error", "Some error occurred.")
+				console.log("ERR", err)
+			})
 		setLoading(false)
 	}
 
@@ -265,7 +282,7 @@ function EmployeeMasterForm() {
 										handleChange={handleChangeForm}
 										mode={2}
 										data={branches?.map((item, i) => ({
-											code: item?.dist_code + "," + item?.branch_code,
+											code: item?.branch_code,
 											name: item?.branch_name,
 										}))}
 									/>
