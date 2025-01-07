@@ -17,6 +17,8 @@ import { formatDateToYYYYMMDD } from "../../../Utils/formateDate"
 import DialogBox from "../../../Components/DialogBox"
 // import { disableInputArray } from "./disableInputArray"
 import { disableCondition } from "../disableCondition"
+import { calculateRetirementDate } from "../../../Utils/calculateRetirementDate"
+import moment from "moment/moment"
 
 function EmployeeMasterForm() {
 	const params = useParams()
@@ -112,6 +114,29 @@ function EmployeeMasterForm() {
 	}, [])
 
 	useEffect(() => {
+		if (masterEmployeeData.dob && +masterEmployeeData.retirement_age) {
+			console.log(
+				"==========",
+				moment(
+					calculateRetirementDate(
+						masterEmployeeData.dob,
+						+masterEmployeeData.retirement_age
+					)
+				).format("yyyy-MM-DD")
+			)
+			setMasterEmployeeData((prev) => ({
+				...prev,
+				retire_date: moment(
+					calculateRetirementDate(
+						masterEmployeeData.dob,
+						+masterEmployeeData.retirement_age
+					)
+				).format("yyyy-MM-DD"),
+			}))
+		}
+	}, [masterEmployeeData.dob, masterEmployeeData.retirement_age])
+
+	useEffect(() => {
 		setMasterEmployeeData({
 			emp_name: employeeMasterDetails?.emp_name || "",
 			branch_name: employeeMasterDetails?.branch_name || "", // dropdown
@@ -143,30 +168,30 @@ function EmployeeMasterForm() {
 		})
 	}, [])
 
-	const handleSaveMaster = async () => {
+	const handleSaveForm = async () => {
 		setLoading(true)
-		const creds = {
-			bank_name: masterEmployeeData?.bank_name,
-			branch_name: masterEmployeeData?.branch_name,
-			ifsc: masterEmployeeData?.ifsc,
-			branch_addr: masterEmployeeData?.branch_addr,
-			sol_id: masterEmployeeData?.sol_id,
-			phone_no: masterEmployeeData?.phone_no,
-			modified_by: userDetails?.emp_id,
-			bank_code: params?.id,
-			created_by: userDetails?.emp_id,
-		}
-		await axios
-			.post(`${url}/admin/save_bank_dtls`, creds)
-			.then((res) => {
-				console.log("bank details saved.", res?.data)
-				Message("success", "Bank details saved.")
-				navigate(-1)
-			})
-			.catch((err) => {
-				Message("error", "Some error occurred.")
-				console.log("ERR", err)
-			})
+		// const creds = {
+		// 	bank_name: masterEmployeeData?.bank_name,
+		// 	branch_name: masterEmployeeData?.branch_name,
+		// 	ifsc: masterEmployeeData?.ifsc,
+		// 	branch_addr: masterEmployeeData?.branch_addr,
+		// 	sol_id: masterEmployeeData?.sol_id,
+		// 	phone_no: masterEmployeeData?.phone_no,
+		// 	modified_by: userDetails?.emp_id,
+		// 	bank_code: params?.id,
+		// 	created_by: userDetails?.emp_id,
+		// }
+		// await axios
+		// 	.post(`${url}/admin/save_bank_dtls`, creds)
+		// 	.then((res) => {
+		// 		console.log("bank details saved.", res?.data)
+		// 		Message("success", "Bank details saved.")
+		// 		navigate(-1)
+		// 	})
+		// 	.catch((err) => {
+		// 		Message("error", "Some error occurred.")
+		// 		console.log("ERR", err)
+		// 	})
 		setLoading(false)
 	}
 
@@ -550,17 +575,18 @@ function EmployeeMasterForm() {
 				visible={visible}
 				onPressYes={() => {
 					if (
-						!masterEmployeeData.bank_name ||
-						!masterEmployeeData.branch_name ||
-						!masterEmployeeData.branch_addr ||
-						!masterEmployeeData.sol_id ||
-						!masterEmployeeData.ifsc
+						// !masterEmployeeData.bank_name ||
+						// !masterEmployeeData.branch_name ||
+						// !masterEmployeeData.branch_addr ||
+						// !masterEmployeeData.sol_id ||
+						// !masterEmployeeData.ifsc
+						false
 					) {
 						Message("warning", "Fill all the values properly!")
 						setVisible(false)
 						return
 					}
-					handleSaveMaster()
+					handleSaveForm()
 					setVisible(!visible)
 				}}
 				onPressNo={() => setVisible(!visible)}
