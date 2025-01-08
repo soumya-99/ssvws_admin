@@ -129,16 +129,19 @@ function EmployeeMasterTable({
 								#
 							</th> */}
 							<th scope="col" className="p-4">
-								Bank Name
+								Employee ID
+							</th>
+							<th scope="col" className="p-4">
+								Employee Name
+							</th>
+							<th scope="col" className="p-4">
+								Branch ID
 							</th>
 							<th scope="col" className="p-4">
 								Branch Name
 							</th>
 							<th scope="col" className="p-4">
-								IFSC
-							</th>
-							<th scope="col" className="p-4">
-								SOL ID.
+								Active Flag
 							</th>
 							<th scope="col" className="p-4">
 								Action
@@ -161,13 +164,20 @@ function EmployeeMasterTable({
 										{item.sl_no}
 									</th> */}
 									<td className="px-6 py-3 text-slate-800 font-bold">
-										{item?.bank_name}
+										{item?.emp_id}
+									</td>
+									<td className="px-6 py-3  text-slate-700">
+										{item?.emp_name}
+									</td>
+									<td className="px-6 py-3 text-slate-700">
+										{item?.branch_id}
 									</td>
 									<td className="px-6 py-3 text-slate-700">
 										{item?.branch_name}
 									</td>
-									<td className="px-6 py-3  text-slate-700">{item?.ifsc}</td>
-									<td className="px-6 py-3 text-slate-700">{item?.sol_id}</td>
+									<td className="px-6 py-3 text-slate-700">
+										{item?.active_flag === "Y" ? "Active" : "Inactive"}
+									</td>
 
 									<td className="px-6 py-3 text-slate-700">
 										{flag === "BM" && (
@@ -177,7 +187,7 @@ function EmployeeMasterTable({
 												onClick={() => {
 													console.log("LLSKSIODFUISFH", item)
 													navigate(
-														`/homebm/masteremployees/${item?.bank_code || 0}`,
+														`/homebm/masteremployees/${item?.emp_id || 0}`,
 														{
 															state: item,
 														}

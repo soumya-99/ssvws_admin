@@ -28,6 +28,8 @@ function EmployeeMasterForm() {
 	const location = useLocation()
 	const employeeMasterDetails = location.state || {}
 
+	// const [employeeMasterDetails, setEmployeeMasterDetails] = useState(null)
+
 	const navigate = useNavigate()
 	const userDetails = JSON.parse(localStorage.getItem("user_details"))
 
@@ -64,10 +66,11 @@ function EmployeeMasterForm() {
 		pan_no: "",
 		aadhaar_no: "",
 		bank_name: "",
-		branch_name: "",
+		bank_branch_name: "",
 		ifsc: "",
 		acc_no: "",
 		remarks: "",
+		active_flag: "",
 	})
 
 	const handleChangeForm = (e) => {
@@ -92,6 +95,7 @@ function EmployeeMasterForm() {
 
 		setLoading(false)
 	}
+
 	const handleFetchDistricts = async () => {
 		// 10035 state code
 		setLoading(true)
@@ -136,6 +140,60 @@ function EmployeeMasterForm() {
 		}
 	}, [masterEmployeeData.dob, masterEmployeeData.retirement_age])
 
+	const fetchParticularEmployeeDetails = async () => {
+		const creds = {
+			branch_code: employeeMasterDetails?.branch_id,
+			emp_id: params?.id,
+		}
+		await axios
+			.post(`${url}/fetch_emp`, creds)
+			.then((res) => {
+				console.log("+-----------------+", res?.data)
+				// setMasterEmployeeData()
+
+				setMasterEmployeeData({
+					emp_name: res?.data?.msg[0]?.emp_name || "",
+					branch_name: res?.data?.msg[0]?.branch_id || "", // dropdown
+					gender: res?.data?.msg[0]?.gender || "",
+					guard_name: res?.data?.msg[0]?.guardian_name || "",
+					address: res?.data?.msg[0]?.addr || "",
+					district: res?.data?.msg[0]?.district || "", // dropdown
+					pin_code: res?.data?.msg[0]?.pin_code || "",
+					mobile_1: res?.data?.msg[0]?.phone_home || "",
+					mobile_2: res?.data?.msg[0]?.phone_mobile || "",
+					email: res?.data?.msg[0]?.email || "",
+					nationality: res?.data?.msg[0]?.nationality || "",
+					dob: res?.data?.msg[0]?.dob || "", // date field
+					marital_status: res?.data?.msg[0]?.married || "", // dropdown static
+					language_known: res?.data?.msg[0]?.language_known || "",
+					date_of_joining: res?.data?.msg[0]?.doj || "",
+					probation_period: res?.data?.msg[0]?.prob_period || "",
+					retirement_age: res?.data?.msg[0]?.retairment_age || "",
+					confirm_date: res?.data?.msg[0]?.conf_dt || "", // date field
+					retire_date: res?.data?.msg[0]?.retair_dt || "", // auto calculation from retirement_age + doj (or can be updated manually)
+					blood_group: res?.data?.msg[0]?.blood_grp || "",
+					voter_no: res?.data?.msg[0]?.voter_id || "",
+					pan_no: res?.data?.msg[0]?.pan_no || "",
+					aadhaar_no: res?.data?.msg[0]?.aadhar_no || "",
+					bank_name: res?.data?.msg[0]?.bank_name || "",
+					bank_branch_name: res?.data?.msg[0]?.branch_name || "",
+					ifsc: res?.data?.msg[0]?.ifsc || "",
+					acc_no: res?.data?.msg[0]?.acc_no || "",
+					remarks: res?.data?.msg[0]?.remarks || "",
+					active_flag: res?.data?.msg[0]?.active_flag || "",
+				})
+			})
+			.catch((err) => {
+				console.log("=======", err)
+			})
+	}
+
+	useEffect(() => {
+		if (params?.id > 0) {
+			fetchParticularEmployeeDetails()
+		}
+	}, [])
+
 	useEffect(() => {
 		setMasterEmployeeData({
 			emp_name: employeeMasterDetails?.emp_name || "",
@@ -160,23 +218,25 @@ function EmployeeMasterForm() {
 			blood_group: employeeMasterDetails?.blood_group || "",
 			voter_no: employeeMasterDetails?.voter_no || "",
 			pan_no: employeeMasterDetails?.pan_no || "",
-			aadhaar_no: employeeMasterDetails?.aadhaar_no || "",
+			aadhaar_no: employeeMasterDetails?.aadhar_no || "",
 			bank_name: employeeMasterDetails?.bank_name || "",
+			bank_branch_name: employeeMasterDetails?.bank_branch_name || "",
 			ifsc: employeeMasterDetails?.ifsc || "",
 			acc_no: employeeMasterDetails?.acc_no || "",
 			remarks: employeeMasterDetails?.remarks || "",
+			active_flag: employeeMasterDetails?.remarks || "",
 		})
 	}, [])
 
 	const handleSaveForm = async () => {
 		setLoading(true)
-		const creds = {
+		const credsForSave = {
 			branch_code: masterEmployeeData.branch_name || 0,
 			emp_name: masterEmployeeData.emp_name || "",
 			gender: masterEmployeeData.gender || "",
 			guardian_name: masterEmployeeData.guard_name || "",
-			addr:
-				masterEmployeeData.address + ", " + masterEmployeeData.district || "",
+			addr: masterEmployeeData.address || "",
+			district: masterEmployeeData.district || "",
 			pin_code: masterEmployeeData.pin_code || "",
 			phone_home: masterEmployeeData.mobile_1 || "",
 			phone_mobile: masterEmployeeData.mobile_2 || "",
@@ -195,11 +255,62 @@ function EmployeeMasterForm() {
 			pan_no: masterEmployeeData.pan_no || "",
 			aadhar_no: masterEmployeeData.aadhaar_no || "",
 			active_flag: masterEmployeeData.active_flag || "",
+			bank_name: masterEmployeeData.bank_name || "",
+			branch_name: masterEmployeeData.bank_branch_name || "",
+			ifsc: masterEmployeeData.ifsc || "",
+			acc_no: masterEmployeeData.acc_no || "",
+			remarks: masterEmployeeData.remarks || "",
 			created_by: localStorage.getItem("user_id") || "",
 		}
-		console.log("***************#################", creds)
+
+		const credsForUpdate = {
+			branch_code: masterEmployeeData.branch_name || 0,
+			emp_name: masterEmployeeData.emp_name || "",
+			gender: masterEmployeeData.gender || "",
+			guardian_name: masterEmployeeData.guard_name || "",
+			addr: masterEmployeeData.address || "",
+			district: masterEmployeeData.district || "",
+			pin_code: masterEmployeeData.pin_code || "",
+			phone_home: masterEmployeeData.mobile_1 || "",
+			phone_mobile: masterEmployeeData.mobile_2 || "",
+			email: masterEmployeeData.email || "",
+			nationality: masterEmployeeData.nationality || "",
+			dob: moment(masterEmployeeData.dob)?.format("yyyy-MM-DD") || "",
+			married: masterEmployeeData.marital_status || "",
+			language_known: masterEmployeeData.language_known || "",
+			doj:
+				moment(masterEmployeeData.date_of_joining)?.format("yyyy-MM-DD") || "",
+			prob_period: masterEmployeeData.probation_period || "",
+			retairment_age: masterEmployeeData.retirement_age || "",
+			conf_dt:
+				moment(masterEmployeeData.confirm_date)?.format("yyyy-MM-DD") || "",
+			retair_dt:
+				moment(masterEmployeeData.retire_date)?.format("yyyy-MM-DD") || "",
+			blood_grp: masterEmployeeData.blood_group || "",
+			voter_id: masterEmployeeData.voter_no || "",
+			pan_no: masterEmployeeData.pan_no || "",
+			aadhar_no: masterEmployeeData.aadhaar_no || "",
+			active_flag: masterEmployeeData.active_flag || "",
+			bank_name: masterEmployeeData.bank_name || "",
+			branch_name: masterEmployeeData.bank_branch_name || "",
+			ifsc: masterEmployeeData.ifsc || "",
+			acc_no: masterEmployeeData.acc_no || "",
+			remarks: masterEmployeeData.remarks || "",
+			// created_by: localStorage.getItem("user_id") || "",
+
+			modified_by: userDetails?.emp_id || "",
+			emp_id: +params?.id || "",
+		}
+
+		console.log(
+			"***************#################",
+			+params?.id === 0 ? credsForSave : credsForUpdate
+		)
 		await axios
-			.post(`${url}/save_employee`, creds)
+			.post(
+				`${url}/save_employee`,
+				+params?.id === 0 ? credsForSave : credsForUpdate
+			)
 			.then((res) => {
 				console.log("Employee details saved.", res?.data)
 				Message("success", "Employee details saved.")
@@ -211,6 +322,45 @@ function EmployeeMasterForm() {
 			})
 		setLoading(false)
 	}
+
+	// const handleUpdate = async () => {
+	// 	const creds = {
+	// 		branch_code: masterEmployeeData.branch_name || 0,
+	// 		emp_name: masterEmployeeData.emp_name || "",
+	// 		gender: masterEmployeeData.gender || "",
+	// 		guardian_name: masterEmployeeData.guard_name || "",
+	// 		addr: masterEmployeeData.address || "",
+	// 		district: masterEmployeeData.district || "",
+	// 		pin_code: masterEmployeeData.pin_code || "",
+	// 		phone_home: masterEmployeeData.mobile_1 || "",
+	// 		phone_mobile: masterEmployeeData.mobile_2 || "",
+	// 		email: masterEmployeeData.email || "",
+	// 		nationality: masterEmployeeData.nationality || "",
+	// 		dob: masterEmployeeData.dob || "",
+	// 		married: masterEmployeeData.marital_status || "",
+	// 		language_known: masterEmployeeData.language_known || "",
+	// 		doj: masterEmployeeData.date_of_joining || "",
+	// 		prob_period: masterEmployeeData.probation_period || "",
+	// 		retairment_age: masterEmployeeData.retirement_age || "",
+	// 		conf_dt: masterEmployeeData.confirm_date || "",
+	// 		retair_dt: masterEmployeeData.retire_date || "",
+	// 		blood_grp: masterEmployeeData.blood_group || "",
+	// 		voter_id: masterEmployeeData.voter_no || "",
+	// 		pan_no: masterEmployeeData.pan_no || "",
+	// 		aadhar_no: masterEmployeeData.aadhaar_no || "",
+	// 		active_flag: masterEmployeeData.active_flag || "",
+	// 		bank_name: masterEmployeeData.bank_name || "",
+	// 		branch_name: masterEmployeeData.bank_branch_name || "",
+	// 		ifsc: masterEmployeeData.ifsc || "",
+	// 		acc_no: masterEmployeeData.acc_no || "",
+	// 		remarks: masterEmployeeData.remarks || "",
+	// 		// created_by: localStorage.getItem("user_id") || "",
+
+	// 		modified_by: localStorage.getItem("user_id") || "",
+	// 		emp_id: localStorage.getItem("user_id") || "",
+	// 	}
+	// 	await axios.post(`${url}/`)
+	// }
 
 	const onSubmit = (e) => {
 		e.preventDefault()
@@ -243,6 +393,7 @@ function EmployeeMasterForm() {
 			pan_no: "",
 			aadhaar_no: "",
 			bank_name: "",
+			bank_branch_name: "",
 			ifsc: "",
 			acc_no: "",
 			remarks: "",
@@ -261,6 +412,21 @@ function EmployeeMasterForm() {
 					<div>
 						<div>
 							<div className="grid gap-4 sm:grid-cols-4 sm:gap-6">
+								<div>
+									<TDInputTemplateBr
+										placeholder="Active Flag..."
+										type="text"
+										label="Active Flag"
+										name="active_flag"
+										formControlName={masterEmployeeData.active_flag}
+										handleChange={handleChangeForm}
+										mode={2}
+										data={[
+											{ code: "Y", name: "Active" },
+											{ code: "N", name: "Inactive" },
+										]}
+									/>
+								</div>
 								<div>
 									<TDInputTemplateBr
 										placeholder="Employee Name..."
@@ -285,6 +451,7 @@ function EmployeeMasterForm() {
 											code: item?.branch_code,
 											name: item?.branch_name,
 										}))}
+										disabled={params?.id > 0}
 									/>
 								</div>
 								<div>
@@ -391,7 +558,11 @@ function EmployeeMasterForm() {
 										name="nationality"
 										formControlName={masterEmployeeData.nationality}
 										handleChange={handleChangeForm}
-										mode={1}
+										mode={2}
+										data={[
+											{ code: "I", name: "Indian" },
+											{ code: "O", name: "Others" },
+										]}
 									/>
 								</div>
 								<div>
@@ -556,6 +727,17 @@ function EmployeeMasterForm() {
 								</div>
 								<div>
 									<TDInputTemplateBr
+										placeholder="Bank Branch..."
+										type="text"
+										label="Bank Branch"
+										name="bank_branch_name"
+										formControlName={masterEmployeeData.bank_branch_name}
+										handleChange={handleChangeForm}
+										mode={1}
+									/>
+								</div>
+								<div>
+									<TDInputTemplateBr
 										placeholder="Account No..."
 										type="number"
 										label="Account No"
@@ -565,7 +747,7 @@ function EmployeeMasterForm() {
 										mode={1}
 									/>
 								</div>
-								<div className="sm:col-span-2">
+								<div className="sm:col-span-4">
 									<TDInputTemplateBr
 										placeholder="Remarks..."
 										type="text"

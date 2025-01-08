@@ -29,7 +29,7 @@ import EmployeeMasterTable from "../../../Components/Master/EmployeeMasterTable"
 function MasterEmployees() {
 	const userDetails = JSON.parse(localStorage.getItem("user_details")) || ""
 	const [loading, setLoading] = useState(false)
-	const [loanApplications, setLoanApplications] = useState(() => [])
+	const [masterData, setMasterData] = useState(() => [])
 	const [copyLoanApplications, setCopyLoanApplications] = useState(() => [])
 
 	const [approvalStatus, setApprovalStatus] = useState("U")
@@ -45,11 +45,11 @@ function MasterEmployees() {
 		// }
 
 		await axios
-			.get(`${url}/get_bank`)
+			.get(`${url}/show_all_emp`)
 			.then((res) => {
 				console.log("PPPPPPPPPPPPPPPPPPPP", res?.data)
 				if (res?.data?.suc === 1) {
-					setLoanApplications(res?.data?.msg)
+					setMasterData(res?.data?.msg)
 					setCopyLoanApplications(res?.data?.msg)
 
 					console.log("PPPPPPPPPPPPPPPPPPPP", res?.data)
@@ -69,7 +69,7 @@ function MasterEmployees() {
 	}, [])
 
 	const setSearch = (word) => {
-		setLoanApplications(
+		setMasterData(
 			copyLoanApplications?.filter(
 				(e) =>
 					e?.bank_name
@@ -116,7 +116,7 @@ function MasterEmployees() {
 					/> */}
 					<EmployeeMasterTable
 						flag="BM"
-						loanAppData={loanApplications}
+						loanAppData={masterData}
 						title="Employee Master"
 						setSearch={(data) => setSearch(data)}
 					/>
