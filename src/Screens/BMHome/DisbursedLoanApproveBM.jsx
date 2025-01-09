@@ -332,9 +332,9 @@ function DisbursedLoanApproveBM() {
 
 						<div>
 						<TDInputTemplateBr
-						placeholder="Select Gender..."
+						placeholder="Select Co Name..."
 						type="text"
-						label="Gender"
+						label="Co Wise"
 						name="b_clientGender"
 						// handleChange={(e) => console.log("Selected Employee:", e.target.value)}
 						handleChange={handleEmployeeChange} 
