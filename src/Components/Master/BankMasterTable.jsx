@@ -1,5 +1,5 @@
 import React, { useState } from "react"
-import { routePaths } from "../Assets/Data/Routes"
+import { routePaths } from "../../Assets/Data/Routes"
 import { Link } from "react-router-dom"
 import Tooltip from "@mui/material/Tooltip"
 import { Paginator } from "primereact/paginator"
@@ -160,8 +160,12 @@ function BankMasterTable({
 									>
 										{item.sl_no}
 									</th> */}
-									<td className="px-6 py-3 text-slate-800 font-bold">{item?.bank_name}</td>
-									<td className="px-6 py-3 text-slate-700">{item?.branch_name}</td>
+									<td className="px-6 py-3 text-slate-800 font-bold">
+										{item?.bank_name}
+									</td>
+									<td className="px-6 py-3 text-slate-700">
+										{item?.branch_name}
+									</td>
 									<td className="px-6 py-3  text-slate-700">{item?.ifsc}</td>
 									<td className="px-6 py-3 text-slate-700">{item?.sol_id}</td>
 

@@ -115,6 +115,11 @@ function MenusBr({ theme }) {
 					icon: <DatabaseOutlined />,
 					label: <Link to={"/homebm/masterbanks"}>Banks</Link>,
 				},
+				{
+					key: "sub5-2",
+					icon: <DatabaseOutlined />,
+					label: <Link to={"/homebm/masteremployees"}>Employees</Link>,
+				},
 				// {
 				// 	key: "sub4-2",
 				// 	icon: <CheckCircleOutlined />,

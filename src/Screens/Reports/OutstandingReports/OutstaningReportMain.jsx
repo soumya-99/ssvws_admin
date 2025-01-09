@@ -161,17 +161,9 @@ function OutstaningReportMain() {
 	}
 
 	useEffect(() => {
-		if (
-			searchType === "M" &&
-			fromDate &&
-			new Date(fromDate)?.toLocaleDateString()?.length === 10
-		) {
+		if (searchType === "M" && fromDate) {
 			handleFetchReportOutstandingMemberwise()
-		} else if (
-			searchType === "G" &&
-			fromDate &&
-			new Date(fromDate)?.toLocaleDateString()?.length === 10
-		) {
+		} else if (searchType === "G" && fromDate) {
 			handleFetchReportOutstandingGroupwise()
 		}
 	}, [searchType, fromDate])

@@ -18,6 +18,12 @@ import DisbursedLoanApproveSingleBM from "./Screens/BMHome/DisbursedLoanApproveS
 import TestPage from "./Screens/Reports/LoanTransactions/testPage"
 const MasterBanks = lazy(() => import("./Screens/Master/MasterBanks"))
 const EditMasterBank = lazy(() => import("./Screens/Master/EditMasterBank"))
+import MasterEmployees from "./Screens/Master/Employees/MasterEmployees"
+import EditMasterEmployee from "./Screens/Master/Employees/EditMasterEmployee"
+const MasterBanks = lazy(() => import("./Screens/Master/Banks/MasterBanks"))
+const EditMasterBank = lazy(() =>
+	import("./Screens/Master/Banks/EditMasterBank")
+)
 const EditRecoveryApproveFormBM = lazy(() =>
 	import("./Screens/BMHome/EditRecoveryApproveFormBM")
 )
@@ -244,6 +250,14 @@ const router = createBrowserRouter([
 							{
 								path: "masterbanks/:id",
 								element: <EditMasterBank />,
+							},
+							{
+								path: "masteremployees",
+								element: <MasterEmployees />,
+							},
+							{
+								path: "masteremployees/:id",
+								element: <EditMasterEmployee />,
 							},
 							{
 								path: "approveloan",
