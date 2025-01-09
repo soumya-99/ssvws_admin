@@ -14,6 +14,10 @@ import LoanStatementMain from "./Screens/Reports/LoanStatements/LoanStatementMai
 import LoanTransactionsMain from "./Screens/Reports/LoanTransactions/LoanTransactionsMain"
 import DemandReportsMain from "./Screens/Reports/DemandReports/DemandReportsMain"
 import OutstaningReportMain from "./Screens/Reports/OutstandingReports/OutstaningReportMain"
+import DisbursedLoanApproveSingleBM from "./Screens/BMHome/DisbursedLoanApproveSingleBM"
+import TestPage from "./Screens/Reports/LoanTransactions/testPage"
+const MasterBanks = lazy(() => import("./Screens/Master/MasterBanks"))
+const EditMasterBank = lazy(() => import("./Screens/Master/EditMasterBank"))
 import MasterEmployees from "./Screens/Master/Employees/MasterEmployees"
 import EditMasterEmployee from "./Screens/Master/Employees/EditMasterEmployee"
 const MasterBanks = lazy(() => import("./Screens/Master/Banks/MasterBanks"))
@@ -260,6 +264,10 @@ const router = createBrowserRouter([
 								element: <DisbursedLoanApproveBM />,
 							},
 							{
+								path: "approvedisbursed",
+								element: <DisbursedLoanApproveSingleBM />,
+							},
+							{
 								path: "approveloan/:id",
 								element: <EditDisburseApproveFormBM />,
 							},
@@ -302,6 +310,10 @@ const router = createBrowserRouter([
 							{
 								path: "loantxns",
 								element: <LoanTransactionsMain />,
+							},
+							{
+								path: "testpage",
+								element: <TestPage />,
 							},
 							{
 								path: "demandreport",

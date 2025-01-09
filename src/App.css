@@ -99,3 +99,27 @@
   color:'white'
 }
 
+.p-checkbox.p-component .p-checkbox-box{background-color: #ececec;
+  border: #d9d7d7 solid 1px;}
+.p-checkbox.p-component.p-highlight .p-checkbox-box{background-color: #3d9bd1;
+    border: #d9d7d7 solid 1px;}
+
+table.table_Custome thead tr th{background-color: rgb(203 213 225) !important; padding: 14px 12px;}
+table.table_Custome tbody tr{border-bottom: #FAD1E8 solid 2px;}
+table.table_Custome tbody tr.p-datatable-row-expansion > td{padding: 0;}
+table.table_Custome_2nd thead tr th{
+  /* background-color: rgb(40, 95, 161) !important; padding: 14px 12px; */
+  background-color: #FAD1E8 !important;
+  padding: 10px 12px;
+  color: #000;
+}
+
+table.table_Custome_2nd tbody tr td{
+  /* background-color: rgb(40, 95, 161) !important; padding: 14px 12px; */
+  padding: 10px 12px;
+  background-color: #F0E8ED !important;
+  color: #000;
+}
+
+table.table_Custome_1st thead tr th:first-child{width: 70px;}
+table.table_Custome_2nd thead tr th:first-child{width: auto;}

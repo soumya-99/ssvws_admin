@@ -190,11 +190,28 @@ function MenusBr({ theme }) {
 					icon: <ThunderboltOutlined />,
 					label: <Link to={"/homebm/disburseloan"}>Disburse Loan</Link>,
 				},
+				// {
+				// 	key: "sub4-2",
+				// 	icon: <CheckCircleOutlined />,
+				// 	label: <Link to={"/homebm/approveloan"}>Approve Transaction</Link>,
+				// },
 				{
 					key: "sub4-2",
 					icon: <CheckCircleOutlined />,
-					label: <Link to={"/homebm/approveloan"}>Approve Transaction</Link>,
-				},
+					label: "Approve Transaction",
+					children: [
+					  {
+						key: "sub4-2-1",
+						icon: <CheckCircleOutlined />,
+						label: <Link to={"/homebm/approvedisbursed"}>Disburse</Link>,
+					  },
+					  {
+						key: "sub4-2-2",
+						icon: <CheckCircleOutlined />,
+						label: <Link to={"/homebm/approveloan"}>Recovery</Link>,
+					  },
+					],
+				  },
 				{
 					key: "sub4-3",
 					icon: <EyeOutlined />,
