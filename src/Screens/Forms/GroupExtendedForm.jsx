@@ -40,7 +40,7 @@ function GroupExtendedForm({ groupDataArr }) {
 	const [groupDetails, setGroupDetails] = useState(() => [])
 	const [memberDetails, setMemberDetails] = useState(() => [])
 	const [visible, setVisible] = useState(() => false)
-	const [visible2, setVisible2] = useState(() => false)
+	const [remarksForDelete, setRemarksForDelete] = useState(() => "")
 
 	console.log(params, "paramsssssssssssssss")
 	console.log(location, "location")
@@ -261,9 +261,6 @@ function GroupExtendedForm({ groupDataArr }) {
 	const confirm = (e) => {
 		console.log(e)
 		// message.success('Click on Yes');
-		return new Promise((resolve) => {
-			setTimeout(() => resolve(null), 1000)
-		})
 	}
 
 	const cancel = (e) => {
@@ -654,19 +651,38 @@ function GroupExtendedForm({ groupDataArr }) {
 														</td>
 														<td
 															class="px-6 py-4 text-red-500 font-bold bg-red-50 text-center"
-															onClick={() => {
-																// setVisible2(!visible2)
-																console.log(
-																	`---- MEMBER ${item?.client_name} DELETE CLICK ----`
-																)
-															}}
+															// onClick={() => {
+															// 	// setVisible2(!visible2)
+															// 	console.log(
+															// 		`---- MEMBER ${item?.client_name} DELETE CLICK ----`
+															// 	)
+															// 	console.log(`----XX----`, groupData[0]?.memb_dt)
+															// }}
 														>
 															{/* <DeleteOutline className="text-red-500 text-2xl" /> */}
-
+															{/* `Are you sure to delete member ${item?.client_name} from this group?` */}
 															<Popconfirm
 																title={`Delete Member ${item?.client_name}`}
-																description={`Are you sure to delete member ${item?.client_name} from this group?`}
-																onConfirm={confirm}
+																description={
+																	<>
+																		<div>
+																			Are you sure to delete member{" "}
+																			{item?.client_name} from this group?
+																		</div>
+																		<TDInputTemplateBr
+																			placeholder="Type Remarks for delete..."
+																			type="text"
+																			label="Reason for Delete*"
+																			name="remarksForDelete"
+																			formControlName={remarksForDelete}
+																			handleChange={(e) =>
+																				setRemarksForDelete(e.target.value)
+																			}
+																			mode={3}
+																		/>
+																	</>
+																}
+																onConfirm={() => confirm(item)}
 																onCancel={cancel}
 																okText="Delete"
 																cancelText="No"
