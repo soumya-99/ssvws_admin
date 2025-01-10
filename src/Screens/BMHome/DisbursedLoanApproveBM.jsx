@@ -19,7 +19,7 @@ const options = [
 		value: "G",
 	},
 	{
-		label: "Co Wise",
+		label: "Collector Wise",
 		value: "C",
 	},
 	{
@@ -54,8 +54,8 @@ function DisbursedLoanApproveBM() {
 		await axios
 		.post(`${url}/fetch_groupwise_recovery_admin`, {
 				branch_code : userDetails?.brn_code,
-				from_dt : formatDateToYYYYMMDD(fromDate),
-				to_dt : formatDateToYYYYMMDD(toDate)
+				// from_dt : formatDateToYYYYMMDD(fromDate),
+				// to_dt : formatDateToYYYYMMDD(toDate)
 			
 			})
 			.then((res) => {
@@ -79,8 +79,8 @@ function DisbursedLoanApproveBM() {
 		await axios
 		.post(`${url}/fetch_cowise_recov_data`, {
 				branch_code : userDetails?.brn_code,
-				from_dt : formatDateToYYYYMMDD(fromDate),
-				to_dt : formatDateToYYYYMMDD(toDate),
+				// from_dt : formatDateToYYYYMMDD(fromDate),
+				// to_dt : formatDateToYYYYMMDD(toDate),
 				co_id : selectedEmployeeId
 			
 			})
@@ -105,8 +105,8 @@ function DisbursedLoanApproveBM() {
 		await axios
 		.post(`${url}/fetch_memberwise_recovery_admin`, {
 				branch_code : userDetails?.brn_code,
-				from_dt : formatDateToYYYYMMDD(fromDate),
-				to_dt : formatDateToYYYYMMDD(toDate)
+				// from_dt : formatDateToYYYYMMDD(fromDate),
+				// to_dt : formatDateToYYYYMMDD(toDate)
 			
 			})
 			.then((res) => {
@@ -155,7 +155,7 @@ function DisbursedLoanApproveBM() {
 		setLoanApplicationsMember(
 			copyLoanApplicationsMember?.filter(
 				(e) =>
-					e?.group_code
+					e?.loan_id
 						?.toString()
 						?.toLowerCase()
 						.includes(word?.toLowerCase()) ||
@@ -220,21 +220,29 @@ function DisbursedLoanApproveBM() {
 	
 
 	useEffect(() => {
-			console.log(loanType, fromDate, toDate, 'jjjjjjjjjjjjjjjj');
-			
-			if (loanType === "G" &&
-				fromDate &&
-				toDate ) {
+		console.log(fromDate, 'fetchLoanApplicationsDate', toDate);
+			// if (loanType === "G" ||
+			// 	fromDate ||
+			// 	toDate ) {
+			// 	fetchLoanApplicationsGroup()
+			// } else if ( loanType === "C" ||
+			// 	fromDate ||
+			// 	toDate ) {
+			// 	fetchLoanApplicationsCo()
+			// } else if ( loanType === "M" ||
+			// 	fromDate ||
+			// 	toDate ) {
+			// 	fetchLoanApplicationsMember()
+			// }
+
+			if (loanType === "G") {
 				fetchLoanApplicationsGroup()
-			} else if ( loanType === "C" &&
-				fromDate &&
-				toDate ) {
+			} else if ( loanType === "C") {
 				fetchLoanApplicationsCo()
-			} else if ( loanType === "M" &&
-				fromDate &&
-				toDate ) {
+			} else if ( loanType === "M") {
 				fetchLoanApplicationsMember()
 			}
+
 		}, [loanType, fromDate, toDate, selectedEmployeeId])
 
 	return (
@@ -262,7 +270,7 @@ function DisbursedLoanApproveBM() {
 					{loanType === "G" ? (
 
 						<>
-						<div className="grid grid-cols-2 gap-5 mt-5">
+						{/* <div className="grid grid-cols-2 gap-5 mt-5">
 						<div>
 							<TDInputTemplateBr
 								placeholder="From Date"
@@ -288,7 +296,7 @@ function DisbursedLoanApproveBM() {
 							/>
 						</div>
 
-					</div>
+					</div> */}
 
 						<RecoveryGroupApproveTable
 							flag="BM"
@@ -305,7 +313,7 @@ function DisbursedLoanApproveBM() {
 					) : loanType === "C" ? (
 						<>
 						<div className="grid grid-cols-3 gap-5 mt-5">
-						<div>
+						{/* <div>
 							<TDInputTemplateBr
 								placeholder="From Date"
 								type="date"
@@ -328,13 +336,13 @@ function DisbursedLoanApproveBM() {
 								min={"1900-12-31"}
 								mode={1}
 							/>
-						</div>
+						</div> */}
 
 						<div>
 						<TDInputTemplateBr
-						placeholder="Select Co Name..."
+						placeholder="Select Collector Name..."
 						type="text"
-						label="Co Wise"
+						label="Collector Wise"
 						name="b_clientGender"
 						// handleChange={(e) => console.log("Selected Employee:", e.target.value)}
 						handleChange={handleEmployeeChange} 
@@ -345,7 +353,7 @@ function DisbursedLoanApproveBM() {
 						// ]}
 						data={coListData.map((emp) => ({
 							code: emp.emp_id,
-							name: emp.emp_name,
+							name: `${emp.emp_name} (${emp.user_type == 1 ? "CO" : "BM"})`,
 						  }))}
 						mode={2}
 						disabled={false} // Static value to make it always disabled
@@ -369,7 +377,7 @@ function DisbursedLoanApproveBM() {
 					) : loanType === "M" ? (
 
 						<>
-						<div className="grid grid-cols-2 gap-5 mt-5">
+						{/* <div className="grid grid-cols-2 gap-5 mt-5">
 						<div>
 							<TDInputTemplateBr
 								placeholder="From Date"
@@ -394,7 +402,7 @@ function DisbursedLoanApproveBM() {
 								mode={1}
 							/>
 						</div>
-					</div>
+					</div> */}
 						<RecoveryMemberApproveTable
 							flag="BM"
 							loanAppData={loanApplicationsMember}
