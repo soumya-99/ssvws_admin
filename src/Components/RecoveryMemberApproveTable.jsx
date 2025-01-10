@@ -340,15 +340,15 @@ function RecoveryMemberApproveTable({
 						body={(rowData) =>
 							`${rowData.group_name} - ${rowData.loan_id} (${rowData.client_name})`
 						}></Column>
-					<Column field="tot_emi" header="Total EMI" footer={<span style={{ fontWeight: "bold" }}>{TotalEMI}</span>}></Column>
-					<Column header="Amount"
+					
+					<Column header="Credit Amount"
 					body={(rowData) =>
 					`${rowData.amt} - (${rowData.tr_mode})`
 					}  footer={<span style={{ fontWeight: "bold" }}>{AmountTd_}</span>}
 					></Column>
-
+					<Column field="tot_emi" header="Total EMI" footer={<span style={{ fontWeight: "bold" }}>{TotalEMI}</span>}></Column>
 					<Column field="outstanding" header="Outstanding" footer={<span style={{ fontWeight: "bold" }}>{Outstanding}</span>}></Column>
-					<Column field="created_by" header="Created By"></Column>
+					<Column field="created_by" header="Collected By"></Column>
 					
 				</DataTable>
 				{/* <>{JSON.stringify(cachedPaymentId, null, 2)}</> */}

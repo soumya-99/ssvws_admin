@@ -72,7 +72,6 @@ function RecoveryGroupApproveTable({
 	// const [useData, setSetData] = useState([])
 
 	useEffect(() => {
-		console.log(fetchLoanApplicationsDate, 'fetchLoanApplicationsDate');
 		
 		// setSetData(loanAppData)
 		if (isMounted.current) {
@@ -85,7 +84,7 @@ function RecoveryGroupApproveTable({
 	const onRowExpand = (event) => {
 		setExpandedRows(null);
 		console.log(event.data.group_code, 'event.data');
-		fetchLoanGroupMember()
+		fetchLoanGroupMember(event.data.group_code)
 
 		// toast.current.show({severity: 'info', summary: 'Product Expanded', detail: event.data.name, life: 3000});
 	}
@@ -143,18 +142,22 @@ function RecoveryGroupApproveTable({
 
 
 	const fetchLoanGroupMember = async (group_code) => {
+		console.log(group_code, 'res?.data?.msg');
+		
 		setLoading(true)
 		await axios
 			.post(`${url}/fetch_grp_member_dtls`, {
 				branch_code: userDetails?.brn_code,
-				from_dt: fetchLoanApplicationsDate.fromDate,
-				to_dt: fetchLoanApplicationsDate.toDate,
+				// from_dt: fetchLoanApplicationsDate.fromDate,
+				// to_dt: fetchLoanApplicationsDate.toDate,
 				group_code: group_code,
 			})
 			.then((res) => {
 				if (res?.data?.suc === 1) {
 					setLoading(false)
 					setLoanGroupMember(res?.data?.msg)
+					console.log(res?.data?.msg, 'res?.data?.msg');
+					
 				} else {
 					Message("error", "No incoming loan applications found.")
 				}
@@ -343,28 +346,24 @@ function RecoveryGroupApproveTable({
 					// onPage={onPageChange}
 					// rowsPerPageOptions={[5, 10, 20]} // Add options for number of rows per page
 					tableClassName="w-full text-sm text-left rtl:text-right shadow-lg text-green-900dark:text-gray-400 table_Custome table_Custome_1st" // Apply row classes
-				>
-					<Column header="Sl No."body={(rowData) => <span style={{ fontWeight: "bold" }}>{rowData?.id + 1}</span>}  footer={
-						<>
-						{/* <button className={`inline-flex items-center px-3 py-1 mt-0 ml-0 sm:mt-0 text-sm font-small text-center text-white border hover:border-green-600 border-teal-500 bg-teal-500 transition ease-in-out hover:bg-green-600 duration-300 rounded-full  dark:focus:ring-primary-900`}><CheckCircleOutlined class={`mr-2`} /> Approve  </button> */}
-						</>
-					}></Column>
+					>
+					<Column header="Sl No."body={(rowData) => <span style={{ fontWeight: "bold" }}>{rowData?.id + 1}</span>}></Column>
 					<Column expander={allowExpansion} style={{ width: '3em' }}/>
 					<Column selectionMode="multiple" headerStyle={{ width: '3rem' }}></Column>
 					<Column field="transaction_date" header="Payment Date " body={(rowData) => new Date(rowData?.transaction_date).toLocaleDateString("en-GB")} ></Column>
-					<Column field="group_name" header="Group Name" footer={<span style={{ fontWeight: "bold" }}>Total Amount:</span>}></Column>
 					<Column field="group_code" header="Group Code"></Column>
-					<Column field="created_by" header="Created By"></Column>
-					<Column field="outstanding" header="Outstanding" footer={<span style={{ fontWeight: "bold" }}>{Outstanding}</span>}></Column>
+					<Column field="group_name" header="Group Name" footer={<span style={{ fontWeight: "bold" }}>Total Amount:</span>}></Column>
+					<Column header="Credit Amount" footer={<span style={{ fontWeight: "bold", color:"#0694A2" }}>{CreditAmount}</span>} 
+					body={(rowData) =>
+						`${rowData.credit_amt} - (${rowData.tr_mode})`
+						}
+					></Column>
 					<Column field="tot_emi" header="Total EMI" footer={<span style={{ fontWeight: "bold" }}>{TotalEMI}</span>}></Column>
-					{/* <Column 
-					field="tot_emi" 
-					header="Total EMI" 
-					footer={<span style={{ fontWeight: "bold" }}>Total: {totalEmi.toFixed(2)}</span>}
-					/> */}
-					<Column field="created_code" header="Created Code"></Column>
-					<Column field="credit_amt" header="Credit Amount" footer={<span style={{ fontWeight: "bold", color:"#0694A2" }}>{CreditAmount}</span>}></Column>
+					<Column field="outstanding" header="Outstanding" footer={<span style={{ fontWeight: "bold" }}>{Outstanding}</span>}></Column>
+					<Column field="created_by" header="Collected By"></Column>
 					
+					
+					{/* <Column field="created_code" header="Created Code"></Column> */}
 					{/* <Column headerStyle={{ width: '4rem'}} ></Column> */}
 					
 				</DataTable>
