@@ -60,6 +60,8 @@ function DisbursedLoanApproveBM() {
 			})
 			.then((res) => {
 				if (res?.data?.suc === 1) {
+					// console.log(res?.data?.msg, 'xxxxxxxxx');
+					
 					setLoanApplicationsGroup(res?.data?.msg)
 					setCopyLoanApplicationsGroup(res?.data?.msg)
 				} else {
@@ -86,7 +88,7 @@ function DisbursedLoanApproveBM() {
 			})
 			.then((res) => {
 				if (res?.data?.suc === 1) {
-					console.log("setLoanApplicationsCo", res?.data?.msg)
+					console.log(res?.data?.msg, 'xxxxxxxxx');
 					setLoanApplicationsCo(res?.data?.msg)
 					setCopyLoanApplicationsCo(res?.data?.msg)
 				} else {

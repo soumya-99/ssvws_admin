@@ -141,8 +141,8 @@ function RecoveryCoApproveTable({
 		await axios
 			.post(`${url}/fetch_cowise_recov_member_dtls`, {
 				branch_code: userDetails?.brn_code,
-				from_dt: fetchLoanApplicationsDate.fromDate,
-				to_dt: fetchLoanApplicationsDate.toDate,
+				// from_dt: fetchLoanApplicationsDate.fromDate,
+				// to_dt: fetchLoanApplicationsDate.toDate,
 				co_id: fetchLoanApplicationsDate.selectedEmployeeId,
 			})
 			.then((res) => {
@@ -312,13 +312,20 @@ function RecoveryCoApproveTable({
 					<Column expander={allowExpansion} style={{ width: '3em' }} />
 					<Column selectionMode="multiple" headerStyle={{ width: '3rem' }}></Column>
 					<Column field="transaction_date" header="Payment Date " body={(rowData) => new Date(rowData?.transaction_date).toLocaleDateString("en-GB")} ></Column>
-					<Column field="group_name" header="Group Name" footer={<span style={{ fontWeight: "bold" }}>Total Amount:</span>}></Column>
 					<Column field="group_code" header="Group Code"></Column>
-					<Column field="created_by" header="Created By"></Column>
+					<Column field="group_name" header="Group Name" footer={<span style={{ fontWeight: "bold" }}>Total Amount:</span>}></Column>
+					<Column header="Credit Amount" footer={<span style={{ fontWeight: "bold", color:"#0694A2" }}>{CreditAmount}</span>}
+					body={(rowData) =>
+						`${rowData.credit_amt} - (${rowData.tr_mode})`
+						}
+					></Column>
 					<Column field="outstanding" header="Outstanding" footer={<span style={{ fontWeight: "bold" }}>{Outstanding}</span>}></Column>
-					<Column field="created_code" header="Created Code"></Column>
-					<Column field="credit_amt" header="Credit Amount" footer={<span style={{ fontWeight: "bold", color:"#0694A2" }}>{CreditAmount}</span>}></Column>
+					<Column field="created_by" header="Collected By"></Column>
+
 					
+					
+					
+					{/* <Column field="created_code" header="Created Code"></Column> */}
 					{/* <Column headerStyle={{ width: '4rem'}} ></Column> */}
 				</DataTable>
 
