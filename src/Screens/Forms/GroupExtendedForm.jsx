@@ -19,7 +19,11 @@ import Sidebar from "../../Components/Sidebar"
 import DialogBox from "../../Components/DialogBox"
 import TDInputTemplateBr from "../../Components/TDInputTemplateBr"
 import TimelineComp from "../../Components/TimelineComp"
-import { PendingActionsOutlined, DeleteOutline } from "@mui/icons-material"
+import {
+	PendingActionsOutlined,
+	DeleteOutline,
+	InfoOutlined,
+} from "@mui/icons-material"
 
 function GroupExtendedForm({ groupDataArr }) {
 	const params = useParams()
@@ -258,7 +262,27 @@ function GroupExtendedForm({ groupDataArr }) {
 		setLoading(false)
 	}
 
-	const confirm = (itemToDelete) => {
+	const removeMemberFromGroup = async (member) => {
+		const creds = {
+			remove_remarks: remarksForDelete,
+			rejected_by: userDetails?.emp_id,
+			branch_code: userDetails?.brn_code,
+			form_no: member?.form_no,
+			member_code: member?.member_code,
+		}
+		await axios
+			.post(`${url}/admin/remove_member_from_group`, creds)
+			.then((res) => {
+				console.log("MEMBER DELETEDDDDDD APIII", res)
+				Message("success", "")
+			})
+			.catch((err) => {
+				console.log("**888***888***888", err)
+			})
+	}
+
+	const confirm = async (itemToDelete) => {
+		setLoading(true)
 		if (remarksForDelete) {
 			const updatedGroupData = groupData.map((group) => {
 				return {
@@ -270,9 +294,12 @@ function GroupExtendedForm({ groupDataArr }) {
 			})
 
 			setGroupData(updatedGroupData)
+			await removeMemberFromGroup(itemToDelete)
+			setRemarksForDelete(() => "")
 		} else {
 			Message("warning", "Please write remarks.")
 		}
+		setLoading(false)
 	}
 
 	const cancel = (e) => {
@@ -656,13 +683,17 @@ function GroupExtendedForm({ groupDataArr }) {
 															{item?.approval_status === "U" ||
 															(userDetails?.id == 3 &&
 																item?.approval_status === "S") ? (
-																<InfoCircleFilled className="text-teal-500" />
+																<InfoOutlined className="text-teal-500" />
 															) : (
-																<PendingActionsOutlined className="text-yellow-400" />
+																<InfoOutlined className="text-yellow-400" />
 															)}
 														</td>
 														<td
-															class="px-6 py-4 text-red-500 font-bold bg-red-50 text-center"
+															class={`px-6 py-4 font-bold ${
+																item?.tot_outstanding > 0
+																	? "bg-slate-50"
+																	: "bg-red-50"
+															} text-center`}
 															// onClick={() => {
 															// 	// setVisible2(!visible2)
 															// 	console.log(
@@ -698,8 +729,15 @@ function GroupExtendedForm({ groupDataArr }) {
 																onCancel={cancel}
 																okText="Delete"
 																cancelText="No"
+																disabled={item?.tot_outstanding > 0}
 															>
-																<DeleteOutline className="text-red-500 text-2xl" />
+																<DeleteOutline
+																	className={`${
+																		item?.tot_outstanding > 0
+																			? "text-slate-400"
+																			: "text-red-500"
+																	} text-2xl`}
+																/>
 															</Popconfirm>
 														</td>
 													</tr>
