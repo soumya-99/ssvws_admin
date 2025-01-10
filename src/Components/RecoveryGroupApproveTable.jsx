@@ -16,7 +16,7 @@ import {
 	ArrowRightOutlined,
 } from "@ant-design/icons"
 import { useNavigate } from "react-router-dom"
-import { Tag, Spin, Divider, Collapse } from "antd"
+import { Tag, Spin, Divider, Collapse, Popconfirm } from "antd"
 import axios from "axios"
 import DialogBox from "./DialogBox"
 import { url } from "../Address/BaseUrl"
@@ -26,6 +26,7 @@ import { DataTable } from 'primereact/datatable';
 import { Column } from 'primereact/column';
 import { Toast } from 'primereact/toast';
 import { Message } from './Message';
+import TDInputTemplateBr from './TDInputTemplateBr';
 
 const { Panel } = Collapse;
 
@@ -50,7 +51,7 @@ function RecoveryGroupApproveTable({
 
 	const [loading, setLoading] = useState(() => false)
 	// const [cachedPaymentId, setCachedPaymentId] = useState("")
-	const [cachedPaymentId, setCachedPaymentId] = useState(() => [])
+	const [cachedDateGcode, setCachedDateGcode] = useState(() => [])
 
 
 	// acordian start
@@ -69,7 +70,17 @@ function RecoveryGroupApproveTable({
 	const [Outstanding, setOutstanding] = useState(0);
 	const [ShowApprov, setShowApprov] = useState(false);
 
-	// const [useData, setSetData] = useState([])
+	const [getloanAppData, setLoanAppData] = useState([]);
+
+	const [RejectcachedPaymentId, setRejectCachedPaymentId] = useState(() => [])
+	const [remarksForDelete, setRemarksForDelete] = useState('');
+
+	useEffect(() => {
+	if (loanAppData.length > 0) {
+		setLoanAppData(loanAppData);
+	}
+	}, [loanAppData]);
+
 
 	useEffect(() => {
 		
@@ -78,13 +89,15 @@ function RecoveryGroupApproveTable({
 			const summary = expandedRows !== null ? 'All Rows Expanded' : 'All Rows Collapsed';
 			toast.current.show({ severity: 'success', summary: `${summary}`, life: 3000 });
 		}
+		// console.log(NewDataList, 'NewGroupList');
 	}, [expandedRows]);
 
 
 	const onRowExpand = (event) => {
 		setExpandedRows(null);
 		console.log(event.data.group_code, 'event.data');
-		fetchLoanGroupMember(event.data.group_code)
+		// console.log('itemitemitemitem', 'lll', event.data);
+		fetchLoanGroupMember(event?.data?.group_code, event?.data?.transaction_date)
 
 		// toast.current.show({severity: 'info', summary: 'Product Expanded', detail: event.data.name, life: 3000});
 	}
@@ -95,7 +108,7 @@ function RecoveryGroupApproveTable({
 	}
 
 	const allowExpansion = (rowData) => {
-		return loanAppData.length > 0;
+		return getloanAppData.length > 0;
 	};
 
 	const onPageChange = (event) => {
@@ -109,7 +122,8 @@ function RecoveryGroupApproveTable({
 	};
 
 	const handleSelectionChange = (e) => {
-		// Update the selected products
+		// Update the selected products setPaymentDate
+		console.log(e.value, 'kkkkkkkkkkkkkkkkkkkk');
 		
 
 		// Perform any additional logic here, such as enabling a button or triggering another action
@@ -124,31 +138,49 @@ function RecoveryGroupApproveTable({
 
 			
 
-			const groupCodes = selectedRows.map((item) => item.group_code);
-			setCachedPaymentId(groupCodes);
+			const group_Data = selectedRows.map((item) => {
+				return {
+					payment_date: item?.transaction_date,
+					branch_code: item?.branch_code,
+					group_code: item?.group_code
+				}
+			});
 
+			const reject_group_Data = selectedRows.map((item) => {
+				return {
+					payment_date: item?.transaction_date,
+					payment_id: item?.payment_id,
+					loan_id: item?.loan_id,
+					branch_code: userDetails?.brn_code,
+					credit: item?.amt,
+				}
+			});
+
+			console.log(reject_group_Data, 'reject_group_Data');
+			
+
+			setCachedDateGcode(group_Data);
+			setRejectCachedPaymentId(reject_group_Data);
 			setShowApprov(true)
-			console.log('You selected  rows', cachedPaymentId,  '>>>', groupCodes);
+			console.log('You selected  rows', cachedDateGcode,  '>>>', group_Data);
 		} else {
 			setShowApprov(false)
 			setTotalEMI(0)
 			setCreditAmount(0)
 			setOutstanding(0)
+			setCachedDateGcode([])
 			console.log("No rows selected");
 		}
 	};
  
-	// const totalEmi = loanAppData?.reduce((sum, item) => sum + parseFloat(item.tot_emi || 0), 0); 
-
-
-	const fetchLoanGroupMember = async (group_code) => {
+	const fetchLoanGroupMember = async (group_code, transaction_date) => {
 		console.log(group_code, 'res?.data?.msg');
 		
 		setLoading(true)
 		await axios
 			.post(`${url}/fetch_grp_member_dtls`, {
 				branch_code: userDetails?.brn_code,
-				// from_dt: fetchLoanApplicationsDate.fromDate,
+				payment_date: transaction_date,
 				// to_dt: fetchLoanApplicationsDate.toDate,
 				group_code: group_code,
 			})
@@ -169,26 +201,123 @@ function RecoveryGroupApproveTable({
 		
 	}
 
+	// const remove = (cachedDateGcode) => {
+	// setLoanAppData_(loanAppData_.filter(item => 
+	// 	cachedDateGcode.filter(removeItem =>{
+
+	// 		console.log(item, 'itemitemitemitem', removeItem)
+	// 		if(item.group_code === removeItem.group_code && item.transaction_date === removeItem.transaction_date && item.branch_code === removeItem.branch_code){
+	// 			console.log(item.group_code, 'item.group_code', removeItem.group_code)
+	// 			// return item.group_code === removeItem.group_code
+	// 		}
+			
+	// 	})
+	//   ))
+	// }
+
 
 	// acordian end
 
 
-
-	const approveRecoveryTransaction = async (paymentId) => {
+	const fetchLoanApplicationsGroup = async () => {
 		setLoading(true)
-		const creds = {
-			approved_by: userDetails?.emp_id,
-			payment_id: paymentId,
-		}
 		await axios
-			.post(`${url}/admin/approve_recovery_loan`, creds)
+		.post(`${url}/fetch_groupwise_recovery_admin`, {
+				branch_code : userDetails?.brn_code,
+			
+			})
 			.then((res) => {
-				console.log("RESSS approveRecoveryTransaction", res?.data)
+				if (res?.data?.suc === 1) {
+					setLoanAppData(res?.data?.msg);
+					setSelectedProducts([])
+					setTotalEMI(0)
+					setCreditAmount(0)
+					setOutstanding(0)
+				} else {
+					Message("error", "No incoming loan applications found.")
+				}
 			})
 			.catch((err) => {
-				console.log("ERRR approveRecoveryTransaction", err)
+				Message("error", "Some error occurred while fetching loans!")
+				console.log("ERRR", err)
 			})
 		setLoading(false)
+	}
+
+
+	function removeCachedIds(cachedDateGcode, getloanAppData) {
+		const cachedIds = cachedDateGcode.map(item => item.group_code);
+		console.log(cachedIds, 'cachedIds');
+		
+		console.log(getloanAppData.filter(item => !cachedIds.includes(item.group_code)), 'xxxxxxxxxxxxxxxxxx');
+		
+		// return loanAppData_.filter(item => !cachedIds.includes(item.id));
+	}
+
+
+	
+
+
+	const approveRecoveryTransaction = async (cachedDateGcode) => {
+
+		setLoading(true)
+		// removeCachedIds(cachedDateGcode, getloanAppData) 
+
+			const creds = {
+				approved_by: userDetails?.emp_id,
+				grpdt: cachedDateGcode
+			}
+			await axios
+				.post(`${url}/approve_grpwise_recov`, creds)
+				.then((res) => {
+					fetchLoanApplicationsGroup()
+					console.log("RESSS approveRecoveryTransaction", res?.data)
+				})
+				.catch((err) => {
+					console.log("ERRR approveRecoveryTransaction", err)
+				})
+		setLoading(false)
+	}
+
+	
+	const rejectRecoveryTransaction = async (RejectcachedPaymentId) => {
+		setLoading(true)
+
+		const creds = {
+			rejected_by: userDetails?.emp_id,
+			reject_remarks: remarksForDelete,
+			reject_membdt: RejectcachedPaymentId
+		}
+		console.log(creds, 'creds');
+		// await axios
+		// 	.post(`${url}/reject_recovery_transaction`, creds)
+		// 	.then((res) => {
+		// 		fetchLoanApplicationsGroup()
+		// 		console.log("RESSS approveRecoveryTransaction", res?.data)
+		// 	})
+		// 	.catch((err) => {
+		// 		console.log("ERRR approveRecoveryTransaction", err)
+		// 	})
+		setLoading(false)
+	}
+
+
+
+
+	const confirm = async () => {
+		await rejectRecoveryTransaction(RejectcachedPaymentId)
+		.then(() => {
+		// fetchLoanApplications("R")
+		setRemarksForDelete('')
+		})
+		.catch((err) => {
+		console.log("Err in RecoveryMemberApproveTable.jsx", err)
+		})
+	}
+
+	const cancel = (e) => {
+		console.log(e)
+		// message.error('Click on No');
 	}
 
 	const rowExpansionTemplate = () => {
@@ -327,8 +456,11 @@ function RecoveryGroupApproveTable({
 
 				)} */}
 
+				{/* <>{JSON.stringify(loanAppData, null, 2)} </> */}
+				{/* <>{JSON.stringify(getloanAppData, null, 2)}</> */}
+				{/* <>{JSON.stringify(loanData, null, 2)}</> */}
 				<DataTable
-					value={loanAppData?.map((item, i) => ([{ ...item, id: i }])).flat()}
+					value={getloanAppData?.map((item, i) => ([{ ...item, id: i }])).flat()}
 					expandedRows={expandedRows}
 					onRowToggle={(e) => setExpandedRows(e.data)}
 					onRowExpand={onRowExpand}
@@ -390,36 +522,41 @@ function RecoveryGroupApproveTable({
 		
 		</button>
 
-		<button 
-		className={`inline-flex items-center px-4 py-2 mt-0 ml-4 sm:mt-0 text-sm font-medium text-center text-white border border-[#DA4167] bg-[#DA4167] transition ease-in-out hover:bg-[#ac3246] hover:border-[#ac3246] duration-300 rounded-full  dark:focus:ring-primary-900`}
-		onClick={() => {
-			// setCachedPaymentId(item?.payment_id)
-			setVisible_Reject(true)
-		}}><CheckCircleOutlined /> <spann class={`ml-2`}>Reject</spann>    
-		
-		</button>		
-					{/* <button className='w-24'
-						onClick={() => {
-							setCachedPaymentId(item?.payment_id)
+		<Popconfirm
+									title={`Delete Member`}
+									description={
+										<>
+											<div>
+												Are you sure to Reject Member
+											</div>
+											<TDInputTemplateBr
+												placeholder="Type Remarks for delete..."
+												type="text"
+												label="Reason for Delete*"
+												name="remarksForDelete"
+												formControlName={remarksForDelete}
+												handleChange={(e) =>
+													setRemarksForDelete(e.target.value)
+												}
+												mode={3}
+											/>
+										</>
+									}
+									onConfirm={() => confirm(RejectcachedPaymentId)}
+									onCancel={cancel}
+									okText="Delete"
+									cancelText="No"
+									// disabled={item?.tot_outstanding > 0}
+								>
+									<button
+										className={`inline-flex items-center px-4 py-2 mt-0 ml-4 sm:mt-0 text-sm font-medium text-center text-white border border-[#DA4167] bg-[#DA4167] transition ease-in-out hover:bg-[#ac3246] hover:border-[#ac3246] duration-300 rounded-full  dark:focus:ring-primary-900`}
+										// onClick={() => {
+										// 	setVisible_Reject(true)
+										// }}
+										><CheckCircleOutlined /> <spann class={`ml-2`}>Reject</spann>
 
-							setVisible(true)
-						}}
-					>
-						<CheckCircleOutlined
-							className={`text-2xl bg-[#0694a2] w-20 h-10 text-[#ffeaef] rounded-sm flex justify-center items-center`}
-						/>
-					</button>
-
-					<button
-						onClick={() => {
-							setCachedPaymentId(item?.payment_id)
-							setVisible_Reject(true)
-						}}
-					>
-						<CloseCircleOutlined
-							className={`text-2xl bg-[#DA4167] w-20 h-10 text-[#ffeaef] rounded-sm flex justify-center items-center`}
-						/>
-					</button> */}
+									</button>
+								</Popconfirm>
 					</motion.section>
 					</>
 					)}
@@ -441,18 +578,18 @@ function RecoveryGroupApproveTable({
 				visible={visible}
 				onPressYes={async () => {
 					// editGroup()
-					console.log(cachedPaymentId, "cachedPaymentId ggg approve yes");
-					// await approveRecoveryTransaction(cachedPaymentId)
-					// 	.then(() => {
-					// 		fetchLoanApplications("R")
-					// 	})
-					// 	.catch((err) => {
-					// 		console.log("Err in RecoveryCoApproveTable.jsx", err)
-					// 	})
+					console.log(cachedDateGcode, "cachedPaymentId ggg approve yes");
+					await approveRecoveryTransaction(cachedDateGcode)
+						.then(() => {
+							// fetchLoanApplications("G")
+						})
+						.catch((err) => {
+							console.log("Err in RecoveryCoApproveTable.jsx", err)
+						})
 					setVisible(!visible)
 				}}
 				onPressNo={() => {
-					console.log(cachedPaymentId, "cachedPaymentId ggg approve no");
+					console.log(cachedDateGcode, "cachedPaymentId ggg approve no");
 					setVisible(!visible)
 				}}
 			/>
@@ -463,19 +600,19 @@ function RecoveryGroupApproveTable({
 				visible={visible_Reject}
 				onPressYes={async () => {
 					// editGroup()
-					console.log(cachedPaymentId, "cachedPaymentId__reject ggg yes");
+					console.log(cachedDateGcode, "cachedPaymentId__reject ggg yes");
 					
-					// await approveRecoveryTransaction(cachedPaymentId)
-					// 	.then(() => {
-					// 		fetchLoanApplications("R")
-					// 	})
-					// 	.catch((err) => {
-					// 		console.log("Err in RecoveryGroupApproveTable.jsx", err)
-					// 	})
+					await approveRecoveryTransaction(cachedDateGcode)
+						.then(() => {
+							// fetchLoanApplications("R")
+						})
+						.catch((err) => {
+							console.log("Err in RecoveryGroupApproveTable.jsx", err)
+						})
 					setVisible_Reject(!visible_Reject)
 				}}
 				onPressNo={() => {
-					console.log(cachedPaymentId, "cachedPaymentId__reject ggg no");
+					console.log(cachedDateGcode, "cachedPaymentId__reject ggg no");
 					setVisible_Reject(!visible_Reject)
 				}}
 			/>

@@ -15,7 +15,7 @@ import {
 	CloseCircleOutlined,
 } from "@ant-design/icons"
 import { useNavigate } from "react-router-dom"
-import { Tag, Spin, Divider, Collapse } from "antd"
+import { Tag, Spin, Divider, Collapse, Popconfirm } from "antd"
 import axios from "axios"
 import DialogBox from "./DialogBox"
 import { url } from "../Address/BaseUrl"
@@ -25,6 +25,7 @@ import { DataTable } from 'primereact/datatable';
 import { Column } from 'primereact/column';
 import { Toast } from 'primereact/toast';
 import { Message } from './Message';
+import TDInputTemplateBr from './TDInputTemplateBr';
 
 const { Panel } = Collapse;
 
@@ -48,7 +49,9 @@ function RecoveryCoApproveTable({
 	const [visible_Reject, setVisible_Reject] = useState(() => false)
 
 	const [loading, setLoading] = useState(() => false)
-	const [cachedPaymentId, setCachedPaymentId] = useState("")
+	const [cachedPaymentId, setCachedPaymentId] = useState([])
+	const [RejectcachedPaymentId, setRejectCachedPaymentId] = useState(() => [])
+	const [remarksForDelete, setRemarksForDelete] = useState('');
 
 
 	// acordian start
@@ -69,6 +72,21 @@ function RecoveryCoApproveTable({
 
 	// const [useData, setSetData] = useState([])
 
+	const [getloanAppData, setLoanAppData] = useState([]);
+	
+		useEffect(() => {
+		if (loanAppData.length > 0) {
+			setLoanAppData(loanAppData);
+		}
+		setCachedPaymentId([])
+		setSelectedProducts([])
+		// setLoanAppData([])
+		}, [loanAppData, fetchLoanApplicationsDate]);
+
+		// useEffect(() => {
+		// 	setLoanAppData([])
+		// }, [fetchLoanApplicationsDate.selectedEmployeeId]);
+
 	useEffect(() => {
 		// setSetData(loanAppData)
 		if (isMounted.current) {
@@ -83,8 +101,8 @@ function RecoveryCoApproveTable({
 
 	const onRowExpand = (event) => {
 		setExpandedRows(null);
-		console.log(event.data, 'event.data');
-		fetchLoanGroupMember()
+		console.log(event.data.transaction_date, 'event.data=============');
+		fetchLoanGroupMember(event.data.transaction_date)
 
 		// toast.current.show({severity: 'info', summary: 'Product Expanded', detail: event.data.name, life: 3000});
 	}
@@ -95,7 +113,7 @@ function RecoveryCoApproveTable({
 	}
 
 	const allowExpansion = (rowData) => {
-		return loanAppData.length > 0;
+		return getloanAppData.length > 0;
 	};
 
 	const onPageChange = (event) => {
@@ -122,27 +140,48 @@ function RecoveryCoApproveTable({
 			setCreditAmount(selectedRows.reduce((sum, item) => sum + parseFloat(item.credit_amt || 0), 0).toFixed(2))
 			setOutstanding(selectedRows.reduce((sum, item) => sum + parseFloat(item.outstanding || 0), 0).toFixed(2))
 
-			const groupCodes = selectedRows.map((item) => item.group_code);
-			setCachedPaymentId(groupCodes);
 
+			const group_Data = selectedRows.map((item) => {
+				return {
+					payment_date: item?.transaction_date,
+					branch_code: item?.branch_code,
+					group_code: item?.group_code
+				}
+			});
+
+			const reject_group_Data = selectedRows.map((item) => {
+				return {
+					payment_date: item?.transaction_date,
+					payment_id: item?.payment_id,
+					loan_id: item?.loan_id,
+					branch_code: userDetails?.brn_code,
+					credit: item?.amt,
+				}
+			});
+
+			console.log(reject_group_Data, 'reject_group_Data', e.value);
+			
+			setCachedPaymentId(group_Data);
+			setRejectCachedPaymentId(reject_group_Data);
 			setShowApprov(true)
-			console.log('You selected  rows', cachedPaymentId,  '>>>', groupCodes);
+			console.log('You selected  rows', cachedPaymentId,  '>>>');
 		} else {
 			setShowApprov(false)
 			setCreditAmount(0)
 			setOutstanding(0)
+			setCachedPaymentId([]);
 			console.log("No rows selected");
 		}
 	};
 
 
-	const fetchLoanGroupMember = async () => {
+	const fetchLoanGroupMember = async (payment_date) => {
 		setLoading(true)
 		await axios
 			.post(`${url}/fetch_cowise_recov_member_dtls`, {
 				branch_code: userDetails?.brn_code,
 				// from_dt: fetchLoanApplicationsDate.fromDate,
-				// to_dt: fetchLoanApplicationsDate.toDate,
+				payment_date: payment_date,
 				co_id: fetchLoanApplicationsDate.selectedEmployeeId,
 			})
 			.then((res) => {
@@ -159,27 +198,97 @@ function RecoveryCoApproveTable({
 			})
 		
 	}
-
-
 	// acordian end
 
-
-
-	const approveRecoveryTransaction = async (paymentId) => {
+	const fetchLoanApplicationsCo = async () => {
+		// console.log("setLoanApplicationsCo", userDetails?.brn_code, formatDateToYYYYMMDD(fromDate), formatDateToYYYYMMDD(toDate), selectedEmployeeId)
 		setLoading(true)
+		await axios
+		.post(`${url}/fetch_cowise_recov_data`, {
+				branch_code : userDetails?.brn_code,
+				// from_dt : formatDateToYYYYMMDD(fromDate),
+				// to_dt : formatDateToYYYYMMDD(toDate),
+				co_id : fetchLoanApplicationsDate.selectedEmployeeId
+			
+			})
+			.then((res) => {
+				if (res?.data?.suc === 1) {
+					console.log(res?.data?.msg, 'xxxxxxxxxyyyyyyyyy');
+					setLoanAppData(res?.data?.msg);
+					setSelectedProducts([])
+					setCreditAmount(0)
+					setOutstanding(0)
+				} else {
+					Message("error", "No incoming loan applications found.")
+				}
+			})
+			.catch((err) => {
+				Message("error", "Some error occurred while fetching loans!")
+				console.log("ERRR", err)
+			})
+		setLoading(false)
+	}
+
+
+	const approveRecoveryTransaction = async (cachedPaymentId) => {
+		setLoading(true)
+	
 		const creds = {
 			approved_by: userDetails?.emp_id,
-			payment_id: paymentId,
+			grpdt: cachedPaymentId
 		}
+		console.log(creds, "creds approveRecoveryTransaction");
+		
 		await axios
-			.post(`${url}/admin/approve_recovery_loan`, creds)
+			.post(`${url}/approve_grpwise_recov`, creds)
 			.then((res) => {
+				fetchLoanApplicationsCo()
 				console.log("RESSS approveRecoveryTransaction", res?.data)
 			})
 			.catch((err) => {
 				console.log("ERRR approveRecoveryTransaction", err)
 			})
 		setLoading(false)
+	}
+
+
+	const rejectRecoveryTransaction = async (RejectcachedPaymentId) => {
+		setLoading(true)
+
+		const creds = {
+			rejected_by: userDetails?.emp_id,
+			reject_remarks: remarksForDelete,
+			reject_membdt: RejectcachedPaymentId
+		}
+		await axios
+			.post(`${url}/reject_recovery_transaction`, creds)
+			.then((res) => {
+				fetchLoanApplicationsCo()
+				console.log("RESSS approveRecoveryTransaction", res?.data)
+			})
+			.catch((err) => {
+				console.log("ERRR approveRecoveryTransaction", err)
+			})
+		setLoading(false)
+	}
+
+
+
+
+	const confirm = async () => {
+		await rejectRecoveryTransaction(RejectcachedPaymentId)
+		.then(() => {
+		// fetchLoanApplications("R")
+		setRemarksForDelete('')
+		})
+		.catch((err) => {
+		console.log("Err in RecoveryMemberApproveTable.jsx", err)
+		})
+	}
+
+	const cancel = (e) => {
+		console.log(e)
+		// message.error('Click on No');
 	}
 
 	const rowExpansionTemplate = () => {
@@ -290,7 +399,7 @@ function RecoveryCoApproveTable({
 
 				{/* <div className="card acordianTable"> */}
 				<DataTable
-					value={loanAppData?.map((item, i) => ([{ ...item, id: i }])).flat()}
+					value={getloanAppData?.map((item, i) => ([{ ...item, id: i }])).flat()}
 					expandedRows={expandedRows}
 					onRowToggle={(e) => setExpandedRows(e.data)}
 					onRowExpand={onRowExpand}
@@ -352,14 +461,41 @@ function RecoveryCoApproveTable({
 						
 						</button>
 				
-						<button 
-						className={`inline-flex items-center px-4 py-2 mt-0 ml-4 sm:mt-0 text-sm font-medium text-center text-white border border-[#DA4167] bg-[#DA4167] transition ease-in-out hover:bg-[#ac3246] hover:border-[#ac3246] duration-300 rounded-full  dark:focus:ring-primary-900`}
-						onClick={() => {
-							// setCachedPaymentId(item?.payment_id)
-							setVisible_Reject(true)
-						}}><CheckCircleOutlined /> <spann class={`ml-2`}>Reject</spann>    
-						
-						</button>
+						<Popconfirm
+									title={`Delete Member`}
+									description={
+										<>
+											<div>
+												Are you sure to Reject Member
+											</div>
+											<TDInputTemplateBr
+												placeholder="Type Remarks for delete..."
+												type="text"
+												label="Reason for Delete*"
+												name="remarksForDelete"
+												formControlName={remarksForDelete}
+												handleChange={(e) =>
+													setRemarksForDelete(e.target.value)
+												}
+												mode={3}
+											/>
+										</>
+									}
+									onConfirm={() => confirm(RejectcachedPaymentId)}
+									onCancel={cancel}
+									okText="Delete"
+									cancelText="No"
+									// disabled={item?.tot_outstanding > 0}
+								>
+									<button
+										className={`inline-flex items-center px-4 py-2 mt-0 ml-4 sm:mt-0 text-sm font-medium text-center text-white border border-[#DA4167] bg-[#DA4167] transition ease-in-out hover:bg-[#ac3246] hover:border-[#ac3246] duration-300 rounded-full  dark:focus:ring-primary-900`}
+										// onClick={() => {
+										// 	setVisible_Reject(true)
+										// }}
+										><CheckCircleOutlined /> <spann class={`ml-2`}>Reject</spann>
+
+									</button>
+								</Popconfirm>
 						</motion.section>
 						</>
 					)}
@@ -381,14 +517,14 @@ function RecoveryCoApproveTable({
 				visible={visible}
 				onPressYes={async () => {
 					// editGroup()
-					console.log(cachedPaymentId, "cachedPaymentId approve yes");
-					// await approveRecoveryTransaction(cachedPaymentId)
-					// 	.then(() => {
-					// 		fetchLoanApplications("R")
-					// 	})
-					// 	.catch((err) => {
-					// 		console.log("Err in RecoveryCoApproveTable.jsx", err)
-					// 	})
+					// console.log(cachedPaymentId, "cachedPaymentId approve yes");
+					await approveRecoveryTransaction(cachedPaymentId)
+						.then(() => {
+							// fetchLoanApplications("R")
+						})
+						.catch((err) => {
+							console.log("Err in RecoveryCoApproveTable.jsx", err)
+						})
 					setVisible(!visible)
 				}}
 				onPressNo={() => {
@@ -397,7 +533,7 @@ function RecoveryCoApproveTable({
 				}}
 			/>
 
-				<DialogBox
+				{/* <DialogBox
 				flag={4}
 				onPress={() => setVisible_Reject(!visible_Reject)}
 				visible={visible_Reject}
@@ -418,7 +554,7 @@ function RecoveryCoApproveTable({
 					console.log(cachedPaymentId, "cachedPaymentId__reject no");
 					setVisible_Reject(!visible_Reject)
 				}}
-			/>
+			/> */}
 
 			
 		</Spin>

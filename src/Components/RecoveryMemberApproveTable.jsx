@@ -16,7 +16,7 @@ import {
 	ArrowRightOutlined,
 } from "@ant-design/icons"
 import { useNavigate } from "react-router-dom"
-import { Tag, Spin, Divider, Collapse } from "antd"
+import { Tag, Spin, Divider, Collapse, Popconfirm } from "antd"
 import axios from "axios"
 import DialogBox from "./DialogBox"
 import { url } from "../Address/BaseUrl"
@@ -26,6 +26,7 @@ import { DataTable } from 'primereact/datatable';
 import { Column } from 'primereact/column';
 import { Toast } from 'primereact/toast';
 import { Message } from './Message';
+import TDInputTemplateBr from './TDInputTemplateBr';
 
 const { Panel } = Collapse;
 
@@ -65,6 +66,7 @@ function RecoveryMemberApproveTable({
 	const [cachedPaymentId, setCachedPaymentId] = useState(() => [])
 
 
+
 	// acordian start
 	// const [products, setProducts] = useState([]);
 	const [expandedRows, setExpandedRows] = useState(null);
@@ -84,22 +86,33 @@ function RecoveryMemberApproveTable({
 
 	// const [useData, setSetData] = useState([])
 
+	const [getloanAppData, setLoanAppData] = useState([]);
+	const [remarksForDelete, setRemarksForDelete] = useState('');
+	const [RejectcachedPaymentId, setRejectCachedPaymentId] = useState(() => [])
+
 	useEffect(() => {
-		console.log(loanAppData, 'ffffffffffffffffff');
-		
-		// // setSetData(loanAppData)
-		// if (isMounted.current) {
-		// 	const summary = expandedRows !== null ? 'All Rows Expanded' : 'All Rows Collapsed';
-		// 	toast.current.show({ severity: 'success', summary: `${summary}`, life: 3000 });
-		// }
-	}, [expandedRows]);
+		if (loanAppData.length > 0) {
+			setLoanAppData(loanAppData);
+		}
+	}, [loanAppData]);
 
 
-	
+	// useEffect(() => {
+	// 	console.log(getloanAppData, 'ffffffffffffffffff');
+
+	// 	// // setSetData(loanAppData)
+	// 	// if (isMounted.current) {
+	// 	// 	const summary = expandedRows !== null ? 'All Rows Expanded' : 'All Rows Collapsed';
+	// 	// 	toast.current.show({ severity: 'success', summary: `${summary}`, life: 3000 });
+	// 	// }
+	// }, [expandedRows]);
+
+
+
 
 	const handleSelectionChange = (e) => {
 		// Update the selected products
-		
+
 
 		// Perform any additional logic here, such as enabling a button or triggering another action
 		setSelectedProducts(e.value);
@@ -111,13 +124,33 @@ function RecoveryMemberApproveTable({
 			setAmountTd_(selectedRows.reduce((sum, item) => sum + parseFloat(item.amt || 0), 0).toFixed(2))
 			setOutstanding(selectedRows.reduce((sum, item) => sum + parseFloat(item.outstanding || 0), 0).toFixed(2))
 
-			
 
-			const groupCodes = selectedRows.map((item) => item.group_code);
-			setCachedPaymentId(groupCodes);
 
+			// const groupCodes = selectedRows.map((item) => item.group_code);
+			const group_Data = selectedRows.map((item) => {
+				return {
+					payment_date: item?.transaction_date,
+					payment_id: item?.payment_id,
+					loan_id: item?.loan_id
+				}
+			});
+
+			const reject_group_Data = selectedRows.map((item) => {
+				return {
+					payment_date: item?.transaction_date,
+					payment_id: item?.payment_id,
+					loan_id: item?.loan_id,
+					branch_code: userDetails?.brn_code,
+					credit: item?.amt,
+				}
+			});
+
+			console.log(reject_group_Data, 'reject_group_Data', e.value);
+
+			setCachedPaymentId(group_Data);
+			setRejectCachedPaymentId(reject_group_Data);
 			setShowApprov(true)
-			console.log('You selected  rows', cachedPaymentId,  '>>>', groupCodes);
+			console.log('You selected  rows', cachedPaymentId, '>>>', group_Data);
 		} else {
 			setShowApprov(false)
 			setTotalEMI(0)
@@ -126,7 +159,7 @@ function RecoveryMemberApproveTable({
 			console.log("No rows selected");
 		}
 	};
- 
+
 	// const totalEmi = loanAppData?.reduce((sum, item) => sum + parseFloat(item.tot_emi || 0), 0); 
 
 
@@ -151,23 +184,55 @@ function RecoveryMemberApproveTable({
 	// 			Message("error", "Some error occurred while fetching loans!")
 	// 			console.log("ERRR", err)
 	// 		})
-		
+
 	// }
 
 
 	// acordian end
 
 
-
-	const approveRecoveryTransaction = async (paymentId) => {
+	const fetchLoanApplicationsMember = async () => {
 		setLoading(true)
+		await axios
+			.post(`${url}/fetch_memberwise_recovery_admin`, {
+				branch_code: userDetails?.brn_code,
+				// from_dt : formatDateToYYYYMMDD(fromDate),
+				// to_dt : formatDateToYYYYMMDD(toDate)
+
+			})
+			.then((res) => {
+				if (res?.data?.suc === 1) {
+					console.log(res?.data?.msg, 'xxxxxxxxxyyyyyyyyy');
+					setLoanAppData(res?.data?.msg);
+					setSelectedProducts([])
+					setTotalEMI(0)
+					setAmountTd_(0)
+					setOutstanding(0)
+
+				} else {
+					Message("error", "No incoming loan applications found.")
+				}
+			})
+			.catch((err) => {
+				Message("error", "Some error occurred while fetching loans!")
+				console.log("ERRR", err)
+			})
+		setLoading(false)
+	}
+
+
+
+	const approveRecoveryTransaction = async (cachedPaymentId) => {
+		setLoading(true)
+
 		const creds = {
 			approved_by: userDetails?.emp_id,
-			payment_id: paymentId,
+			membdt: cachedPaymentId
 		}
 		await axios
-			.post(`${url}/admin/approve_recovery_loan`, creds)
+			.post(`${url}/approve_member_recov`, creds)
 			.then((res) => {
+				fetchLoanApplicationsMember()
 				console.log("RESSS approveRecoveryTransaction", res?.data)
 			})
 			.catch((err) => {
@@ -176,34 +241,46 @@ function RecoveryMemberApproveTable({
 		setLoading(false)
 	}
 
-	// const rowExpansionTemplate = () => {
-	// 	return (
-	// 		<div className="orders-subtable">
-	// 			<DataTable value={LoanGroupMember} responsiveLayout="scroll"
-	// 				tableClassName="w-full text-sm text-left rtl:text-right shadow-lg text-green-900dark:text-gray-400 table_Custome table_Custome_2nd"
-	// 			>
-	// 				{/* <Column field="transaction_date" header="Payment Date" sortable></Column> */}
-	// 				<Column field="transaction_date" header="Payment Date " body={(rowData) => new Date(rowData?.transaction_date).toLocaleDateString("en-GB")} ></Column>
-	// 				<Column field="payment_id" header="Payment ID"></Column>
-	// 				<Column header="Group - Loan ID (Member)"
-	// 					body={(rowData) =>
-	// 						`${rowData.group_name} - ${rowData.loan_id} (${rowData.client_name})`
-	// 					}></Column>
-	// 				<Column field="tot_emi" header="Total EMI"></Column>
-	// 				<Column header="Amount"
-	// 					body={(rowData) =>
-	// 						`${rowData.amt} - (${rowData.tr_mode})`
-	// 					}
-	// 				></Column>
-	// 				<Column field="outstanding" header="Outstanding"></Column>
-	// 				<Column field="created_by" header="Created By"></Column>
-	// 				{/* <Column headerStyle={{ width: '4rem'}}></Column> */}
-	// 			</DataTable>
-	// 		</div>
-	// 	);
-	// }
+	const rejectRecoveryTransaction = async (RejectcachedPaymentId) => {
+		setLoading(true)
 
-	
+		const creds = {
+			rejected_by: userDetails?.emp_id,
+			reject_remarks: remarksForDelete,
+			reject_membdt: RejectcachedPaymentId
+		}
+		await axios
+			.post(`${url}/reject_recovery_transaction`, creds)
+			.then((res) => {
+				fetchLoanApplicationsMember()
+				console.log("RESSS approveRecoveryTransaction", res?.data)
+			})
+			.catch((err) => {
+				console.log("ERRR approveRecoveryTransaction", err)
+			})
+		setLoading(false)
+	}
+
+
+
+
+	const confirm = async () => {
+		await rejectRecoveryTransaction(RejectcachedPaymentId)
+		.then(() => {
+		// fetchLoanApplications("R")
+		setRemarksForDelete('')
+		})
+		.catch((err) => {
+		console.log("Err in RecoveryMemberApproveTable.jsx", err)
+		})
+	}
+
+	const cancel = (e) => {
+		console.log(e)
+		// message.error('Click on No');
+	}
+
+
 
 	return (
 		<Spin
@@ -280,7 +357,7 @@ function RecoveryMemberApproveTable({
 
 
 
-				
+
 				<Toast ref={toast} />
 
 				{/* {ShowApprov && (
@@ -313,7 +390,7 @@ function RecoveryMemberApproveTable({
 				)} */}
 
 				<DataTable
-					value={loanAppData?.map((item, i) => ([{ ...item, id: i }])).flat()}
+					value={getloanAppData?.map((item, i) => ([{ ...item, id: i }])).flat()}
 					// expandedRows={expandedRows}
 					// onRowToggle={(e) => setExpandedRows(e.data)}
 					// onRowExpand={onRowExpand}
@@ -332,7 +409,7 @@ function RecoveryMemberApproveTable({
 					// rowsPerPageOptions={[5, 10, 20]} // Add options for number of rows per page
 					tableClassName="w-full text-sm text-left rtl:text-right shadow-lg text-green-900dark:text-gray-400 table_Custome table_Custome_1st" // Apply row classes
 				>
-					<Column header="Sl No."body={(rowData) => <span style={{ fontWeight: "bold" }}>{rowData?.id + 1}</span>}></Column>
+					<Column header="Sl No." body={(rowData) => <span style={{ fontWeight: "bold" }}>{rowData?.id + 1}</span>}></Column>
 					<Column selectionMode="multiple" headerStyle={{ width: '3rem' }}></Column>
 					<Column field="transaction_date" header="Payment Date " body={(rowData) => new Date(rowData?.transaction_date).toLocaleDateString("en-GB")} ></Column>
 					<Column field="payment_id" header="Payment ID"></Column>
@@ -340,83 +417,102 @@ function RecoveryMemberApproveTable({
 						body={(rowData) =>
 							`${rowData.group_name} - ${rowData.loan_id} (${rowData.client_name})`
 						}></Column>
-					
+
 					<Column header="Credit Amount"
-					body={(rowData) =>
-					`${rowData.amt} - (${rowData.tr_mode})`
-					}  footer={<span style={{ fontWeight: "bold", color:"#0694A2" }}>{AmountTd_}</span>}
+						body={(rowData) =>
+							`${rowData.amt} - (${rowData.tr_mode})`
+						} footer={<span style={{ fontWeight: "bold", color: "#0694A2" }}>{AmountTd_}</span>}
 					></Column>
 					<Column field="tot_emi" header="Total EMI" footer={<span style={{ fontWeight: "bold" }}>{TotalEMI}</span>}></Column>
 					<Column field="outstanding" header="Outstanding" footer={<span style={{ fontWeight: "bold" }}>{Outstanding}</span>}></Column>
 					<Column field="created_by" header="Collected By"></Column>
-					
+
 				</DataTable>
 				{/* <>{JSON.stringify(cachedPaymentId, null, 2)}</> */}
 
-				
-					
-					
-		<div className='grid-cols-2 h-3 gap-5 mt-3 items-center text-left'>
-		{ShowApprov && (
-			<>
-			<motion.section
-				initial={{ opacity: 0 }}
-				animate={{ opacity: 1 }}
-				transition={{ delay: 0.5, type: "spring", stiffness: 30 }}
-			>
-		<button 
-		className={`inline-flex items-center px-4 py-2 mt-0 ml-0 sm:mt-0 text-sm font-small text-center text-white border hover:border-green-600 border-teal-500 bg-teal-500 transition ease-in-out hover:bg-green-600 duration-300 rounded-full  dark:focus:ring-primary-900`}
-		onClick={() => {
-			// setCachedPaymentId(item?.payment_id)
 
-			setVisible(true)
-		}}><CheckCircleOutlined /> <spann class={`ml-2`}>Approve</spann>  
-		
-		</button>
 
-		<button 
+
+				<div className='grid-cols-2 h-3 gap-5 mt-3 items-center text-left'>
+					{ShowApprov && (
+						<>
+							<motion.section
+								initial={{ opacity: 0 }}
+								animate={{ opacity: 1 }}
+								transition={{ delay: 0.5, type: "spring", stiffness: 30 }}
+							>
+								<button
+									className={`inline-flex items-center px-4 py-2 mt-0 ml-0 sm:mt-0 text-sm font-small text-center text-white border hover:border-green-600 border-teal-500 bg-teal-500 transition ease-in-out hover:bg-green-600 duration-300 rounded-full  dark:focus:ring-primary-900`}
+									onClick={() => {
+										// setCachedPaymentId(item?.payment_id)
+
+										setVisible(true)
+									}}><CheckCircleOutlined /> <spann class={`ml-2`}>Approve</spann>
+
+								</button>
+
+								{/* <button 
 		className={`inline-flex items-center px-4 py-2 mt-0 ml-4 sm:mt-0 text-sm font-medium text-center text-white border border-[#DA4167] bg-[#DA4167] transition ease-in-out hover:bg-[#ac3246] hover:border-[#ac3246] duration-300 rounded-full  dark:focus:ring-primary-900`}
 		onClick={() => {
-			// setCachedPaymentId(item?.payment_id)
 			setVisible_Reject(true)
 		}}><CheckCircleOutlined /> <spann class={`ml-2`}>Reject</spann>    
 		
-		</button>		
-					{/* <button className='w-24'
-						onClick={() => {
-							setCachedPaymentId(item?.payment_id)
+		</button>		 */}
 
-							setVisible(true)
-						}}
-					>
-						<CheckCircleOutlined
-							className={`text-2xl bg-[#0694a2] w-20 h-10 text-[#ffeaef] rounded-sm flex justify-center items-center`}
-						/>
-					</button>
 
-					<button
-						onClick={() => {
-							setCachedPaymentId(item?.payment_id)
-							setVisible_Reject(true)
-						}}
-					>
-						<CloseCircleOutlined
-							className={`text-2xl bg-[#DA4167] w-20 h-10 text-[#ffeaef] rounded-sm flex justify-center items-center`}
-						/>
-					</button> */}
-					</motion.section>
-					</>
+
+
+								<Popconfirm
+									title={`Delete Member`}
+									description={
+										<>
+											<div>
+												Are you sure to Reject Member
+											</div>
+											<TDInputTemplateBr
+												placeholder="Type Remarks for delete..."
+												type="text"
+												label="Reason for Delete*"
+												name="remarksForDelete"
+												formControlName={remarksForDelete}
+												handleChange={(e) =>
+													setRemarksForDelete(e.target.value)
+												}
+												mode={3}
+											/>
+										</>
+									}
+									onConfirm={() => confirm(RejectcachedPaymentId)}
+									onCancel={cancel}
+									okText="Delete"
+									cancelText="No"
+									// disabled={item?.tot_outstanding > 0}
+								>
+									<button
+										className={`inline-flex items-center px-4 py-2 mt-0 ml-4 sm:mt-0 text-sm font-medium text-center text-white border border-[#DA4167] bg-[#DA4167] transition ease-in-out hover:bg-[#ac3246] hover:border-[#ac3246] duration-300 rounded-full  dark:focus:ring-primary-900`}
+										// onClick={() => {
+										// 	setVisible_Reject(true)
+										// }}
+										><CheckCircleOutlined /> <spann class={`ml-2`}>Reject</spann>
+
+									</button>
+								</Popconfirm>
+
+
+								
+							</motion.section>
+						</>
 					)}
 				</div>
-					
-					
-				
-				
-				
 
 
 
-				
+
+
+
+
+
+
 			</motion.section>
 
 			<DialogBox
@@ -426,13 +522,13 @@ function RecoveryMemberApproveTable({
 				onPressYes={async () => {
 					// editGroup()
 					console.log(cachedPaymentId, "cachedPaymentId ggg approve yes");
-					// await approveRecoveryTransaction(cachedPaymentId)
-					// 	.then(() => {
-					// 		fetchLoanApplications("R")
-					// 	})
-					// 	.catch((err) => {
-					// 		console.log("Err in RecoveryCoApproveTable.jsx", err)
-					// 	})
+					await approveRecoveryTransaction(cachedPaymentId)
+						.then(() => {
+							// fetchLoanApplications("R")
+						})
+						.catch((err) => {
+							console.log("Err in RecoveryCoApproveTable.jsx", err)
+						})
 					setVisible(!visible)
 				}}
 				onPressNo={() => {
@@ -441,15 +537,15 @@ function RecoveryMemberApproveTable({
 				}}
 			/>
 
-				<DialogBox
+			{/* <DialogBox
 				flag={4}
 				onPress={() => setVisible_Reject(!visible_Reject)}
 				visible={visible_Reject}
 				onPressYes={async () => {
 					// editGroup()
 					console.log(cachedPaymentId, "cachedPaymentId__reject ggg yes");
-					
-					// await approveRecoveryTransaction(cachedPaymentId)
+
+					// await rejectRecoveryTransaction(cachedPaymentId)
 					// 	.then(() => {
 					// 		fetchLoanApplications("R")
 					// 	})
@@ -462,9 +558,9 @@ function RecoveryMemberApproveTable({
 					console.log(cachedPaymentId, "cachedPaymentId__reject ggg no");
 					setVisible_Reject(!visible_Reject)
 				}}
-			/>
+			/> */}
 
-			
+
 		</Spin>
 	)
 }
