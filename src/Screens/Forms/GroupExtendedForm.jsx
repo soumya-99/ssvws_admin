@@ -258,9 +258,21 @@ function GroupExtendedForm({ groupDataArr }) {
 		setLoading(false)
 	}
 
-	const confirm = (e) => {
-		console.log(e)
-		// message.success('Click on Yes');
+	const confirm = (itemToDelete) => {
+		if (remarksForDelete) {
+			const updatedGroupData = groupData.map((group) => {
+				return {
+					...group,
+					memb_dt: group.memb_dt.filter(
+						(item) => item.member_code !== itemToDelete.member_code
+					),
+				}
+			})
+
+			setGroupData(updatedGroupData)
+		} else {
+			Message("warning", "Please write remarks.")
+		}
 	}
 
 	const cancel = (e) => {
