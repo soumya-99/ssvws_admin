@@ -99,8 +99,9 @@
   color:'white'
 }
 
-.p-checkbox.p-component .p-checkbox-box{background-color: #ececec;
-  border: #d9d7d7 solid 1px;}
+.p-checkbox.p-component .p-checkbox-box{background-color: #eaeaea;
+  border: #8a8989 solid 1px;
+  box-shadow: 0 0 5px 2px #bec2c1;}
 .p-checkbox.p-component.p-highlight .p-checkbox-box{background-color: #3d9bd1;
     border: #d9d7d7 solid 1px;}
 

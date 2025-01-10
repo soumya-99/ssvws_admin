@@ -311,26 +311,29 @@ function RecoveryCoApproveTable({
 				>
 					<Column expander={allowExpansion} style={{ width: '3em' }} />
 					<Column selectionMode="multiple" headerStyle={{ width: '3rem' }}></Column>
+					<Column field="transaction_date" header="Payment Date " body={(rowData) => new Date(rowData?.transaction_date).toLocaleDateString("en-GB")} ></Column>
 					<Column field="group_name" header="Group Name" footer={<span style={{ fontWeight: "bold" }}>Total Amount:</span>}></Column>
 					<Column field="group_code" header="Group Code"></Column>
 					<Column field="created_by" header="Created By"></Column>
 					<Column field="outstanding" header="Outstanding" footer={<span style={{ fontWeight: "bold" }}>{Outstanding}</span>}></Column>
 					<Column field="created_code" header="Created Code"></Column>
 					<Column field="credit_amt" header="Credit Amount" footer={<span style={{ fontWeight: "bold", color:"#0694A2" }}>{CreditAmount}</span>}></Column>
-					<Column field="transaction_date" header="Payment Date " body={(rowData) => new Date(rowData?.transaction_date).toLocaleDateString("en-GB")} ></Column>
+					
 					{/* <Column headerStyle={{ width: '4rem'}} ></Column> */}
 				</DataTable>
 
 				{/* <>{JSON.stringify(cachedPaymentId, null, 2)}</> */}
 
-				{ShowApprov && (
+				
 
 				<motion.section
 				initial={{ opacity: 0 }}
 				animate={{ opacity: 1 }}
 				transition={{ delay: 0.5, type: "spring", stiffness: 30 }}
 				>
-				<div className='grid-cols-2 gap-5 mt-3 items-center text-left'>
+				<div className='grid-cols-2 h-3 gap-5 mt-3 items-center text-left'>
+				{ShowApprov && (
+					<>
 				<button 
 						className={`inline-flex items-center px-4 py-2 mt-0 ml-0 sm:mt-0 text-sm font-small text-center text-white border hover:border-green-600 border-teal-500 bg-teal-500 transition ease-in-out hover:bg-green-600 duration-300 rounded-full  dark:focus:ring-primary-900`}
 						onClick={() => {
@@ -349,10 +352,12 @@ function RecoveryCoApproveTable({
 						}}><CheckCircleOutlined /> <spann class={`ml-2`}>Reject</spann>    
 						
 						</button>
+						</>
+					)}
 				</div>
 				</motion.section>
 
-				)}
+				
 				{/* </div>
 		</div> */}
 
