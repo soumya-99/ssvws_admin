@@ -344,7 +344,7 @@ function RecoveryMemberApproveTable({
 					<Column header="Credit Amount"
 					body={(rowData) =>
 					`${rowData.amt} - (${rowData.tr_mode})`
-					}  footer={<span style={{ fontWeight: "bold" }}>{AmountTd_}</span>}
+					}  footer={<span style={{ fontWeight: "bold", color:"#0694A2" }}>{AmountTd_}</span>}
 					></Column>
 					<Column field="tot_emi" header="Total EMI" footer={<span style={{ fontWeight: "bold" }}>{TotalEMI}</span>}></Column>
 					<Column field="outstanding" header="Outstanding" footer={<span style={{ fontWeight: "bold" }}>{Outstanding}</span>}></Column>
@@ -355,14 +355,15 @@ function RecoveryMemberApproveTable({
 
 				
 					
-					<motion.section
+					
+		<div className='grid-cols-2 h-3 gap-5 mt-3 items-center text-left'>
+		{ShowApprov && (
+			<>
+			<motion.section
 				initial={{ opacity: 0 }}
 				animate={{ opacity: 1 }}
 				transition={{ delay: 0.5, type: "spring", stiffness: 30 }}
 			>
-		<div className='grid-cols-2 h-3 gap-5 mt-3 items-center text-left'>
-		{ShowApprov && (
-			<>
 		<button 
 		className={`inline-flex items-center px-4 py-2 mt-0 ml-0 sm:mt-0 text-sm font-small text-center text-white border hover:border-green-600 border-teal-500 bg-teal-500 transition ease-in-out hover:bg-green-600 duration-300 rounded-full  dark:focus:ring-primary-900`}
 		onClick={() => {
@@ -403,10 +404,11 @@ function RecoveryMemberApproveTable({
 							className={`text-2xl bg-[#DA4167] w-20 h-10 text-[#ffeaef] rounded-sm flex justify-center items-center`}
 						/>
 					</button> */}
+					</motion.section>
 					</>
 					)}
 				</div>
-					</motion.section>
+					
 					
 				
 				
