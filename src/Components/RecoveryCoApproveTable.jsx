@@ -333,14 +333,15 @@ function RecoveryCoApproveTable({
 
 				
 
-				<motion.section
+				
+				<div className='grid-cols-2 h-3 gap-5 mt-3 items-center text-left'>
+				{ShowApprov && (
+					<>
+					<motion.section
 				initial={{ opacity: 0 }}
 				animate={{ opacity: 1 }}
 				transition={{ delay: 0.5, type: "spring", stiffness: 30 }}
 				>
-				<div className='grid-cols-2 h-3 gap-5 mt-3 items-center text-left'>
-				{ShowApprov && (
-					<>
 				<button 
 						className={`inline-flex items-center px-4 py-2 mt-0 ml-0 sm:mt-0 text-sm font-small text-center text-white border hover:border-green-600 border-teal-500 bg-teal-500 transition ease-in-out hover:bg-green-600 duration-300 rounded-full  dark:focus:ring-primary-900`}
 						onClick={() => {
@@ -359,10 +360,11 @@ function RecoveryCoApproveTable({
 						}}><CheckCircleOutlined /> <spann class={`ml-2`}>Reject</spann>    
 						
 						</button>
+						</motion.section>
 						</>
 					)}
 				</div>
-				</motion.section>
+				
 
 				
 				{/* </div>
