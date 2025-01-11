@@ -117,14 +117,16 @@ function CreateUserForm() {
 	// }, [])
 
 	useEffect(() => {
-		setMasterUserData({
-			emp_id: userMasterDetails?.emp_id || "",
-			emp_name: userMasterDetails?.emp_name || "",
-			branch: userMasterDetails?.brn_code || "",
-			user_type: userMasterDetails?.user_type || "",
-			active_flag: userMasterDetails?.user_status || "A",
-			remarks: userMasterDetails?.deactive_remarks || "",
-		})
+		if (+params?.id > 0) {
+			setMasterUserData({
+				emp_id: userMasterDetails?.emp_id || "",
+				emp_name: userMasterDetails?.emp_name || "",
+				branch: userMasterDetails?.brn_code || "",
+				user_type: userMasterDetails?.user_type || "",
+				active_flag: userMasterDetails?.user_status || "A",
+				remarks: userMasterDetails?.deactive_remarks || "",
+			})
+		}
 	}, [userMasterDetails])
 
 	const findEmployeeById = async () => {
@@ -368,25 +370,27 @@ function CreateUserForm() {
 									</>
 								)}
 							</div>
-							<div className="float-right pt-4">
-								<Popconfirm
-									title={`Reset Passowrd`}
-									description={
-										<>
-											<div>Are you sure you want to reset password?</div>
-											<div>Password will be, "SSVWS@2025"</div>
-										</>
-									}
-									onConfirm={() => confirm()}
-									onCancel={cancel}
-									okText="Reset"
-									cancelText="No"
-								>
-									<div className="text-red-500 cursor-pointer underline">
-										Reset Password?
-									</div>
-								</Popconfirm>
-							</div>
+							{+params?.id > 0 && (
+								<div className="float-right pt-4">
+									<Popconfirm
+										title={`Reset Passowrd`}
+										description={
+											<>
+												<div>Are you sure you want to reset password?</div>
+												<div>Password will be, "SSVWS@2025"</div>
+											</>
+										}
+										onConfirm={() => confirm()}
+										onCancel={cancel}
+										okText="Reset"
+										cancelText="No"
+									>
+										<div className="text-red-500 cursor-pointer underline">
+											Reset Password?
+										</div>
+									</Popconfirm>
+								</div>
+							)}
 						</div>
 
 						<div className="mt-10">
@@ -401,7 +405,32 @@ function CreateUserForm() {
 				onPress={() => setVisible(!visible)}
 				visible={visible}
 				onPressYes={() => {
-					;+params?.id > 0 ? handleUpdateForm() : handleSaveForm()
+					if (+params?.id > 0) {
+						if (
+							!masterUserData.emp_id ||
+							!masterUserData.emp_name ||
+							!masterUserData.branch ||
+							!masterUserData.active_flag ||
+							!masterUserData.user_type ||
+							!masterUserData.remarks
+						) {
+							Message("warning", "Fill the details correctly.")
+							return
+						}
+						handleUpdateForm()
+					} else {
+						if (
+							!masterUserData.emp_id ||
+							!masterUserData.emp_name ||
+							!masterUserData.branch ||
+							!masterUserData.user_type
+						) {
+							Message("warning", "Fill the details correctly.")
+							return
+						}
+						handleSaveForm()
+					}
+					// ;+params?.id > 0 ? handleUpdateForm() : handleSaveForm()
 					setVisible(!visible)
 				}}
 				onPressNo={() => setVisible(!visible)}
