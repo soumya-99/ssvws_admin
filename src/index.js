@@ -18,8 +18,12 @@ import DisbursedLoanApproveSingleBM from "./Screens/BMHome/DisbursedLoanApproveS
 import TestPage from "./Screens/Reports/LoanTransactions/testPage"
 import MasterEmployees from "./Screens/Master/Employees/MasterEmployees"
 import EditMasterEmployee from "./Screens/Master/Employees/EditMasterEmployee"
+import HomeAdmin from "./Screens/Admin/HomeAdmin"
+import AdminDashboard from "./Screens/Admin/Dashboard/AdminDashboard"
 const MasterBanks = lazy(() => import("./Screens/Master/Banks/MasterBanks"))
-const EditMasterBank = lazy(() => import("./Screens/Master/Banks/EditMasterBank"))
+const EditMasterBank = lazy(() =>
+	import("./Screens/Master/Banks/EditMasterBank")
+)
 const EditRecoveryApproveFormBM = lazy(() =>
 	import("./Screens/BMHome/EditRecoveryApproveFormBM")
 )
@@ -39,43 +43,6 @@ const GroupwiseRecoveryReport = lazy(() =>
 const DemandReportScreen = lazy(() =>
 	import("./Screens/Reports/DemandReportScreen")
 )
-
-// import CatchError from "./Screens/CatchError"
-// import AuthMis from "./Screens/MISAssistant/AuthMis"
-// import SigninMis from "./Screens/MISAssistant/SigninMis"
-// import SignupMis from "./Screens/MISAssistant/SignupMis"
-// import ForgotPassMis from "./Screens/MISAssistant/ForgotPassMis"
-// import HomeMis from "./Screens/MISAssistantHome/HomeMis"
-// import HomeScreenMis from "./Screens/MISAssistantHome/HomeScreenMis"
-// import EditGRTFormMis from "./Screens/MISAssistantHome/EditGRTFormMis"
-// import EditGroupForm from "./Screens/MISAssistantHome/EditGroupForm"
-// import HomeBM from "./Screens/BMHome/HomeBM"
-// import HomeScreenBM from "./Screens/BMHome/HomeScreenBM"
-// import EditGRTFormBM from "./Screens/BMHome/EditGRTFormBM"
-// import EditGroupFormBM from "./Screens/BMHome/EditGroupFormBM"
-// import DashboardBM from "./Screens/BMHome/DashboardBM"
-// import DashboardMis from "./Screens/MISAssistantHome/DashboardMis"
-// import SearchGRTFormMis from "./Screens/MISAssistantHome/SearchGRTFormMis"
-// import SearchGroupMis from "./Screens/MISAssistantHome/SearchGroupMis"
-// import SearchGRTFormBM from "./Screens/BMHome/SearchGRTFormBM"
-// import SearchMemberMis from "./Screens/MISAssistantHome/SearchMemberMis"
-// import AssignMemberToGroup from "./Screens/MISAssistantHome/AssignMemberToGroup"
-// import SignUp from "./Screens/MISAssistant/SignUp"
-// import SearchGroupBM from "./Screens/BMHome/SearchGroupBM"
-// import HomeCO from "./Screens/COHome/HomeCO"
-// import DashboardCO from "./Screens/COHome/DashboardCO"
-// import HomeScreenCO from "./Screens/COHome/HomeScreenCO"
-// import SearchGRTFormCO from "./Screens/COHome/SearchGRTFormCO"
-// import SearchGroupCO from "./Screens/COHome/SearchGroupCO"
-// import EditGRTFormCO from "./Screens/COHome/EditGRTFormCO"
-// import SearchMemberCO from "./Screens/COHome/SearchMemberCO"
-// import EditGroupFormCO from "./Screens/COHome/EditGroupFormCO"
-// import EditDisburseFormBM from "./Screens/BMHome/EditDisburseFormBM"
-// import SearchMemberForDisburseBM from "./Screens/BMHome/SearchMemberForDisburseBM"
-// import SearchMemberForDisburseCO from "./Screens/COHome/SearchMemberForDisburseCO"
-// import DisbursedLoanApproveBM from "./Screens/BMHome/DisbursedLoanApproveBM"
-// import EditDisburseApproveFormBM from "./Screens/BMHome/EditDisburseApproveFormBM"
-
 const CatchError = lazy(() => import("./Screens/CatchError"))
 const AuthMis = lazy(() => import("./Screens/MISAssistant/AuthMis"))
 const SigninMis = lazy(() => import("./Screens/MISAssistant/SigninMis"))
@@ -239,22 +206,22 @@ const router = createBrowserRouter([
 								path: "disburseloan/:id",
 								element: <EditDisburseFormBM />,
 							},
-							{
-								path: "masterbanks",
-								element: <MasterBanks />,
-							},
-							{
-								path: "masterbanks/:id",
-								element: <EditMasterBank />,
-							},
-							{
-								path: "masteremployees",
-								element: <MasterEmployees />,
-							},
-							{
-								path: "masteremployees/:id",
-								element: <EditMasterEmployee />,
-							},
+							// {
+							// 	path: "masterbanks",
+							// 	element: <MasterBanks />,
+							// },
+							// {
+							// 	path: "masterbanks/:id",
+							// 	element: <EditMasterBank />,
+							// },
+							// {
+							// 	path: "masteremployees",
+							// 	element: <MasterEmployees />,
+							// },
+							// {
+							// 	path: "masteremployees/:id",
+							// 	element: <EditMasterEmployee />,
+							// },
 							{
 								path: "approveloan",
 								element: <DisbursedLoanApproveBM />,
@@ -318,6 +285,32 @@ const router = createBrowserRouter([
 							{
 								path: "outstasndingreport",
 								element: <OutstaningReportMain />,
+							},
+						],
+					},
+					{
+						path: "homeadmin",
+						element: <HomeAdmin />,
+						children: [
+							{
+								path: "",
+								element: <AdminDashboard />,
+							},
+							{
+								path: "masterbanks",
+								element: <MasterBanks />,
+							},
+							{
+								path: "masterbanks/:id",
+								element: <EditMasterBank />,
+							},
+							{
+								path: "masteremployees",
+								element: <MasterEmployees />,
+							},
+							{
+								path: "masteremployees/:id",
+								element: <EditMasterEmployee />,
 							},
 						],
 					},

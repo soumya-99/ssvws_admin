@@ -187,7 +187,7 @@ function EmployeeMasterTable({
 												onClick={() => {
 													console.log("LLSKSIODFUISFH", item)
 													navigate(
-														`/homebm/masteremployees/${item?.emp_id || 0}`,
+														`/homeadmin/masteremployees/${item?.emp_id || 0}`,
 														{
 															state: item,
 														}

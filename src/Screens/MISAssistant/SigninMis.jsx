@@ -58,6 +58,10 @@ function SigninMis() {
 					if (res?.data?.user_dtls?.id == 3) {
 						navigate(routePaths.MIS_ASSISTANT_HOME)
 					}
+
+					if (res?.data?.user_dtls?.id == 4) {
+						navigate(routePaths.ADMIN_HOME)
+					}
 				} else if (res?.data?.suc === 0) {
 					Message("error", res?.data?.msg)
 				} else {

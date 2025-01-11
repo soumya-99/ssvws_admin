@@ -34,4 +34,6 @@ export const routePaths = {
 	CO_HOME: "/homeco/",
 	CO_EDIT_GRT: "/homeco/editgrtform/",
 	CO_EDIT_GROUP: "/homeco/editgroupform/",
+
+	ADMIN_HOME: "/homeadmin/",
 }
