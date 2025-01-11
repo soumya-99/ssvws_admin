@@ -315,7 +315,7 @@ const router = createBrowserRouter([
 								element: <EditMasterEmployee />,
 							},
 							{
-								path: "createuser",
+								path: "createuser/:id",
 								element: <CreateUser />,
 							},
 							{

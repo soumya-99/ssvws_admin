@@ -140,9 +140,9 @@ function UserManagementTable({
 							<th scope="col" className="p-4">
 								Branch Name
 							</th>
-							<th scope="col" className="p-4">
+							{/* <th scope="col" className="p-4">
 								Active Flag
-							</th>
+							</th> */}
 							<th scope="col" className="p-4">
 								Action
 							</th>
@@ -169,15 +169,13 @@ function UserManagementTable({
 									<td className="px-6 py-3  text-slate-700">
 										{item?.emp_name}
 									</td>
-									<td className="px-6 py-3 text-slate-700">
-										{item?.branch_id}
-									</td>
+									<td className="px-6 py-3 text-slate-700">{item?.brn_code}</td>
 									<td className="px-6 py-3 text-slate-700">
 										{item?.branch_name}
 									</td>
-									<td className="px-6 py-3 text-slate-700">
+									{/* <td className="px-6 py-3 text-slate-700">
 										{item?.active_flag === "Y" ? "Active" : "Inactive"}
-									</td>
+									</td> */}
 
 									<td className="px-6 py-3 text-slate-700">
 										{flag === "ADMIN" && (
@@ -187,7 +185,7 @@ function UserManagementTable({
 												onClick={() => {
 													console.log("LLSKSIODFUISFH", item)
 													navigate(
-														`/homeadmin/masteremployees/${item?.emp_id || 0}`,
+														`/homeadmin/createuser/${item?.emp_id || 0}`,
 														{
 															state: item,
 														}

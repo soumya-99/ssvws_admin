@@ -407,7 +407,7 @@ function MenusBr({ theme }) {
 				{
 					key: "sub2-1",
 					icon: <ContainerOutlined />,
-					label: <Link to={"/homeadmin/createuser/"}>Create User</Link>,
+					label: <Link to={"/homeadmin/createuser/0"}>Create User</Link>,
 				},
 				{
 					key: "sub2-2",

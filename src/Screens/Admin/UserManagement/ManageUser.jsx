@@ -36,7 +36,7 @@ function ManageUser() {
 	const [approvalStatus, setApprovalStatus] = useState("U")
 	// const [value2, setValue2] = useState("S")
 
-	const fetchLoanApplications = async (approvalStat) => {
+	const fetchLoanApplications = async () => {
 		setLoading(true)
 
 		// const creds = {
@@ -46,7 +46,7 @@ function ManageUser() {
 		// }
 
 		await axios
-			.get(`${url}/show_all_emp`)
+			.post(`${url}/fetch_user_details`)
 			.then((res) => {
 				console.log("PPPPPPPPPPPPPPPPPPPP", res?.data)
 				if (res?.data?.suc === 1) {
@@ -55,18 +55,18 @@ function ManageUser() {
 
 					console.log("PPPPPPPPPPPPPPPPPPPP", res?.data)
 				} else {
-					Message("error", "No banks found.")
+					Message("error", "No users found.")
 				}
 			})
 			.catch((err) => {
-				Message("error", "Some error occurred while fetching employees!")
+				Message("error", "Some error occurred while fetching users!")
 				console.log("ERRR", err)
 			})
 		setLoading(false)
 	}
 
 	useEffect(() => {
-		fetchLoanApplications("U")
+		fetchLoanApplications()
 	}, [])
 
 	const setSearch = (word) => {

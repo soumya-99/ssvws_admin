@@ -116,15 +116,15 @@ function CreateUserForm() {
 	// 	}
 	// }, [])
 
-	// useEffect(() => {
-	// 	setMasterUserData({
-	// 		emp_id: userMasterDetails?.emp_id || "",
-	// 		emp_name: userMasterDetails?.emp_name || "",
-	// 		branch: userMasterDetails?.branch || "",
-	// 		user_type: userMasterDetails?.user_type || "",
-	// 		remarks: userMasterDetails?.remarks || "",
-	// 	})
-	// }, [])
+	useEffect(() => {
+		setMasterUserData({
+			emp_id: userMasterDetails?.emp_id || "",
+			emp_name: userMasterDetails?.emp_name || "",
+			branch: userMasterDetails?.brn_code || "",
+			user_type: userMasterDetails?.user_type || "",
+			remarks: userMasterDetails?.remarks || "",
+		})
+	}, [userMasterDetails])
 
 	const findEmployeeById = async () => {
 		if (!masterUserData.emp_id) return
@@ -245,23 +245,6 @@ function CreateUserForm() {
 					<div>
 						<div>
 							<div className="grid gap-4 sm:grid-cols-3 sm:gap-6">
-								{params?.id && +params?.id > 0 && (
-									<div>
-										<TDInputTemplateBr
-											placeholder="Active Flag..."
-											type="text"
-											label="Active Flag"
-											name="active_flag"
-											formControlName={masterUserData.active_flag}
-											handleChange={handleChangeForm}
-											mode={2}
-											data={[
-												{ code: "Y", name: "Active" },
-												{ code: "N", name: "Inactive" },
-											]}
-										/>
-									</div>
-								)}
 								<div>
 									<TDInputTemplateBr
 										placeholder="Employee ID..."
@@ -301,7 +284,7 @@ function CreateUserForm() {
 										disabled={params?.id > 0}
 									/>
 								</div>
-								<div className={`${params?.id ? "" : "sm:col-span-3"}`}>
+								<div className={`${params?.id > 0 ? "" : "sm:col-span-3"}`}>
 									<TDInputTemplateBr
 										placeholder="User Type..."
 										type="text"
@@ -323,7 +306,7 @@ function CreateUserForm() {
 									/>
 								</div>
 
-								{params?.id && (
+								{params?.id > 0 && (
 									<>
 										<div className="sm:col-span-2">
 											<TDInputTemplateBr
@@ -335,8 +318,8 @@ function CreateUserForm() {
 												handleChange={handleChangeForm}
 												mode={2}
 												data={[
-													{ code: "Y", name: "Active" },
-													{ code: "N", name: "Inactive" },
+													{ code: "A", name: "Active" },
+													{ code: "I", name: "Inactive" },
 												]}
 											/>
 										</div>
