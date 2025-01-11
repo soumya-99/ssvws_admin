@@ -20,6 +20,8 @@ import MasterEmployees from "./Screens/Master/Employees/MasterEmployees"
 import EditMasterEmployee from "./Screens/Master/Employees/EditMasterEmployee"
 import HomeAdmin from "./Screens/Admin/HomeAdmin"
 import AdminDashboard from "./Screens/Admin/Dashboard/AdminDashboard"
+import CreateUser from "./Screens/Admin/UserManagement/CreateUser"
+import ManageUser from "./Screens/Admin/UserManagement/ManageUser"
 const MasterBanks = lazy(() => import("./Screens/Master/Banks/MasterBanks"))
 const EditMasterBank = lazy(() =>
 	import("./Screens/Master/Banks/EditMasterBank")
@@ -311,6 +313,14 @@ const router = createBrowserRouter([
 							{
 								path: "masteremployees/:id",
 								element: <EditMasterEmployee />,
+							},
+							{
+								path: "createuser",
+								element: <CreateUser />,
+							},
+							{
+								path: "manageuser",
+								element: <ManageUser />,
 							},
 						],
 					},

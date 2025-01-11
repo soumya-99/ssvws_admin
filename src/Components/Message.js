@@ -4,7 +4,7 @@ export const Message = (type, msg) => {
 	message.open({
 		type: type,
 		content: msg,
-		duration: 1,
+		duration: 1.3,
 	})
 }
 
