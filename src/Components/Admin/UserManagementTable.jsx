@@ -140,9 +140,9 @@ function UserManagementTable({
 							<th scope="col" className="p-4">
 								Branch Name
 							</th>
-							{/* <th scope="col" className="p-4">
-								Active Flag
-							</th> */}
+							<th scope="col" className="p-4">
+								Status
+							</th>
 							<th scope="col" className="p-4">
 								Action
 							</th>
@@ -173,9 +173,15 @@ function UserManagementTable({
 									<td className="px-6 py-3 text-slate-700">
 										{item?.branch_name}
 									</td>
-									{/* <td className="px-6 py-3 text-slate-700">
-										{item?.active_flag === "Y" ? "Active" : "Inactive"}
-									</td> */}
+									<td
+										className={`px-6 py-3 ${
+											item?.user_status === "A"
+												? "text-green-500"
+												: "text-red-500"
+										}`}
+									>
+										{item?.user_status === "A" ? "Active" : "Inactive"}
+									</td>
 
 									<td className="px-6 py-3 text-slate-700">
 										{flag === "ADMIN" && (

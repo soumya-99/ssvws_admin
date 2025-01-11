@@ -9,7 +9,7 @@ import * as Yup from "yup"
 import axios from "axios"
 import { Message } from "../../../Components/Message"
 import { url } from "../../../Address/BaseUrl"
-import { Badge, Spin, Card } from "antd"
+import { Badge, Spin, Card, Popconfirm } from "antd"
 import { LoadingOutlined } from "@ant-design/icons"
 import { useLocation } from "react-router"
 import TDInputTemplateBr from "../../../Components/TDInputTemplateBr"
@@ -122,7 +122,8 @@ function CreateUserForm() {
 			emp_name: userMasterDetails?.emp_name || "",
 			branch: userMasterDetails?.brn_code || "",
 			user_type: userMasterDetails?.user_type || "",
-			remarks: userMasterDetails?.remarks || "",
+			active_flag: userMasterDetails?.user_status || "A",
+			remarks: userMasterDetails?.deactive_remarks || "",
 		})
 	}, [userMasterDetails])
 
@@ -184,33 +185,39 @@ function CreateUserForm() {
 			created_by: userDetails?.emp_id || "",
 		}
 
-		// const credsForUpdate = {
-		// 	branch_code: masterUserData.branch_name || 0,
-		// 	emp_name: masterUserData.emp_name || "",
-		// 	remarks: masterUserData.remarks || "",
-		// 	// created_by: localStorage.getItem("user_id") || "",
-
-		// 	modified_by: userDetails?.emp_id || "",
-		// 	emp_id: +params?.id || "",
-		// }
-
-		// {
-		//     "emp_id" : "",
-		//     "brn_code" : "",
-		//     "user_type" : "",
-		//     "created_by":""
-		//     }
-
-		// console.log(
-		// 	"***************#################",
-		// 	params?.id ? credsForUpdate : credsForSave
-		// )
 		await axios
 			.post(`${url}/save_user_dt`, credsForSave)
 			.then((res) => {
 				console.log("User details saved.", res?.data)
 				Message("success", "User details saved.")
 				// navigate(-1)
+			})
+			.catch((err) => {
+				Message("error", "Some error occurred.")
+				console.log("ERR", err)
+			})
+		setLoading(false)
+	}
+
+	const handleUpdateForm = async () => {
+		setLoading(true)
+		const creds = {
+			emp_id: masterUserData.emp_id || "",
+			branch_code: masterUserData.branch || 0,
+			user_type: masterUserData.user_type || "Y",
+			user_status: masterUserData.active_flag || "A",
+			user_status: masterUserData.active_flag || "A",
+			modified_by: userDetails?.emp_id || "",
+			remarks: masterUserData.remarks || "",
+			deactivated_by: userDetails?.emp_id || "",
+		}
+
+		await axios
+			.post(`${url}/edit_user_dt`, creds)
+			.then((res) => {
+				console.log("User details updated.", res?.data)
+				Message("success", "User details updated.")
+				navigate(-1)
 			})
 			.catch((err) => {
 				Message("error", "Some error occurred.")
@@ -231,6 +238,30 @@ function CreateUserForm() {
 			branch: "", // dropdown - prefetched id
 			user_type: "", // dropdown - CO, BM, MIS Asst., Admin
 		})
+	}
+
+	const confirm = async (itemToDelete) => {
+		setLoading(true)
+		const creds = {
+			emp_id: masterUserData.emp_id || "",
+			branch_code: masterUserData.branch || 0,
+			modified_by: userDetails?.emp_id || "",
+		}
+		axios
+			.post(`${url}/reset_password`, creds)
+			.then((res) => {
+				Message("success", "Password reset done.")
+				navigate(-1)
+			})
+			.catch((err) => {
+				Message("error", "Some error occurred")
+			})
+		setLoading(false)
+	}
+
+	const cancel = (e) => {
+		console.log(e)
+		// message.error('Click on No');
 	}
 
 	return (
@@ -255,6 +286,7 @@ function CreateUserForm() {
 										handleChange={handleChangeForm}
 										handleBlur={findEmployeeById}
 										mode={1}
+										disabled={+params?.id > 0}
 									/>
 								</div>
 								<div>
@@ -281,7 +313,6 @@ function CreateUserForm() {
 											code: item?.branch_code,
 											name: item?.branch_name,
 										}))}
-										disabled={params?.id > 0}
 									/>
 								</div>
 								<div className={`${params?.id > 0 ? "" : "sm:col-span-3"}`}>
@@ -337,6 +368,25 @@ function CreateUserForm() {
 									</>
 								)}
 							</div>
+							<div className="float-right pt-4">
+								<Popconfirm
+									title={`Reset Passowrd`}
+									description={
+										<>
+											<div>Are you sure you want to reset password?</div>
+											<div>Password will be, "SSVWS@2025"</div>
+										</>
+									}
+									onConfirm={() => confirm()}
+									onCancel={cancel}
+									okText="Reset"
+									cancelText="No"
+								>
+									<div className="text-red-500 cursor-pointer underline">
+										Reset Password?
+									</div>
+								</Popconfirm>
+							</div>
 						</div>
 
 						<div className="mt-10">
@@ -351,19 +401,7 @@ function CreateUserForm() {
 				onPress={() => setVisible(!visible)}
 				visible={visible}
 				onPressYes={() => {
-					if (
-						// !masterEmployeeData.bank_name ||
-						// !masterEmployeeData.branch_name ||
-						// !masterEmployeeData.branch_addr ||
-						// !masterEmployeeData.sol_id ||
-						// !masterEmployeeData.ifsc
-						false
-					) {
-						Message("warning", "Fill all the values properly!")
-						setVisible(false)
-						return
-					}
-					handleSaveForm()
+					;+params?.id > 0 ? handleUpdateForm() : handleSaveForm()
 					setVisible(!visible)
 				}}
 				onPressNo={() => setVisible(!visible)}
