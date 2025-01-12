@@ -113,7 +113,7 @@ function RecoveryMemberApproveTable({
 	const handleSelectionChange = (e) => {
 		// Update the selected products
 
-
+		console.log(e.value, 'e.value');
 		// Perform any additional logic here, such as enabling a button or triggering another action
 		setSelectedProducts(e.value);
 		if (e.value.length > 0) {
@@ -145,6 +145,7 @@ function RecoveryMemberApproveTable({
 				}
 			});
 
+
 			console.log(reject_group_Data, 'reject_group_Data', e.value);
 
 			setCachedPaymentId(group_Data);
@@ -154,7 +155,7 @@ function RecoveryMemberApproveTable({
 		} else {
 			setShowApprov(false)
 			setTotalEMI(0)
-			setCreditAmount(0)
+			setAmountTd_(0)
 			setOutstanding(0)
 			console.log("No rows selected");
 		}
@@ -247,8 +248,9 @@ function RecoveryMemberApproveTable({
 		const creds = {
 			rejected_by: userDetails?.emp_id,
 			reject_remarks: remarksForDelete,
-			reject_membdt: RejectcachedPaymentId
+			reject_dt: RejectcachedPaymentId
 		}
+		
 		await axios
 			.post(`${url}/reject_recovery_transaction`, creds)
 			.then((res) => {
@@ -277,6 +279,7 @@ function RecoveryMemberApproveTable({
 
 	const cancel = (e) => {
 		console.log(e)
+		setRemarksForDelete('')
 		// message.error('Click on No');
 	}
 

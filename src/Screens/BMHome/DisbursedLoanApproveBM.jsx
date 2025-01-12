@@ -39,7 +39,8 @@ function DisbursedLoanApproveBM() {
 
 	const [loanApplicationsGroup, setLoanApplicationsGroup] = useState(() => [])
 	const [copyLoanApplicationsGroup, setCopyLoanApplicationsGroup] = useState(() => [])
-	const [selectedEmployeeId, setSelectedEmployeeId] = useState(null);
+	const [selectedEmployeeId, setSelectedEmployeeId] = useState(() => null);
+	const [selectedEmployeeObj, setSelectedEmployeeObj] = useState(() => {});
 
 	const [coListData, setCoListData] = useState(() => [])
 
@@ -210,18 +211,22 @@ function DisbursedLoanApproveBM() {
 
 	useEffect(() => {
 		fetchCoList()
+		
 	}, [])
 
 	const handleEmployeeChange = (e) => {
 		// Save the emp_id of the selected employee
 		const selectedId = e.target.value;
 		setSelectedEmployeeId(selectedId); // Save to state
+	// const [selectedEmployeeObj, setSelectedEmployeeObj] = useState(() => {});
+
 		// console.log("Selected Employee ID:", selectedId); // Log the selected emp_id
 	  };
 
 	
 
 	useEffect(() => {
+		// console.log(selectedEmployeeId , 'ppppppppppppppppppppppppppp');
 		console.log(fromDate, 'fetchLoanApplicationsDate', toDate);
 			// if (loanType === "G" ||
 			// 	fromDate ||
@@ -238,8 +243,10 @@ function DisbursedLoanApproveBM() {
 			// }
 
 			if (loanType === "G") {
+				
 				fetchLoanApplicationsGroup()
 			} else if ( loanType === "C") {
+				setLoanApplicationsGroup(() => [])
 				fetchLoanApplicationsCo()
 			} else if ( loanType === "M") {
 				fetchLoanApplicationsMember()
@@ -360,6 +367,8 @@ function DisbursedLoanApproveBM() {
 						mode={2}
 						disabled={false} // Static value to make it always disabled
 						/>
+{/* {JSON.stringify(selectedEmployeeId, 2)} */}
+
 
 						</div>
 						
