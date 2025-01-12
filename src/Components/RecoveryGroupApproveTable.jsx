@@ -38,7 +38,7 @@ function RecoveryGroupApproveTable({
 	showSearch = true,
 	isForwardLoan = false,
 	isRejected = false,
-	loanType = "R",
+	loanType = "G",
 	fetchLoanApplications,
 	fetchLoanApplicationsDate,
 }) {

@@ -37,7 +37,7 @@ function RecoveryCoApproveTable({
 	showSearch = true,
 	isForwardLoan = false,
 	isRejected = false,
-	loanType = "R",
+	loanType = "C",
 	fetchLoanApplications,
 	fetchLoanApplicationsDate,
 }) {

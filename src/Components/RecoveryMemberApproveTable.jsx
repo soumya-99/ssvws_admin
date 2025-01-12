@@ -49,7 +49,7 @@ function RecoveryMemberApproveTable({
 	showSearch = true,
 	isForwardLoan = false,
 	isRejected = false,
-	loanType = "R",
+	loanType = "M",
 	fetchLoanApplications,
 	fetchLoanApplicationsDate,
 

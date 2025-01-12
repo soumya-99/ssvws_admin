@@ -246,8 +246,11 @@ function DisbursedLoanApproveBM() {
 				
 				fetchLoanApplicationsGroup()
 			} else if ( loanType === "C") {
-				setLoanApplicationsGroup(() => [])
+				// setLoanApplicationsGroup(() => [])
+				// setLoanApplicationsCo(() => [])
+				// setCopyLoanApplicationsCo(() => [])
 				fetchLoanApplicationsCo()
+				
 			} else if ( loanType === "M") {
 				fetchLoanApplicationsMember()
 			}
