@@ -10,13 +10,13 @@ const UserProfileUpdateForm = ({ mode }) => {
 	const navigate = useNavigate()
 	const userDetails = JSON.parse(localStorage.getItem("user_details")) || ""
 	const [branches, setBranches] = useState(() => [])
+	const [userTypes, setUserTypes] = useState(() => [])
 
 	const [formData, setFormData] = useState({
-		u_name: "",
-		u_phone: "",
-		u_email: "",
-		u_branch_code: "",
-		u_gender: "",
+		emp_id: "",
+		emp_name: "",
+		branch_code: "",
+		user_type: "",
 	})
 
 	const handleFormChange = (field, value) => {
@@ -37,44 +37,93 @@ const UserProfileUpdateForm = ({ mode }) => {
 			})
 	}
 
-	useEffect(() => {
-		handleFetchBranches()
-	}, [])
-
-	const handleUpdateProfile = async () => {
-		const creds = {
-			emp_name: formData.u_name,
-			branch_id: formData.u_branch_code,
-			// phone_home: formData.u_phone,
-			phone_mobile: formData.u_phone,
-			email: formData.u_email,
-			gender: formData.u_gender,
-			emp_id: userDetails?.emp_id,
-		}
+	const handleFetchUserTypes = async () => {
 		await axios
-			.post(`${url}/admin/save_profile_web`, creds)
+			.get(`${url}/get_user_type`)
 			.then((res) => {
-				console.log(res.data)
-				Message("success", "Profile updated successfully!")
+				setUserTypes(res?.data?.msg)
 			})
 			.catch((err) => {
-				console.log("Errr occurred!!!", err)
+				console.log("Errrr", err)
 			})
 	}
+
+	useEffect(() => {
+		handleFetchBranches()
+		handleFetchUserTypes()
+	}, [])
+
+	// const handleUpdateProfile = async () => {
+	// 	const creds = {
+	// 		emp_name: formData.u_name,
+	// 		branch_id: formData.u_branch_code,
+	// 		// phone_home: formData.u_phone,
+	// 		phone_mobile: formData.u_phone,
+	// 		email: formData.u_email,
+	// 		gender: formData.u_gender,
+	// 		emp_id: userDetails?.emp_id,
+	// 	}
+	// 	await axios
+	// 		.post(`${url}/admin/save_profile_web`, creds)
+	// 		.then((res) => {
+	// 			console.log(res.data)
+	// 			Message("success", "Profile updated successfully!")
+	// 		})
+	// 		.catch((err) => {
+	// 			console.log("Errr occurred!!!", err)
+	// 		})
+	// }
+
+	const fetchProfileDetails = async () => {
+		const creds = {
+			emp_id: userDetails?.emp_id || "",
+		}
+
+		await axios
+			.post(`${url}/user_profile_details`, creds)
+			.then((res) => {
+				// setMasterData(res?.data?.msg)
+				setFormData({
+					emp_id: res?.data?.msg[0]?.emp_id,
+					branch_code: res?.data?.msg[0]?.brn_code,
+					user_type: res?.data?.msg[0]?.user_type,
+				})
+			})
+			.catch((err) => {
+				console.log("Errr", err)
+				Message("error", "Soem error while fetching profile details...")
+			})
+	}
+
+	useState(() => {
+		fetchProfileDetails()
+	}, [])
 
 	return (
 		<div className="max-w-sm mx-auto">
 			<div className="grid grid-cols-2 gap-4 justify-between">
 				<div className="sm:col-span-2">
 					<TDInputTemplateBr
-						placeholder="Type name..."
+						placeholder="Employee ID..."
 						type="text"
-						label="Name"
-						name="u_name"
-						formControlName={formData.u_name || userDetails?.emp_name}
-						handleChange={(e) => handleFormChange("u_name", e.target.value)}
-						// handleBlur={""}
+						label="Employee ID"
+						name="emp_id"
+						formControlName={formData.emp_id}
+						handleChange={(e) => handleFormChange("emp_id", e.target.value)}
 						mode={1}
+						disabled
+					/>
+				</div>
+				<div className="sm:col-span-2">
+					<TDInputTemplateBr
+						placeholder="Employee Name..."
+						type="text"
+						label="Employee Name"
+						name="emp_name"
+						formControlName={userDetails?.emp_name}
+						handleChange={(e) => handleFormChange("emp_name", e.target.value)}
+						mode={1}
+						disabled
 					/>
 				</div>
 				<div>
@@ -92,35 +141,39 @@ const UserProfileUpdateForm = ({ mode }) => {
 					/> */}
 
 					<TDInputTemplateBr
-						placeholder="Branch Code..."
+						placeholder="Branch..."
 						type="text"
-						label="Branch Code"
-						name="u_branch_code"
-						formControlName={formData.u_gender || userDetails?.brn_code}
+						label="Branch"
+						name="branch_code"
+						formControlName={formData.branch_code}
 						handleChange={(e) =>
-							handleFormChange("u_branch_code", e.target.value)
+							handleFormChange("branch_code", e.target.value)
 						}
-						// handleBlur={""}
 						data={branches?.map((item, i) => ({
 							code: item?.branch_code,
 							name: item?.branch_name,
 						}))}
 						mode={2}
+						disabled
 					/>
 				</div>
 				<div>
 					<TDInputTemplateBr
-						placeholder="Phone No."
-						type="number"
-						label="Phone No."
-						name="u_phone"
-						formControlName={formData.u_phone || userDetails?.phone_mobile}
-						handleChange={(e) => handleFormChange("u_phone", e.target.value)}
-						// handleBlur={""}
-						mode={1}
+						placeholder="User Type..."
+						type="text"
+						label="User Type"
+						name="user_type"
+						formControlName={formData.user_type}
+						handleChange={(e) => handleFormChange("user_type", e.target.value)}
+						mode={2}
+						data={userTypes?.map((item, i) => ({
+							code: item?.type_code,
+							name: item?.user_type,
+						}))}
+						disabled
 					/>
 				</div>
-				<div className="mb-5">
+				{/* <div className="mb-5">
 					<TDInputTemplateBr
 						placeholder="Email ID"
 						type="email"
@@ -131,9 +184,9 @@ const UserProfileUpdateForm = ({ mode }) => {
 						// handleBlur={""}
 						mode={1}
 					/>
-				</div>
+				</div> */}
 
-				<div className="mb-5">
+				{/* <div className="mb-5">
 					<TDInputTemplateBr
 						placeholder="Select Gender..."
 						type="text"
@@ -149,10 +202,10 @@ const UserProfileUpdateForm = ({ mode }) => {
 						]}
 						mode={2}
 					/>
-				</div>
+				</div> */}
 			</div>
 
-			<div className="flex justify-between">
+			{/* <div className="flex justify-between">
 				<button
 					onClick={() => handleUpdateProfile()}
 					className="text-white bg-blue-900 hover:bg-
@@ -160,7 +213,7 @@ const UserProfileUpdateForm = ({ mode }) => {
 				>
 					Update
 				</button>
-			</div>
+			</div> */}
 		</div>
 	)
 }
