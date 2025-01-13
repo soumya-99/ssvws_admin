@@ -16,17 +16,17 @@ const PasswordComp = ({ mode }) => {
 
 	const handlePasswordUpdate = async () => {
 		const creds = {
+			emp_id: userDetails?.emp_id,
 			old_pwd: oldPassword,
 			new_pwd: newPassword,
-			pass: confirmPassword,
-			emp_id: userDetails?.emp_id,
-			emp_name: userDetails?.emp_name,
+			modified_by: userDetails?.emp_id,
 		}
+
 		await axios
-			.post(`${url}/admin/password_change_user`, creds)
+			.post(`${url}/change_password`, creds)
 			.then((res) => {
 				Message("success", "Password changed successfully")
-				console.log("hagsdfukysdftuysd", res?.data)
+				console.log("PASSWWWWWWWDDDDDDDDDD", res?.data)
 				navigate("/")
 				localStorage.clear()
 			})
