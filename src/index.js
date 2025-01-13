@@ -25,6 +25,7 @@ import ManageUser from "./Screens/Admin/UserManagement/ManageUser"
 import TransferUserManage from "./Screens/Admin/UserManagement/TransferUserManage"
 import TransferUser from "./Screens/Admin/UserManagement/TransferUser"
 import A_LoanStatementMain from "./Screens/Admin/Reports/LoanStatements/A_LoanStatementMain"
+import A_LoanTransactionsMain from "./Screens/Admin/Reports/LoanTransactions/A_LoanTransactionsMain"
 // import A_LoanStatementMain from "./Screens/Admin/Reports/LoanStatements/A_LoanStatementMain"
 // import A_LoanTransactionsMain from "./Screens/Admin/Reports/LoanTransactions/A_LoanTransactionsMain"
 // import A_DemandReportsMain from "./Screens/Admin/Reports/DemandReports/A_DemandReportsMain"
@@ -344,6 +345,10 @@ const router = createBrowserRouter([
 							{
 								path: "loanstatements",
 								element: <A_LoanStatementMain />,
+							},
+							{
+								path: "loantxns",
+								element: <A_LoanTransactionsMain />,
 							},
 						],
 					},
