@@ -248,8 +248,9 @@ function RecoveryMemberApproveTable({
 		const creds = {
 			rejected_by: userDetails?.emp_id,
 			reject_remarks: remarksForDelete,
-			reject_dt: RejectcachedPaymentId
+			reject_membdt: RejectcachedPaymentId
 		}
+		console.log(creds, 'rejectRecoveryTransaction');
 		
 		await axios
 			.post(`${url}/reject_recovery_transaction`, creds)
@@ -418,17 +419,22 @@ function RecoveryMemberApproveTable({
 					<Column field="payment_id" header="Payment ID"></Column>
 					<Column header="Group - Loan ID (Member)"
 						body={(rowData) =>
-							`${rowData.group_name} - ${rowData.loan_id} (${rowData.client_name})`
+							`${rowData?.group_name} - ${rowData?.loan_id} (${rowData?.client_name})`
 						}></Column>
 
 					<Column header="Credit Amount"
 						body={(rowData) =>
-							`${rowData.amt} - (${rowData.tr_mode})`
+							`${rowData?.amt} - (${rowData?.tr_mode})`
 						} footer={<span style={{ fontWeight: "bold", color: "#0694A2" }}>{AmountTd_}</span>}
 					></Column>
 					<Column field="tot_emi" header="Total EMI" footer={<span style={{ fontWeight: "bold" }}>{TotalEMI}</span>}></Column>
 					<Column field="outstanding" header="Outstanding" footer={<span style={{ fontWeight: "bold" }}>{Outstanding}</span>}></Column>
-					<Column field="created_by" header="Collected By"></Column>
+					{/* <Column field="created_by" header="Collected By"></Column> */}
+					<Column header="Collected By"
+					body={(rowData) =>
+						`${rowData?.created_by == null ? "--" : rowData?.created_by}`
+						}
+					></Column>
 
 				</DataTable>
 				{/* <>{JSON.stringify(cachedPaymentId, null, 2)}</> */}

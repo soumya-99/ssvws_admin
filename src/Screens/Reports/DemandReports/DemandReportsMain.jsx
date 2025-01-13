@@ -77,16 +77,31 @@ function DemandReportsMain() {
 		setLoading(false)
 	}
 
-	useEffect(() => {
-		// setMetadataDtls(
-		// 	JSON.parse({
-		// 		branchName: userDetails?.branch_name,
-		// 	})
-		// )
-	}, [])
+	// useEffect(() => {
+	// 	// setMetadataDtls(
+	// 	// 	JSON.parse({
+	// 	// 		branchName: userDetails?.branch_name,
+	// 	// 	})
+	// 	// )
+	// }, [])
 
-	useEffect(() => {
-		console.log("AAAAAAAAAAAAAAAAAAAAAAA", fromDate, toDate)
+	// useEffect(() => {
+	// 	console.log("AAAAAAAAAAAAAAAAAAAAAAA", fromDate, toDate)
+	// 	if (
+	// 		fromDate &&
+	// 		toDate
+	// 		// &&
+	// 		// new Date(fromDate)?.toLocaleDateString()?.length === 10 &&
+	// 		// new Date(toDate)?.toLocaleDateString()?.length === 10
+	// 	) {
+	// 		handleFetchReportDemand()
+	// 	}
+	// 	// else if (searchType === "D" && fromDate && toDate) {
+	// 	// 	handleFetchReportDisbursement()
+	// 	// }
+	// }, [fromDate, toDate])
+
+	const searchData = () => {
 		if (
 			fromDate &&
 			toDate
@@ -96,10 +111,7 @@ function DemandReportsMain() {
 		) {
 			handleFetchReportDemand()
 		}
-		// else if (searchType === "D" && fromDate && toDate) {
-		// 	handleFetchReportDisbursement()
-		// }
-	}, [fromDate, toDate])
+	}
 
 	useEffect(() => {
 		setReportData(() => [])
@@ -193,7 +205,7 @@ function DemandReportsMain() {
 						Branch: {userDetails?.branch_name}
 					</div>
 
-					<div className="grid grid-cols-2 gap-5 mt-5">
+					<div className="grid grid-cols-3 gap-5 mt-5 items-end">
 						<div>
 							<TDInputTemplateBr
 								placeholder="From Date"
@@ -217,6 +229,14 @@ function DemandReportsMain() {
 								min={"1900-12-31"}
 								mode={1}
 							/>
+						</div>
+						<div>
+						<button 
+						className={`inline-flex items-center px-4 py-2 mt-0 ml-0 sm:mt-0 text-sm font-small text-center text-white border hover:border-green-600 border-teal-500 bg-teal-500 transition ease-in-out hover:bg-green-600 duration-300 rounded-full  dark:focus:ring-primary-900`}
+						onClick={() => {
+						searchData()
+						}}><SearchOutlined /> <spann class={`ml-2`}>Search</spann>  
+						</button>
 						</div>
 					</div>
 

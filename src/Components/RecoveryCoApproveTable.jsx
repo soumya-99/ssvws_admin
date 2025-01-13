@@ -156,25 +156,24 @@ function RecoveryCoApproveTable({
 				}
 			});
 
-			const reject_group_Data = selectedRows.map((item) => {
-				return {
-					payment_date: item?.transaction_date,
-					branch_code: item?.branch_code,
-					group_code: item?.group_code
-				}
-			});
+			// const reject_group_Data = selectedRows.map((item) => {
+			// 	return {
+			// 		payment_date: item?.transaction_date,
+			// 		branch_code: item?.branch_code,
+			// 		group_code: item?.group_code
+			// 	}
+			// });
 
-			console.log(reject_group_Data, 'reject_group_Data', e.value);
 			
 			setCachedPaymentId(group_Data);
-			setRejectCachedPaymentId(reject_group_Data);
+			// setRejectCachedPaymentId(reject_group_Data);
 			setShowApprov(true)
 			console.log('You selected  rows', cachedPaymentId,  '>>>');
 		} else {
 			setShowApprov(false)
 			setCreditAmount(0)
 			setOutstanding(0)
-			setCachedPaymentId([]);
+			setCachedPaymentId(()=>[]);
 			console.log("No rows selected");
 		}
 	};
@@ -242,12 +241,16 @@ function RecoveryCoApproveTable({
 			approved_by: userDetails?.emp_id,
 			grpdt: cachedPaymentId
 		}
-		console.log(creds, "creds approveRecoveryTransaction");
+		console.log(creds, "rejectRecoveryTransaction");
+		
+		
 		
 		await axios
 			.post(`${url}/approve_grpwise_recov`, creds)
 			.then((res) => {
-				fetchLoanApplicationsCo()
+				fetchLoanApplicationsCo();
+				setCachedPaymentId(()=>[]);
+				setSelectedProducts(() => []);
 				console.log("RESSS approveRecoveryTransaction", res?.data)
 			})
 			.catch((err) => {
@@ -257,18 +260,24 @@ function RecoveryCoApproveTable({
 	}
 
 
-	const rejectRecoveryTransaction = async (RejectcachedPaymentId) => {
+	const rejectRecoveryTransaction = async (cachedPaymentId) => {
 		setLoading(true)
 
 		const creds = {
 			rejected_by: userDetails?.emp_id,
 			reject_remarks: remarksForDelete,
-			reject_membdt: RejectcachedPaymentId
+			reject_membdt: cachedPaymentId
 		}
+		console.log(creds, "rejectRecoveryTransaction");
+		
+		
+
 		await axios
-			.post(`${url}/reject_recovery_transaction`, creds)
+			.post(`${url}/reject_grp_co_wise_recov`, creds)
 			.then((res) => {
-				fetchLoanApplicationsCo()
+				fetchLoanApplicationsCo();
+				setCachedPaymentId(()=>[]);
+				setSelectedProducts(() => []);
 				console.log("RESSS approveRecoveryTransaction", res?.data)
 			})
 			.catch((err) => {
@@ -281,7 +290,7 @@ function RecoveryCoApproveTable({
 
 
 	const confirm = async () => {
-		await rejectRecoveryTransaction(RejectcachedPaymentId)
+		await rejectRecoveryTransaction(cachedPaymentId)
 		.then(() => {
 		// fetchLoanApplications("R")
 		setRemarksForDelete('')
@@ -435,11 +444,16 @@ function RecoveryCoApproveTable({
 					<Column field="group_name" header="Group Name" footer={<span style={{ fontWeight: "bold" }}>Total Amount:</span>}></Column>
 					<Column header="Credit Amount" footer={<span style={{ fontWeight: "bold", color:"#0694A2" }}>{CreditAmount}</span>}
 					body={(rowData) =>
-						`${rowData.credit_amt} - (${rowData.tr_mode})`
+						`${rowData?.credit_amt} - (${rowData?.tr_mode})`
 						}
 					></Column>
 					<Column field="outstanding" header="Outstanding" footer={<span style={{ fontWeight: "bold" }}>{Outstanding}</span>}></Column>
-					<Column field="created_by" header="Collected By"></Column>
+					{/* <Column field="created_by" header="Collected By"></Column> */}
+					<Column header="Collected By"
+					body={(rowData) =>
+						`${rowData?.created_by == null ? "--" : rowData?.created_by}`
+						}
+					></Column>
 
 					
 					
@@ -491,7 +505,7 @@ function RecoveryCoApproveTable({
 											/>
 										</>
 									}
-									onConfirm={() => confirm(RejectcachedPaymentId)}
+									onConfirm={() => confirm(cachedPaymentId)}
 									onCancel={cancel}
 									okText="Delete"
 									cancelText="No"
