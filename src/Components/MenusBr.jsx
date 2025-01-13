@@ -5,8 +5,6 @@ import {
 	UserOutlined,
 	BarsOutlined,
 	LogoutOutlined,
-	ArrowRightOutlined,
-	MinusCircleOutlined,
 	ImportOutlined,
 	LineChartOutlined,
 	ContainerOutlined,
@@ -14,11 +12,13 @@ import {
 	SearchOutlined,
 	DeploymentUnitOutlined,
 	PlusCircleOutlined,
-	SubnodeOutlined,
 	ThunderboltOutlined,
 	CheckCircleOutlined,
 	DatabaseOutlined,
 	EyeOutlined,
+	UserAddOutlined,
+	SettingOutlined,
+	FastForwardOutlined,
 } from "@ant-design/icons"
 import { Menu } from "antd"
 import { Link } from "react-router-dom"
@@ -406,17 +406,17 @@ function MenusBr({ theme }) {
 			children: [
 				{
 					key: "sub2-1",
-					icon: <ContainerOutlined />,
+					icon: <UserAddOutlined />,
 					label: <Link to={"/homeadmin/createuser/0"}>Create User</Link>,
 				},
 				{
 					key: "sub2-2",
-					icon: <SearchOutlined />,
+					icon: <SettingOutlined />,
 					label: <Link to={"/homeadmin/manageuser/"}>Manage User</Link>,
 				},
 				{
 					key: "sub2-3",
-					icon: <SearchOutlined />,
+					icon: <FastForwardOutlined />,
 					label: <Link to={"/homeadmin/transferuser/"}>Transfer User</Link>,
 				},
 			],
