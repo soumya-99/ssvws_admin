@@ -22,6 +22,8 @@ import HomeAdmin from "./Screens/Admin/HomeAdmin"
 import AdminDashboard from "./Screens/Admin/Dashboard/AdminDashboard"
 import CreateUser from "./Screens/Admin/UserManagement/CreateUser"
 import ManageUser from "./Screens/Admin/UserManagement/ManageUser"
+import TransferUserManage from "./Screens/Admin/UserManagement/TransferUserManage"
+import TransferUser from "./Screens/Admin/UserManagement/TransferUser"
 const MasterBanks = lazy(() =>
 	import("./Screens/Admin/Master/Banks/MasterBanks")
 )
@@ -323,6 +325,14 @@ const router = createBrowserRouter([
 							{
 								path: "manageuser",
 								element: <ManageUser />,
+							},
+							{
+								path: "transferuser/:id",
+								element: <TransferUser />,
+							},
+							{
+								path: "transferusermanage",
+								element: <TransferUserManage />,
 							},
 						],
 					},

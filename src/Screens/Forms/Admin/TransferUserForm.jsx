@@ -20,7 +20,7 @@ import { disableCondition } from "../disableCondition"
 import { calculateRetirementDate } from "../../../Utils/calculateRetirementDate"
 import moment from "moment/moment"
 
-function CreateUserForm() {
+function TransferUserForm() {
 	const params = useParams()
 	const [loading, setLoading] = useState(false)
 	const [branches, setBranches] = useState(() => [])
@@ -178,28 +178,28 @@ function CreateUserForm() {
 		setLoading(false)
 	}
 
-	const handleSaveForm = async () => {
-		setLoading(true)
-		const credsForSave = {
-			emp_id: masterUserData.emp_id || "",
-			brn_code: masterUserData.branch || 0,
-			user_type: masterUserData.user_type || "Y",
-			created_by: userDetails?.emp_id || "",
-		}
+	// const handleSaveForm = async () => {
+	// 	setLoading(true)
+	// 	const credsForSave = {
+	// 		emp_id: masterUserData.emp_id || "",
+	// 		brn_code: masterUserData.branch || 0,
+	// 		user_type: masterUserData.user_type || "Y",
+	// 		created_by: userDetails?.emp_id || "",
+	// 	}
 
-		await axios
-			.post(`${url}/save_user_dt`, credsForSave)
-			.then((res) => {
-				console.log("User details saved.", res?.data)
-				Message("success", "User details saved.")
-				// navigate(-1)
-			})
-			.catch((err) => {
-				Message("error", "Some error occurred.")
-				console.log("ERR", err)
-			})
-		setLoading(false)
-	}
+	// 	await axios
+	// 		.post(`${url}/save_user_dt`, credsForSave)
+	// 		.then((res) => {
+	// 			console.log("User details saved.", res?.data)
+	// 			Message("success", "User details saved.")
+	// 			// navigate(-1)
+	// 		})
+	// 		.catch((err) => {
+	// 			Message("error", "Some error occurred.")
+	// 			console.log("ERR", err)
+	// 		})
+	// 	setLoading(false)
+	// }
 
 	const handleUpdateForm = async () => {
 		setLoading(true)
@@ -214,17 +214,17 @@ function CreateUserForm() {
 			deactivated_by: userDetails?.emp_id || "",
 		}
 
-		await axios
-			.post(`${url}/edit_user_dt`, creds)
-			.then((res) => {
-				console.log("User details updated.", res?.data)
-				Message("success", "User details updated.")
-				navigate(-1)
-			})
-			.catch((err) => {
-				Message("error", "Some error occurred.")
-				console.log("ERR", err)
-			})
+		// await axios
+		// 	.post(`${url}/edit_user_dt`, creds)
+		// 	.then((res) => {
+		// 		console.log("User details updated.", res?.data)
+		// 		Message("success", "User details updated.")
+		// 		navigate(-1)
+		// 	})
+		// 	.catch((err) => {
+		// 		Message("error", "Some error occurred.")
+		// 		console.log("ERR", err)
+		// 	})
 		setLoading(false)
 	}
 
@@ -235,36 +235,34 @@ function CreateUserForm() {
 
 	const onReset = () => {
 		setMasterUserData({
-			emp_id: "", // onBlur search to fetch
-			emp_name: "",
 			branch: "", // dropdown - prefetched id
-			user_type: "", // dropdown - CO, BM, MIS Asst., Admin
+			remarks: "",
 		})
 	}
 
-	const confirm = async (itemToDelete) => {
-		setLoading(true)
-		const creds = {
-			emp_id: masterUserData.emp_id || "",
-			branch_code: masterUserData.branch || 0,
-			modified_by: userDetails?.emp_id || "",
-		}
-		axios
-			.post(`${url}/reset_password`, creds)
-			.then((res) => {
-				Message("success", "Password reset done.")
-				navigate(-1)
-			})
-			.catch((err) => {
-				Message("error", "Some error occurred")
-			})
-		setLoading(false)
-	}
+	// const confirm = async (itemToDelete) => {
+	// 	setLoading(true)
+	// 	const creds = {
+	// 		emp_id: masterUserData.emp_id || "",
+	// 		branch_code: masterUserData.branch || 0,
+	// 		modified_by: userDetails?.emp_id || "",
+	// 	}
+	// 	axios
+	// 		.post(`${url}/reset_password`, creds)
+	// 		.then((res) => {
+	// 			Message("success", "Password reset done.")
+	// 			navigate(-1)
+	// 		})
+	// 		.catch((err) => {
+	// 			Message("error", "Some error occurred")
+	// 		})
+	// 	setLoading(false)
+	// }
 
-	const cancel = (e) => {
-		console.log(e)
-		// message.error('Click on No');
-	}
+	// const cancel = (e) => {
+	// 	console.log(e)
+	// 	// message.error('Click on No');
+	// }
 
 	return (
 		<>
@@ -288,7 +286,7 @@ function CreateUserForm() {
 										handleChange={handleChangeForm}
 										handleBlur={findEmployeeById}
 										mode={1}
-										disabled={+params?.id > 0}
+										disabled
 									/>
 								</div>
 								<div>
@@ -300,6 +298,7 @@ function CreateUserForm() {
 										formControlName={masterUserData.emp_name}
 										handleChange={handleChangeForm}
 										mode={1}
+										disabled
 									/>
 								</div>
 								<div>
@@ -315,10 +314,9 @@ function CreateUserForm() {
 											code: item?.branch_code,
 											name: item?.branch_name,
 										}))}
-										disabled={+params?.id > 0}
 									/>
 								</div>
-								<div className={`${+params?.id > 0 ? "" : "sm:col-span-3"}`}>
+								<div className={`${params?.id > 0 ? "" : "sm:col-span-3"}`}>
 									<TDInputTemplateBr
 										placeholder="User Type..."
 										type="text"
@@ -337,10 +335,11 @@ function CreateUserForm() {
 											code: item?.type_code,
 											name: item?.user_type,
 										}))}
+										disabled
 									/>
 								</div>
 
-								{+params?.id > 0 && (
+								{params?.id > 0 && (
 									<>
 										<div className="sm:col-span-2">
 											<TDInputTemplateBr
@@ -355,6 +354,7 @@ function CreateUserForm() {
 													{ code: "A", name: "Active" },
 													{ code: "I", name: "Inactive" },
 												]}
+												disabled
 											/>
 										</div>
 										<div className="sm:col-span-3">
@@ -371,7 +371,7 @@ function CreateUserForm() {
 									</>
 								)}
 							</div>
-							{+params?.id > 0 && (
+							{/* {+params?.id > 0 && (
 								<div className="float-right pt-4">
 									<Popconfirm
 										title={`Reset Passowrd`}
@@ -391,7 +391,7 @@ function CreateUserForm() {
 										</div>
 									</Popconfirm>
 								</div>
-							)}
+							)} */}
 						</div>
 
 						<div className="mt-10">
@@ -429,9 +429,7 @@ function CreateUserForm() {
 							Message("warning", "Fill the details correctly.")
 							return
 						}
-						handleSaveForm()
 					}
-					// ;+params?.id > 0 ? handleUpdateForm() : handleSaveForm()
 					setVisible(!visible)
 				}}
 				onPressNo={() => setVisible(!visible)}
@@ -440,4 +438,4 @@ function CreateUserForm() {
 	)
 }
 
-export default CreateUserForm
+export default TransferUserForm

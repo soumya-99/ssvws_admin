@@ -417,7 +417,9 @@ function MenusBr({ theme }) {
 				{
 					key: "sub2-3",
 					icon: <FastForwardOutlined />,
-					label: <Link to={"/homeadmin/transferuser/"}>Transfer User</Link>,
+					label: (
+						<Link to={"/homeadmin/transferusermanage/"}>Transfer User</Link>
+					),
 				},
 			],
 		},
