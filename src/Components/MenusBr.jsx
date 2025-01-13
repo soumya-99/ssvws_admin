@@ -421,35 +421,35 @@ function MenusBr({ theme }) {
 				},
 			],
 		},
-		// {
-		// 	label: "Reports",
-		// 	key: "sub6",
-		// 	icon: <BarsOutlined />,
-		// 	children: [
-		// 		{
-		// 			key: "sub6-4",
-		// 			icon: <BarChartOutlined />,
-		// 			label: <Link to={"/homebm/loanstatements"}>Loan Statements</Link>,
-		// 		},
-		// 		{
-		// 			key: "sub6-5",
-		// 			icon: <BarChartOutlined />,
-		// 			label: <Link to={"/homebm/loantxns"}>Loan Transactions</Link>,
-		// 		},
-		// 		{
-		// 			key: "sub6-6",
-		// 			icon: <BarChartOutlined />,
-		// 			label: <Link to={"/homebm/demandreport"}>Demand Report</Link>,
-		// 		},
-		// 		{
-		// 			key: "sub6-7",
-		// 			icon: <BarChartOutlined />,
-		// 			label: (
-		// 				<Link to={"/homebm/outstasndingreport"}>Outstanding Report</Link>
-		// 			),
-		// 		},
-		// 	],
-		// },
+		{
+			label: "Reports",
+			key: "sub3",
+			icon: <BarsOutlined />,
+			children: [
+				{
+					key: "sub3-4",
+					icon: <BarChartOutlined />,
+					label: <Link to={"/homeadmin/loanstatements"}>Loan Statements</Link>,
+				},
+				{
+					key: "sub3-5",
+					icon: <BarChartOutlined />,
+					label: <Link to={"/homeadmin/loantxns"}>Loan Transactions</Link>,
+				},
+				{
+					key: "sub3-6",
+					icon: <BarChartOutlined />,
+					label: <Link to={"/homeadmin/demandreport"}>Demand Report</Link>,
+				},
+				{
+					key: "sub3-7",
+					icon: <BarChartOutlined />,
+					label: (
+						<Link to={"/homeadmin/outstasndingreport"}>Outstanding Report</Link>
+					),
+				},
+			],
+		},
 	]
 
 	return (

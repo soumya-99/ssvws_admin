@@ -24,6 +24,13 @@ import CreateUser from "./Screens/Admin/UserManagement/CreateUser"
 import ManageUser from "./Screens/Admin/UserManagement/ManageUser"
 import TransferUserManage from "./Screens/Admin/UserManagement/TransferUserManage"
 import TransferUser from "./Screens/Admin/UserManagement/TransferUser"
+import A_LoanStatementMain from "./Screens/Admin/Reports/LoanStatements/A_LoanStatementMain"
+// import A_LoanStatementMain from "./Screens/Admin/Reports/LoanStatements/A_LoanStatementMain"
+// import A_LoanTransactionsMain from "./Screens/Admin/Reports/LoanTransactions/A_LoanTransactionsMain"
+// import A_DemandReportsMain from "./Screens/Admin/Reports/DemandReports/A_DemandReportsMain"
+// import A_OutstaningReportMain from "./Screens/Admin/Reports/OutstandingReports/A_OutstaningReportMain"
+// import A_GroupwiseRecoveryReport from "./Screens/Admin/Reports/A_GroupwiseRecoveryReport"
+// import A_MemberwiseRecoveryReport from "./Screens/Admin/Reports/A_MemberwiseRecoveryReport"
 const MasterBanks = lazy(() =>
 	import("./Screens/Admin/Master/Banks/MasterBanks")
 )
@@ -333,6 +340,10 @@ const router = createBrowserRouter([
 							{
 								path: "transferusermanage",
 								element: <TransferUserManage />,
+							},
+							{
+								path: "loanstatements",
+								element: <A_LoanStatementMain />,
 							},
 						],
 					},
