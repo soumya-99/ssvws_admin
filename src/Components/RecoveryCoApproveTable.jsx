@@ -37,7 +37,7 @@ function RecoveryCoApproveTable({
 	showSearch = true,
 	isForwardLoan = false,
 	isRejected = false,
-	loanType = "R",
+	loanType = "C",
 	fetchLoanApplications,
 	fetchLoanApplicationsDate,
 }) {
@@ -77,10 +77,17 @@ function RecoveryCoApproveTable({
 		useEffect(() => {
 		if (loanAppData.length > 0) {
 			setLoanAppData(loanAppData);
+		} else {
+			setLoanAppData([]);
 		}
+
+		// if (fetchLoanApplicationsDate.selectedEmployeeId == 'Select Collector Name...'){
+		// 	// setLoanAppData([]);
+		// }
 		setCachedPaymentId([])
 		setSelectedProducts([])
 		// setLoanAppData([])
+		console.log(loanAppData.length > 0, 'uuuuuuuuuuuuuuuuuuuuuuuuuuuu', loanAppData);
 		}, [loanAppData, fetchLoanApplicationsDate]);
 
 		// useEffect(() => {
@@ -152,10 +159,8 @@ function RecoveryCoApproveTable({
 			const reject_group_Data = selectedRows.map((item) => {
 				return {
 					payment_date: item?.transaction_date,
-					payment_id: item?.payment_id,
-					loan_id: item?.loan_id,
-					branch_code: userDetails?.brn_code,
-					credit: item?.amt,
+					branch_code: item?.branch_code,
+					group_code: item?.group_code
 				}
 			});
 
@@ -289,6 +294,7 @@ function RecoveryCoApproveTable({
 	const cancel = (e) => {
 		console.log(e)
 		// message.error('Click on No');
+		setRemarksForDelete('')
 	}
 
 	const rowExpansionTemplate = () => {
@@ -398,6 +404,10 @@ function RecoveryCoApproveTable({
 				<Toast ref={toast} />
 
 				{/* <div className="card acordianTable"> */}
+				<>
+				{/* {JSON.stringify(getloanAppData, null, 2)} ///////////////
+				{JSON.stringify(fetchLoanApplicationsDate.selectedEmployeeId, null, 2)} */}
+				</>
 				<DataTable
 					value={getloanAppData?.map((item, i) => ([{ ...item, id: i }])).flat()}
 					expandedRows={expandedRows}

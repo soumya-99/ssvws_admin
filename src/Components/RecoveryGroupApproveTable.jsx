@@ -38,7 +38,7 @@ function RecoveryGroupApproveTable({
 	showSearch = true,
 	isForwardLoan = false,
 	isRejected = false,
-	loanType = "R",
+	loanType = "G",
 	fetchLoanApplications,
 	fetchLoanApplicationsDate,
 }) {
@@ -149,12 +149,11 @@ function RecoveryGroupApproveTable({
 			const reject_group_Data = selectedRows.map((item) => {
 				return {
 					payment_date: item?.transaction_date,
-					payment_id: item?.payment_id,
-					loan_id: item?.loan_id,
-					branch_code: userDetails?.brn_code,
-					credit: item?.amt,
+					branch_code: item?.branch_code,
+					group_code: item?.group_code
 				}
 			});
+
 
 			console.log(reject_group_Data, 'reject_group_Data');
 			
@@ -317,6 +316,7 @@ function RecoveryGroupApproveTable({
 
 	const cancel = (e) => {
 		console.log(e)
+		setRemarksForDelete('')
 		// message.error('Click on No');
 	}
 
