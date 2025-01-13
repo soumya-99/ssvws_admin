@@ -95,7 +95,8 @@ function OutstaningReportMain() {
 
 				console.log("---------- DATA MEMWISE -----------", data)
 
-				setReportData((prev) => [...prev, ...data])
+				// setReportData((prev) => [...prev, ...data])
+				setReportData(res?.data?.msg)
 				min += maxBatchSize
 
 				setProgress((prev) => Math.min(100, prev + increment))
@@ -111,62 +112,108 @@ function OutstaningReportMain() {
 	}
 
 	const handleFetchReportOutstandingGroupwise = async () => {
+		
 		let min = 0
 		const maxBatchSize = 50
 
 		const increment = 5
 
 		setLoading(true)
+		
+		// while (true) {
+		// 	const creds = {
+		// 		os_dt: formatDateToYYYYMMDD(fromDate),
+		// 		branch_code: userDetails?.brn_code,
+		// 		min: min,
+		// 		max: min + maxBatchSize,
+		// 	}
 
-		while (true) {
-			const creds = {
-				os_dt: formatDateToYYYYMMDD(fromDate),
-				branch_code: userDetails?.brn_code,
-				min: min,
-				max: min + maxBatchSize,
-			}
+		// 	console.log("--------------- WHILE CREDS ---------------", creds)
 
-			console.log("--------------- WHILE CREDS ---------------", creds)
+		// 	try {
+		// 		const res = await axios.post(
+		// 			`${url}/loan_outstanding_report_groupwise`,
+		// 			creds
+		// 		)
+		// 		const data = res?.data?.msg || []
+		// 		if (data.length === 0) {
+		// 			console.log(
+		// 				"--------------- LOOP BREAKS ---------------",
+		// 				data?.length
+		// 			)
+		// 			setProgress(100)
+		// 			break
+		// 		}
 
-			try {
-				const res = await axios.post(
-					`${url}/loan_outstanding_report_groupwise`,
-					creds
-				)
-				const data = res?.data?.msg || []
-				if (data.length === 0) {
-					console.log(
-						"--------------- LOOP BREAKS ---------------",
-						data?.length
-					)
-					setProgress(100)
-					break
-				}
+		// 		console.log("---------- DATA GROUPWISE -----------", data)
 
-				console.log("---------- DATA GROUPWISE -----------", data)
+		// 		setReportData((prev) => [...prev, ...data])
+		// 		min += maxBatchSize
 
-				setReportData((prev) => [...prev, ...data])
-				min += maxBatchSize
+		// 		setProgress((prev) => Math.min(100, prev + increment))
 
-				setProgress((prev) => Math.min(100, prev + increment))
+		// 		setLoading(false)
+		// 	} catch (err) {
+		// 		console.log("ERRRR>>>", err)
+		// 		break
+		// 	}
+		// }
 
-				setLoading(false)
-			} catch (err) {
-				console.log("ERRRR>>>", err)
-				break
-			}
+		const creds = {
+			os_dt: formatDateToYYYYMMDD(fromDate),
+			branch_code: userDetails?.brn_code,
+			min: min,
+			max: min + maxBatchSize,
 		}
+		
+		await axios
+		.post(`${url}/loan_outstanding_report_groupwise`, creds)
+		.then((res) => {
+			const data = res?.data?.msg || []
+			if (data.length === 0) {
+				console.log(
+					"--------------- LOOP BREAKS ---------------",
+					data?.length
+				)
+				setProgress(100)
+				// break
+			}
+
+			console.log("---------- DATA GROUPWISE -----------", res?.data)
+
+			setReportData((prev) => [...prev, ...data])
+			min += maxBatchSize
+
+			setProgress((prev) => Math.min(100, prev + increment))
+
+			setLoading(false)
+		console.log("RESSS approveRecoveryTransaction", res?.data)
+		})
+		.catch((err) => {
+		console.log("ERRRR>>>", err)
+		})
 
 		setLoading(false)
+			
 	}
 
-	useEffect(() => {
+	// useEffect(() => {
+	// 	if (searchType === "M" && fromDate) {
+	// 		handleFetchReportOutstandingMemberwise()
+	// 	} else if (searchType === "G" && fromDate) {
+	// 		handleFetchReportOutstandingGroupwise()
+	// 	}
+	// }, [searchType, fromDate])
+
+
+	
+	const searchData = () => {
 		if (searchType === "M" && fromDate) {
 			handleFetchReportOutstandingMemberwise()
 		} else if (searchType === "G" && fromDate) {
 			handleFetchReportOutstandingGroupwise()
 		}
-	}, [searchType, fromDate])
+	}
 
 	useEffect(() => {
 		setReportData(() => [])
@@ -297,7 +344,8 @@ function OutstaningReportMain() {
 						}}
 					/> */}
 
-					<div className="grid grid-cols-2 gap-5 mt-5 align-middle items-center">
+					{/* <div className="grid grid-cols-2 gap-5 mt-5 align-middle items-center"> */}
+					<div class="grid grid-cols-3 gap-5 mt-5 items-end">
 						<div>
 							<TDInputTemplateBr
 								placeholder="From Date"
@@ -309,6 +357,15 @@ function OutstaningReportMain() {
 								min={"1900-12-31"}
 								mode={1}
 							/>
+						</div>
+
+						<div>
+						<button 
+						className={`inline-flex items-center px-4 py-2 mt-0 ml-0 sm:mt-0 text-sm font-small text-center text-white border hover:border-green-600 border-teal-500 bg-teal-500 transition ease-in-out hover:bg-green-600 duration-300 rounded-full  dark:focus:ring-primary-900`}
+						onClick={() => {
+						searchData()
+						}}><SearchOutlined /> <spann class={`ml-2`}>Search</spann>  
+						</button>
 						</div>
 						{/* <div>
 							<TDInputTemplateBr

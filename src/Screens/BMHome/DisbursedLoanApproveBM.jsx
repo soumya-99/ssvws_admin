@@ -149,9 +149,9 @@ function DisbursedLoanApproveBM() {
 		setLoading(false)
 	}
 
-	// useEffect(() => {
-	// 	fetchLoanApplications(loanType)
-	// }, [loanType])
+	useEffect(() => {
+		setSelectedEmployeeId(() => [])
+	}, [loanType])
 
 	const setSearch = (word) => {
 		// console.log(word, 'wordwordwordword', copyLoanApplicationsMember);
@@ -370,6 +370,7 @@ function DisbursedLoanApproveBM() {
 						mode={2}
 						disabled={false} // Static value to make it always disabled
 						/>
+
 {/* {JSON.stringify(selectedEmployeeId, 2)} */}
 
 

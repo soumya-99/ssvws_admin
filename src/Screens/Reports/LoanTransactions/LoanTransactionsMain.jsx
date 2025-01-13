@@ -102,24 +102,47 @@ function LoanTransactionsMain() {
 		setLoading(false)
 	}
 
-	useEffect(() => {
-		console.log("Effect called...")
-		console.log(
-			"Effect called cond 1...",
-			searchType === "R" &&
-				fromDate &&
-				toDate &&
-				new Date(fromDate)?.toLocaleDateString()?.length === 10 &&
-				new Date(toDate)?.toLocaleDateString()?.length === 10
-		)
-		console.log(
-			"OOOOOOOOOOO",
-			searchType,
-			fromDate,
-			toDate,
-			new Date(fromDate)?.toLocaleDateString()?.length,
-			new Date(toDate)?.toLocaleDateString()?.length
-		)
+	// useEffect(() => {
+	// 	console.log("Effect called...")
+	// 	console.log(
+	// 		"Effect called cond 1...",
+	// 		searchType === "R" &&
+	// 			fromDate &&
+	// 			toDate &&
+	// 			new Date(fromDate)?.toLocaleDateString()?.length === 10 &&
+	// 			new Date(toDate)?.toLocaleDateString()?.length === 10
+	// 	)
+	// 	console.log(
+	// 		"OOOOOOOOOOO",
+	// 		searchType,
+	// 		fromDate,
+	// 		toDate,
+	// 		new Date(fromDate)?.toLocaleDateString()?.length,
+	// 		new Date(toDate)?.toLocaleDateString()?.length
+	// 	)
+	// 	if (
+	// 		searchType === "R" &&
+	// 		fromDate &&
+	// 		toDate
+	// 		// &&
+	// 		// new Date(fromDate)?.toLocaleDateString()?.length === 10 &&
+	// 		// new Date(toDate)?.toLocaleDateString()?.length === 10
+	// 	) {
+	// 		handleFetchReportRecovery()
+	// 	} else if (
+	// 		searchType === "D" &&
+	// 		fromDate &&
+	// 		toDate
+	// 		// &&
+	// 		// new Date(fromDate)?.toLocaleDateString()?.length === 10 &&
+	// 		// new Date(toDate)?.toLocaleDateString()?.length === 10
+	// 	) {
+	// 		handleFetchReportDisbursement()
+	// 	}
+	// }, [searchType, fromDate, toDate])
+
+
+	const searchData = () => {
 		if (
 			searchType === "R" &&
 			fromDate &&
@@ -139,7 +162,7 @@ function LoanTransactionsMain() {
 		) {
 			handleFetchReportDisbursement()
 		}
-	}, [searchType, fromDate, toDate])
+	}
 
 	useEffect(() => {
 		setReportData(() => [])
@@ -240,7 +263,7 @@ function LoanTransactionsMain() {
 						}}
 					/> */}
 
-					<div className="grid grid-cols-2 gap-5 mt-5">
+					<div className="grid grid-cols-3 gap-5 mt-5 items-end">
 						<div>
 							<TDInputTemplateBr
 								placeholder="From Date"
@@ -265,6 +288,16 @@ function LoanTransactionsMain() {
 								mode={1}
 							/>
 						</div>
+
+						<div>
+						<button 
+						className={`inline-flex items-center px-4 py-2 mt-0 ml-0 sm:mt-0 text-sm font-small text-center text-white border hover:border-green-600 border-teal-500 bg-teal-500 transition ease-in-out hover:bg-green-600 duration-300 rounded-full  dark:focus:ring-primary-900`}
+						onClick={() => {
+						searchData()
+						}}><SearchOutlined /> <spann class={`ml-2`}>Search</spann>  
+						</button>
+						</div>
+
 					</div>
 
 					{/* For Recovery/Collection Results */}
