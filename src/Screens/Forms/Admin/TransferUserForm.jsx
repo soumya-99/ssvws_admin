@@ -205,27 +205,33 @@ function TransferUserForm() {
 	const handleUpdateForm = async () => {
 		setLoading(true)
 		const creds = {
+			// emp_id: masterUserData.emp_id || "",
+			// branch_code: masterUserData.branch || 0,
+			// user_type: masterUserData.user_type || "Y",
+			// user_status: masterUserData.active_flag || "A",
+			// user_status: masterUserData.active_flag || "A",
+			// modified_by: userDetails?.emp_id || "",
+			// remarks: masterUserData.remarks || "",
+			// deactivated_by: userDetails?.emp_id || "",
+
+			// ///////////////////////////
 			emp_id: masterUserData.emp_id || "",
 			branch_code: masterUserData.branch || 0,
-			user_type: masterUserData.user_type || "Y",
-			user_status: masterUserData.active_flag || "A",
-			user_status: masterUserData.active_flag || "A",
-			modified_by: userDetails?.emp_id || "",
+			modified_by: userDetails?.emp_id,
 			remarks: masterUserData.remarks || "",
-			deactivated_by: userDetails?.emp_id || "",
 		}
 
-		// await axios
-		// 	.post(`${url}/edit_user_dt`, creds)
-		// 	.then((res) => {
-		// 		console.log("User details updated.", res?.data)
-		// 		Message("success", "User details updated.")
-		// 		navigate(-1)
-		// 	})
-		// 	.catch((err) => {
-		// 		Message("error", "Some error occurred.")
-		// 		console.log("ERR", err)
-		// 	})
+		await axios
+			.post(`${url}/tranfer_user`, creds)
+			.then((res) => {
+				console.log("User transferred.", res?.data)
+				Message("success", "User transferred.")
+				navigate(-1)
+			})
+			.catch((err) => {
+				Message("error", "Some error occurred.")
+				console.log("ERR", err)
+			})
 		setLoading(false)
 	}
 
@@ -407,29 +413,17 @@ function TransferUserForm() {
 				onPress={() => setVisible(!visible)}
 				visible={visible}
 				onPressYes={() => {
-					if (+params?.id > 0) {
-						if (
-							!masterUserData.emp_id ||
-							!masterUserData.emp_name ||
-							!masterUserData.branch ||
-							!masterUserData.user_type ||
-							!masterUserData.remarks
-						) {
-							Message("warning", "Fill the details correctly.")
-							return
-						}
-						handleUpdateForm()
-					} else {
-						if (
-							!masterUserData.emp_id ||
-							!masterUserData.emp_name ||
-							!masterUserData.branch ||
-							!masterUserData.user_type
-						) {
-							Message("warning", "Fill the details correctly.")
-							return
-						}
+					// if (+params?.id > 0) {
+					if (
+						!masterUserData.emp_id ||
+						!masterUserData.branch ||
+						!masterUserData.remarks
+					) {
+						Message("warning", "Fill the details correctly.")
+						return
 					}
+					handleUpdateForm()
+					// }
 					setVisible(!visible)
 				}}
 				onPressNo={() => setVisible(!visible)}
