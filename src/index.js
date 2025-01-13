@@ -16,15 +16,17 @@ import DemandReportsMain from "./Screens/Reports/DemandReports/DemandReportsMain
 import OutstaningReportMain from "./Screens/Reports/OutstandingReports/OutstaningReportMain"
 import DisbursedLoanApproveSingleBM from "./Screens/BMHome/DisbursedLoanApproveSingleBM"
 import TestPage from "./Screens/Reports/LoanTransactions/testPage"
-import MasterEmployees from "./Screens/Master/Employees/MasterEmployees"
-import EditMasterEmployee from "./Screens/Master/Employees/EditMasterEmployee"
+import MasterEmployees from "./Screens/Admin/Master/Employees/MasterEmployees"
+import EditMasterEmployee from "./Screens/Admin/Master/Employees/EditMasterEmployee"
 import HomeAdmin from "./Screens/Admin/HomeAdmin"
 import AdminDashboard from "./Screens/Admin/Dashboard/AdminDashboard"
 import CreateUser from "./Screens/Admin/UserManagement/CreateUser"
 import ManageUser from "./Screens/Admin/UserManagement/ManageUser"
-const MasterBanks = lazy(() => import("./Screens/Master/Banks/MasterBanks"))
+const MasterBanks = lazy(() =>
+	import("./Screens/Admin/Master/Banks/MasterBanks")
+)
 const EditMasterBank = lazy(() =>
-	import("./Screens/Master/Banks/EditMasterBank")
+	import("./Screens/Admin/Master/Banks/EditMasterBank")
 )
 const EditRecoveryApproveFormBM = lazy(() =>
 	import("./Screens/BMHome/EditRecoveryApproveFormBM")

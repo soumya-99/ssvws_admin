@@ -1,14 +1,14 @@
 import React, { useState } from "react"
-import "../../LoanForm/LoanForm.css"
-import "../../BMHome/EditLoanFormBMStyles.css"
+import "../../../LoanForm/LoanForm.css"
+import "../../../BMHome/EditLoanFormBMStyles.css"
 import { useParams } from "react-router"
 import { useNavigate } from "react-router-dom"
 import { Spin } from "antd"
 import { LoadingOutlined } from "@ant-design/icons"
-import FormHeader from "../../../Components/FormHeader"
+import FormHeader from "../../../../Components/FormHeader"
 import { useLocation } from "react-router"
-import Sidebar from "../../../Components/Sidebar"
-import EmployeeMasterForm from "../../Forms/Master/EmployeeMasterForm"
+import Sidebar from "../../../../Components/Sidebar"
+import EmployeeMasterForm from "../../../Forms/Master/EmployeeMasterForm"
 
 function EditMasterEmployee() {
 	const params = useParams()

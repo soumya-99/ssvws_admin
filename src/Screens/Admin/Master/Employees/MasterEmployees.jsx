@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from "react"
-import Sidebar from "../../../Components/Sidebar"
+import Sidebar from "../../../../Components/Sidebar"
 import axios from "axios"
-import { url } from "../../../Address/BaseUrl"
-import { Message } from "../../../Components/Message"
+import { url } from "../../../../Address/BaseUrl"
+import { Message } from "../../../../Components/Message"
 import { Spin } from "antd"
 import { LoadingOutlined } from "@ant-design/icons"
-import BankMasterTable from "../../../Components/Master/BankMasterTable"
+import EmployeeMasterTable from "../../../../Components/Master/EmployeeMasterTable"
 
 // const options = [
 // 	{
@@ -26,10 +26,10 @@ import BankMasterTable from "../../../Components/Master/BankMasterTable"
 // 	},
 // ]
 
-function MasterBanks() {
+function MasterEmployees() {
 	const userDetails = JSON.parse(localStorage.getItem("user_details")) || ""
 	const [loading, setLoading] = useState(false)
-	const [loanApplications, setLoanApplications] = useState(() => [])
+	const [masterData, setMasterData] = useState(() => [])
 	const [copyLoanApplications, setCopyLoanApplications] = useState(() => [])
 
 	const [approvalStatus, setApprovalStatus] = useState("U")
@@ -45,11 +45,11 @@ function MasterBanks() {
 		// }
 
 		await axios
-			.get(`${url}/get_bank`)
+			.get(`${url}/show_all_emp`)
 			.then((res) => {
 				console.log("PPPPPPPPPPPPPPPPPPPP", res?.data)
 				if (res?.data?.suc === 1) {
-					setLoanApplications(res?.data?.msg)
+					setMasterData(res?.data?.msg)
 					setCopyLoanApplications(res?.data?.msg)
 
 					console.log("PPPPPPPPPPPPPPPPPPPP", res?.data)
@@ -58,7 +58,7 @@ function MasterBanks() {
 				}
 			})
 			.catch((err) => {
-				Message("error", "Some error occurred while fetching banks!")
+				Message("error", "Some error occurred while fetching employees!")
 				console.log("ERRR", err)
 			})
 		setLoading(false)
@@ -69,7 +69,7 @@ function MasterBanks() {
 	}, [])
 
 	const setSearch = (word) => {
-		setLoanApplications(
+		setMasterData(
 			copyLoanApplications?.filter(
 				(e) =>
 					e?.bank_name
@@ -114,10 +114,10 @@ function MasterBanks() {
 							onChange(value)
 						}}
 					/> */}
-					<BankMasterTable
+					<EmployeeMasterTable
 						flag="BM"
-						loanAppData={loanApplications}
-						title="Bank Master"
+						loanAppData={masterData}
+						title="Employee Master"
 						setSearch={(data) => setSearch(data)}
 					/>
 					{/* <DialogBox
@@ -131,4 +131,4 @@ function MasterBanks() {
 	)
 }
 
-export default MasterBanks
+export default MasterEmployees

@@ -60,7 +60,7 @@ function EmployeeMasterTable({
 						<button
 							className="bg-slate-100 p-3 h-11 rounded-full float-right text-center ml-3"
 							onClick={() => {
-								navigate(`/homebm/masteremployees/0`)
+								navigate(`/homeadmin/masteremployees/0`)
 							}}
 						>
 							<PlusOutlined className="text-xl" />

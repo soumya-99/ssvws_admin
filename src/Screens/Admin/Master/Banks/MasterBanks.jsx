@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from "react"
-import Sidebar from "../../../Components/Sidebar"
+import Sidebar from "../../../../Components/Sidebar"
 import axios from "axios"
-import { url } from "../../../Address/BaseUrl"
-import { Message } from "../../../Components/Message"
+import { url } from "../../../../Address/BaseUrl"
+import { Message } from "../../../../Components/Message"
 import { Spin } from "antd"
 import { LoadingOutlined } from "@ant-design/icons"
-import EmployeeMasterTable from "../../../Components/Master/EmployeeMasterTable"
+import BankMasterTable from "../../../../Components/Master/BankMasterTable"
 
 // const options = [
 // 	{
@@ -26,10 +26,10 @@ import EmployeeMasterTable from "../../../Components/Master/EmployeeMasterTable"
 // 	},
 // ]
 
-function MasterEmployees() {
+function MasterBanks() {
 	const userDetails = JSON.parse(localStorage.getItem("user_details")) || ""
 	const [loading, setLoading] = useState(false)
-	const [masterData, setMasterData] = useState(() => [])
+	const [loanApplications, setLoanApplications] = useState(() => [])
 	const [copyLoanApplications, setCopyLoanApplications] = useState(() => [])
 
 	const [approvalStatus, setApprovalStatus] = useState("U")
@@ -45,11 +45,11 @@ function MasterEmployees() {
 		// }
 
 		await axios
-			.get(`${url}/show_all_emp`)
+			.get(`${url}/get_bank`)
 			.then((res) => {
 				console.log("PPPPPPPPPPPPPPPPPPPP", res?.data)
 				if (res?.data?.suc === 1) {
-					setMasterData(res?.data?.msg)
+					setLoanApplications(res?.data?.msg)
 					setCopyLoanApplications(res?.data?.msg)
 
 					console.log("PPPPPPPPPPPPPPPPPPPP", res?.data)
@@ -58,7 +58,7 @@ function MasterEmployees() {
 				}
 			})
 			.catch((err) => {
-				Message("error", "Some error occurred while fetching employees!")
+				Message("error", "Some error occurred while fetching banks!")
 				console.log("ERRR", err)
 			})
 		setLoading(false)
@@ -69,7 +69,7 @@ function MasterEmployees() {
 	}, [])
 
 	const setSearch = (word) => {
-		setMasterData(
+		setLoanApplications(
 			copyLoanApplications?.filter(
 				(e) =>
 					e?.bank_name
@@ -114,10 +114,10 @@ function MasterEmployees() {
 							onChange(value)
 						}}
 					/> */}
-					<EmployeeMasterTable
+					<BankMasterTable
 						flag="BM"
-						loanAppData={masterData}
-						title="Employee Master"
+						loanAppData={loanApplications}
+						title="Bank Master"
 						setSearch={(data) => setSearch(data)}
 					/>
 					{/* <DialogBox
@@ -131,4 +131,4 @@ function MasterEmployees() {
 	)
 }
 
-export default MasterEmployees
+export default MasterBanks
