@@ -460,7 +460,7 @@ function RecoveryGroupApproveTable({
 
 				)} */}
 
-				<>{JSON.stringify(getloanAppData, null, 2)}</>
+				{/* <>{JSON.stringify(getloanAppData, null, 2)}</> */}
 				<DataTable
 					value={getloanAppData?.map((item, i) => ([{ ...item, id: i }])).flat()}
 					expandedRows={expandedRows}
