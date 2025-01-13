@@ -8,9 +8,9 @@ import { LoadingOutlined } from "@ant-design/icons"
 import FormHeader from "../../../Components/FormHeader"
 import { useLocation } from "react-router"
 import Sidebar from "../../../Components/Sidebar"
-import EmployeeMasterForm from "../../Forms/Master/EmployeeMasterForm"
+import CreateUserForm from "../../Forms/Admin/CreateUserForm"
 
-function EditMasterEmployee() {
+function CreateUser() {
 	const params = useParams()
 	const [loading, setLoading] = useState(false)
 	const location = useLocation()
@@ -23,7 +23,7 @@ function EditMasterEmployee() {
 			<section className="dark:bg-[#001529] flex justify-center align-middle p-5">
 				<div className="px-1 py-5 w-4/5 min-h-screen rounded-3xl">
 					<div className="w-auto mx-14 my-4">
-						<FormHeader text="Add/Edit Employee Master" mode={2} />
+						<FormHeader text="Add/Edit User" mode={2} />
 					</div>
 					<Spin
 						indicator={<LoadingOutlined spin />}
@@ -32,7 +32,7 @@ function EditMasterEmployee() {
 						spinning={loading}
 					>
 						<div className="card shadow-lg bg-white border-2 p-5 mx-16  rounded-3xl surface-border border-round surface-ground flex-auto font-medium">
-							<EmployeeMasterForm />
+							<CreateUserForm />
 						</div>
 					</Spin>
 				</div>
@@ -41,4 +41,4 @@ function EditMasterEmployee() {
 	)
 }
 
-export default EditMasterEmployee
+export default CreateUser

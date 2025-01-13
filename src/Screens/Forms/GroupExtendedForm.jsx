@@ -11,18 +11,7 @@ import axios from "axios"
 import { Message } from "../../Components/Message"
 import { url } from "../../Address/BaseUrl"
 import { Spin, Button, Popconfirm, Tag, Timeline, Divider } from "antd"
-import {
-	LoadingOutlined,
-	DeleteOutlined,
-	PlusOutlined,
-	MinusOutlined,
-	FilePdfOutlined,
-	MinusCircleOutlined,
-	ClockCircleOutlined,
-	ArrowRightOutlined,
-	UserOutlined,
-	InfoCircleFilled,
-} from "@ant-design/icons"
+import { LoadingOutlined, InfoCircleFilled } from "@ant-design/icons"
 import FormHeader from "../../Components/FormHeader"
 import { routePaths } from "../../Assets/Data/Routes"
 import { useLocation } from "react-router"
@@ -30,7 +19,11 @@ import Sidebar from "../../Components/Sidebar"
 import DialogBox from "../../Components/DialogBox"
 import TDInputTemplateBr from "../../Components/TDInputTemplateBr"
 import TimelineComp from "../../Components/TimelineComp"
-import { PendingActionsOutlined } from "@mui/icons-material"
+import {
+	PendingActionsOutlined,
+	DeleteOutline,
+	InfoOutlined,
+} from "@mui/icons-material"
 
 function GroupExtendedForm({ groupDataArr }) {
 	const params = useParams()
@@ -51,6 +44,7 @@ function GroupExtendedForm({ groupDataArr }) {
 	const [groupDetails, setGroupDetails] = useState(() => [])
 	const [memberDetails, setMemberDetails] = useState(() => [])
 	const [visible, setVisible] = useState(() => false)
+	const [remarksForDelete, setRemarksForDelete] = useState(() => "")
 
 	console.log(params, "paramsssssssssssssss")
 	console.log(location, "location")
@@ -268,6 +262,51 @@ function GroupExtendedForm({ groupDataArr }) {
 		setLoading(false)
 	}
 
+	const removeMemberFromGroup = async (member) => {
+		const creds = {
+			remove_remarks: remarksForDelete,
+			rejected_by: userDetails?.emp_id,
+			branch_code: userDetails?.brn_code,
+			form_no: member?.form_no,
+			member_code: member?.member_code,
+		}
+		await axios
+			.post(`${url}/admin/remove_member_from_group`, creds)
+			.then((res) => {
+				console.log("MEMBER DELETEDDDDDD APIII", res)
+				Message("success", "")
+			})
+			.catch((err) => {
+				console.log("**888***888***888", err)
+			})
+	}
+
+	const confirm = async (itemToDelete) => {
+		setLoading(true)
+		if (remarksForDelete) {
+			const updatedGroupData = groupData.map((group) => {
+				return {
+					...group,
+					memb_dt: group.memb_dt.filter(
+						(item) => item.member_code !== itemToDelete.member_code
+					),
+				}
+			})
+
+			setGroupData(updatedGroupData)
+			await removeMemberFromGroup(itemToDelete)
+			setRemarksForDelete(() => "")
+		} else {
+			Message("warning", "Please write remarks.")
+		}
+		setLoading(false)
+	}
+
+	const cancel = (e) => {
+		console.log(e)
+		// message.error('Click on No');
+	}
+
 	return (
 		<>
 			<Spin
@@ -278,7 +317,13 @@ function GroupExtendedForm({ groupDataArr }) {
 			>
 				<form onSubmit={formik.handleSubmit}>
 					<div className="flex justify-start gap-5">
-						<div className={params.id>0?"grid gap-4 sm:grid-cols-2 sm:gap-6 w-1/2":"grid gap-4 sm:grid-cols-2 sm:gap-6 w-full"}>
+						<div
+							className={
+								params.id > 0
+									? "grid gap-4 sm:grid-cols-2 sm:gap-6 w-1/2"
+									: "grid gap-4 sm:grid-cols-2 sm:gap-6 w-full"
+							}
+						>
 							{params?.id > 0 && (
 								<div className="sm:col-span-2">
 									<TDInputTemplateBr
@@ -548,12 +593,14 @@ function GroupExtendedForm({ groupDataArr }) {
 								) : null}
 							</div>
 						</div>
-						{params.id>0 && <Divider
-							type="vertical"
-							style={{
-								height: 650,
-							}}
-						/>}
+						{params.id > 0 && (
+							<Divider
+								type="vertical"
+								style={{
+									height: 650,
+								}}
+							/>
+						)}
 						{params?.id > 0 && (
 							<div className="w-1/2 gap-3 space-x-7">
 								<div>
@@ -563,65 +610,143 @@ function GroupExtendedForm({ groupDataArr }) {
 
 									{console.log("+++++++++++++++++++++++++++++", memberDetails)}
 
-										
+									<div class="relative overflow-x-auto">
+										<table class="w-full text-sm shadow-lg text-left rtl:text-right text-gray-500 dark:text-gray-400">
+											<thead class="text-xs text-white uppercase bg-slate-800 dark:text-gray-400">
+												<tr>
+													<th scope="col" class="px-6 py-3">
+														Name
+													</th>
 
-<div class="relative overflow-x-auto">
-    <table class="w-full text-sm shadow-lg text-left rtl:text-right text-gray-500 dark:text-gray-400">
-        <thead class="text-xs text-white uppercase bg-slate-800 dark:text-gray-400">
-            <tr>
-                <th scope="col" class="px-6 py-3">
-                    Name
-                </th>
-               
-                <th scope="col" class="px-6 py-3">
-                    {/* Price */}
-                </th>
-            </tr>
-        </thead>
-        <tbody>
-		{groupData[0]?.memb_dt?.map((item, i) => (
-            <tr 
-			onClick={
-				userDetails?.id == 2
-					? () =>
-							navigate(`/homebm/editgrtform/${item?.form_no}`, {
-								state: item,
-							})
-					: () =>
-							navigate(`/homeco/editgrtform/${item?.form_no}`, {
-								state: item,
-							})
-			}
-			
-			class="bg-white hover:bg-slate-200 cursor-pointer dark:bg-gray-800 border-b-slate-200 border-2">
-                <th scope="row" class="px-6 py-3  font-bold whitespace-nowrap dark:text-white text-slate-800 ">
-                    {item.client_name}
-                </th>
-				<td class="px-6 py-3">
+													<th scope="col" class="px-6 py-3">
+														{/* Price */}
+													</th>
+													<th scope="col" class="px-6 py-3">
+														{/* Price */}
+													</th>
+												</tr>
+											</thead>
+											<tbody>
+												{groupData[0]?.memb_dt?.map((item, i) => (
+													<tr
+														// onClick={
+														// 	userDetails?.id == 2
+														// 		? () =>
+														// 				navigate(
+														// 					`/homebm/editgrtform/${item?.form_no}`,
+														// 					{
+														// 						state: item,
+														// 					}
+														// 				)
+														// 		: () =>
+														// 				navigate(
+														// 					`/homeco/editgrtform/${item?.form_no}`,
+														// 					{
+														// 						state: item,
+														// 					}
+														// 				)
+														// }
+														class="bg-white hover:bg-slate-100 ease-linear transition-all cursor-pointer dark:bg-gray-800 border-b-slate-200 border-2"
+													>
+														<th
+															scope="row"
+															class="px-6 py-3 font-bold whitespace-nowrap dark:text-white text-slate-800"
+														>
+															{item.client_name}
+														</th>
+														<td
+															class={`px-6 py-3 ${
+																item?.approval_status === "U" ||
+																(userDetails?.id == 3 &&
+																	item?.approval_status === "S")
+																	? "bg-teal-50"
+																	: "bg-yellow-50"
+															}  text-center`}
+															onClick={
+																userDetails?.id == 2
+																	? () =>
+																			navigate(
+																				`/homebm/editgrtform/${item?.form_no}`,
+																				{
+																					state: item,
+																				}
+																			)
+																	: () =>
+																			navigate(
+																				`/homeco/editgrtform/${item?.form_no}`,
+																				{
+																					state: item,
+																				}
+																			)
+															}
+														>
+															{item?.approval_status === "U" ||
+															(userDetails?.id == 3 &&
+																item?.approval_status === "S") ? (
+																<InfoOutlined className="text-teal-500" />
+															) : (
+																<InfoOutlined className="text-yellow-400" />
+															)}
+														</td>
+														<td
+															class={`px-6 py-4 font-bold ${
+																item?.tot_outstanding > 0
+																	? "bg-slate-50"
+																	: "bg-red-50"
+															} text-center`}
+															// onClick={() => {
+															// 	// setVisible2(!visible2)
+															// 	console.log(
+															// 		`---- MEMBER ${item?.client_name} DELETE CLICK ----`
+															// 	)
+															// 	console.log(`----XX----`, groupData[0]?.memb_dt)
+															// }}
+														>
+															{/* <DeleteOutline className="text-red-500 text-2xl" /> */}
+															{/* `Are you sure to delete member ${item?.client_name} from this group?` */}
+															<Popconfirm
+																title={`Delete Member ${item?.client_name}`}
+																description={
+																	<>
+																		<div>
+																			Are you sure to delete member{" "}
+																			{item?.client_name} from this group?
+																		</div>
+																		<TDInputTemplateBr
+																			placeholder="Type Remarks for delete..."
+																			type="text"
+																			label="Reason for Delete*"
+																			name="remarksForDelete"
+																			formControlName={remarksForDelete}
+																			handleChange={(e) =>
+																				setRemarksForDelete(e.target.value)
+																			}
+																			mode={3}
+																		/>
+																	</>
+																}
+																onConfirm={() => confirm(item)}
+																onCancel={cancel}
+																okText="Delete"
+																cancelText="No"
+																disabled={item?.tot_outstanding > 0}
+															>
+																<DeleteOutline
+																	className={`${
+																		item?.tot_outstanding > 0
+																			? "text-slate-400"
+																			: "text-red-500"
+																	} text-2xl`}
+																/>
+															</Popconfirm>
+														</td>
+													</tr>
+												))}
+											</tbody>
+										</table>
+									</div>
 
-				{(item?.approval_status === "U" ||(userDetails?.id == 3 && item?.approval_status === "S"))
-												? <InfoCircleFilled className="text-teal-500"/>:
-												<PendingActionsOutlined className="text-[#DA4167]"/>
-													
-				}
-
-				</td>
-                {/* <td class="px-6 py-4">
-                    Silver
-                </td>
-                <td class="px-6 py-4">
-                    Laptop
-                </td>
-                <td class="px-6 py-4">
-                    $2999
-                </td> */}
-            </tr>
-		))}
-        </tbody>
-    </table>
-</div>
-
-										{/* <Tag
+									{/* <Tag
 											key={i}
 											icon={<UserOutlined />}
 											color={
@@ -677,6 +802,17 @@ function GroupExtendedForm({ groupDataArr }) {
 				}}
 				onPressNo={() => setVisible(!visible)}
 			/>
+
+			{/* <DialogBox
+				flag={4}
+				onPress={() => setVisible2(!visible2)}
+				visible={visible2}
+				onPressYes={() => {
+					// editGroup()
+					setVisible2(!visible2)
+				}}
+				onPressNo={() => setVisible2(!visible2)}
+			/> */}
 		</>
 	)
 }

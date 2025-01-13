@@ -22,7 +22,7 @@ const options = [
 		value: "A",
 	},
 	{
-		label: "MIS Rejected",
+		label: "Rejected",
 		value: "R",
 	},
 ]

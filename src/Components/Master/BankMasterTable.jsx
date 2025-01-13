@@ -60,7 +60,7 @@ function BankMasterTable({
 						<button
 							className="bg-slate-100 p-3 h-11 rounded-full float-right text-center ml-3"
 							onClick={() => {
-								navigate(`/homebm/masterbanks/0`)
+								navigate(`/homeadmin/masterbanks/0`)
 							}}
 						>
 							<PlusOutlined className="text-xl" />
@@ -177,7 +177,7 @@ function BankMasterTable({
 												onClick={() => {
 													console.log("LLSKSIODFUISFH", item)
 													navigate(
-														`/homebm/masterbanks/${item?.bank_code || 0}`,
+														`/homeadmin/masterbanks/${item?.bank_code || 0}`,
 														{
 															state: item,
 														}

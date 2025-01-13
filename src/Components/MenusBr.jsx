@@ -105,35 +105,35 @@ function MenusBr({ theme }) {
 			icon: <LineChartOutlined />,
 			label: <Link to={"/homebm/"}>Dashboard</Link>,
 		},
-		{
-			key: "sub5",
-			icon: <DatabaseOutlined />,
-			label: "Master",
-			children: [
-				{
-					key: "sub5-1",
-					icon: <DatabaseOutlined />,
-					label: <Link to={"/homebm/masterbanks"}>Banks</Link>,
-				},
-				{
-					key: "sub5-2",
-					icon: <DatabaseOutlined />,
-					label: <Link to={"/homebm/masteremployees"}>Employees</Link>,
-				},
-				// {
-				// 	key: "sub4-2",
-				// 	icon: <CheckCircleOutlined />,
-				// 	label: (
-				// 		<Link to={"/homebm/disburseloanapprove"}>Disbursement Approve</Link>
-				// 	),
-				// },
-				// {
-				// 	key: "sub3-3",
-				// 	icon: <SubnodeOutlined />,
-				// 	label: <Link to={"/homebm/assignmember"}>Assign Member</Link>,
-				// },
-			],
-		},
+		// {
+		// 	key: "sub5",
+		// 	icon: <DatabaseOutlined />,
+		// 	label: "Master",
+		// 	children: [
+		// 		{
+		// 			key: "sub5-1",
+		// 			icon: <DatabaseOutlined />,
+		// 			label: <Link to={"/homebm/masterbanks"}>Banks</Link>,
+		// 		},
+		// 		{
+		// 			key: "sub5-2",
+		// 			icon: <DatabaseOutlined />,
+		// 			label: <Link to={"/homebm/masteremployees"}>Employees</Link>,
+		// 		},
+		// 		// {
+		// 		// 	key: "sub4-2",
+		// 		// 	icon: <CheckCircleOutlined />,
+		// 		// 	label: (
+		// 		// 		<Link to={"/homebm/disburseloanapprove"}>Disbursement Approve</Link>
+		// 		// 	),
+		// 		// },
+		// 		// {
+		// 		// 	key: "sub3-3",
+		// 		// 	icon: <SubnodeOutlined />,
+		// 		// 	label: <Link to={"/homebm/assignmember"}>Assign Member</Link>,
+		// 		// },
+		// 	],
+		// },
 		{
 			key: "sub2",
 			icon: <ImportOutlined />,
@@ -200,18 +200,18 @@ function MenusBr({ theme }) {
 					icon: <CheckCircleOutlined />,
 					label: "Approve Transaction",
 					children: [
-					  {
-						key: "sub4-2-1",
-						icon: <CheckCircleOutlined />,
-						label: <Link to={"/homebm/approvedisbursed"}>Disburse</Link>,
-					  },
-					  {
-						key: "sub4-2-2",
-						icon: <CheckCircleOutlined />,
-						label: <Link to={"/homebm/approveloan"}>Recovery</Link>,
-					  },
+						{
+							key: "sub4-2-1",
+							icon: <CheckCircleOutlined />,
+							label: <Link to={"/homebm/approvedisbursed"}>Disburse</Link>,
+						},
+						{
+							key: "sub4-2-2",
+							icon: <CheckCircleOutlined />,
+							label: <Link to={"/homebm/approveloan"}>Recovery</Link>,
+						},
 					],
-				  },
+				},
 				{
 					key: "sub4-3",
 					icon: <EyeOutlined />,
@@ -376,6 +376,82 @@ function MenusBr({ theme }) {
 		},
 	]
 
+	const itemsAdmin = [
+		{
+			key: "sub1",
+			icon: <LineChartOutlined />,
+			label: <Link to={"/homeadmin/"}>Dashboard</Link>,
+		},
+		{
+			key: "sub5",
+			icon: <DatabaseOutlined />,
+			label: "Master",
+			children: [
+				{
+					key: "sub5-1",
+					icon: <DatabaseOutlined />,
+					label: <Link to={"/homeadmin/masterbanks"}>Banks</Link>,
+				},
+				{
+					key: "sub5-2",
+					icon: <DatabaseOutlined />,
+					label: <Link to={"/homeadmin/masteremployees"}>Employees</Link>,
+				},
+			],
+		},
+		{
+			key: "sub2",
+			icon: <ImportOutlined />,
+			label: "User Management",
+			children: [
+				{
+					key: "sub2-1",
+					icon: <ContainerOutlined />,
+					label: <Link to={"/homeadmin/createuser/0"}>Create User</Link>,
+				},
+				{
+					key: "sub2-2",
+					icon: <SearchOutlined />,
+					label: <Link to={"/homeadmin/manageuser/"}>Manage User</Link>,
+				},
+				{
+					key: "sub2-3",
+					icon: <SearchOutlined />,
+					label: <Link to={"/homeadmin/transferuser/"}>Transfer User</Link>,
+				},
+			],
+		},
+		// {
+		// 	label: "Reports",
+		// 	key: "sub6",
+		// 	icon: <BarsOutlined />,
+		// 	children: [
+		// 		{
+		// 			key: "sub6-4",
+		// 			icon: <BarChartOutlined />,
+		// 			label: <Link to={"/homebm/loanstatements"}>Loan Statements</Link>,
+		// 		},
+		// 		{
+		// 			key: "sub6-5",
+		// 			icon: <BarChartOutlined />,
+		// 			label: <Link to={"/homebm/loantxns"}>Loan Transactions</Link>,
+		// 		},
+		// 		{
+		// 			key: "sub6-6",
+		// 			icon: <BarChartOutlined />,
+		// 			label: <Link to={"/homebm/demandreport"}>Demand Report</Link>,
+		// 		},
+		// 		{
+		// 			key: "sub6-7",
+		// 			icon: <BarChartOutlined />,
+		// 			label: (
+		// 				<Link to={"/homebm/outstasndingreport"}>Outstanding Report</Link>
+		// 			),
+		// 		},
+		// 	],
+		// },
+	]
+
 	return (
 		<div className="bg-[#EEEEEE44] flex justify-between align-middle gap-4 rounded-full">
 			<img src={IMG} className="w-14 h-14 p-2 -mr-6" alt="Flowbite Logo" />
@@ -387,6 +463,8 @@ function MenusBr({ theme }) {
 						? items
 						: userDetails?.id === 2
 						? itemsBM
+						: userDetails?.id === 4
+						? itemsAdmin
 						: itemsCO
 				}
 				mode="horizontal"

@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from "react"
-import Sidebar from "../../../Components/Sidebar"
+import Sidebar from "../../../../Components/Sidebar"
 import axios from "axios"
-import { url } from "../../../Address/BaseUrl"
-import { Message } from "../../../Components/Message"
+import { url } from "../../../../Address/BaseUrl"
+import { Message } from "../../../../Components/Message"
 import { Spin } from "antd"
 import { LoadingOutlined } from "@ant-design/icons"
-import BankMasterTable from "../../../Components/Master/BankMasterTable"
+import BankMasterTable from "../../../../Components/Master/BankMasterTable"
 
 // const options = [
 // 	{

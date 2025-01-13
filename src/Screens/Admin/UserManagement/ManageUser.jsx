@@ -6,6 +6,7 @@ import { Message } from "../../../Components/Message"
 import { Spin } from "antd"
 import { LoadingOutlined } from "@ant-design/icons"
 import EmployeeMasterTable from "../../../Components/Master/EmployeeMasterTable"
+import UserManagementTable from "../../../Components/Admin/UserManagementTable"
 
 // const options = [
 // 	{
@@ -26,7 +27,7 @@ import EmployeeMasterTable from "../../../Components/Master/EmployeeMasterTable"
 // 	},
 // ]
 
-function MasterEmployees() {
+function ManageUser() {
 	const userDetails = JSON.parse(localStorage.getItem("user_details")) || ""
 	const [loading, setLoading] = useState(false)
 	const [masterData, setMasterData] = useState(() => [])
@@ -35,7 +36,7 @@ function MasterEmployees() {
 	const [approvalStatus, setApprovalStatus] = useState("U")
 	// const [value2, setValue2] = useState("S")
 
-	const fetchLoanApplications = async (approvalStat) => {
+	const fetchLoanApplications = async () => {
 		setLoading(true)
 
 		// const creds = {
@@ -45,7 +46,7 @@ function MasterEmployees() {
 		// }
 
 		await axios
-			.get(`${url}/show_all_emp`)
+			.post(`${url}/fetch_user_details`)
 			.then((res) => {
 				console.log("PPPPPPPPPPPPPPPPPPPP", res?.data)
 				if (res?.data?.suc === 1) {
@@ -54,18 +55,18 @@ function MasterEmployees() {
 
 					console.log("PPPPPPPPPPPPPPPPPPPP", res?.data)
 				} else {
-					Message("error", "No banks found.")
+					Message("error", "No users found.")
 				}
 			})
 			.catch((err) => {
-				Message("error", "Some error occurred while fetching employees!")
+				Message("error", "Some error occurred while fetching users!")
 				console.log("ERRR", err)
 			})
 		setLoading(false)
 	}
 
 	useEffect(() => {
-		fetchLoanApplications("U")
+		fetchLoanApplications()
 	}, [])
 
 	const setSearch = (word) => {
@@ -114,10 +115,10 @@ function MasterEmployees() {
 							onChange(value)
 						}}
 					/> */}
-					<EmployeeMasterTable
-						flag="BM"
+					<UserManagementTable
+						flag="ADMIN"
 						loanAppData={masterData}
-						title="Employee Master"
+						title="User Management"
 						setSearch={(data) => setSearch(data)}
 					/>
 					{/* <DialogBox
@@ -131,4 +132,4 @@ function MasterEmployees() {
 	)
 }
 
-export default MasterEmployees
+export default ManageUser
