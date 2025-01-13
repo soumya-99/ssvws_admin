@@ -138,7 +138,7 @@ function TransferUserForm() {
 
 		console.log("FIND ===", creds)
 		await axios
-			.post(`${url}/fetch_empl_dtls`, creds)
+			.post(`${url}/fetch_user_dtls_fr_transfer`, creds)
 			.then((res) => {
 				if (res?.data?.msg?.length === 0) {
 					Message("warning", "No employee found!")
@@ -152,23 +152,24 @@ function TransferUserForm() {
 					return
 				}
 
-				if ("user_type" in res?.data?.msg[0]) {
-					Message(
-						"warning",
-						res?.data?.details +
-							" Name: " +
-							res?.data?.msg[0]?.emp_name +
-							" Branch: " +
-							res?.data?.msg[0]?.brn_code
-					)
-					onReset()
-					return
-				}
+				// if ("user_type" in res?.data?.msg[0]) {
+				// 	Message(
+				// 		"warning",
+				// 		res?.data?.details +
+				// 			" Name: " +
+				// 			res?.data?.msg[0]?.emp_name +
+				// 			" Branch: " +
+				// 			res?.data?.msg[0]?.brn_code
+				// 	)
+				// 	onReset()
+				// 	return
+				// }
 
 				setMasterUserData((prev) => ({
 					...prev,
 					emp_name: res?.data?.msg[0]?.emp_name,
 					branch: res?.data?.msg[0]?.branch_id,
+					user_type: res?.data?.msg[0]?.user_type,
 				}))
 			})
 			.catch((err) => {
@@ -286,7 +287,7 @@ function TransferUserForm() {
 										handleChange={handleChangeForm}
 										handleBlur={findEmployeeById}
 										mode={1}
-										disabled
+										// disabled
 									/>
 								</div>
 								<div>
@@ -339,9 +340,9 @@ function TransferUserForm() {
 									/>
 								</div>
 
-								{params?.id > 0 && (
+								{
 									<>
-										<div className="sm:col-span-2">
+										{/* <div className="sm:col-span-2">
 											<TDInputTemplateBr
 												placeholder="Active Flag..."
 												type="text"
@@ -356,7 +357,7 @@ function TransferUserForm() {
 												]}
 												disabled
 											/>
-										</div>
+										</div> */}
 										<div className="sm:col-span-3">
 											<TDInputTemplateBr
 												placeholder="Remarks..."
@@ -369,7 +370,7 @@ function TransferUserForm() {
 											/>
 										</div>
 									</>
-								)}
+								}
 							</div>
 							{/* {+params?.id > 0 && (
 								<div className="float-right pt-4">
@@ -411,7 +412,6 @@ function TransferUserForm() {
 							!masterUserData.emp_id ||
 							!masterUserData.emp_name ||
 							!masterUserData.branch ||
-							!masterUserData.active_flag ||
 							!masterUserData.user_type ||
 							!masterUserData.remarks
 						) {
