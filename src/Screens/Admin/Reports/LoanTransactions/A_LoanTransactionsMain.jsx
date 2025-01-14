@@ -63,9 +63,7 @@ function A_LoanTransactionsMain() {
 	// const [tot_sum, setTotSum] = useState(0)
 	// const [search, setSearch] = useState("")
 
-	const [metadataDtls, setMetadataDtls] = useState(
-		() => userDetails?.branch_name
-	)
+	const [metadataDtls, setMetadataDtls] = useState(() => "")
 
 	const onChange = (e) => {
 		console.log("radio1 checked", e)
@@ -101,16 +99,18 @@ function A_LoanTransactionsMain() {
 		const creds = {
 			from_dt: formatDateToYYYYMMDD(fromDate),
 			to_dt: formatDateToYYYYMMDD(toDate),
-			branch_code: branch,
+			branch_code: branch.split(",")[0],
 			tr_type: "R",
 			flag: searchType2,
 		}
-
+		console.log("KKKKKKKKKKKKKKKKKKK======", branch)
 		await axios
 			.post(`${url}/adminreport/recov_loan_trans_report_admin`, creds)
 			.then((res) => {
 				console.log("RESSSSS======>>>>", res?.data)
 				setReportData(res?.data?.msg)
+				setMetadataDtls(branch.split(",")[1])
+				console.log("KKKKKKKKKKKKKKKKKKK", branch)
 				// setTotSum(res?.data?.msg.reduce((n, { credit }) => n + credit, 0))
 			})
 			.catch((err) => {
@@ -125,16 +125,19 @@ function A_LoanTransactionsMain() {
 		const creds = {
 			from_dt: formatDateToYYYYMMDD(fromDate),
 			to_dt: formatDateToYYYYMMDD(toDate),
-			branch_code: branch,
+			branch_code: branch.split(",")[0],
 			tr_type: "D",
 			flag: searchType2,
 		}
+		console.log("KKKKKKKKKKKKKKKKKKK======", branch)
 
 		await axios
 			.post(`${url}/adminreport/disb_loan_trans_report_admin`, creds)
 			.then((res) => {
 				console.log("RESSSSS======>>>>", res?.data)
 				setReportData(res?.data?.msg)
+				setMetadataDtls(branch.split(",")[1])
+				// console.log("KKKKKKKKKKKKKKKKKKK", branch)
 				// setMetadataDtls(userDetails?.branch_name)
 				// setTotSum(res?.data?.msg.reduce((n, { credit }) => n + credit, 0))
 			})
@@ -363,8 +366,29 @@ function A_LoanTransactionsMain() {
 								type="text"
 								label="Branch"
 								name="branch"
-								formControlName={branch}
-								handleChange={(e) => setBranch(e.target.value)}
+								formControlName={branch.split(",")[0]}
+								handleChange={(e) => {
+									console.log("***********========", e)
+									setBranch(
+										e.target.value +
+											"," +
+											[
+												{ branch_code: "A", branch_name: "All Branches" },
+												...branches,
+											].filter((i) => i.branch_code == e.target.value)[0]
+												?.branch_name
+									)
+									console.log(branches)
+									console.log(
+										e.target.value +
+											"," +
+											[
+												{ branch_code: "A", branch_name: "All Branches" },
+												...branches,
+											].filter((i) => i.branch_code == e.target.value)[0]
+												?.branch_name
+									)
+								}}
 								mode={2}
 								// data={branches?.map((item, i) => ({
 								// 	code: item?.branch_code,
@@ -416,6 +440,9 @@ function A_LoanTransactionsMain() {
 											<tr>
 												<th scope="col" className="px-6 py-3 font-semibold ">
 													Sl. No.
+												</th>
+												<th scope="col" className="px-6 py-3 font-semibold ">
+													Branch
 												</th>
 												<th scope="col" className="px-6 py-3 font-semibold ">
 													Member Code
@@ -501,6 +528,7 @@ function A_LoanTransactionsMain() {
 														}
 													>
 														<td className="px-6 py-3">{i + 1}</td>
+														<td className="px-6 py-3">{item?.branch_name}</td>
 														<td className="px-6 py-3">
 															{item?.member_code || "---"}
 														</td>
@@ -622,6 +650,9 @@ function A_LoanTransactionsMain() {
 											<tr>
 												<th scope="col" className="px-6 py-3 font-semibold ">
 													Sl. No.
+												</th>
+												<th scope="col" className="px-6 py-3 font-semibold ">
+													Branch
 												</th>
 												<th scope="col" className="px-6 py-3 font-semibold ">
 													Member Code
@@ -751,6 +782,7 @@ function A_LoanTransactionsMain() {
 														}
 													>
 														<td className="px-6 py-3">{i + 1}</td>
+														<td className="px-6 py-3">{item?.branch_name}</td>
 														<td className="px-6 py-3">
 															{item?.member_code || "---"}
 														</td>
@@ -936,6 +968,9 @@ function A_LoanTransactionsMain() {
 												<th scope="col" className="px-6 py-3 font-semibold ">
 													Sl. No.
 												</th>
+												<th scope="col" className="px-6 py-3 font-semibold ">
+													Branch
+												</th>
 												{/* <th scope="col" className="px-6 py-3 font-semibold ">
 													Member Code
 												</th>
@@ -1064,6 +1099,7 @@ function A_LoanTransactionsMain() {
 														}
 													>
 														<td className="px-6 py-3">{i + 1}</td>
+														<td className="px-6 py-3">{item?.branch_name}</td>
 														{/* <td className="px-6 py-3">
 															{item?.member_code || "---"}
 														</td>
@@ -1250,6 +1286,9 @@ function A_LoanTransactionsMain() {
 													Sl. No.
 												</th>
 												<th scope="col" className="px-6 py-3 font-semibold ">
+													Branch
+												</th>
+												<th scope="col" className="px-6 py-3 font-semibold ">
 													Group Code
 												</th>
 												<th scope="col" className="px-6 py-3 font-semibold ">
@@ -1311,6 +1350,7 @@ function A_LoanTransactionsMain() {
 														}
 													>
 														<td className="px-6 py-3">{i + 1}</td>
+														<td className="px-6 py-3">{item?.branch_name}</td>
 														<td className="px-6 py-3">
 															{item?.group_code || "---"}
 														</td>

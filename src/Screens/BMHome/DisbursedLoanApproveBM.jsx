@@ -32,15 +32,19 @@ function DisbursedLoanApproveBM() {
 	const userDetails = JSON.parse(localStorage.getItem("user_details")) || ""
 	const [loading, setLoading] = useState(false)
 	const [loanApplicationsMember, setLoanApplicationsMember] = useState(() => [])
-	const [copyLoanApplicationsMember, setCopyLoanApplicationsMember] = useState(() => [])
+	const [copyLoanApplicationsMember, setCopyLoanApplicationsMember] = useState(
+		() => []
+	)
 
 	const [loanApplicationsCo, setLoanApplicationsCo] = useState(() => [])
 	const [copyLoanApplicationsCo, setCopyLoanApplicationsCo] = useState(() => [])
 
 	const [loanApplicationsGroup, setLoanApplicationsGroup] = useState(() => [])
-	const [copyLoanApplicationsGroup, setCopyLoanApplicationsGroup] = useState(() => [])
-	const [selectedEmployeeId, setSelectedEmployeeId] = useState(() => null);
-	const [selectedEmployeeObj, setSelectedEmployeeObj] = useState(() => {});
+	const [copyLoanApplicationsGroup, setCopyLoanApplicationsGroup] = useState(
+		() => []
+	)
+	const [selectedEmployeeId, setSelectedEmployeeId] = useState(() => null)
+	const [selectedEmployeeObj, setSelectedEmployeeObj] = useState(() => {})
 
 	const [coListData, setCoListData] = useState(() => [])
 
@@ -53,16 +57,15 @@ function DisbursedLoanApproveBM() {
 	const fetchLoanApplicationsGroup = async () => {
 		setLoading(true)
 		await axios
-		.post(`${url}/fetch_groupwise_recovery_admin`, {
-				branch_code : userDetails?.brn_code,
+			.post(`${url}/fetch_groupwise_recovery_admin`, {
+				branch_code: userDetails?.brn_code,
 				// from_dt : formatDateToYYYYMMDD(fromDate),
 				// to_dt : formatDateToYYYYMMDD(toDate)
-			
 			})
 			.then((res) => {
 				if (res?.data?.suc === 1) {
 					// console.log(res?.data?.msg, 'xxxxxxxxx');
-					
+
 					setLoanApplicationsGroup(res?.data?.msg)
 					setCopyLoanApplicationsGroup(res?.data?.msg)
 				} else {
@@ -77,19 +80,24 @@ function DisbursedLoanApproveBM() {
 	}
 
 	const fetchLoanApplicationsCo = async () => {
-		console.log("setLoanApplicationsCo", userDetails?.brn_code, formatDateToYYYYMMDD(fromDate), formatDateToYYYYMMDD(toDate), selectedEmployeeId)
+		console.log(
+			"setLoanApplicationsCo",
+			userDetails?.brn_code,
+			formatDateToYYYYMMDD(fromDate),
+			formatDateToYYYYMMDD(toDate),
+			selectedEmployeeId
+		)
 		setLoading(true)
 		await axios
-		.post(`${url}/fetch_cowise_recov_data`, {
-				branch_code : userDetails?.brn_code,
+			.post(`${url}/fetch_cowise_recov_data`, {
+				branch_code: userDetails?.brn_code,
 				// from_dt : formatDateToYYYYMMDD(fromDate),
 				// to_dt : formatDateToYYYYMMDD(toDate),
-				co_id : selectedEmployeeId
-			
+				co_id: selectedEmployeeId,
 			})
 			.then((res) => {
 				if (res?.data?.suc === 1) {
-					console.log(res?.data?.msg, 'xxxxxxxxx');
+					console.log(res?.data?.msg, "xxxxxxxxx")
 					setLoanApplicationsCo(res?.data?.msg)
 					setCopyLoanApplicationsCo(res?.data?.msg)
 				} else {
@@ -106,11 +114,10 @@ function DisbursedLoanApproveBM() {
 	const fetchLoanApplicationsMember = async () => {
 		setLoading(true)
 		await axios
-		.post(`${url}/fetch_memberwise_recovery_admin`, {
-				branch_code : userDetails?.brn_code,
+			.post(`${url}/fetch_memberwise_recovery_admin`, {
+				branch_code: userDetails?.brn_code,
 				// from_dt : formatDateToYYYYMMDD(fromDate),
 				// to_dt : formatDateToYYYYMMDD(toDate)
-			
 			})
 			.then((res) => {
 				if (res?.data?.suc === 1) {
@@ -130,11 +137,10 @@ function DisbursedLoanApproveBM() {
 	const fetchCoList = async () => {
 		setLoading(true)
 		await axios
-		.post(`${url}/fetch_branch_co`, {
-				branch_code : userDetails?.brn_code,
+			.post(`${url}/fetch_branch_co`, {
+				branch_code: userDetails?.brn_code,
 			})
 			.then((res) => {
-				
 				if (res?.data?.suc === 1) {
 					console.log("fetchCoList", res?.data?.msg)
 					setCoListData(res?.data?.msg)
@@ -158,10 +164,7 @@ function DisbursedLoanApproveBM() {
 		setLoanApplicationsMember(
 			copyLoanApplicationsMember?.filter(
 				(e) =>
-					e?.loan_id
-						?.toString()
-						?.toLowerCase()
-						.includes(word?.toLowerCase()) ||
+					e?.loan_id?.toString()?.toLowerCase().includes(word?.toLowerCase()) ||
 					e?.group_name
 						?.toString()
 						?.toLowerCase()
@@ -171,7 +174,7 @@ function DisbursedLoanApproveBM() {
 	}
 
 	const setSearch_Group = (word) => {
-		console.log(word, 'wordwordwordword', copyLoanApplicationsGroup);
+		console.log(word, "wordwordwordword", copyLoanApplicationsGroup)
 		setLoanApplicationsGroup(
 			copyLoanApplicationsGroup?.filter(
 				(e) =>
@@ -188,7 +191,7 @@ function DisbursedLoanApproveBM() {
 	}
 
 	const setSearch_Co = (word) => {
-		console.log(word, 'wordwordwordword', copyLoanApplicationsCo);
+		console.log(word, "wordwordwordword", copyLoanApplicationsCo)
 		setLoanApplicationsCo(
 			copyLoanApplicationsCo?.filter(
 				(e) =>
@@ -211,51 +214,45 @@ function DisbursedLoanApproveBM() {
 
 	useEffect(() => {
 		fetchCoList()
-		
 	}, [])
 
 	const handleEmployeeChange = (e) => {
 		// Save the emp_id of the selected employee
-		const selectedId = e.target.value;
-		setSelectedEmployeeId(selectedId); // Save to state
-	// const [selectedEmployeeObj, setSelectedEmployeeObj] = useState(() => {});
+		const selectedId = e.target.value
+		setSelectedEmployeeId(selectedId) // Save to state
+		// const [selectedEmployeeObj, setSelectedEmployeeObj] = useState(() => {});
 
 		// console.log("Selected Employee ID:", selectedId); // Log the selected emp_id
-	  };
-
-	
+	}
 
 	useEffect(() => {
 		// console.log(selectedEmployeeId , 'ppppppppppppppppppppppppppp');
-		console.log(fromDate, 'fetchLoanApplicationsDate', toDate);
-			// if (loanType === "G" ||
-			// 	fromDate ||
-			// 	toDate ) {
-			// 	fetchLoanApplicationsGroup()
-			// } else if ( loanType === "C" ||
-			// 	fromDate ||
-			// 	toDate ) {
-			// 	fetchLoanApplicationsCo()
-			// } else if ( loanType === "M" ||
-			// 	fromDate ||
-			// 	toDate ) {
-			// 	fetchLoanApplicationsMember()
-			// }
+		console.log(fromDate, "fetchLoanApplicationsDate", toDate)
+		// if (loanType === "G" ||
+		// 	fromDate ||
+		// 	toDate ) {
+		// 	fetchLoanApplicationsGroup()
+		// } else if ( loanType === "C" ||
+		// 	fromDate ||
+		// 	toDate ) {
+		// 	fetchLoanApplicationsCo()
+		// } else if ( loanType === "M" ||
+		// 	fromDate ||
+		// 	toDate ) {
+		// 	fetchLoanApplicationsMember()
+		// }
 
-			if (loanType === "G") {
-				
-				fetchLoanApplicationsGroup()
-			} else if ( loanType === "C") {
-				// setLoanApplicationsGroup(() => [])
-				// setLoanApplicationsCo(() => [])
-				// setCopyLoanApplicationsCo(() => [])
-				fetchLoanApplicationsCo()
-				
-			} else if ( loanType === "M") {
-				fetchLoanApplicationsMember()
-			}
-
-		}, [loanType, fromDate, toDate, selectedEmployeeId])
+		if (loanType === "G") {
+			fetchLoanApplicationsGroup()
+		} else if (loanType === "C") {
+			// setLoanApplicationsGroup(() => [])
+			// setLoanApplicationsCo(() => [])
+			// setCopyLoanApplicationsCo(() => [])
+			fetchLoanApplicationsCo()
+		} else if (loanType === "M") {
+			fetchLoanApplicationsMember()
+		}
+	}, [loanType, fromDate, toDate, selectedEmployeeId])
 
 	return (
 		<div>
@@ -277,12 +274,9 @@ function DisbursedLoanApproveBM() {
 						}}
 					/>
 
-
-
 					{loanType === "G" ? (
-
 						<>
-						{/* <div className="grid grid-cols-2 gap-5 mt-5">
+							{/* <div className="grid grid-cols-2 gap-5 mt-5">
 						<div>
 							<TDInputTemplateBr
 								placeholder="From Date"
@@ -310,22 +304,20 @@ function DisbursedLoanApproveBM() {
 
 					</div> */}
 
-						<RecoveryGroupApproveTable
-							flag="BM"
-							loanAppData={loanApplicationsGroup}
-							title="Approve Transaction"
-							setSearch_Group={(data) => setSearch_Group(data)}
-							loanType={loanType}
-							// fetchLoanApplications={fetchLoanApplications}
-							fetchLoanApplicationsDate={{ fromDate, toDate }}
-						/>
+							<RecoveryGroupApproveTable
+								flag="BM"
+								loanAppData={loanApplicationsGroup}
+								title="Approve Transaction"
+								setSearch_Group={(data) => setSearch_Group(data)}
+								loanType={loanType}
+								// fetchLoanApplications={fetchLoanApplications}
+								fetchLoanApplicationsDate={{ fromDate, toDate }}
+							/>
 						</>
-						
-						
 					) : loanType === "C" ? (
 						<>
-						<div className="grid grid-cols-3 gap-5 mt-5">
-						{/* <div>
+							<div className="grid grid-cols-3 gap-5 mt-5">
+								{/* <div>
 							<TDInputTemplateBr
 								placeholder="From Date"
 								type="date"
@@ -350,49 +342,50 @@ function DisbursedLoanApproveBM() {
 							/>
 						</div> */}
 
-						<div>
-						<TDInputTemplateBr
-						placeholder="Select Collector Name..."
-						type="text"
-						label="Collector Wise"
-						name="b_clientGender"
-						// handleChange={(e) => console.log("Selected Employee:", e.target.value)}
-						handleChange={handleEmployeeChange} 
-						// data={[
-						// { code: "M", name: "Male" },
-						// { code: "F", name: "Female" },
-						// { code: "O", name: "Others" },
-						// ]}
-						data={coListData.map((emp) => ({
-							code: emp.emp_id,
-							name: `${emp.emp_name} (${emp.user_type == 1 ? "CO" : "BM"})`,
-						  }))}
-						mode={2}
-						disabled={false} // Static value to make it always disabled
-						/>
+								<div>
+									<TDInputTemplateBr
+										placeholder="Select Collector Name..."
+										type="text"
+										label="Collector Wise"
+										name="b_clientGender"
+										// handleChange={(e) => console.log("Selected Employee:", e.target.value)}
+										handleChange={handleEmployeeChange}
+										// data={[
+										// { code: "M", name: "Male" },
+										// { code: "F", name: "Female" },
+										// { code: "O", name: "Others" },
+										// ]}
+										data={coListData.map((emp) => ({
+											code: emp.emp_id,
+											name: `${emp.emp_name} (${
+												emp.user_type == 1 ? "CO" : "BM"
+											})`,
+										}))}
+										mode={2}
+										disabled={false} // Static value to make it always disabled
+									/>
 
-{/* {JSON.stringify(selectedEmployeeId, 2)} */}
+									{/* {JSON.stringify(selectedEmployeeId, 2)} */}
+								</div>
+							</div>
 
-
-						</div>
-						
-					</div>
-						
-						<RecoveryCoApproveTable
-							flag="BM"
-							loanAppData={loanApplicationsCo}
-							title="Approve Transaction"
-							setSearch_Co={(data) => setSearch_Co(data)}
-							loanType={loanType}
-							// fetchLoanApplications={fetchLoanApplications}
-							fetchLoanApplicationsDate={{ fromDate, toDate, selectedEmployeeId }}
-						/>
+							<RecoveryCoApproveTable
+								flag="BM"
+								loanAppData={loanApplicationsCo}
+								title="Approve Transaction"
+								setSearch_Co={(data) => setSearch_Co(data)}
+								loanType={loanType}
+								// fetchLoanApplications={fetchLoanApplications}
+								fetchLoanApplicationsDate={{
+									fromDate,
+									toDate,
+									selectedEmployeeId,
+								}}
+							/>
 						</>
-						
 					) : loanType === "M" ? (
-
 						<>
-						{/* <div className="grid grid-cols-2 gap-5 mt-5">
+							{/* <div className="grid grid-cols-2 gap-5 mt-5">
 						<div>
 							<TDInputTemplateBr
 								placeholder="From Date"
@@ -418,16 +411,15 @@ function DisbursedLoanApproveBM() {
 							/>
 						</div>
 					</div> */}
-						<RecoveryMemberApproveTable
-							flag="BM"
-							loanAppData={loanApplicationsMember}
-							title="Approve Transaction"
-							setSearch={(data) => setSearch(data)}
-							loanType={loanType}
-							// fetchLoanApplications={fetchLoanApplications}
-						/>
+							<RecoveryMemberApproveTable
+								flag="BM"
+								loanAppData={loanApplicationsMember}
+								title="Approve Transaction"
+								setSearch={(data) => setSearch(data)}
+								loanType={loanType}
+								// fetchLoanApplications={fetchLoanApplications}
+							/>
 						</>
-						
 					) : null}
 					{/* <DialogBox
 					visible={visible}
