@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react"
-import Sidebar from "../../../Components/Sidebar"
+import Sidebar from "../../../../Components/Sidebar"
 import axios from "axios"
-import { url } from "../../../Address/BaseUrl"
-import { Message } from "../../../Components/Message"
+import { url } from "../../../../Address/BaseUrl"
+import { Message } from "../../../../Components/Message"
 import { Spin, Button, Modal, Tooltip, DatePicker } from "antd"
 import dayjs from "dayjs"
 import {
@@ -11,14 +11,14 @@ import {
 	PrinterOutlined,
 	FileExcelOutlined,
 } from "@ant-design/icons"
-import Radiobtn from "../../../Components/Radiobtn"
-import TDInputTemplateBr from "../../../Components/TDInputTemplateBr"
-import { formatDateToYYYYMMDD } from "../../../Utils/formateDate"
+import Radiobtn from "../../../../Components/Radiobtn"
+import TDInputTemplateBr from "../../../../Components/TDInputTemplateBr"
+import { formatDateToYYYYMMDD } from "../../../../Utils/formateDate"
 
 import { saveAs } from "file-saver"
 import * as XLSX from "xlsx"
-import { printTableLoanStatement } from "../../../Utils/printTableLoanStatement"
-import { printTableDemandReport } from "../../../Utils/printTableDemandReport"
+import { printTableLoanStatement } from "../../../../Utils/printTableLoanStatement"
+import { printTableDemandReport } from "../../../../Utils/printTableDemandReport"
 
 // const { RangePicker } = DatePicker
 // const dateFormat = "YYYY/MM/DD"
@@ -34,7 +34,7 @@ const options = [
 	},
 ]
 
-function DemandReportsMain() {
+function A_DemandReportsMain() {
 	const userDetails = JSON.parse(localStorage.getItem("user_details")) || ""
 	const [loading, setLoading] = useState(false)
 
@@ -45,6 +45,8 @@ function DemandReportsMain() {
 	const [fromDate, setFromDate] = useState()
 	const [toDate, setToDate] = useState()
 	const [reportData, setReportData] = useState(() => [])
+	const [branch, setBranch] = useState(() => "")
+	const [branches, setBranches] = useState(() => [])
 	// const [reportTxnData, setReportTxnData] = useState(() => [])
 	// const [tot_sum, setTotSum] = useState(0)
 	// const [search, setSearch] = useState("")
@@ -56,12 +58,31 @@ function DemandReportsMain() {
 		setSearchType(e)
 	}
 
+	const handleFetchBranches = async () => {
+		setLoading(true)
+		await axios
+			.get(`${url}/fetch_all_branch_dt`)
+			.then((res) => {
+				console.log("QQQQQQQQQQQQQQQQ", res?.data)
+				setBranches(res?.data?.msg)
+			})
+			.catch((err) => {
+				console.log("?????????????????????", err)
+			})
+
+		setLoading(false)
+	}
+
+	useEffect(() => {
+		handleFetchBranches()
+	}, [])
+
 	const handleFetchReportDemand = async () => {
 		setLoading(true)
 		const creds = {
 			from_dt: formatDateToYYYYMMDD(fromDate),
 			to_dt: formatDateToYYYYMMDD(toDate),
-			branch_code: userDetails?.brn_code,
+			branch_code: branch,
 		}
 
 		await axios
@@ -202,11 +223,11 @@ function DemandReportsMain() {
 							mode={1}
 						/>
 					</div> */}
-					<div className="text-slate-800 italic">
+					{/* <div className="text-slate-800 italic">
 						Branch: {userDetails?.branch_name}
-					</div>
+					</div> */}
 
-					<div className="grid grid-cols-3 gap-5 mt-5 items-end">
+					<div className="grid grid-cols-4 gap-5 mt-5 items-end">
 						<div>
 							<TDInputTemplateBr
 								placeholder="From Date"
@@ -229,6 +250,21 @@ function DemandReportsMain() {
 								handleChange={(e) => setToDate(e.target.value)}
 								min={"1900-12-31"}
 								mode={1}
+							/>
+						</div>
+						<div>
+							<TDInputTemplateBr
+								placeholder="Branch..."
+								type="text"
+								label="Branch"
+								name="branch"
+								formControlName={branch}
+								handleChange={(e) => setBranch(e.target.value)}
+								mode={2}
+								data={branches?.map((item, i) => ({
+									code: item?.branch_code,
+									name: item?.branch_name,
+								}))}
 							/>
 						</div>
 						<div>
@@ -434,4 +470,4 @@ function DemandReportsMain() {
 	)
 }
 
-export default DemandReportsMain
+export default A_DemandReportsMain

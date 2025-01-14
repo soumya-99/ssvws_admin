@@ -24,7 +24,7 @@ function Backbtn() {
 			>
 				<Tooltip title="Back">
 					<button
-						className=" inline-flex items-center justify-center text-sm font-medium text-center text-slate-50 bg-primary-700 h-7 w-7  bg-[#DA4167] hover:duration-500 ease-in-out rounded-full hover:rounded-xl dark:focus:ring-primary-900 dark:bg-[#d14141] dark:hover:bg-gray-600 dark:focus:ring-primary-900 hover:bg-primary-800 "
+						className=" inline-flex items-center justify-center text-sm font-medium text-center text-slate-50 bg-primary-700 h-10 w-10  bg-[#DA4167] hover:duration-500 ease-in-out rounded-full hover:rounded-xl dark:focus:ring-primary-900 dark:bg-[#d14141] dark:hover:bg-gray-600 dark:focus:ring-primary-900 hover:bg-primary-800 "
 						onClick={() => navigation(-1)}
 					>
 						<ArrowBackIcon />

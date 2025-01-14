@@ -32,7 +32,7 @@ function TransferUser() {
 						className="text-blue-800 dark:text-gray-400"
 						spinning={loading}
 					>
-						<div className="card shadow-lg bg-white border-2 p-5 mx-16  rounded-3xl surface-border border-round surface-ground flex-auto font-medium">
+						<div className="card shadow-lg bg-white border-2 p-5 px-10 py-10 mx-16  rounded-3xl surface-border border-round surface-ground flex-auto font-medium">
 							<TransferUserForm />
 						</div>
 					</Spin>
