@@ -68,29 +68,64 @@ function OutstaningReportMain() {
 
 		setLoading(true)
 
-		while (true) {
-			const creds = {
-				os_dt: formatDateToYYYYMMDD(fromDate),
-				branch_code: userDetails?.brn_code,
-				min: min,
-				max: min + maxBatchSize,
-			}
+		// while (true) {
+		// 	const creds = {
+		// 		os_dt: formatDateToYYYYMMDD(fromDate),
+		// 		branch_code: userDetails?.brn_code,
+		// 		min: min,
+		// 		max: min + maxBatchSize,
+		// 	}
 
-			console.log("--------------- WHILE CREDS ---------------", creds)
+		// 	console.log("--------------- WHILE CREDS ---------------", creds)
 
-			try {
-				const res = await axios.post(
-					`${url}/loan_outstanding_report_memberwise`,
-					creds
-				)
-				const data = res?.data?.msg || []
+		// 	try {
+		// 		const res = await axios.post(
+		// 			`${url}/loan_outstanding_report_memberwise`,
+		// 			creds
+		// 		)
+		// 		const data = res?.data?.msg || []
+		// 		if (data?.length === 0) {
+		// 			console.log(
+		// 				"--------------- LOOP BREAKS ---------------",
+		// 				data?.length
+		// 			)
+		// 			setProgress(100)
+		// 			break
+		// 		}
+
+		// 		console.log("---------- DATA MEMWISE -----------", data)
+
+		// 		// setReportData((prev) => [...prev, ...data])
+		// 		setReportData(res?.data?.msg)
+		// 		min += maxBatchSize
+
+		// 		setProgress((prev) => Math.min(100, prev + increment))
+
+		// 		setLoading(false)
+		// 	} catch (err) {
+		// 		console.log("ERRRR>>>", err)
+		// 		break
+		// 	}
+		// }
+
+		const creds = {
+			os_dt: formatDateToYYYYMMDD(fromDate),
+			branch_code: userDetails?.brn_code,
+			min: min,
+			max: min + maxBatchSize,
+		}
+
+		await axios
+		.post(`${url}/loan_outstanding_report_memberwise`, creds)
+		.then((res) => {
+			const data = res?.data?.msg || []
 				if (data?.length === 0) {
 					console.log(
 						"--------------- LOOP BREAKS ---------------",
 						data?.length
 					)
 					setProgress(100)
-					break
+					// break
 				}
 
 				console.log("---------- DATA MEMWISE -----------", data)
@@ -102,11 +137,10 @@ function OutstaningReportMain() {
 				setProgress((prev) => Math.min(100, prev + increment))
 
 				setLoading(false)
-			} catch (err) {
-				console.log("ERRRR>>>", err)
-				break
-			}
-		}
+		})
+		.catch((err) => {
+		console.log("ERRRR>>>", err)
+		})
 
 		setLoading(false)
 	}
