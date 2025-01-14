@@ -94,6 +94,7 @@ function RecoveryGroupApproveTable({
 
 
 	const onRowExpand = (event) => {
+		
 		setExpandedRows(null);
 		console.log(event.data.group_code, 'event.data');
 		// console.log('itemitemitemitem', 'lll', event.data);
