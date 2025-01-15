@@ -79,13 +79,13 @@ function A_LoanStatementMain() {
 		setLoading(true)
 		const creds = {
 			memb: search,
-			branch_code: branch,
+			// branch_code: userDetails?.brn_code,
 		}
 
 		console.log("::::::::::::>>>>>>>>>>>>", creds)
 
 		await axios
-			.post(`${url}/loan_statement_memb_dtls`, creds)
+			.post(`${url}/adminreport/loan_statement_memb_dtls_admin`, creds)
 			.then((res) => {
 				console.log("RESSSSS======>>>>", res?.data)
 				setReportData(res?.data?.msg)
@@ -102,13 +102,13 @@ function A_LoanStatementMain() {
 		setLoading(true)
 		const creds = {
 			grp: search,
-			branch_code: branch,
+			// branch_code: userDetails?.brn_code,
 		}
 
 		console.log(">>>>>>>>>>>>::::::::::::", creds)
 
 		await axios
-			.post(`${url}/loan_statement_group_dtls`, creds)
+			.post(`${url}/adminreport/loan_statement_group_dtls_admin`, creds)
 			.then((res) => {
 				console.log("RESSSSS======>>>>", res?.data)
 				setReportData(res?.data?.msg)
@@ -130,7 +130,7 @@ function A_LoanStatementMain() {
 		}
 
 		await axios
-			.post(`${url}/loan_statement_report`, creds)
+			.post(`${url}/adminreport/loan_statement_report_admin`, creds)
 			.then((res) => {
 				console.log("RESSSSS XX======>>>>", res?.data)
 				setReportTxnData(res?.data?.msg)
@@ -152,7 +152,7 @@ function A_LoanStatementMain() {
 		}
 
 		await axios
-			.post(`${url}/loan_statement_group_report`, creds)
+			.post(`${url}/adminreport/loan_statement_group_report_admin`, creds)
 			.then((res) => {
 				console.log("RESSSSS XX======>>>>", res?.data)
 				setReportTxnData(res?.data?.msg)
@@ -174,7 +174,7 @@ function A_LoanStatementMain() {
 	// }, [searchType, search])
 
 	const handleSubmit = async () => {
-		if (!search || !branch) {
+		if (!search) {
 			Message("warning", "Fill the necesary details")
 			return
 		}
@@ -258,7 +258,7 @@ function A_LoanStatementMain() {
 								mode={1}
 							/>
 						</div>
-						<div>
+						{/* <div>
 							<TDInputTemplateBr
 								placeholder="Branch..."
 								type="text"
@@ -272,7 +272,7 @@ function A_LoanStatementMain() {
 									name: item?.branch_name,
 								}))}
 							/>
-						</div>
+						</div> */}
 					</div>
 
 					{reportData.length > 0 && (
