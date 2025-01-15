@@ -521,13 +521,13 @@ function OutstaningReportMain() {
 															: "---"}
 													</td>
 													<td className="px-6 py-3">
-														{item?.curr_roi || "---"}
+														{parseFloat(item?.curr_roi)?.toFixed(2) || "---"}
 													</td>
 													<td className="px-6 py-3">
 														{item?.period_mode || "---"}
 													</td>
 													<td className="px-6 py-3">
-														{item?.tot_emi || "---"}
+														{parseFloat(item?.tot_emi)?.toFixed(2) || "---"}
 													</td>
 													<td className="px-6 py-3">{item?.period || "---"}</td>
 													<td className="px-6 py-3">
@@ -539,13 +539,14 @@ function OutstaningReportMain() {
 													</td>
 													<td className="px-6 py-3">{item?.balance || "0"}</td>
 													<td className="px-6 py-3">
-														{item?.od_balance || "0"}
+														{parseFloat(item?.od_balance)?.toFixed(2) || "0"}
 													</td>
 													<td className="px-6 py-3">
-														{item?.intt_balance || "0"}
+														{parseFloat(item?.intt_balance)?.toFixed(2) || "0"}
 													</td>
 													<td className="px-6 py-3">
-														{+item?.total_outstanding || "---"}
+														{parseFloat(+item?.total_outstanding)?.toFixed(2) ||
+															"---"}
 													</td>
 												</tr>
 											)
@@ -709,10 +710,11 @@ function OutstaningReportMain() {
 															: "---"}
 													</td>
 													<td className="px-6 py-3">
-														{item?.applied_amt || "---"}
+														{parseFloat(item?.applied_amt)?.toFixed(2) || "---"}
 													</td>
 													<td className="px-6 py-3">
-														{item?.prn_disb_amt || "---"}
+														{parseFloat(item?.prn_disb_amt)?.toFixed(2) ||
+															"---"}
 													</td>
 													<td className="px-6 py-3">
 														{item?.disb_dt
@@ -722,7 +724,7 @@ function OutstaningReportMain() {
 															: "---"}
 													</td>
 													<td className="px-6 py-3">
-														{item?.curr_roi || "---"}
+														{parseFloat(item?.curr_roi)?.toFixed(2) || "---"}
 													</td>
 													<td className="px-6 py-3">
 														{item?.instl_start_dt
@@ -735,7 +737,7 @@ function OutstaningReportMain() {
 														{item?.period_mode || "---"}
 													</td>
 													<td className="px-6 py-3">
-														{item?.tot_emi || "---"}
+														{parseFloat(item?.tot_emi)?.toFixed(2) || "---"}
 													</td>
 													<td className="px-6 py-3">
 														{item?.instl_end_dt
@@ -744,15 +746,18 @@ function OutstaningReportMain() {
 															  )?.toLocaleDateString("en-GB")
 															: "---"}
 													</td>
-													<td className="px-6 py-3">{item?.balance || "0"}</td>
 													<td className="px-6 py-3">
-														{item?.od_balance || "0"}
+														{parseFloat(item?.balance)?.toFixed(2) || "0"}
 													</td>
 													<td className="px-6 py-3">
-														{item?.intt_balance || "0"}
+														{parseFloat(item?.od_balance)?.toFixed(2) || "0"}
 													</td>
 													<td className="px-6 py-3">
-														{item?.total_outstanding || "---"}
+														{parseFloat(item?.intt_balance)?.toFixed(2) || "0"}
+													</td>
+													<td className="px-6 py-3">
+														{parseFloat(item?.total_outstanding)?.toFixed(2) ||
+															"---"}
 													</td>
 												</tr>
 											)
