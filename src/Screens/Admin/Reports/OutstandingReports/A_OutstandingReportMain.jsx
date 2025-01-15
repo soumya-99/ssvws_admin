@@ -55,8 +55,6 @@ function A_OutstandingReportMain() {
 
 	const [metadataDtls, setMetadataDtls] = useState(() => null)
 
-	const [breakFromLoop, setBreakFromLoop] = useState(() => false)
-
 	const onChange = (e) => {
 		console.log("radio1 checked", e)
 		setSearchType(e)
