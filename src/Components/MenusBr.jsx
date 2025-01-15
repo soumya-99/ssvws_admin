@@ -441,13 +441,13 @@ function MenusBr({ theme }) {
 					icon: <BarChartOutlined />,
 					label: <Link to={"/homeadmin/demandreport"}>Demand Report</Link>,
 				},
-				// {
-				// 	key: "sub3-7",
-				// 	icon: <BarChartOutlined />,
-				// 	label: (
-				// 		<Link to={"/homeadmin/outstasndingreport"}>Outstanding Report</Link>
-				// 	),
-				// },
+				{
+					key: "sub3-7",
+					icon: <BarChartOutlined />,
+					label: (
+						<Link to={"/homeadmin/outstasndingreport"}>Outstanding Report</Link>
+					),
+				},
 			],
 		},
 	]

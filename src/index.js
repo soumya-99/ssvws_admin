@@ -27,6 +27,7 @@ import TransferUser from "./Screens/Admin/UserManagement/TransferUser"
 import A_LoanStatementMain from "./Screens/Admin/Reports/LoanStatements/A_LoanStatementMain"
 import A_LoanTransactionsMain from "./Screens/Admin/Reports/LoanTransactions/A_LoanTransactionsMain"
 import A_DemandReportsMain from "./Screens/Admin/Reports/DemandReports/A_DemandReportsMain"
+import A_OutstandingReportMain from "./Screens/Admin/Reports/OutstandingReports/A_OutstandingReportMain"
 // import A_LoanStatementMain from "./Screens/Admin/Reports/LoanStatements/A_LoanStatementMain"
 // import A_LoanTransactionsMain from "./Screens/Admin/Reports/LoanTransactions/A_LoanTransactionsMain"
 // import A_DemandReportsMain from "./Screens/Admin/Reports/DemandReports/A_DemandReportsMain"
@@ -354,6 +355,10 @@ const router = createBrowserRouter([
 							{
 								path: "demandreport",
 								element: <A_DemandReportsMain />,
+							},
+							{
+								path: "outstasndingreport",
+								element: <A_OutstandingReportMain />,
 							},
 						],
 					},

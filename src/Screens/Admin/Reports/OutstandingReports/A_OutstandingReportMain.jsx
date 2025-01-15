@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react"
-import Sidebar from "../../../Components/Sidebar"
+import Sidebar from "../../../../Components/Sidebar"
 import axios from "axios"
-import { url } from "../../../Address/BaseUrl"
-import { Message } from "../../../Components/Message"
+import { url } from "../../../../Address/BaseUrl"
+import { Message } from "../../../../Components/Message"
 import { Spin, Button, Modal, Tooltip, DatePicker, Progress } from "antd"
 import dayjs from "dayjs"
 import {
@@ -11,15 +11,15 @@ import {
 	PrinterOutlined,
 	FileExcelOutlined,
 } from "@ant-design/icons"
-import Radiobtn from "../../../Components/Radiobtn"
-import TDInputTemplateBr from "../../../Components/TDInputTemplateBr"
-import { formatDateToYYYYMMDD } from "../../../Utils/formateDate"
+import Radiobtn from "../../../../Components/Radiobtn"
+import TDInputTemplateBr from "../../../../Components/TDInputTemplateBr"
+import { formatDateToYYYYMMDD } from "../../../../Utils/formateDate"
 
 import { saveAs } from "file-saver"
 import * as XLSX from "xlsx"
-import { printTableLoanStatement } from "../../../Utils/printTableLoanStatement"
-import { printTableLoanTransactions } from "../../../Utils/printTableLoanTransactions"
-import { printTableOutstandingReport } from "../../../Utils/printTableOutstandingReport"
+import { printTableLoanStatement } from "../../../../Utils/printTableLoanStatement"
+import { printTableLoanTransactions } from "../../../../Utils/printTableLoanTransactions"
+import { printTableOutstandingReport } from "../../../../Utils/printTableOutstandingReport"
 
 // const { RangePicker } = DatePicker
 // const dateFormat = "YYYY/MM/DD"
@@ -35,7 +35,7 @@ const options = [
 	},
 ]
 
-function OutstaningReportMain() {
+function A_OutstandingReportMain() {
 	const userDetails = JSON.parse(localStorage.getItem("user_details")) || ""
 	const [loading, setLoading] = useState(false)
 
@@ -46,6 +46,8 @@ function OutstaningReportMain() {
 	const [fromDate, setFromDate] = useState()
 	const [toDate, setToDate] = useState()
 	const [reportData, setReportData] = useState(() => [])
+	const [branch, setBranch] = useState(() => "")
+	const [branches, setBranches] = useState(() => [])
 	// const [reportTxnData, setReportTxnData] = useState(() => [])
 	// const [tot_sum, setTotSum] = useState(0)
 	// const [search, setSearch] = useState("")
@@ -60,6 +62,25 @@ function OutstaningReportMain() {
 		setSearchType(e)
 	}
 
+	const handleFetchBranches = async () => {
+		setLoading(true)
+		await axios
+			.get(`${url}/fetch_all_branch_dt`)
+			.then((res) => {
+				console.log("QQQQQQQQQQQQQQQQ", res?.data)
+				setBranches(res?.data?.msg)
+			})
+			.catch((err) => {
+				console.log("?????????????????????", err)
+			})
+
+		setLoading(false)
+	}
+
+	useEffect(() => {
+		handleFetchBranches()
+	}, [])
+
 	const handleFetchReportOutstandingMemberwise = async () => {
 		let min = 0
 		const maxBatchSize = 50
@@ -68,73 +89,26 @@ function OutstaningReportMain() {
 
 		setLoading(true)
 
-		// while (true) {
-		// 	const creds = {
-		// 		os_dt: formatDateToYYYYMMDD(fromDate),
-		// 		branch_code: userDetails?.brn_code,
-		// 		min: min,
-		// 		max: min + maxBatchSize,
-		// 	}
-
-		// 	console.log("--------------- WHILE CREDS ---------------", creds)
-
-		// 	try {
-		// 		const res = await axios.post(
-		// 			`${url}/loan_outstanding_report_memberwise`,
-		// 			creds
-		// 		)
-		// 		const data = res?.data?.msg || []
-		// 		if (data?.length === 0) {
-		// 			console.log(
-		// 				"--------------- LOOP BREAKS ---------------",
-		// 				data?.length
-		// 			)
-		// 			setProgress(100)
-		// 			break
-		// 		}
-
-		// 		console.log("---------- DATA MEMWISE -----------", data)
-
-		// 		// setReportData((prev) => [...prev, ...data])
-		// 		setReportData(res?.data?.msg)
-		// 		min += maxBatchSize
-
-		// 		setProgress((prev) => Math.min(100, prev + increment))
-
-		// 		setLoading(false)
-		// 	} catch (err) {
-		// 		console.log("ERRRR>>>", err)
-		// 		break
-		// 	}
-		// }
-
 		const creds = {
 			os_dt: formatDateToYYYYMMDD(fromDate),
-			branch_code: userDetails?.brn_code,
+			branch_code: branch?.split(",")[0],
 			min: min,
 			max: min + maxBatchSize,
 		}
 
 		await axios
-			.post(`${url}/loan_outstanding_report_memberwise`, creds)
+			.post(
+				`${url}/adminreport/loan_outstanding_report_memberwise_admin`,
+				creds
+			)
 			.then((res) => {
 				const data = res?.data?.msg || []
-				if (data?.length === 0) {
-					console.log(
-						"--------------- LOOP BREAKS ---------------",
-						data?.length
-					)
-					setProgress(100)
-					// break
-				}
 
 				console.log("---------- DATA MEMWISE -----------", data)
 
-				// setReportData((prev) => [...prev, ...data])
 				setReportData(data)
-				// min += maxBatchSize
 
-				// setProgress((prev) => Math.min(100, prev + increment))
+				setMetadataDtls(branch.split(",")[1])
 			})
 			.catch((err) => {
 				console.log("ERRRR>>>", err)
@@ -151,68 +125,24 @@ function OutstaningReportMain() {
 
 		setLoading(true)
 
-		// while (true) {
-		// 	const creds = {
-		// 		os_dt: formatDateToYYYYMMDD(fromDate),
-		// 		branch_code: userDetails?.brn_code,
-		// 		min: min,
-		// 		max: min + maxBatchSize,
-		// 	}
-
-		// 	console.log("--------------- WHILE CREDS ---------------", creds)
-
-		// 	try {
-		// 		const res = await axios.post(
-		// 			`${url}/loan_outstanding_report_groupwise`,
-		// 			creds
-		// 		)
-		// 		const data = res?.data?.msg || []
-		// 		if (data.length === 0) {
-		// 			console.log(
-		// 				"--------------- LOOP BREAKS ---------------",
-		// 				data?.length
-		// 			)
-		// 			setProgress(100)
-		// 			break
-		// 		}
-
-		// 		console.log("---------- DATA GROUPWISE -----------", data)
-
-		// 		setReportData((prev) => [...prev, ...data])
-		// 		min += maxBatchSize
-
-		// 		setProgress((prev) => Math.min(100, prev + increment))
-
-		// 		setLoading(false)
-		// 	} catch (err) {
-		// 		console.log("ERRRR>>>", err)
-		// 		break
-		// 	}
-		// }
-
 		const creds = {
 			os_dt: formatDateToYYYYMMDD(fromDate),
-			branch_code: userDetails?.brn_code,
+			branch_code: branch?.split(",")[0],
 			min: min,
 			max: min + maxBatchSize,
 		}
 
 		await axios
-			.post(`${url}/loan_outstanding_report_groupwise`, creds)
+			.post(`${url}/adminreport/loan_outstanding_report_groupwise_admin`, creds)
 			.then((res) => {
 				const data = res?.data?.msg || []
-				if (data.length === 0) {
-					console.log(
-						"--------------- LOOP BREAKS ---------------",
-						data?.length
-					)
-				}
 
 				console.log("---------- DATA GROUPWISE -----------", res?.data)
 
 				setReportData(data)
 
 				console.log("RESSS approveRecoveryTransaction", res?.data)
+				setMetadataDtls(branch.split(",")[1])
 			})
 			.catch((err) => {
 				console.log("ERRRR>>>", err)
@@ -220,14 +150,6 @@ function OutstaningReportMain() {
 
 		setLoading(false)
 	}
-
-	// useEffect(() => {
-	// 	if (searchType === "M" && fromDate) {
-	// 		handleFetchReportOutstandingMemberwise()
-	// 	} else if (searchType === "G" && fromDate) {
-	// 		handleFetchReportOutstandingGroupwise()
-	// 	}
-	// }, [searchType, fromDate])
 
 	const handleSubmit = () => {
 		if (searchType === "M" && fromDate) {
@@ -297,10 +219,6 @@ function OutstaningReportMain() {
 						</div>
 					</div>
 
-					<div className="text-slate-800 italic">
-						Branch: {userDetails?.branch_name}
-					</div>
-
 					<div className="mb-2 flex justify-between items-center">
 						<div>
 							<Radiobtn
@@ -310,6 +228,50 @@ function OutstaningReportMain() {
 									onChange(value)
 								}}
 							/>
+
+							<div>
+								<TDInputTemplateBr
+									placeholder="Branch..."
+									type="text"
+									label="Branch"
+									name="branch"
+									formControlName={branch.split(",")[0]}
+									handleChange={(e) => {
+										console.log("***********========", e)
+										setBranch(
+											e.target.value +
+												"," +
+												[
+													{ branch_code: "A", branch_name: "All Branches" },
+													...branches,
+												].filter((i) => i.branch_code == e.target.value)[0]
+													?.branch_name
+										)
+										console.log(branches)
+										console.log(
+											e.target.value +
+												"," +
+												[
+													{ branch_code: "A", branch_name: "All Branches" },
+													...branches,
+												].filter((i) => i.branch_code == e.target.value)[0]
+													?.branch_name
+										)
+									}}
+									mode={2}
+									// data={branches?.map((item, i) => ({
+									// 	code: item?.branch_code,
+									// 	name: item?.branch_name,
+									// }))}
+									data={[
+										{ code: "A", name: "All Branches" },
+										...branches?.map((item, i) => ({
+											code: item?.branch_code,
+											name: item?.branch_name,
+										})),
+									]}
+								/>
+							</div>
 						</div>
 
 						{/* R.I.P Sweet bro */}
@@ -805,7 +767,7 @@ function OutstaningReportMain() {
 											reportData,
 											"Outstanding Report",
 											searchType,
-											userDetails?.branch_name,
+											metadataDtls,
 											fromDate,
 											toDate
 										)
@@ -827,4 +789,4 @@ function OutstaningReportMain() {
 	)
 }
 
-export default OutstaningReportMain
+export default A_OutstandingReportMain
