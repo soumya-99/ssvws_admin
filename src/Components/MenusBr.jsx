@@ -306,15 +306,15 @@ function MenusBr({ theme }) {
 						},
 					],
 				},
-				{
-					key: "sub6-9",
-					icon: <BarChartOutlined />,
-					label: (
-						<Link to={"/homebm/demandvscollectionreport"}>
-							Demand vs. Collection
-						</Link>
-					),
-				},
+				// {
+				// 	key: "sub6-9",
+				// 	icon: <BarChartOutlined />,
+				// 	label: (
+				// 		<Link to={"/homebm/demandvscollectionreport"}>
+				// 			Demand vs. Collection
+				// 		</Link>
+				// 	),
+				// },
 			],
 		},
 		{
@@ -481,6 +481,31 @@ function MenusBr({ theme }) {
 					label: (
 						<Link to={"/homeadmin/outstasndingreport"}>Outstanding Report</Link>
 					),
+				},
+				{
+					key: "sub3-8",
+					icon: <BarChartOutlined />,
+					label: <Link to={"/homeadmin/summaryreports"}>Summary Reports</Link>,
+					children: [
+						{
+							key: "sub3-8-1",
+							icon: <BarChartOutlined />,
+							label: (
+								<Link to={"/homeadmin/summaryreports/fundwise"}>
+									Fundwise Report
+								</Link>
+							),
+						},
+						{
+							key: "sub3-8-2",
+							icon: <BarChartOutlined />,
+							label: (
+								<Link to={"/homeadmin/summaryreports/schemewise"}>
+									Schemewise Report
+								</Link>
+							),
+						},
+					],
 				},
 			],
 		},
