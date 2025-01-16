@@ -306,15 +306,15 @@ function MenusBr({ theme }) {
 						},
 					],
 				},
-				// {
-				// 	key: "sub6-9",
-				// 	icon: <BarChartOutlined />,
-				// 	label: (
-				// 		<Link to={"/homebm/demandvscollectionreport"}>
-				// 			Demand vs. Collection
-				// 		</Link>
-				// 	),
-				// },
+				{
+					key: "sub6-9",
+					icon: <BarChartOutlined />,
+					label: (
+						<Link to={"/homebm/demandvscollectionreport"}>
+							Demand vs. Collection
+						</Link>
+					),
+				},
 			],
 		},
 		{
