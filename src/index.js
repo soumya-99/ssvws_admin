@@ -28,6 +28,9 @@ import A_LoanStatementMain from "./Screens/Admin/Reports/LoanStatements/A_LoanSt
 import A_LoanTransactionsMain from "./Screens/Admin/Reports/LoanTransactions/A_LoanTransactionsMain"
 import A_DemandReportsMain from "./Screens/Admin/Reports/DemandReports/A_DemandReportsMain"
 import A_OutstandingReportMain from "./Screens/Admin/Reports/OutstandingReports/A_OutstandingReportMain"
+import DemandVsCollectionMain from "./Screens/Reports/DemandVsCollectionReport/DemandVsCollectionMain"
+import FundwiseMain from "./Screens/Reports/SummaryReports/FundwiseReport/FundwiseMain"
+import SchemewiseMain from "./Screens/Reports/SummaryReports/SchemewiseReport/SchemewiseMain"
 // import A_LoanStatementMain from "./Screens/Admin/Reports/LoanStatements/A_LoanStatementMain"
 // import A_LoanTransactionsMain from "./Screens/Admin/Reports/LoanTransactions/A_LoanTransactionsMain"
 // import A_DemandReportsMain from "./Screens/Admin/Reports/DemandReports/A_DemandReportsMain"
@@ -301,6 +304,23 @@ const router = createBrowserRouter([
 							{
 								path: "outstasndingreport",
 								element: <OutstaningReportMain />,
+							},
+							{
+								path: "demandvscollectionreport",
+								element: <DemandVsCollectionMain />,
+							},
+							{
+								path: "summaryreports",
+								children: [
+									{
+										path: "fundwise",
+										element: <FundwiseMain />,
+									},
+									{
+										path: "schemewise",
+										element: <SchemewiseMain />,
+									},
+								],
 							},
 						],
 					},

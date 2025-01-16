@@ -281,6 +281,40 @@ function MenusBr({ theme }) {
 						<Link to={"/homebm/outstasndingreport"}>Outstanding Report</Link>
 					),
 				},
+				{
+					key: "sub6-8",
+					icon: <BarChartOutlined />,
+					label: <Link to={"/homebm/summaryreports"}>Summary Reports</Link>,
+					children: [
+						{
+							key: "sub6-8-1",
+							icon: <BarChartOutlined />,
+							label: (
+								<Link to={"/homebm/summaryreports/fundwise"}>
+									Fundwise Report
+								</Link>
+							),
+						},
+						{
+							key: "sub6-8-2",
+							icon: <BarChartOutlined />,
+							label: (
+								<Link to={"/homebm/summaryreports/schemewise"}>
+									Schemewise Report
+								</Link>
+							),
+						},
+					],
+				},
+				{
+					key: "sub6-9",
+					icon: <BarChartOutlined />,
+					label: (
+						<Link to={"/homebm/demandvscollectionreport"}>
+							Demand vs. Collection
+						</Link>
+					),
+				},
 			],
 		},
 		{
