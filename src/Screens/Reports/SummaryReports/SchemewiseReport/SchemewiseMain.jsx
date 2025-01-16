@@ -280,7 +280,7 @@ function SchemewiseMain() {
 									onClick={() =>
 										printTableRegular(
 											reportData,
-											"Fundwise Report",
+											"Schemewise Report",
 											metadataDtls,
 											fromDate,
 											toDate
