@@ -274,7 +274,7 @@ function A_SchemewiseMain() {
 												Total Credit
 											</th>
 											<th scope="col" className="px-6 py-3 font-semibold ">
-												Total Outstanding
+												Current Outstanding
 											</th>
 										</tr>
 									</thead>
