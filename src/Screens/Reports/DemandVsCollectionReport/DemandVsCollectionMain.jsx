@@ -80,6 +80,7 @@ function DemandVsCollectionMain() {
 	}
 
 	useEffect(() => {
+		setReportData([])
 		if (searchType === "C") {
 			handleFetchCO()
 		}
@@ -200,13 +201,11 @@ function DemandVsCollectionMain() {
 		return buf
 	}
 
-	let totCred = 0
-	let totDisbAmt = 0
-	let totCurrDmdAmt = 0
-	let totOvdDmdAmt = 0
-	let totCollec = 0
-	let totCurrPrin = 0
-	let totOvdPrin = 0
+	let totEmi = 0
+	let totPrevDemand = 0
+	let totCurrDemand = 0
+	let totCollAmt = 0
+	let totOut = 0
 
 	return (
 		<div>
@@ -390,7 +389,7 @@ function DemandVsCollectionMain() {
 												Collection Amount
 											</th>
 											<th scope="col" className="px-6 py-3 font-semibold ">
-												Current Principal
+												Outstanding
 											</th>
 											<th scope="col" className="px-6 py-3 font-semibold ">
 												CO Name
@@ -399,15 +398,11 @@ function DemandVsCollectionMain() {
 									</thead>
 									<tbody>
 										{reportData?.map((item, i) => {
-											// totCred += +item?.tot_credit
-											// totDebit += +item?.tot_debit
-											// totOut += +item?.tot_outstanding
-											totDisbAmt += +item?.disbursed_amount
-											totCurrDmdAmt += +item?.curr_dmd_amt
-											totOvdDmdAmt += +item?.ovd_dmd_amt
-											totCollec += +item?.coll_amt
-											totCurrPrin += +item?.current_principal
-											totOvdPrin += +item?.overdue_principal
+											totEmi += item?.total_emi
+											totPrevDemand += item?.previous_demand
+											totCurrDemand += item?.current_demand
+											totCollAmt += item?.coll_amt
+											totOut += item?.current_principal
 
 											return (
 												<tr
@@ -486,18 +481,20 @@ function DemandVsCollectionMain() {
 												</tr>
 											)
 										})}
-										{/* <tr className="bg-slate-700 text-slate-50 text-center text-sm sticky bottom-0">
+										<tr className="bg-slate-700 text-slate-50 text-center text-sm sticky bottom-0">
 											<td colSpan={1}>TOTAL:</td>
-											<td colSpan={7}></td>
-											<td colSpan={1}>{totDisbAmt}/-</td>
-											<td colSpan={6}></td>
-											<td colSpan={1}>{totCurrDmdAmt?.toFixed(2)}/-</td>
-											<td colSpan={1}>{totOvdDmdAmt?.toFixed(2)}/-</td>
-											<td colSpan={1}>{totCollec?.toFixed(2)}/-</td>
-											<td colSpan={1}>{totCurrPrin?.toFixed(2)}/-</td>
-											<td colSpan={1}>{totOvdPrin?.toFixed(2)}/-</td>
 											<td colSpan={12}></td>
-										</tr> */}
+											<td colSpan={1}>{parseFloat(totEmi).toFixed(2)}/-</td>
+											<td colSpan={1}>
+												{parseFloat(totPrevDemand).toFixed(2)}/-
+											</td>
+											<td colSpan={1}>
+												{parseFloat(totCurrDemand).toFixed(2)}/-
+											</td>
+											<td colSpan={1}>{parseFloat(totCollAmt).toFixed(2)}/-</td>
+											<td colSpan={1}>{parseFloat(totOut).toFixed(2)}/-</td>
+											<td colSpan={1}></td>
+										</tr>
 									</tbody>
 								</table>
 							</div>
@@ -573,15 +570,11 @@ function DemandVsCollectionMain() {
 									</thead>
 									<tbody>
 										{reportData?.map((item, i) => {
-											// totCred += +item?.tot_credit
-											// totDebit += +item?.tot_debit
-											// totOut += +item?.tot_outstanding
-											totDisbAmt += +item?.disbursed_amount
-											totCurrDmdAmt += +item?.curr_dmd_amt
-											totOvdDmdAmt += +item?.ovd_dmd_amt
-											totCollec += +item?.coll_amt
-											totCurrPrin += +item?.current_principal
-											totOvdPrin += +item?.overdue_principal
+											totEmi += item?.total_emi
+											totPrevDemand += item?.previous_demand
+											totCurrDemand += item?.current_demand
+											totCollAmt += item?.coll_amt
+											totOut += item?.current_principal
 
 											return (
 												<tr
@@ -647,18 +640,20 @@ function DemandVsCollectionMain() {
 												</tr>
 											)
 										})}
-										{/* <tr className="bg-slate-700 text-slate-50 text-center text-sm sticky bottom-0">
+										<tr className="bg-slate-700 text-slate-50 text-center text-sm sticky bottom-0">
 											<td colSpan={1}>TOTAL:</td>
-											<td colSpan={7}></td>
-											<td colSpan={1}>{totDisbAmt}/-</td>
-											<td colSpan={6}></td>
-											<td colSpan={1}>{totCurrDmdAmt?.toFixed(2)}/-</td>
-											<td colSpan={1}>{totOvdDmdAmt?.toFixed(2)}/-</td>
-											<td colSpan={1}>{totCollec?.toFixed(2)}/-</td>
-											<td colSpan={1}>{totCurrPrin?.toFixed(2)}/-</td>
-											<td colSpan={1}>{totOvdPrin?.toFixed(2)}/-</td>
-											<td colSpan={12}></td>
-										</tr> */}
+											<td colSpan={8}></td>
+											<td colSpan={1}>{parseFloat(totEmi).toFixed(2)}/-</td>
+											<td colSpan={1}>
+												{parseFloat(totPrevDemand).toFixed(2)}/-
+											</td>
+											<td colSpan={1}>
+												{parseFloat(totCurrDemand).toFixed(2)}/-
+											</td>
+											<td colSpan={1}>{parseFloat(totCollAmt).toFixed(2)}/-</td>
+											<td colSpan={1}>{parseFloat(totOut).toFixed(2)}/-</td>
+											<td colSpan={1}></td>
+										</tr>
 									</tbody>
 								</table>
 							</div>
@@ -737,7 +732,7 @@ function DemandVsCollectionMain() {
 												Collection Amount
 											</th>
 											<th scope="col" className="px-6 py-3 font-semibold ">
-												Current Principal
+												Outstanding
 											</th>
 											<th scope="col" className="px-6 py-3 font-semibold ">
 												CO Name
@@ -749,15 +744,11 @@ function DemandVsCollectionMain() {
 									</thead>
 									<tbody>
 										{reportData?.map((item, i) => {
-											// totCred += +item?.tot_credit
-											// totDebit += +item?.tot_debit
-											// totOut += +item?.tot_outstanding
-											totDisbAmt += +item?.disbursed_amount
-											totCurrDmdAmt += +item?.curr_dmd_amt
-											totOvdDmdAmt += +item?.ovd_dmd_amt
-											totCollec += +item?.coll_amt
-											totCurrPrin += +item?.current_principal
-											totOvdPrin += +item?.overdue_principal
+											totEmi += item?.total_emi
+											totPrevDemand += item?.previous_demand
+											totCurrDemand += item?.current_demand
+											totCollAmt += item?.coll_amt
+											totOut += item?.current_principal
 
 											return (
 												<tr
@@ -839,18 +830,20 @@ function DemandVsCollectionMain() {
 												</tr>
 											)
 										})}
-										{/* <tr className="bg-slate-700 text-slate-50 text-center text-sm sticky bottom-0">
+										<tr className="bg-slate-700 text-slate-50 text-center text-sm sticky bottom-0">
 											<td colSpan={1}>TOTAL:</td>
-											<td colSpan={7}></td>
-											<td colSpan={1}>{totDisbAmt}/-</td>
-											<td colSpan={6}></td>
-											<td colSpan={1}>{totCurrDmdAmt?.toFixed(2)}/-</td>
-											<td colSpan={1}>{totOvdDmdAmt?.toFixed(2)}/-</td>
-											<td colSpan={1}>{totCollec?.toFixed(2)}/-</td>
-											<td colSpan={1}>{totCurrPrin?.toFixed(2)}/-</td>
-											<td colSpan={1}>{totOvdPrin?.toFixed(2)}/-</td>
 											<td colSpan={12}></td>
-										</tr> */}
+											<td colSpan={1}>{parseFloat(totEmi).toFixed(2)}/-</td>
+											<td colSpan={1}>
+												{parseFloat(totPrevDemand).toFixed(2)}/-
+											</td>
+											<td colSpan={1}>
+												{parseFloat(totCurrDemand).toFixed(2)}/-
+											</td>
+											<td colSpan={1}>{parseFloat(totCollAmt).toFixed(2)}/-</td>
+											<td colSpan={1}>{parseFloat(totOut).toFixed(2)}/-</td>
+											<td colSpan={2}></td>
+										</tr>
 									</tbody>
 								</table>
 							</div>
