@@ -183,7 +183,12 @@ function DemandVsCollectionMain() {
 		XLSX.utils.book_append_sheet(wb, ws, "Sheet1")
 		const wbout = XLSX.write(wb, { bookType: "xlsx", type: "binary" })
 		const blob = new Blob([s2ab(wbout)], { type: "application/octet-stream" })
-		saveAs(blob, `Demand_Vs_Collection_${metadataDtls}.xlsx`)
+		saveAs(
+			blob,
+			`Demand_Vs_Collection_${metadataDtls?.split(",")[0]}_${
+				metadataDtls?.split(",")[1]
+			}.xlsx`
+		)
 	}
 
 	const s2ab = (s) => {
