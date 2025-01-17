@@ -22,6 +22,21 @@ import { printTableRegular } from "../../../Utils/printTableRegular"
 // const { RangePicker } = DatePicker
 // const dateFormat = "YYYY/MM/DD"
 
+const options = [
+	{
+		label: "Memberwise",
+		value: "M",
+	},
+	{
+		label: "Groupwise",
+		value: "G",
+	},
+	{
+		label: "COwise",
+		value: "C",
+	},
+]
+
 function DemandVsCollectionMain() {
 	const userDetails = JSON.parse(localStorage.getItem("user_details")) || ""
 	const [loading, setLoading] = useState(false)
@@ -29,6 +44,10 @@ function DemandVsCollectionMain() {
 	const [fromDate, setFromDate] = useState()
 	const [toDate, setToDate] = useState()
 	const [reportData, setReportData] = useState(() => [])
+	const [searchType, setSearchType] = useState(() => "M")
+
+	const [cos, setCos] = useState(() => [])
+	const [co, setCo] = useState(() => "")
 	// const [reportTxnData, setReportTxnData] = useState(() => [])
 	// const [tot_sum, setTotSum] = useState(0)
 	// const [search, setSearch] = useState("")
@@ -37,7 +56,37 @@ function DemandVsCollectionMain() {
 		() => userDetails?.branch_name
 	)
 
-	const handleFetchReport = async () => {
+	const onChange = (e) => {
+		console.log("radio1 checked", e)
+		setSearchType(e)
+	}
+
+	const handleFetchCO = async () => {
+		setLoading(true)
+		const creds = {
+			branch_code: userDetails?.brn_code,
+		}
+
+		await axios
+			.post(`${url}/fetch_branch_co`, creds)
+			.then((res) => {
+				console.log("++++++++++++++", res?.data?.msg)
+				setCos(res?.data?.msg)
+			})
+			.catch((err) => {
+				console.log("Some err while fetching Cos...")
+			})
+		setLoading(false)
+	}
+
+	useEffect(() => {
+		if (searchType === "C") {
+			handleFetchCO()
+		}
+	}, [searchType])
+
+	// "Memberwise"
+	const handleFetchMemberwiseReport = async () => {
 		setLoading(true)
 		const creds = {
 			from_dt: formatDateToYYYYMMDD(fromDate),
@@ -46,11 +95,61 @@ function DemandVsCollectionMain() {
 		}
 
 		await axios
-			.post(`${url}/dmd_vs_collec_report`, creds)
+			.post(`${url}/dmd_vs_collec_report_memberwise`, creds)
 			.then((res) => {
 				console.log("RESSSSS======>>>>", res?.data)
 				setReportData(res?.data?.msg)
 				// setTotSum(res?.data?.msg.reduce((n, { credit }) => n + credit, 0))
+				setMetadataDtls(`${userDetails?.brn_code},Memberwise`)
+			})
+			.catch((err) => {
+				console.log("ERRRR>>>", err)
+			})
+
+		setLoading(false)
+	}
+
+	// "Groupwise"
+	const handleFetchGroupwiseReport = async () => {
+		setLoading(true)
+		const creds = {
+			from_dt: formatDateToYYYYMMDD(fromDate),
+			to_dt: formatDateToYYYYMMDD(toDate),
+			branch_code: userDetails?.brn_code,
+		}
+
+		await axios
+			.post(`${url}/dmd_vs_collec_report_groupwise`, creds)
+			.then((res) => {
+				console.log("RESSSSS======>>>>", res?.data)
+				setReportData(res?.data?.msg)
+				// setTotSum(res?.data?.msg.reduce((n, { credit }) => n + credit, 0))
+				setMetadataDtls(`${userDetails?.brn_code},Groupwise`)
+			})
+			.catch((err) => {
+				console.log("ERRRR>>>", err)
+			})
+
+		setLoading(false)
+	}
+
+	// "COwise"
+	const handleFetchCOwiseReport = async () => {
+		setLoading(true)
+		const creds = {
+			from_dt: formatDateToYYYYMMDD(fromDate),
+			to_dt: formatDateToYYYYMMDD(toDate),
+			branch_code: userDetails?.brn_code,
+			co_id: co?.split(",")[0],
+		}
+
+		await axios
+			.post(`${url}/dmd_vs_collec_report_cowise`, creds)
+			.then((res) => {
+				console.log("RESSSSS======>>>>", res?.data)
+				setReportData(res?.data?.msg)
+				// setTotSum(res?.data?.msg.reduce((n, { credit }) => n + credit, 0))
+				setMetadataDtls(`${userDetails?.brn_code},COwise`)
 			})
 			.catch((err) => {
 				console.log("ERRRR>>>", err)
@@ -60,14 +159,21 @@ function DemandVsCollectionMain() {
 	}
 
 	const handleSubmit = () => {
-		if (
-			fromDate &&
-			toDate
-			// &&
-			// new Date(fromDate)?.toLocaleDateString()?.length === 10 &&
-			// new Date(toDate)?.toLocaleDateString()?.length === 10
-		) {
-			handleFetchReport()
+		if (!searchType || !fromDate || !toDate) {
+			Message("warning", "Please fill all details")
+			return
+		}
+
+		if (searchType === "M" && fromDate && toDate) {
+			handleFetchMemberwiseReport()
+		}
+
+		if (searchType === "G" && fromDate && toDate) {
+			handleFetchGroupwiseReport()
+		}
+
+		if (searchType === "C" && fromDate && toDate) {
+			handleFetchCOwiseReport()
 		}
 	}
 
@@ -112,6 +218,44 @@ function DemandVsCollectionMain() {
 							DEMAND VS. COLLECTION
 						</div>
 					</div>
+
+					<div className="mb-2">
+						<Radiobtn
+							data={options}
+							val={searchType}
+							onChangeVal={(value) => {
+								onChange(value)
+							}}
+						/>
+					</div>
+
+					{searchType === "C" && (
+						<div className="mb-2 flex justify-start gap-5">
+							<div>
+								<TDInputTemplateBr
+									placeholder="Choose CO..."
+									type="text"
+									label="Credit Officers"
+									name="co"
+									formControlName={co.split(",")[0]}
+									handleChange={(e) => {
+										console.log("***********========", e)
+										setCo(
+											e.target.value +
+												"," +
+												cos.filter((i) => i.emp_id == e.target.value)[0]
+													?.emp_name
+										)
+									}}
+									mode={2}
+									data={cos?.map((item, i) => ({
+										code: item?.emp_id,
+										name: `${item?.emp_name} - (${item?.emp_id})`,
+									}))}
+								/>
+							</div>
+						</div>
+					)}
 
 					<div className="mb-2 flex justify-start gap-5 items-center">
 						{/* R.I.P Sweet bro */}
@@ -169,9 +313,9 @@ function DemandVsCollectionMain() {
 						</div>
 					</div>
 
-					{/* For Recovery/Collection Results MR */}
+					{/* "Memberwise" */}
 
-					{reportData.length > 0 && (
+					{reportData.length > 0 && searchType === "M" && (
 						<div
 							className={`relative overflow-x-auto shadow-md sm:rounded-lg mt-5 max-h-[500px]
                                 [&::-webkit-scrollbar]:w-1
@@ -193,22 +337,19 @@ function DemandVsCollectionMain() {
 												Sl. No.
 											</th>
 											<th scope="col" className="px-6 py-3 font-semibold ">
-												Branch Code
-											</th>
-											<th scope="col" className="px-6 py-3 font-semibold ">
-												From
-											</th>
-											<th scope="col" className="px-6 py-3 font-semibold ">
-												To
+												Loan ID
 											</th>
 											<th scope="col" className="px-6 py-3 font-semibold ">
 												Member Code
 											</th>
 											<th scope="col" className="px-6 py-3 font-semibold ">
+												Member Name
+											</th>
+											<th scope="col" className="px-6 py-3 font-semibold ">
 												Group Code
 											</th>
 											<th scope="col" className="px-6 py-3 font-semibold ">
-												Loan ID
+												Group Name
 											</th>
 											<th scope="col" className="px-6 py-3 font-semibold ">
 												Disbursed Date
@@ -226,7 +367,7 @@ function DemandVsCollectionMain() {
 												Period Mode
 											</th>
 											<th scope="col" className="px-6 py-3 font-semibold ">
-												Installment Start Date
+												Recovery Day
 											</th>
 											<th scope="col" className="px-6 py-3 font-semibold ">
 												Installment End Date
@@ -235,10 +376,10 @@ function DemandVsCollectionMain() {
 												Total EMI
 											</th>
 											<th scope="col" className="px-6 py-3 font-semibold ">
-												Current DMD Amount
+												Previous Demand
 											</th>
 											<th scope="col" className="px-6 py-3 font-semibold ">
-												Overdue DMD Amount
+												Current Demand
 											</th>
 											<th scope="col" className="px-6 py-3 font-semibold ">
 												Collection Amount
@@ -247,10 +388,7 @@ function DemandVsCollectionMain() {
 												Current Principal
 											</th>
 											<th scope="col" className="px-6 py-3 font-semibold ">
-												Overdue Principal
-											</th>
-											<th scope="col" className="px-6 py-3 font-semibold ">
-												Interest Amount
+												CO Name
 											</th>
 										</tr>
 									</thead>
@@ -277,30 +415,19 @@ function DemandVsCollectionMain() {
 												>
 													<td className="px-6 py-3">{i + 1}</td>
 													<td className="px-6 py-3">
-														{item?.branch_code || "---"}
-													</td>
-													<td className="px-6 py-3">
-														{item?.from_dt
-															? new Date(item?.from_dt)?.toLocaleDateString(
-																	"en-GB"
-															  )
-															: "Err" || "---"}
-													</td>
-													<td className="px-6 py-3">
-														{item?.to_dt
-															? new Date(item?.to_dt)?.toLocaleDateString(
-																	"en-GB"
-															  )
-															: "Err" || "---"}
+														{item?.loan_id || "---"}
 													</td>
 													<td className="px-6 py-3">
 														{item?.member_code || "---"}
 													</td>
 													<td className="px-6 py-3">
+														{item?.client_name || "---"}
+													</td>
+													<td className="px-6 py-3">
 														{item?.group_code || "---"}
 													</td>
 													<td className="px-6 py-3">
-														{item?.loan_id || "---"}
+														{item?.group_name || "---"}
 													</td>
 													<td className="px-6 py-3">
 														{item?.disbursed_date
@@ -321,11 +448,7 @@ function DemandVsCollectionMain() {
 														{item?.period_mode || "---"}
 													</td>
 													<td className="px-6 py-3">
-														{item?.installment_start_date
-															? new Date(
-																	item?.installment_start_date
-															  )?.toLocaleDateString("en-GB")
-															: "Err" || "---"}
+														{item?.recov_day || "---"}
 													</td>
 													<td className="px-6 py-3">
 														{item?.installment_end_date
@@ -338,10 +461,12 @@ function DemandVsCollectionMain() {
 														{parseFloat(item?.total_emi)?.toFixed(2) || "0"}
 													</td>
 													<td className="px-6 py-3">
-														{parseFloat(item?.curr_dmd_amt)?.toFixed(2) || "0"}
+														{parseFloat(item?.previous_demand)?.toFixed(2) ||
+															"0"}
 													</td>
 													<td className="px-6 py-3">
-														{parseFloat(item?.ovd_dmd_amt)?.toFixed(2) || "0"}
+														{parseFloat(item?.current_demand)?.toFixed(2) ||
+															"0"}
 													</td>
 													<td className="px-6 py-3">
 														{parseFloat(item?.coll_amt)?.toFixed(2) || "0"}
@@ -351,17 +476,12 @@ function DemandVsCollectionMain() {
 															"0"}
 													</td>
 													<td className="px-6 py-3">
-														{parseFloat(item?.overdue_principal)?.toFixed(2) ||
-															"0"}
-													</td>
-													<td className="px-6 py-3">
-														{parseFloat(item?.interest_amount)?.toFixed(2) ||
-															"0"}
+														{item?.co_name || "---"}
 													</td>
 												</tr>
 											)
 										})}
-										<tr className="bg-slate-700 text-slate-50 text-center text-sm sticky bottom-0">
+										{/* <tr className="bg-slate-700 text-slate-50 text-center text-sm sticky bottom-0">
 											<td colSpan={1}>TOTAL:</td>
 											<td colSpan={7}></td>
 											<td colSpan={1}>{totDisbAmt}/-</td>
@@ -372,7 +492,360 @@ function DemandVsCollectionMain() {
 											<td colSpan={1}>{totCurrPrin?.toFixed(2)}/-</td>
 											<td colSpan={1}>{totOvdPrin?.toFixed(2)}/-</td>
 											<td colSpan={12}></td>
+										</tr> */}
+									</tbody>
+								</table>
+							</div>
+						</div>
+					)}
+
+					{/* "Groupwise" */}
+
+					{reportData.length > 0 && searchType === "G" && (
+						<div
+							className={`relative overflow-x-auto shadow-md sm:rounded-lg mt-5 max-h-[500px]
+                                [&::-webkit-scrollbar]:w-1
+                                [&::-webkit-scrollbar-track]:rounded-full
+                                [&::-webkit-scrollbar-track]:bg-transparent
+                                [&::-webkit-scrollbar-thumb]:rounded-full
+                                [&::-webkit-scrollbar-thumb]:bg-gray-300
+                                dark:[&::-webkit-scrollbar-track]:bg-transparent
+                                dark:[&::-webkit-scrollbar-thumb]:bg-neutral-500
+                            `}
+						>
+							<div
+								className={`w-full text-xs dark:bg-gray-700 dark:text-gray-400`}
+							>
+								<table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
+									<thead className="w-full text-xs uppercase text-slate-50 bg-slate-800 dark:bg-gray-700 dark:text-gray-400 sticky top-0">
+										<tr className="text-center">
+											<th scope="col" className="px-6 py-3 font-semibold ">
+												Sl. No.
+											</th>
+											<th scope="col" className="px-6 py-3 font-semibold ">
+												Group Code
+											</th>
+											<th scope="col" className="px-6 py-3 font-semibold ">
+												Group Name
+											</th>
+											<th scope="col" className="px-6 py-3 font-semibold ">
+												Disbursed Date
+											</th>
+											<th scope="col" className="px-6 py-3 font-semibold ">
+												Disbursed Amount
+											</th>
+											<th scope="col" className="px-6 py-3 font-semibold ">
+												Current ROI
+											</th>
+											<th scope="col" className="px-6 py-3 font-semibold ">
+												Period
+											</th>
+											<th scope="col" className="px-6 py-3 font-semibold ">
+												Period Mode
+											</th>
+											<th scope="col" className="px-6 py-3 font-semibold ">
+												Installment End Date
+											</th>
+											<th scope="col" className="px-6 py-3 font-semibold ">
+												Total EMI
+											</th>
+											<th scope="col" className="px-6 py-3 font-semibold ">
+												Previous Demand
+											</th>
+											<th scope="col" className="px-6 py-3 font-semibold ">
+												Current Demand
+											</th>
+											<th scope="col" className="px-6 py-3 font-semibold ">
+												Collection Amount
+											</th>
+											<th scope="col" className="px-6 py-3 font-semibold ">
+												Outstanding
+											</th>
+											<th scope="col" className="px-6 py-3 font-semibold ">
+												CO Name
+											</th>
 										</tr>
+									</thead>
+									<tbody>
+										{reportData?.map((item, i) => {
+											// totCred += +item?.tot_credit
+											// totDebit += +item?.tot_debit
+											// totOut += +item?.tot_outstanding
+											totDisbAmt += +item?.disbursed_amount
+											totCurrDmdAmt += +item?.curr_dmd_amt
+											totOvdDmdAmt += +item?.ovd_dmd_amt
+											totCollec += +item?.coll_amt
+											totCurrPrin += +item?.current_principal
+											totOvdPrin += +item?.overdue_principal
+
+											return (
+												<tr
+													key={i}
+													className={
+														i % 2 === 0
+															? "bg-slate-200 text-slate-900 text-center"
+															: "text-center"
+													}
+												>
+													<td className="px-6 py-3">{i + 1}</td>
+													<td className="px-6 py-3">
+														{item?.group_code || "---"}
+													</td>
+													<td className="px-6 py-3">
+														{item?.group_name || "---"}
+													</td>
+													<td className="px-6 py-3">
+														{item?.disbursed_date
+															? new Date(
+																	item?.disbursed_date
+															  )?.toLocaleDateString("en-GB")
+															: "Err" || "---"}
+													</td>
+													<td className="px-6 py-3">
+														{parseFloat(item?.disbursed_amount)?.toFixed(2) ||
+															"0"}
+													</td>
+													<td className="px-6 py-3">
+														{item?.current_roi || "---"}
+													</td>
+													<td className="px-6 py-3">{item?.period || "---"}</td>
+													<td className="px-6 py-3">
+														{item?.period_mode || "---"}
+													</td>
+													<td className="px-6 py-3">
+														{item?.installment_end_date
+															? new Date(
+																	item?.installment_end_date
+															  )?.toLocaleDateString("en-GB")
+															: "Err" || "---"}
+													</td>
+													<td className="px-6 py-3">
+														{parseFloat(item?.total_emi)?.toFixed(2) || "0"}
+													</td>
+													<td className="px-6 py-3">
+														{parseFloat(item?.previous_demand)?.toFixed(2) ||
+															"0"}
+													</td>
+													<td className="px-6 py-3">
+														{parseFloat(item?.current_demand)?.toFixed(2) ||
+															"0"}
+													</td>
+													<td className="px-6 py-3">
+														{parseFloat(item?.coll_amt)?.toFixed(2) || "0"}
+													</td>
+													<td className="px-6 py-3">
+														{parseFloat(item?.outstanding)?.toFixed(2) || "0"}
+													</td>
+													<td className="px-6 py-3">
+														{item?.co_name || "---"}
+													</td>
+												</tr>
+											)
+										})}
+										{/* <tr className="bg-slate-700 text-slate-50 text-center text-sm sticky bottom-0">
+											<td colSpan={1}>TOTAL:</td>
+											<td colSpan={7}></td>
+											<td colSpan={1}>{totDisbAmt}/-</td>
+											<td colSpan={6}></td>
+											<td colSpan={1}>{totCurrDmdAmt?.toFixed(2)}/-</td>
+											<td colSpan={1}>{totOvdDmdAmt?.toFixed(2)}/-</td>
+											<td colSpan={1}>{totCollec?.toFixed(2)}/-</td>
+											<td colSpan={1}>{totCurrPrin?.toFixed(2)}/-</td>
+											<td colSpan={1}>{totOvdPrin?.toFixed(2)}/-</td>
+											<td colSpan={12}></td>
+										</tr> */}
+									</tbody>
+								</table>
+							</div>
+						</div>
+					)}
+
+					{/* "COwise" */}
+
+					{reportData.length > 0 && searchType === "C" && (
+						<div
+							className={`relative overflow-x-auto shadow-md sm:rounded-lg mt-5 max-h-[500px]
+                                [&::-webkit-scrollbar]:w-1
+                                [&::-webkit-scrollbar-track]:rounded-full
+                                [&::-webkit-scrollbar-track]:bg-transparent
+                                [&::-webkit-scrollbar-thumb]:rounded-full
+                                [&::-webkit-scrollbar-thumb]:bg-gray-300
+                                dark:[&::-webkit-scrollbar-track]:bg-transparent
+                                dark:[&::-webkit-scrollbar-thumb]:bg-neutral-500
+                            `}
+						>
+							<div
+								className={`w-full text-xs dark:bg-gray-700 dark:text-gray-400`}
+							>
+								<table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
+									<thead className="w-full text-xs uppercase text-slate-50 bg-slate-800 dark:bg-gray-700 dark:text-gray-400 sticky top-0">
+										<tr className="text-center">
+											<th scope="col" className="px-6 py-3 font-semibold ">
+												Sl. No.
+											</th>
+											<th scope="col" className="px-6 py-3 font-semibold ">
+												Loan ID
+											</th>
+											<th scope="col" className="px-6 py-3 font-semibold ">
+												Member Code
+											</th>
+											<th scope="col" className="px-6 py-3 font-semibold ">
+												Member Name
+											</th>
+											<th scope="col" className="px-6 py-3 font-semibold ">
+												Group Code
+											</th>
+											<th scope="col" className="px-6 py-3 font-semibold ">
+												Group Name
+											</th>
+											<th scope="col" className="px-6 py-3 font-semibold ">
+												Disbursed Date
+											</th>
+											<th scope="col" className="px-6 py-3 font-semibold ">
+												Disbursed Amount
+											</th>
+											<th scope="col" className="px-6 py-3 font-semibold ">
+												Current ROI
+											</th>
+											<th scope="col" className="px-6 py-3 font-semibold ">
+												Period
+											</th>
+											<th scope="col" className="px-6 py-3 font-semibold ">
+												Period Mode
+											</th>
+											<th scope="col" className="px-6 py-3 font-semibold ">
+												Recovery Day
+											</th>
+											<th scope="col" className="px-6 py-3 font-semibold ">
+												Installment End Date
+											</th>
+											<th scope="col" className="px-6 py-3 font-semibold ">
+												Total EMI
+											</th>
+											<th scope="col" className="px-6 py-3 font-semibold ">
+												Previous Demand
+											</th>
+											<th scope="col" className="px-6 py-3 font-semibold ">
+												Current Demand
+											</th>
+											<th scope="col" className="px-6 py-3 font-semibold ">
+												Collection Amount
+											</th>
+											<th scope="col" className="px-6 py-3 font-semibold ">
+												Current Principal
+											</th>
+											<th scope="col" className="px-6 py-3 font-semibold ">
+												CO Name
+											</th>
+											<th scope="col" className="px-6 py-3 font-semibold ">
+												Collector Code
+											</th>
+										</tr>
+									</thead>
+									<tbody>
+										{reportData?.map((item, i) => {
+											// totCred += +item?.tot_credit
+											// totDebit += +item?.tot_debit
+											// totOut += +item?.tot_outstanding
+											totDisbAmt += +item?.disbursed_amount
+											totCurrDmdAmt += +item?.curr_dmd_amt
+											totOvdDmdAmt += +item?.ovd_dmd_amt
+											totCollec += +item?.coll_amt
+											totCurrPrin += +item?.current_principal
+											totOvdPrin += +item?.overdue_principal
+
+											return (
+												<tr
+													key={i}
+													className={
+														i % 2 === 0
+															? "bg-slate-200 text-slate-900 text-center"
+															: "text-center"
+													}
+												>
+													<td className="px-6 py-3">{i + 1}</td>
+													<td className="px-6 py-3">
+														{item?.loan_id || "---"}
+													</td>
+													<td className="px-6 py-3">
+														{item?.member_code || "---"}
+													</td>
+													<td className="px-6 py-3">
+														{item?.client_name || "---"}
+													</td>
+													<td className="px-6 py-3">
+														{item?.group_code || "---"}
+													</td>
+													<td className="px-6 py-3">
+														{item?.group_name || "---"}
+													</td>
+													<td className="px-6 py-3">
+														{item?.disbursed_date
+															? new Date(
+																	item?.disbursed_date
+															  )?.toLocaleDateString("en-GB")
+															: "Err" || "---"}
+													</td>
+													<td className="px-6 py-3">
+														{parseFloat(item?.disbursed_amount)?.toFixed(2) ||
+															"0"}
+													</td>
+													<td className="px-6 py-3">
+														{item?.current_roi || "---"}
+													</td>
+													<td className="px-6 py-3">{item?.period || "---"}</td>
+													<td className="px-6 py-3">
+														{item?.period_mode || "---"}
+													</td>
+													<td className="px-6 py-3">
+														{item?.recov_day || "---"}
+													</td>
+													<td className="px-6 py-3">
+														{item?.installment_end_date
+															? new Date(
+																	item?.installment_end_date
+															  )?.toLocaleDateString("en-GB")
+															: "Err" || "---"}
+													</td>
+													<td className="px-6 py-3">
+														{parseFloat(item?.total_emi)?.toFixed(2) || "0"}
+													</td>
+													<td className="px-6 py-3">
+														{parseFloat(item?.previous_demand)?.toFixed(2) ||
+															"0"}
+													</td>
+													<td className="px-6 py-3">
+														{parseFloat(item?.current_demand)?.toFixed(2) ||
+															"0"}
+													</td>
+													<td className="px-6 py-3">
+														{parseFloat(item?.coll_amt)?.toFixed(2) || "0"}
+													</td>
+													<td className="px-6 py-3">
+														{parseFloat(item?.current_principal)?.toFixed(2) ||
+															"0"}
+													</td>
+													<td className="px-6 py-3">
+														{item?.co_name || "---"}
+													</td>
+													<td className="px-6 py-3">
+														{item?.collec_code || "---"}
+													</td>
+												</tr>
+											)
+										})}
+										{/* <tr className="bg-slate-700 text-slate-50 text-center text-sm sticky bottom-0">
+											<td colSpan={1}>TOTAL:</td>
+											<td colSpan={7}></td>
+											<td colSpan={1}>{totDisbAmt}/-</td>
+											<td colSpan={6}></td>
+											<td colSpan={1}>{totCurrDmdAmt?.toFixed(2)}/-</td>
+											<td colSpan={1}>{totOvdDmdAmt?.toFixed(2)}/-</td>
+											<td colSpan={1}>{totCollec?.toFixed(2)}/-</td>
+											<td colSpan={1}>{totCurrPrin?.toFixed(2)}/-</td>
+											<td colSpan={1}>{totOvdPrin?.toFixed(2)}/-</td>
+											<td colSpan={12}></td>
+										</tr> */}
 									</tbody>
 								</table>
 							</div>

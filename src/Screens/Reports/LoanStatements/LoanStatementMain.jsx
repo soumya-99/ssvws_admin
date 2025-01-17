@@ -142,11 +142,11 @@ function LoanStatementMain() {
 	}
 
 	// useEffect(() => {
-		// if (searchType === "M" && search.length > 2) {
-		// 	handleFetchReportMemberwise()
-		// } else if (searchType === "G" && search.length > 2) {
-		// 	handleFetchReportGroupwise()
-		// }
+	// if (searchType === "M" && search.length > 2) {
+	// 	handleFetchReportMemberwise()
+	// } else if (searchType === "G" && search.length > 2) {
+	// 	handleFetchReportGroupwise()
+	// }
 	// }, [searchType, search])
 
 	const searchData = () => {
@@ -215,29 +215,31 @@ function LoanStatementMain() {
 
 					{/* <div class="my-4 mx-auto"> */}
 					<div class="grid grid-cols-3 gap-5 mt-5 items-end">
-					<div>
-					<TDInputTemplateBr
-					placeholder={
-					searchType === "M" ? `Member Name / ID` : `Group Name / ID`
-					}
-					type="text"
-					label={
-					searchType === "M" ? `Member Name / ID` : `Group Name / ID`
-					}
-					name="search_val"
-					handleChange={(txt) => setSearch(txt.target.value)}
-					formControlName={search}
-					mode={1}
-					/>
-					</div>	
-					<div>
-					<button 
-					className={`inline-flex items-center px-4 py-2 mt-0 ml-0 sm:mt-0 text-sm font-small text-center text-white border hover:border-green-600 border-teal-500 bg-teal-500 transition ease-in-out hover:bg-green-600 duration-300 rounded-full  dark:focus:ring-primary-900`}
-					onClick={() => {
-					searchData()
-					}}><SearchOutlined /> <spann class={`ml-2`}>Search</spann>  
-					</button>
-					</div>	
+						<div>
+							<TDInputTemplateBr
+								placeholder={
+									searchType === "M" ? `Member Name / ID` : `Group Name / ID`
+								}
+								type="text"
+								label={
+									searchType === "M" ? `Member Name / ID` : `Group Name / ID`
+								}
+								name="search_val"
+								handleChange={(txt) => setSearch(txt.target.value)}
+								formControlName={search}
+								mode={1}
+							/>
+						</div>
+						<div>
+							<button
+								className={`inline-flex items-center px-4 py-2 mt-0 ml-0 sm:mt-0 text-sm font-small text-center text-white border hover:border-green-600 border-teal-500 bg-teal-500 transition ease-in-out hover:bg-green-600 duration-300 rounded-full  dark:focus:ring-primary-900`}
+								onClick={() => {
+									searchData()
+								}}
+							>
+								<SearchOutlined /> <spann class={`ml-2`}>Search</spann>
+							</button>
+						</div>
 					</div>
 
 					{reportData.length > 0 && (

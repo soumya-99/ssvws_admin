@@ -33,7 +33,9 @@ export const printTableRegular = (
       <body>
       <h2 style="text-align: center">SSVWS</h2>
       <h3 style="text-align: center">${title}</h3>
-        <div class="italic center-div">Branch: ${metadata}</div>
+        <div class="italic center-div">Branch: ${
+					(metadata?.split(",")[0], metadata?.split(",")[1])
+				}</div>
         <div class="italic center-div">
           Showing results from ${new Date(fromDate)?.toLocaleDateString(
 						"en-GB"
