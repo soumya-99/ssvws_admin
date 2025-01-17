@@ -165,6 +165,11 @@ function DemandVsCollectionMain() {
 			return
 		}
 
+		if (searchType === "C" && !co) {
+			Message("warning", "Please fill all details")
+			return
+		}
+
 		if (searchType === "M" && fromDate && toDate) {
 			handleFetchMemberwiseReport()
 		}
@@ -173,7 +178,7 @@ function DemandVsCollectionMain() {
 			handleFetchGroupwiseReport()
 		}
 
-		if (searchType === "C" && fromDate && toDate) {
+		if (searchType === "C" && fromDate && toDate && co) {
 			handleFetchCOwiseReport()
 		}
 	}
@@ -362,7 +367,7 @@ function DemandVsCollectionMain() {
 												Disbursed Amount
 											</th>
 											<th scope="col" className="px-6 py-3 font-semibold ">
-												Current ROI
+												ROI
 											</th>
 											<th scope="col" className="px-6 py-3 font-semibold ">
 												Period
@@ -380,7 +385,7 @@ function DemandVsCollectionMain() {
 												Total EMI
 											</th>
 											<th scope="col" className="px-6 py-3 font-semibold ">
-												Previous Demand
+												Previous Demand (Demand + Collection)
 											</th>
 											<th scope="col" className="px-6 py-3 font-semibold ">
 												Current Demand
@@ -537,7 +542,7 @@ function DemandVsCollectionMain() {
 												Disbursed Amount
 											</th>
 											<th scope="col" className="px-6 py-3 font-semibold ">
-												Current ROI
+												ROI
 											</th>
 											<th scope="col" className="px-6 py-3 font-semibold ">
 												Period
@@ -552,7 +557,7 @@ function DemandVsCollectionMain() {
 												Total EMI
 											</th>
 											<th scope="col" className="px-6 py-3 font-semibold ">
-												Previous Demand
+												Previous Demand (Demand + Collection)
 											</th>
 											<th scope="col" className="px-6 py-3 font-semibold ">
 												Current Demand
@@ -574,7 +579,7 @@ function DemandVsCollectionMain() {
 											totPrevDemand += item?.previous_demand
 											totCurrDemand += item?.current_demand
 											totCollAmt += item?.coll_amt
-											totOut += item?.current_principal
+											totOut += item?.outstanding
 
 											return (
 												<tr
@@ -705,7 +710,7 @@ function DemandVsCollectionMain() {
 												Disbursed Amount
 											</th>
 											<th scope="col" className="px-6 py-3 font-semibold ">
-												Current ROI
+												ROI
 											</th>
 											<th scope="col" className="px-6 py-3 font-semibold ">
 												Period
@@ -723,7 +728,7 @@ function DemandVsCollectionMain() {
 												Total EMI
 											</th>
 											<th scope="col" className="px-6 py-3 font-semibold ">
-												Previous Demand
+												Previous Demand (Demand + Collection)
 											</th>
 											<th scope="col" className="px-6 py-3 font-semibold ">
 												Current Demand

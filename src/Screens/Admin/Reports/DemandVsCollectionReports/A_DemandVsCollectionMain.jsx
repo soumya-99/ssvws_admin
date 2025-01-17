@@ -99,6 +99,7 @@ function A_DemandVsCollectionMain() {
 	}
 
 	useEffect(() => {
+		setReportData([])
 		if (searchType === "C") {
 			handleFetchCO()
 		}
@@ -178,20 +179,25 @@ function A_DemandVsCollectionMain() {
 	}
 
 	const handleSubmit = () => {
-		if (!searchType || !fromDate || !toDate) {
+		if (!searchType || !fromDate || !toDate || !branch) {
 			Message("warning", "Please fill all details")
 			return
 		}
 
-		if (searchType === "M" && fromDate && toDate) {
+		if (searchType === "C" && !co) {
+			Message("warning", "Please fill all details")
+			return
+		}
+
+		if (searchType === "M" && fromDate && toDate && branch) {
 			handleFetchMemberwiseReport()
 		}
 
-		if (searchType === "G" && fromDate && toDate) {
+		if (searchType === "G" && fromDate && toDate && branch) {
 			handleFetchGroupwiseReport()
 		}
 
-		if (searchType === "C" && fromDate && toDate) {
+		if (searchType === "C" && fromDate && toDate && co && branch) {
 			handleFetchCOwiseReport()
 		}
 	}
@@ -430,7 +436,7 @@ function A_DemandVsCollectionMain() {
 												Disbursed Amount
 											</th>
 											<th scope="col" className="px-6 py-3 font-semibold ">
-												Current ROI
+												ROI
 											</th>
 											<th scope="col" className="px-6 py-3 font-semibold ">
 												Period
@@ -448,7 +454,7 @@ function A_DemandVsCollectionMain() {
 												Total EMI
 											</th>
 											<th scope="col" className="px-6 py-3 font-semibold ">
-												Previous Demand
+												Previous Demand (Demand + Collection)
 											</th>
 											<th scope="col" className="px-6 py-3 font-semibold ">
 												Current Demand
@@ -605,7 +611,7 @@ function A_DemandVsCollectionMain() {
 												Disbursed Amount
 											</th>
 											<th scope="col" className="px-6 py-3 font-semibold ">
-												Current ROI
+												ROI
 											</th>
 											<th scope="col" className="px-6 py-3 font-semibold ">
 												Period
@@ -620,7 +626,7 @@ function A_DemandVsCollectionMain() {
 												Total EMI
 											</th>
 											<th scope="col" className="px-6 py-3 font-semibold ">
-												Previous Demand
+												Previous Demand (Demand + Collection)
 											</th>
 											<th scope="col" className="px-6 py-3 font-semibold ">
 												Current Demand
@@ -642,7 +648,7 @@ function A_DemandVsCollectionMain() {
 											totPrevDemand += item?.previous_demand
 											totCurrDemand += item?.current_demand
 											totCollAmt += item?.coll_amt
-											totOut += item?.current_principal
+											totOut += item?.outstanding
 
 											return (
 												<tr
@@ -773,7 +779,7 @@ function A_DemandVsCollectionMain() {
 												Disbursed Amount
 											</th>
 											<th scope="col" className="px-6 py-3 font-semibold ">
-												Current ROI
+												ROI
 											</th>
 											<th scope="col" className="px-6 py-3 font-semibold ">
 												Period
@@ -791,7 +797,7 @@ function A_DemandVsCollectionMain() {
 												Total EMI
 											</th>
 											<th scope="col" className="px-6 py-3 font-semibold ">
-												Previous Demand
+												Previous Demand (Demand + Collection)
 											</th>
 											<th scope="col" className="px-6 py-3 font-semibold ">
 												Current Demand
