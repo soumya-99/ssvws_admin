@@ -45,6 +45,8 @@ function A_DemandVsCollectionMain() {
 	const [toDate, setToDate] = useState()
 	const [reportData, setReportData] = useState(() => [])
 	const [searchType, setSearchType] = useState(() => "M")
+	const [branch, setBranch] = useState(() => "")
+	const [branches, setBranches] = useState(() => [])
 
 	const [cos, setCos] = useState(() => [])
 	const [co, setCo] = useState(() => "")
@@ -52,19 +54,36 @@ function A_DemandVsCollectionMain() {
 	// const [tot_sum, setTotSum] = useState(0)
 	// const [search, setSearch] = useState("")
 
-	const [metadataDtls, setMetadataDtls] = useState(
-		() => userDetails?.branch_name
-	)
+	const [metadataDtls, setMetadataDtls] = useState(() => "")
 
 	const onChange = (e) => {
 		console.log("radio1 checked", e)
 		setSearchType(e)
 	}
 
+	const handleFetchBranches = async () => {
+		setLoading(true)
+		await axios
+			.get(`${url}/fetch_all_branch_dt`)
+			.then((res) => {
+				console.log("QQQQQQQQQQQQQQQQ", res?.data)
+				setBranches(res?.data?.msg)
+			})
+			.catch((err) => {
+				console.log("?????????????????????", err)
+			})
+
+		setLoading(false)
+	}
+
+	useEffect(() => {
+		handleFetchBranches()
+	}, [])
+
 	const handleFetchCO = async () => {
 		setLoading(true)
 		const creds = {
-			branch_code: userDetails?.brn_code,
+			branch_code: branch?.split(",")[0],
 		}
 
 		await axios
@@ -83,7 +102,7 @@ function A_DemandVsCollectionMain() {
 		if (searchType === "C") {
 			handleFetchCO()
 		}
-	}, [searchType])
+	}, [searchType, branch])
 
 	// "Memberwise"
 	const handleFetchMemberwiseReport = async () => {
@@ -91,16 +110,16 @@ function A_DemandVsCollectionMain() {
 		const creds = {
 			from_dt: formatDateToYYYYMMDD(fromDate),
 			to_dt: formatDateToYYYYMMDD(toDate),
-			branch_code: userDetails?.brn_code,
+			branch_code: branch?.split(",")[0],
 		}
 
 		await axios
-			.post(`${url}/dmd_vs_collec_report_memberwise`, creds)
+			.post(`${url}/adminreport/dmd_vs_collec_report_memberwise_admin`, creds)
 			.then((res) => {
 				console.log("RESSSSS======>>>>", res?.data)
 				setReportData(res?.data?.msg)
 				// setTotSum(res?.data?.msg.reduce((n, { credit }) => n + credit, 0))
-				setMetadataDtls(`${userDetails?.brn_code},Memberwise`)
+				setMetadataDtls(`${branch?.split(",")[1]}, Memberwise`)
 			})
 			.catch((err) => {
 				console.log("ERRRR>>>", err)
@@ -115,16 +134,16 @@ function A_DemandVsCollectionMain() {
 		const creds = {
 			from_dt: formatDateToYYYYMMDD(fromDate),
 			to_dt: formatDateToYYYYMMDD(toDate),
-			branch_code: userDetails?.brn_code,
+			branch_code: branch?.split(",")[0],
 		}
 
 		await axios
-			.post(`${url}/dmd_vs_collec_report_groupwise`, creds)
+			.post(`${url}/adminreport/dmd_vs_collec_report_groupwise_admin`, creds)
 			.then((res) => {
 				console.log("RESSSSS======>>>>", res?.data)
 				setReportData(res?.data?.msg)
 				// setTotSum(res?.data?.msg.reduce((n, { credit }) => n + credit, 0))
-				setMetadataDtls(`${userDetails?.brn_code},Groupwise`)
+				setMetadataDtls(`${branch?.split(",")[1]}, Groupwise`)
 			})
 			.catch((err) => {
 				console.log("ERRRR>>>", err)
@@ -139,17 +158,17 @@ function A_DemandVsCollectionMain() {
 		const creds = {
 			from_dt: formatDateToYYYYMMDD(fromDate),
 			to_dt: formatDateToYYYYMMDD(toDate),
-			branch_code: userDetails?.brn_code,
+			branch_code: branch?.split(",")[0],
 			co_id: co?.split(",")[0],
 		}
 
 		await axios
-			.post(`${url}/dmd_vs_collec_report_cowise`, creds)
+			.post(`${url}/adminreport/dmd_vs_collec_report_cowise_admin`, creds)
 			.then((res) => {
 				console.log("RESSSSS======>>>>", res?.data)
 				setReportData(res?.data?.msg)
 				// setTotSum(res?.data?.msg.reduce((n, { credit }) => n + credit, 0))
-				setMetadataDtls(`${userDetails?.brn_code},COwise`)
+				setMetadataDtls(`${branch?.split(",")[1]}, COwise`)
 			})
 			.catch((err) => {
 				console.log("ERRRR>>>", err)
@@ -234,34 +253,6 @@ function A_DemandVsCollectionMain() {
 						/>
 					</div>
 
-					{searchType === "C" && (
-						<div className="mb-2 flex justify-start gap-5">
-							<div>
-								<TDInputTemplateBr
-									placeholder="Choose CO..."
-									type="text"
-									label="Credit Officers"
-									name="co"
-									formControlName={co.split(",")[0]}
-									handleChange={(e) => {
-										console.log("***********========", e)
-										setCo(
-											e.target.value +
-												"," +
-												cos.filter((i) => i.emp_id == e.target.value)[0]
-													?.emp_name
-										)
-									}}
-									mode={2}
-									data={cos?.map((item, i) => ({
-										code: item?.emp_id,
-										name: `${item?.emp_name} - (${item?.emp_id})`,
-									}))}
-								/>
-							</div>
-						</div>
-					)}
-
 					<div className="mb-2 flex justify-start gap-5 items-center">
 						{/* R.I.P Sweet bro */}
 
@@ -280,7 +271,7 @@ function A_DemandVsCollectionMain() {
 						</div> */}
 					</div>
 
-					<div className="grid grid-cols-3 gap-5 mt-5 items-end">
+					<div className="grid grid-cols-2 gap-5 mt-5 items-end">
 						<div>
 							<TDInputTemplateBr
 								placeholder="From Date"
@@ -305,6 +296,84 @@ function A_DemandVsCollectionMain() {
 								mode={1}
 							/>
 						</div>
+
+						<div>
+							<TDInputTemplateBr
+								placeholder="Branch..."
+								type="text"
+								label="Branch"
+								name="branch"
+								formControlName={branch.split(",")[0]}
+								handleChange={(e) => {
+									console.log("***********========", e)
+									setBranch(
+										e.target.value +
+											"," +
+											branches.filter((i) => i.branch_code == e.target.value)[0]
+												?.branch_name
+									)
+									// setBranch(
+									// 	e.target.value +
+									// 		"," +
+									// 		[
+									// 			{ branch_code: "A", branch_name: "All Branches" },
+									// 			...branches,
+									// 		].filter((i) => i.branch_code == e.target.value)[0]
+									// 			?.branch_name
+									// )
+									// console.log(branches)
+									// console.log(
+									// 	e.target.value +
+									// 		"," +
+									// 		[
+									// 			{ branch_code: "A", branch_name: "All Branches" },
+									// 			...branches,
+									// 		].filter((i) => i.branch_code == e.target.value)[0]
+									// 			?.branch_name
+									// )
+								}}
+								mode={2}
+								data={branches?.map((item, i) => ({
+									code: item?.branch_code,
+									name: item?.branch_name,
+								}))}
+								// data={[
+								// 	{ code: "A", name: "All Branches" },
+								// 	...branches?.map((item, i) => ({
+								// 		code: item?.branch_code,
+								// 		name: item?.branch_name,
+								// 	})),
+								// ]}
+							/>
+						</div>
+
+						{searchType === "C" && (
+							<div>
+								<div>
+									<TDInputTemplateBr
+										placeholder="Choose CO..."
+										type="text"
+										label="Credit Officers"
+										name="co"
+										formControlName={co.split(",")[0]}
+										handleChange={(e) => {
+											console.log("***********========", e)
+											setCo(
+												e.target.value +
+													"," +
+													cos.filter((i) => i.emp_id == e.target.value)[0]
+														?.emp_name
+											)
+										}}
+										mode={2}
+										data={cos?.map((item, i) => ({
+											code: item?.emp_id,
+											name: `${item?.emp_name} - (${item?.emp_id})`,
+										}))}
+									/>
+								</div>
+							</div>
+						)}
 
 						<div>
 							<button

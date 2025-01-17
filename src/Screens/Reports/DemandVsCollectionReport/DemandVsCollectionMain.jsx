@@ -100,7 +100,7 @@ function DemandVsCollectionMain() {
 				console.log("RESSSSS======>>>>", res?.data)
 				setReportData(res?.data?.msg)
 				// setTotSum(res?.data?.msg.reduce((n, { credit }) => n + credit, 0))
-				setMetadataDtls(`${userDetails?.brn_code},Memberwise`)
+				setMetadataDtls(`${userDetails?.brn_code}, Memberwise`)
 			})
 			.catch((err) => {
 				console.log("ERRRR>>>", err)
@@ -124,7 +124,7 @@ function DemandVsCollectionMain() {
 				console.log("RESSSSS======>>>>", res?.data)
 				setReportData(res?.data?.msg)
 				// setTotSum(res?.data?.msg.reduce((n, { credit }) => n + credit, 0))
-				setMetadataDtls(`${userDetails?.brn_code},Groupwise`)
+				setMetadataDtls(`${userDetails?.brn_code}, Groupwise`)
 			})
 			.catch((err) => {
 				console.log("ERRRR>>>", err)
@@ -149,7 +149,7 @@ function DemandVsCollectionMain() {
 				console.log("RESSSSS======>>>>", res?.data)
 				setReportData(res?.data?.msg)
 				// setTotSum(res?.data?.msg.reduce((n, { credit }) => n + credit, 0))
-				setMetadataDtls(`${userDetails?.brn_code},COwise`)
+				setMetadataDtls(`${userDetails?.brn_code}, COwise`)
 			})
 			.catch((err) => {
 				console.log("ERRRR>>>", err)
