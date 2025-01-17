@@ -33,6 +33,7 @@ import FundwiseMain from "./Screens/Reports/SummaryReports/FundwiseReport/Fundwi
 import SchemewiseMain from "./Screens/Reports/SummaryReports/SchemewiseReport/SchemewiseMain"
 import A_FundwiseMain from "./Screens/Admin/Reports/SummaryReports/FundwiseReport/A_FundwiseMain"
 import A_SchemewiseMain from "./Screens/Admin/Reports/SummaryReports/SchemewiseReport/A_SchemewiseMain"
+import A_DemandVsCollectionMain from "./Screens/Admin/Reports/DemandVsCollectionReports/A_DemandVsCollectionMain"
 // import A_LoanStatementMain from "./Screens/Admin/Reports/LoanStatements/A_LoanStatementMain"
 // import A_LoanTransactionsMain from "./Screens/Admin/Reports/LoanTransactions/A_LoanTransactionsMain"
 // import A_DemandReportsMain from "./Screens/Admin/Reports/DemandReports/A_DemandReportsMain"
@@ -397,6 +398,10 @@ const router = createBrowserRouter([
 							{
 								path: "schemewisesummary",
 								element: <A_SchemewiseMain />,
+							},
+							{
+								path: "demandvscollectionreport",
+								element: <A_DemandVsCollectionMain />,
 							},
 							// {
 							// 	path: "summaryreports",

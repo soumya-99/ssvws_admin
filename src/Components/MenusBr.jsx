@@ -531,6 +531,15 @@ function MenusBr({ theme }) {
 						<Link to={"/homeadmin/schemewisesummary"}>Schemewise Report</Link>
 					),
 				},
+				{
+					key: "sub3-10",
+					icon: <BarChartOutlined />,
+					label: (
+						<Link to={"/homeadmin/demandvscollectionreport"}>
+							Demand vs. Collection
+						</Link>
+					),
+				},
 			],
 		},
 	]
