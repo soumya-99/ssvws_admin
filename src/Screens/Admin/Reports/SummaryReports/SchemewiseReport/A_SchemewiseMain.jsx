@@ -194,35 +194,41 @@ function A_SchemewiseMain() {
 									setBranch(
 										e.target.value +
 											"," +
-											[
-												{ branch_code: "A", branch_name: "All Branches" },
-												...branches,
-											].filter((i) => i.branch_code == e.target.value)[0]
+											branches.filter((i) => i.branch_code == e.target.value)[0]
 												?.branch_name
 									)
-									console.log(branches)
-									console.log(
-										e.target.value +
-											"," +
-											[
-												{ branch_code: "A", branch_name: "All Branches" },
-												...branches,
-											].filter((i) => i.branch_code == e.target.value)[0]
-												?.branch_name
-									)
+									// setBranch(
+									// 	e.target.value +
+									// 		"," +
+									// 		[
+									// 			{ branch_code: "A", branch_name: "All Branches" },
+									// 			...branches,
+									// 		].filter((i) => i.branch_code == e.target.value)[0]
+									// 			?.branch_name
+									// )
+									// console.log(branches)
+									// console.log(
+									// 	e.target.value +
+									// 		"," +
+									// 		[
+									// 			{ branch_code: "A", branch_name: "All Branches" },
+									// 			...branches,
+									// 		].filter((i) => i.branch_code == e.target.value)[0]
+									// 			?.branch_name
+									// )
 								}}
 								mode={2}
-								// data={branches?.map((item, i) => ({
-								// 	code: item?.branch_code,
-								// 	name: item?.branch_name,
-								// }))}
-								data={[
-									{ code: "A", name: "All Branches" },
-									...branches?.map((item, i) => ({
-										code: item?.branch_code,
-										name: item?.branch_name,
-									})),
-								]}
+								data={branches?.map((item, i) => ({
+									code: item?.branch_code,
+									name: item?.branch_name,
+								}))}
+								// data={[
+								// 	{ code: "A", name: "All Branches" },
+								// 	...branches?.map((item, i) => ({
+								// 		code: item?.branch_code,
+								// 		name: item?.branch_name,
+								// 	})),
+								// ]}
 							/>
 						</div>
 
