@@ -281,33 +281,45 @@ function MenusBr({ theme }) {
 						<Link to={"/homebm/outstasndingreport"}>Outstanding Report</Link>
 					),
 				},
+				// {
+				// 	key: "sub6-8",
+				// 	icon: <BarChartOutlined />,
+				// 	label: <Link to={"/homebm/summaryreports"}>Summary Reports</Link>,
+				// 	children: [
+				// 		{
+				// 			key: "sub6-8-1",
+				// 			icon: <BarChartOutlined />,
+				// 			label: (
+				// 				<Link to={"/homebm/summaryreports/fundwise"}>
+				// 					Fundwise Report
+				// 				</Link>
+				// 			),
+				// 		},
+				// 		{
+				// 			key: "sub6-8-2",
+				// 			icon: <BarChartOutlined />,
+				// 			label: (
+				// 				<Link to={"/homebm/summaryreports/schemewise"}>
+				// 					Schemewise Report
+				// 				</Link>
+				// 			),
+				// 		},
+				// 	],
+				// },
 				{
 					key: "sub6-8",
 					icon: <BarChartOutlined />,
-					label: <Link to={"/homebm/summaryreports"}>Summary Reports</Link>,
-					children: [
-						{
-							key: "sub6-8-1",
-							icon: <BarChartOutlined />,
-							label: (
-								<Link to={"/homebm/summaryreports/fundwise"}>
-									Fundwise Report
-								</Link>
-							),
-						},
-						{
-							key: "sub6-8-2",
-							icon: <BarChartOutlined />,
-							label: (
-								<Link to={"/homebm/summaryreports/schemewise"}>
-									Schemewise Report
-								</Link>
-							),
-						},
-					],
+					label: <Link to={"/homebm/fundwisesummary"}>Fundwise Report</Link>,
 				},
 				{
 					key: "sub6-9",
+					icon: <BarChartOutlined />,
+					label: (
+						<Link to={"/homebm/schemewisesummary"}>Schemewise Report</Link>
+					),
+				},
+				{
+					key: "sub6-10",
 					icon: <BarChartOutlined />,
 					label: (
 						<Link to={"/homebm/demandvscollectionreport"}>
@@ -482,30 +494,42 @@ function MenusBr({ theme }) {
 						<Link to={"/homeadmin/outstasndingreport"}>Outstanding Report</Link>
 					),
 				},
+				// {
+				// 	key: "sub3-8",
+				// 	icon: <BarChartOutlined />,
+				// 	label: <Link to={"/homeadmin/summaryreports"}>Summary Reports</Link>,
+				// 	children: [
+				// 		{
+				// 			key: "sub3-8-1",
+				// 			icon: <BarChartOutlined />,
+				// 			label: (
+				// 				<Link to={"/homeadmin/summaryreports/fundwise"}>
+				// 					Fundwise Report
+				// 				</Link>
+				// 			),
+				// 		},
+				// 		{
+				// 			key: "sub3-8-2",
+				// 			icon: <BarChartOutlined />,
+				// 			label: (
+				// 				<Link to={"/homeadmin/summaryreports/schemewise"}>
+				// 					Schemewise Report
+				// 				</Link>
+				// 			),
+				// 		},
+				// 	],
+				// },
 				{
 					key: "sub3-8",
 					icon: <BarChartOutlined />,
-					label: <Link to={"/homeadmin/summaryreports"}>Summary Reports</Link>,
-					children: [
-						{
-							key: "sub3-8-1",
-							icon: <BarChartOutlined />,
-							label: (
-								<Link to={"/homeadmin/summaryreports/fundwise"}>
-									Fundwise Report
-								</Link>
-							),
-						},
-						{
-							key: "sub3-8-2",
-							icon: <BarChartOutlined />,
-							label: (
-								<Link to={"/homeadmin/summaryreports/schemewise"}>
-									Schemewise Report
-								</Link>
-							),
-						},
-					],
+					label: <Link to={"/homeadmin/fundwisesummary"}>Fundwise Report</Link>,
+				},
+				{
+					key: "sub3-9",
+					icon: <BarChartOutlined />,
+					label: (
+						<Link to={"/homeadmin/schemewisesummary"}>Schemewise Report</Link>
+					),
 				},
 			],
 		},

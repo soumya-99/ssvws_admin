@@ -312,18 +312,26 @@ const router = createBrowserRouter([
 								element: <DemandVsCollectionMain />,
 							},
 							{
-								path: "summaryreports",
-								children: [
-									{
-										path: "fundwise",
-										element: <FundwiseMain />,
-									},
-									{
-										path: "schemewise",
-										element: <SchemewiseMain />,
-									},
-								],
+								path: "fundwisesummary",
+								element: <FundwiseMain />,
 							},
+							{
+								path: "schemewisesummary",
+								element: <SchemewiseMain />,
+							},
+							// {
+							// 	path: "summaryreports",
+							// 	children: [
+							// 		{
+							// 			path: "fundwise",
+							// 			element: <FundwiseMain />,
+							// 		},
+							// 		{
+							// 			path: "schemewise",
+							// 			element: <SchemewiseMain />,
+							// 		},
+							// 	],
+							// },
 						],
 					},
 					{
@@ -383,18 +391,26 @@ const router = createBrowserRouter([
 								element: <A_OutstandingReportMain />,
 							},
 							{
-								path: "summaryreports",
-								children: [
-									{
-										path: "fundwise",
-										element: <A_FundwiseMain />,
-									},
-									{
-										path: "schemewise",
-										element: <A_SchemewiseMain />,
-									},
-								],
+								path: "fundwisesummary",
+								element: <A_FundwiseMain />,
 							},
+							{
+								path: "schemewisesummary",
+								element: <A_SchemewiseMain />,
+							},
+							// {
+							// 	path: "summaryreports",
+							// 	children: [
+							// 		{
+							// 			path: "fundwise",
+							// 			element: <A_FundwiseMain />,
+							// 		},
+							// 		{
+							// 			path: "schemewise",
+							// 			element: <A_SchemewiseMain />,
+							// 		},
+							// 	],
+							// },
 						],
 					},
 					{
