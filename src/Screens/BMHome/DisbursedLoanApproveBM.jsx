@@ -15,15 +15,15 @@ import { formatDateToYYYYMMDD } from "../../Utils/formateDate"
 
 const options = [
 	{
-		label: "Group wise",
+		label: "Groupwise",
 		value: "G",
 	},
 	{
-		label: "Collector Wise",
+		label: "Collectorwise",
 		value: "C",
 	},
 	{
-		label: "Member Wise",
+		label: "Memberwise",
 		value: "M",
 	},
 ]
@@ -346,7 +346,7 @@ function DisbursedLoanApproveBM() {
 									<TDInputTemplateBr
 										placeholder="Select Collector Name..."
 										type="text"
-										label="Collector Wise"
+										label="Collectorwise"
 										name="b_clientGender"
 										// handleChange={(e) => console.log("Selected Employee:", e.target.value)}
 										handleChange={handleEmployeeChange}
