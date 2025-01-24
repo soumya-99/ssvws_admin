@@ -468,6 +468,22 @@ function MenusBr({ theme }) {
 			],
 		},
 		{
+			key: "sub4",
+			icon: <ImportOutlined />,
+			label: "Attendance",
+			children: [
+				{
+					key: "sub4-1",
+					icon: <UserAddOutlined />,
+					label: (
+						<Link to={"/homeadmin/attendancedashboard"}>
+							Attendance Dashboard
+						</Link>
+					),
+				},
+			],
+		},
+		{
 			label: "Reports",
 			key: "sub3",
 			icon: <BarsOutlined />,
