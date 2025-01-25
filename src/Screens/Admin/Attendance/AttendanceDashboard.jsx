@@ -3,22 +3,20 @@ import Sidebar from "../../../Components/Sidebar"
 import axios from "axios"
 import { url } from "../../../Address/BaseUrl"
 import { Message } from "../../../Components/Message"
-import { Spin, Button, Modal, Tooltip, DatePicker } from "antd"
-import dayjs from "dayjs"
+import { Spin, Button, Modal, Tooltip, DatePicker, Popconfirm } from "antd"
 import {
 	LoadingOutlined,
 	SearchOutlined,
 	PrinterOutlined,
 	FileExcelOutlined,
+	CheckCircleOutlined,
 } from "@ant-design/icons"
-import Radiobtn from "../../../Components/Radiobtn"
 import TDInputTemplateBr from "../../../Components/TDInputTemplateBr"
 import { formatDateToYYYYMMDD } from "../../../Utils/formateDate"
 
 import { saveAs } from "file-saver"
 import * as XLSX from "xlsx"
-import { printTableLoanStatement } from "../../../Utils/printTableLoanStatement"
-import { printTableLoanTransactions } from "../../../Utils/printTableLoanTransactions"
+import { printTableRegular } from "../../../Utils/printTableRegular"
 
 // const { RangePicker } = DatePicker
 // const dateFormat = "YYYY/MM/DD"
@@ -75,7 +73,7 @@ function AttendanceDashboard() {
 			.then((res) => {
 				console.log("RESSSSS======>>>>", res?.data)
 				setReportData(res?.data?.msg)
-				setMetadataDtls(branch.split(",")[1])
+				setMetadataDtls(branch)
 				console.log("KKKKKKKKKKKKKKKKKKK", branch)
 				// setTotSum(res?.data?.msg.reduce((n, { credit }) => n + credit, 0))
 			})
@@ -91,17 +89,6 @@ function AttendanceDashboard() {
 			handleFetchReport()
 		}
 	}
-
-	// useEffect(() => {
-	// 	setReportData(() => [])
-	// 	// setMetadataDtls(() => null)
-	// 	totalCash = 0
-	// 	totalUPI = 0
-	// 	totalCashAmount = 0
-	// 	totalUPIAmount = 0
-	// 	totalCreditAmount = 0
-	// 	totalDisbAmt = 0
-	// }, [searchType, searchType2])
 
 	const exportToExcel = (data) => {
 		const wb = XLSX.utils.book_new()
@@ -121,67 +108,57 @@ function AttendanceDashboard() {
 		return buf
 	}
 
-	// let totalRecovery = 0
-	// let totalCredit = 0
-	// let totalDebit = 0
-	// let totalCreditGrpwise = 0
-	// let totalDebitGrpwise = 0
-
 	const [activeDescriptionId, setActiveDescriptionId] = useState(null)
 
 	const toggleDescription = (userId) => {
 		setActiveDescriptionId((prevId) => (prevId === userId ? null : userId))
 	}
 
-	// const users = [
-	// 	{
-	// 		id: "user1",
-	// 		name: "Amanda Smith",
-	// 		email: "amanda.smith@example.com",
-	// 		status: "Active",
-	// 		statusColor: "bg-green-500",
-	// 		role: "Marketing Coordinator",
-	// 		image:
-	// 			"https://images.unsplash.com/photo-1560329072-17f59dcd30a4?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxzZWFyY2h8NHx8d29tZW4lMjBmYWNlfGVufDB8MnwwfHw%3D&auto=format&fit=crop&w=500&q=60",
-	// 		description:
-	// 			"Amanda Smith is a young professional in the field of marketing. She has skills in planning and executing creative digital marketing campaigns. In her free time, Amanda enjoys playing the piano and exploring nature.",
-	// 	},
-	// 	{
-	// 		id: "user2",
-	// 		name: "Michael Williams",
-	// 		email: "michael.williams@example.com",
-	// 		status: "Inactive",
-	// 		statusColor: "bg-yellow-500",
-	// 		role: "Software Engineer",
-	// 		image:
-	// 			"https://images.pexels.com/photos/1054048/pexels-photo-1054048.jpeg?auto=compress&cs=tinysrgb&w=600",
-	// 		description:
-	// 			"Michael Williams is a software engineer with an in-depth knowledge of web and application development. He is often involved in creating innovative technological solutions. During his leisure time, Michael enjoys playing video games and participating in local chess tournaments.",
-	// 	},
-	// 	{
-	// 		id: "user3",
-	// 		name: "Sophia Brown",
-	// 		email: "sophia.brown@example.com",
-	// 		status: "Suspend",
-	// 		statusColor: "bg-red-500",
-	// 		role: "Freelance Writer",
-	// 		image:
-	// 			"https://images.pexels.com/photos/3756907/pexels-photo-3756907.jpeg?auto=compress&cs=tinysrgb&w=600",
-	// 		description:
-	// 			"Sophia Brown is a prolific freelance writer, crafting informative articles and creative content for various clients. In her life, she's always seeking new inspiration by attending art exhibitions and literary events.",
-	// 	},
-	// ]
+	const [remarksForDelete, setRemarksForDelete] = useState(() => "")
 
-	let totalCash = 0
-	let totalUPI = 0
-	let totalCashAmount = 0
-	let totalUPIAmount = 0
+	const handleRejectAttendance = async (empId, inDateTime) => {
+		setLoading(true)
+		const creds = {
+			emp_id: empId,
+			in_date_time: inDateTime,
+			attn_reject_remarks: remarksForDelete,
+			rejected_by: userDetails?.emp_id,
+		}
 
-	let totalCreditAmount = 0
+		await axios
+			.post(`${url}/adminreport/reject_atten`, creds)
+			.then((res) => {
+				console.log("RESSSSS======>>>>", res?.data)
+				Message("success", "Attendance Rejected Successfully")
+			})
+			.catch((err) => {
+				console.log("ERRRR>>>", err)
+			})
 
-	//////////////////////////////////
+		setLoading(false)
+	}
 
-	let totalDisbAmt = 0
+	const confirm = async (empId, inDateTime) => {
+		if (!remarksForDelete) {
+			Message("error", "Please provide remarks for rejection")
+			return
+		}
+
+		await handleRejectAttendance(empId, inDateTime)
+			.then(() => {
+				// fetchLoanApplications("R")
+				setRemarksForDelete("")
+			})
+			.catch((err) => {
+				console.log("Err in RecoveryMemberApproveTable.jsx", err)
+			})
+	}
+
+	const cancel = (e) => {
+		console.log(e)
+		setRemarksForDelete("")
+		// message.error('Click on No');
+	}
 
 	return (
 		<div>
@@ -369,19 +346,182 @@ function AttendanceDashboard() {
 												</tr>
 												{activeDescriptionId === i && (
 													<tr
-														className="py-2 px-2 border-t border-gray-200 transition-all duration-300 ease-in-out transform"
+														className={`transition-all duration-300 ease-in-out transform ${
+															activeDescriptionId === i
+																? "max-h-screen opacity-100"
+																: "max-h-0 opacity-0"
+														} overflow-hidden`}
 														style={{
 															height: activeDescriptionId === i ? "auto" : "0",
 															opacity: activeDescriptionId === i ? "1" : "0",
 														}}
 													>
-														<td colSpan="4" className="p-4">
-															<h4 className="font-medium text-base text-blue-500 underline mb-2">
-																Description
-															</h4>
-															<p className="text-sm text-gray-600">
-																{user.description}
-															</p>
+														<td colSpan={6} className="p-0">
+															<div className="m-4 p-6 bg-white rounded-2xl shadow-md">
+																<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+																	<div>
+																		<h4 className="font-medium text-lg text-blue-600 mb-2">
+																			Clock In Location
+																		</h4>
+																		<p className="text-sm text-gray-700">
+																			{user?.in_addr}
+																		</p>
+																	</div>
+																	<div>
+																		<h4 className="font-medium text-lg text-blue-600 mb-2">
+																			Clock Out Location
+																		</h4>
+																		<p className="text-sm text-gray-700">
+																			{user?.out_addr}
+																		</p>
+																	</div>
+																	<div>
+																		<h4 className="font-medium text-lg text-blue-600 mb-2">
+																			Attendance Status
+																		</h4>
+																		<p
+																			className={`text-sm ${
+																				user?.attan_status === "A"
+																					? "text-green-500"
+																					: user?.attan_status === "R"
+																					? "text-red-500"
+																					: "text-gray-700"
+																			}`}
+																		>
+																			{user?.attan_status === "A"
+																				? "Approved"
+																				: user?.attan_status === "R"
+																				? "Rejected"
+																				: "Pending"}
+																		</p>
+																	</div>
+																	<div>
+																		<h4 className="font-medium text-lg text-blue-600 mb-2">
+																			Clock Status
+																		</h4>
+																		<span
+																			className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-sm font-medium ${
+																				user?.clock_status === "I"
+																					? "bg-green-100 text-green-800"
+																					: user?.clock_status === "O"
+																					? "bg-blue-100 text-blue-800"
+																					: user?.clock_status === "E"
+																					? "bg-yellow-100 text-yellow-800"
+																					: "bg-red-100 text-red-800"
+																			}`}
+																		>
+																			{user?.clock_status === "I" ? (
+																				<span className="mr-1">✅</span>
+																			) : user?.clock_status === "O" ? (
+																				<span className="mr-1">🕒</span>
+																			) : user?.clock_status === "E" ? (
+																				<span className="mr-1">🐌</span>
+																			) : (
+																				<span className="mr-1">⌛</span>
+																			)}
+																			{user?.clock_status === "I"
+																				? "Proper In"
+																				: user?.clock_status === "O"
+																				? "Proper Out"
+																				: user?.clock_status === "E"
+																				? "Early Out"
+																				: "Late In"}
+																		</span>
+																	</div>
+																	<div>
+																		<h4 className="font-medium text-lg text-blue-600 mb-2">
+																			Rejection Remarks
+																		</h4>
+																		<p className="text-sm text-gray-700">
+																			{user?.attn_reject_remarks || "N/A"}
+																		</p>
+																	</div>
+																	<div>
+																		<h4 className="font-medium text-lg text-blue-600 mb-2">
+																			Late In
+																		</h4>
+																		<span
+																			className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-sm font-medium ${
+																				user?.late_in === "Y"
+																					? "bg-red-100 text-red-800"
+																					: "bg-green-100 text-green-800"
+																			}`}
+																		>
+																			{user?.late_in === "Y" ? (
+																				<span className="mr-1">🐌</span>
+																			) : (
+																				<span className="mr-1">•</span>
+																			)}
+																			{user?.late_in === "Y"
+																				? "Late"
+																				: "On Time"}
+																		</span>
+																	</div>
+																	<div>
+																		<h4 className="font-medium text-lg text-blue-600 mb-2">
+																			Early Out
+																		</h4>
+																		<span
+																			className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-sm font-medium ${
+																				user?.early_out === "Y"
+																					? "bg-red-100 text-red-800"
+																					: "bg-green-100 text-green-800"
+																			}`}
+																		>
+																			{user?.early_out === "Y" ? (
+																				<span className="mr-1">🐌</span>
+																			) : (
+																				<span className="mr-1">•</span>
+																			)}
+																			{user?.early_out === "Y"
+																				? "Early Out"
+																				: "On Time"}
+																		</span>
+																	</div>
+																	<div className="flex items-center">
+																		<Popconfirm
+																			title={`Reject Attendance for ${user?.emp_name}`}
+																			description={
+																				<>
+																					<div>
+																						Are you sure you want to reject this
+																						attendance?
+																					</div>
+																					<TDInputTemplateBr
+																						placeholder="Type remarks for rejection..."
+																						type="text"
+																						label="Reason for Rejection*"
+																						name="remarksForDelete"
+																						formControlName={remarksForDelete}
+																						handleChange={(e) =>
+																							setRemarksForDelete(
+																								e.target.value
+																							)
+																						}
+																						mode={3}
+																					/>
+																				</>
+																			}
+																			onConfirm={() =>
+																				confirm(
+																					user?.emp_id,
+																					user?.in_date_time
+																				)
+																			}
+																			onCancel={cancel}
+																			okText="Reject"
+																			cancelText="Cancel"
+																		>
+																			<button className="inline-flex items-center px-4 py-2 mt-4 text-sm font-medium text-white bg-red-500 border border-red-500 rounded-full hover:bg-red-600 hover:border-red-600 transition ease-in-out duration-300">
+																				<CheckCircleOutlined />
+																				<span className="ml-2">
+																					Reject Attendance
+																				</span>
+																			</button>
+																		</Popconfirm>
+																	</div>
+																</div>
+															</div>
 														</td>
 													</tr>
 												)}
@@ -412,10 +552,9 @@ function AttendanceDashboard() {
 							<Tooltip title="Print">
 								<button
 									onClick={() =>
-										printTableLoanTransactions(
+										printTableRegular(
 											reportData,
 											"Attendance Report",
-											searchType,
 											metadataDtls,
 											fromDate,
 											toDate
