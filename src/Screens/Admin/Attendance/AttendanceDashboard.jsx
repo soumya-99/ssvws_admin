@@ -96,7 +96,7 @@ function AttendanceDashboard() {
 		XLSX.utils.book_append_sheet(wb, ws, "Sheet1")
 		const wbout = XLSX.write(wb, { bookType: "xlsx", type: "binary" })
 		const blob = new Blob([s2ab(wbout)], { type: "application/octet-stream" })
-		saveAs(blob, `loan_txn_report_${metadataDtls}.xlsx`)
+		saveAs(blob, `attendance_report_${metadataDtls}.xlsx`)
 	}
 
 	const s2ab = (s) => {
