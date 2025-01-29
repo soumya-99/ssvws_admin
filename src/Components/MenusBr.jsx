@@ -179,7 +179,22 @@ function MenusBr({ theme }) {
 				// },
 			],
 		},
-
+		{
+			key: "sub_att",
+			icon: <ImportOutlined />,
+			label: "Attendance",
+			children: [
+				{
+					key: "sub4-1",
+					icon: <UserAddOutlined />,
+					label: (
+						<Link to={"/homebm/attendancebm"}>
+							Attendance Dashboard
+						</Link>
+					),
+				},
+			],
+		},
 		{
 			key: "sub4",
 			icon: <ThunderboltOutlined />,

@@ -35,6 +35,7 @@ import A_FundwiseMain from "./Screens/Admin/Reports/SummaryReports/FundwiseRepor
 import A_SchemewiseMain from "./Screens/Admin/Reports/SummaryReports/SchemewiseReport/A_SchemewiseMain"
 import A_DemandVsCollectionMain from "./Screens/Admin/Reports/DemandVsCollectionReports/A_DemandVsCollectionMain"
 import AttendanceDashboard from "./Screens/Admin/Attendance/AttendanceDashboard"
+import AttendanceBM from "./Screens/BMHome/AttendanceBM"
 // import A_LoanStatementMain from "./Screens/Admin/Reports/LoanStatements/A_LoanStatementMain"
 // import A_LoanTransactionsMain from "./Screens/Admin/Reports/LoanTransactions/A_LoanTransactionsMain"
 // import A_DemandReportsMain from "./Screens/Admin/Reports/DemandReports/A_DemandReportsMain"
@@ -220,6 +221,10 @@ const router = createBrowserRouter([
 							{
 								path: "editgroupform/:id",
 								element: <EditGroupFormBM />,
+							},
+							{
+								path: "attendancebm",
+								element: <AttendanceBM />,
 							},
 							{
 								path: "disburseloan",

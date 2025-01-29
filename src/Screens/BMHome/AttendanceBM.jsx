@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
-import Sidebar from "../../../Components/Sidebar";
+import Sidebar from "../../Components/Sidebar";
 import axios from "axios";
-import { url } from "../../../Address/BaseUrl";
-import { Message } from "../../../Components/Message";
+import { url } from "../../Address/BaseUrl";
+import { Message } from "../../Components/Message";
 import {
   Spin,
   Button,
@@ -19,17 +19,17 @@ import {
   FileExcelOutlined,
   CheckCircleOutlined,
 } from "@ant-design/icons";
-import TDInputTemplateBr from "../../../Components/TDInputTemplateBr";
-import { formatDateToYYYYMMDD } from "../../../Utils/formateDate";
+import TDInputTemplateBr from "../../Components/TDInputTemplateBr";
+import { formatDateToYYYYMMDD } from "../../Utils/formateDate";
 
 import { saveAs } from "file-saver";
 import * as XLSX from "xlsx";
-import { printTableRegular } from "../../../Utils/printTableRegular";
+import { printTableRegular } from "../../Utils/printTableRegular";
 
 // const { RangePicker } = DatePicker
 // const dateFormat = "YYYY/MM/DD"
 
-function AttendanceDashboard() {
+function AttendanceBM() {
   const userDetails = JSON.parse(localStorage.getItem("user_details")) || "";
   const [loading, setLoading] = useState(false);
 
@@ -72,8 +72,8 @@ function AttendanceDashboard() {
   const handleFetchEmployees = async () => {
     setLoading(true);
     await axios
-      .post(`${url}/adminreport/fetch_employee_aginst_branch`, {
-        branch_id: branch.split(",")[0],
+      .post(`${url}/fetch_employee_fr_branch`, {
+        branch_id: userDetails?.brn_code,
       })
       .then((res) => {
         console.log("QQQQQQQQQQQQQQQQ", res?.data);
@@ -92,44 +92,54 @@ function AttendanceDashboard() {
 
   useEffect(() => {
     handleFetchEmployees();
-  }, [branch]);
-  const timeDifference=(startDateStr, endDateStr)=> {
+  }, []);
+  const timeDifference = (startDateStr, endDateStr) => {
     // Convert date strings to Date objects
     const startDate = new Date(startDateStr);
     const endDate = new Date(endDateStr);
-  
+
     // Calculate the difference in milliseconds
     const diff = endDate - startDate;
-  
+
     // Convert milliseconds to minutes
     const diffMinutes = Math.floor(diff / (1000 * 60));
-  
+
     // Convert minutes to hours and minutes
     const hours = Math.floor(diffMinutes / 60);
     const minutes = diffMinutes % 60;
-  
+
     return {
       hours: hours,
-      minutes: minutes
+      minutes: minutes,
     };
-  }
+  };
   const handleFetchReport = async () => {
     setLoading(true);
     const creds = {
       from_date: formatDateToYYYYMMDD(fromDate),
       to_date: formatDateToYYYYMMDD(toDate),
-      branch_id: branch.split(",")[0],
+      branch_id: userDetails?.brn_code,
       emp_id: employee,
     };
     console.log("KKKKKKKKKKKKKKKKKKK======", branch);
     await axios
-      .post(`${url}/adminreport/attendance_report_admin`, creds)
+      .post(`${url}/attendance_report_brnwise`, creds)
       .then((res) => {
         console.log("RESSSSS======>>>>", res?.data);
         setReportData(res?.data?.msg);
-        setMetadataDtls(branch);
-        if(res?.data?.msg?.length==0)
-          Message("error", "No Data!");
+        setMetadataDtls(
+          userDetails?.brn_code +
+            "," +
+            branches.filter((e) => +e.branch_code == +userDetails?.brn_code)[0]
+              ?.branch_name
+        );
+        console.log(
+          userDetails?.brn_code +
+            "," +
+            branches.filter((e) => +e.branch_code == +userDetails?.brn_code)[0]
+              ?.branch_name
+        );
+        if (res?.data?.msg?.length == 0) Message("error", "No Data!");
         console.log("KKKKKKKKKKKKKKKKKKK", branch);
         // setTotSum(res?.data?.msg.reduce((n, { credit }) => n + credit, 0))
       })
@@ -141,32 +151,28 @@ function AttendanceDashboard() {
   };
 
   const handleSubmit = () => {
-    if (fromDate && toDate && branch && employee) {
+    if (fromDate && toDate && employee) {
       handleFetchReport();
-	  if(employee!='A' && employee)
-	  handleEmpDetails()
+      if (employee != "A" && employee) handleEmpDetails();
     }
   };
 
-  const handleEmpDetails=()=>{
-	setLoading(true);
+  const handleEmpDetails = () => {
+    setLoading(true);
     const creds = {
       from_date: formatDateToYYYYMMDD(fromDate),
       to_date: formatDateToYYYYMMDD(toDate),
       branch_id: branch.split(",")[0],
       emp_id: employee,
     };
-    axios
-      .post(`${url}/adminreport/show_per_emp_detls`, creds)
-      .then((res) => {
-        console.log("RESSSSS======>>>>", res?.data);
-		setTotPresent(res?.data?.msg[0]?.tot_present)
-		setTotEarlyOut(res?.data?.msg[0]?.early_out[0]?.tot_early_out)
-		setTotLateIn(res?.data?.msg[0]?.late_in[0]?.tot_late_in)
-		setTothours(res?.data?.msg[0]?.tot_work[0]?.total_work_hours)
-	  })
-	}
-  
+    axios.post(`${url}/show_per_emp_detls_per_brn`, creds).then((res) => {
+      console.log("RESSSSS======>>>>", res?.data);
+      setTotPresent(res?.data?.msg[0]?.tot_present);
+      setTotEarlyOut(res?.data?.msg[0]?.early_out[0]?.tot_early_out);
+      setTotLateIn(res?.data?.msg[0]?.late_in[0]?.tot_late_in);
+      setTothours(res?.data?.msg[0]?.tot_work[0]?.total_work_hours);
+    });
+  };
 
   const exportToExcel = (data) => {
     const wb = XLSX.utils.book_new();
@@ -204,7 +210,7 @@ function AttendanceDashboard() {
     };
 
     await axios
-      .post(`${url}/adminreport/reject_atten`, creds)
+      .post(`${url}/reject_atten_emp`, creds)
       .then((res) => {
         console.log("RESSSSS======>>>>", res?.data);
         Message("success", "Attendance Rejected Successfully");
@@ -286,7 +292,7 @@ function AttendanceDashboard() {
                 type="text"
                 label="Branch"
                 name="branch"
-                formControlName={branch.split(",")[0]}
+                formControlName={userDetails?.brn_code}
                 handleChange={(e) => {
                   console.log("***********========", e);
                   // setBranch(
@@ -316,6 +322,7 @@ function AttendanceDashboard() {
                   );
                 }}
                 mode={2}
+                disabled={true}
                 // data={branches?.map((item, i) => ({
                 // 	code: item?.branch_code,
                 // 	name: item?.branch_name,
@@ -335,7 +342,6 @@ function AttendanceDashboard() {
                 type="text"
                 label="Employees"
                 name="employee"
-                disabled={!branch || branch == "Branch..."}
                 formControlName={employee}
                 handleChange={(e) => {
                   console.log("***********========", e);
@@ -347,27 +353,23 @@ function AttendanceDashboard() {
                   // )
                   setEmployee(e.target.value);
                   console.log(branches);
-                  console.log(
-                    e.target.value +
-                      "," +
-                      [
-                        { emp_code: "A", branch_name: "All Branches" },
-                        ...branches,
-                      ]
-                  );
                 }}
                 mode={2}
                 // data={branches?.map((item, i) => ({
                 // 	code: item?.branch_code,
                 // 	name: item?.branch_name,
                 // }))}
-                data={[
-                  { code: "A", name: "All Employees" },
-                  ...employees?.map((item, i) => ({
-                    code: item?.emp_id,
-                    name: item?.emp_name,
-                  })),
-                ]}
+                //   data={[
+                //     { code: "A", name: "All Employees" },
+                //     ...employees?.map((item, i) => ({
+                //       code: item?.emp_id,
+                //       name: item?.emp_name,
+                //     })),
+                //   ]}
+                data={employees?.map((item, i) => ({
+                  code: item?.emp_id,
+                  name: item?.emp_name,
+                }))}
               />
             </div>
 
@@ -383,68 +385,69 @@ function AttendanceDashboard() {
             </div>
           </div>
 
-         {employee!='A' && employee && reportData.length>0 && <div className="grid grid-cols-3 gap-5 mt-5">
-            <div class="max-w-sm p-6  col-span-1  bg-white border border-teal-200 rounded-lg shadow-lg dark:bg-gray-800 dark:border-gray-700">
-              <a href="#">
-                <p class="mb-3 text-5xl font-light flex justify-center items-center my-2 text-teal-500 dark:text-gray-400">
-                  {tot_present||0}
-                </p>
-
-                <h5 class="mb-2 text-2xl font-semibold flex justify-center tracking-tight text-slate-700 dark:text-white">
-                  No. of day(s) present
-                </h5>
-              </a>
-            </div>
-
-            <div class="max-w-sm p-6 col-span-1 bg-white border border-pink-200 rounded-lg shadow-lg dark:bg-gray-800 dark:border-gray-700">
-              <a href="#">
-                <p class="mb-3 text-5xl font-light flex justify-center items-center my-2 text-pink-500 dark:text-gray-400">
-                  {tot_hours||0}
-                </p>
-
-                <h5 class="mb-2 text-2xl font-semibold flex justify-center tracking-tight text-slate-700 dark:text-white">
-                  Total hours worked
-                </h5>
-              </a>
-            </div>
-
-            <div class="max-w-sm p-6 col-span-1 bg-white border border-teal-200 rounded-lg shadow-lg dark:bg-gray-800 dark:border-gray-700">
-              <a href="#">
-                <div className="flex justify-around items-center gap-2">
+          {employee != "A" && employee && reportData.length > 0 && (
+            <div className="grid grid-cols-3 gap-5 mt-5">
+              <div class="max-w-sm p-6  col-span-1  bg-white border border-teal-200 rounded-lg shadow-lg dark:bg-gray-800 dark:border-gray-700">
+                <a href="#">
                   <p class="mb-3 text-5xl font-light flex justify-center items-center my-2 text-teal-500 dark:text-gray-400">
-                    {tot_late_in||0}
+                    {tot_present || 0}
                   </p>
-                  <p class="mb-3 text-5xl font-light flex justify-center items-center my-2 text-teal-500 dark:text-gray-400">
-                  {tot_early_out||0}
 
+                  <h5 class="mb-2 text-2xl font-semibold flex justify-center tracking-tight text-slate-700 dark:text-white">
+                    No. of day(s) present
+                  </h5>
+                </a>
+              </div>
+
+              <div class="max-w-sm p-6 col-span-1 bg-white border border-pink-200 rounded-lg shadow-lg dark:bg-gray-800 dark:border-gray-700">
+                <a href="#">
+                  <p class="mb-3 text-5xl font-light flex justify-center items-center my-2 text-pink-500 dark:text-gray-400">
+                    {tot_hours || 0}
                   </p>
-                </div>
 
-                <div className="flex justify-around items-center gap-2">
                   <h5 class="mb-2 text-2xl font-semibold flex justify-center tracking-tight text-slate-700 dark:text-white">
-                    Late-In(s)
+                    Total hours worked
                   </h5>
-                  <h5 class="mb-2 text-2xl font-semibold flex justify-center tracking-tight text-slate-700 dark:text-white">
-                    Early-Out(s)
-                  </h5>
-                </div>
-              </a>
+                </a>
+              </div>
+
+              <div class="max-w-sm p-6 col-span-1 bg-white border border-teal-200 rounded-lg shadow-lg dark:bg-gray-800 dark:border-gray-700">
+                <a href="#">
+                  <div className="flex justify-around items-center gap-2">
+                    <p class="mb-3 text-5xl font-light flex justify-center items-center my-2 text-teal-500 dark:text-gray-400">
+                      {tot_late_in || 0}
+                    </p>
+                    <p class="mb-3 text-5xl font-light flex justify-center items-center my-2 text-teal-500 dark:text-gray-400">
+                      {tot_early_out || 0}
+                    </p>
+                  </div>
+
+                  <div className="flex justify-around items-center gap-2">
+                    <h5 class="mb-2 text-2xl font-semibold flex justify-center tracking-tight text-slate-700 dark:text-white">
+                      Late-In(s)
+                    </h5>
+                    <h5 class="mb-2 text-2xl font-semibold flex justify-center tracking-tight text-slate-700 dark:text-white">
+                      Early-Out(s)
+                    </h5>
+                  </div>
+                </a>
+              </div>
             </div>
-          </div>}
+          )}
 
           {/* For Recovery/Collection Results MR */}
 
           {reportData?.length > 0 && (
             <div
               className={`relative overflow-x-auto shadow-md sm:rounded-lg mt-5 max-h-[500px]
-                                [&::-webkit-scrollbar]:w-1
-                                [&::-webkit-scrollbar-track]:rounded-full
-                                [&::-webkit-scrollbar-track]:bg-transparent
-                                [&::-webkit-scrollbar-thumb]:rounded-full
-                                [&::-webkit-scrollbar-thumb]:bg-gray-300
-                                dark:[&::-webkit-scrollbar-track]:bg-transparent
-                                dark:[&::-webkit-scrollbar-thumb]:bg-neutral-500
-                            `}
+                                  [&::-webkit-scrollbar]:w-1
+                                  [&::-webkit-scrollbar-track]:rounded-full
+                                  [&::-webkit-scrollbar-track]:bg-transparent
+                                  [&::-webkit-scrollbar-thumb]:rounded-full
+                                  [&::-webkit-scrollbar-thumb]:bg-gray-300
+                                  dark:[&::-webkit-scrollbar-track]:bg-transparent
+                                  dark:[&::-webkit-scrollbar-thumb]:bg-neutral-500
+                              `}
             >
               <div
                 className={`w-full text-xs dark:bg-gray-700 dark:text-gray-400`}
@@ -481,30 +484,45 @@ function AttendanceDashboard() {
                             {user.emp_name}
                           </td>
                           <td className="px-4 py-2 text-left">
-                            { new Date(user?.out_date_time).getTime()?
-                              (timeDifference(user?.in_date_time, user?.out_date_time)).hours+'h '+(timeDifference(user?.in_date_time, user?.out_date_time)).minutes+'m ':'00h 00m'
-                            }
+                            {new Date(user?.out_date_time).getTime()
+                              ? timeDifference(
+                                  user?.in_date_time,
+                                  user?.out_date_time
+                                ).hours +
+                                "h " +
+                                timeDifference(
+                                  user?.in_date_time,
+                                  user?.out_date_time
+                                ).minutes +
+                                "m "
+                              : "00h 00m"}
                           </td>
                           <td className="px-4 py-2 text-left">
                             {/* {user?.clock_status === "I" ? (
-                              <span className="mr-1">✅</span>
-                            ) : user?.clock_status === "O" ? (
-                              <span className="mr-1">🕒</span>
-                            ) : user?.clock_status === "E" ? (
-                              <span className="mr-1">⌛</span>
-                            ) : (
-                              <span className="mr-1">🐌</span>
-                            )} */}
+                                <span className="mr-1">✅</span>
+                              ) : user?.clock_status === "O" ? (
+                                <span className="mr-1">🕒</span>
+                              ) : user?.clock_status === "E" ? (
+                                <span className="mr-1">⌛</span>
+                              ) : (
+                                <span className="mr-1">🐌</span>
+                              )} */}
                             {/* {user?.clock_status === "I"
-                              ? "Timely In"
-                              : user?.clock_status === "O"
-                              ? "Timely Out"
-                              : user?.clock_status === "E"
+                                ? "Timely In"
+                                : user?.clock_status === "O"
+                                ? "Timely Out"
+                                : user?.clock_status === "E"
+                                ? "Early Out"
+                                : "Late In"} */}
+                            {user?.late_in === "L"
+                              ? "Late In"
+                              : user?.late_in === "E"
                               ? "Early Out"
-                              : "Late In"} */}
-							  {
-								user?.late_in === "L" ? 'Late In': user?.late_in === "E" ? 'Early Out': user?.clock_status=='I'?'Timely In':user?.clock_status=='O'?'Timely Out':''
-							  }
+                              : user?.clock_status == "I"
+                              ? "Timely In"
+                              : user?.clock_status == "O"
+                              ? "Timely Out"
+                              : ""}
                           </td>
                           <td className="p-2 text-left">
                             <div
@@ -603,39 +621,39 @@ function AttendanceDashboard() {
                                     </p>
                                   </div>
                                   {/* <div>
-																		<h4 className="font-medium text-lg text-teal-500 mb-2">
-																			Clock Status
-																		</h4>
-																		<span
-																			className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-sm font-medium ${
-																				user?.clock_status === "I"
-																					? "bg-green-100 text-green-800"
-																					: user?.clock_status === "O"
-																					? "bg-blue-100 text-blue-800"
-																					: user?.clock_status === "E"
-																					? "bg-yellow-100 text-yellow-800"
-																					: "bg-red-100 text-red-800"
-																			}`}
-																		>
-																			{user?.clock_status === "I" ? (
-																				<span className="mr-1">✅</span>
-																			) : user?.clock_status === "O" ? (
-																				<span className="mr-1">🕒</span>
-																			) : user?.clock_status === "E" ? (
-																				<span className="mr-1">⌛</span>
-
-																			) : (
-																				<span className="mr-1">🐌</span>
-																			)}
-																			{user?.clock_status === "I"
-																				? "Timely In"
-																				: user?.clock_status === "O"
-																				? "Timely Out"
-																				: user?.clock_status === "E"
-																				? "Early Out"
-																				: "Late In"}
-																		</span>
-																	</div> */}
+                                                                          <h4 className="font-medium text-lg text-teal-500 mb-2">
+                                                                              Clock Status
+                                                                          </h4>
+                                                                          <span
+                                                                              className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-sm font-medium ${
+                                                                                  user?.clock_status === "I"
+                                                                                      ? "bg-green-100 text-green-800"
+                                                                                      : user?.clock_status === "O"
+                                                                                      ? "bg-blue-100 text-blue-800"
+                                                                                      : user?.clock_status === "E"
+                                                                                      ? "bg-yellow-100 text-yellow-800"
+                                                                                      : "bg-red-100 text-red-800"
+                                                                              }`}
+                                                                          >
+                                                                              {user?.clock_status === "I" ? (
+                                                                                  <span className="mr-1">✅</span>
+                                                                              ) : user?.clock_status === "O" ? (
+                                                                                  <span className="mr-1">🕒</span>
+                                                                              ) : user?.clock_status === "E" ? (
+                                                                                  <span className="mr-1">⌛</span>
+  
+                                                                              ) : (
+                                                                                  <span className="mr-1">🐌</span>
+                                                                              )}
+                                                                              {user?.clock_status === "I"
+                                                                                  ? "Timely In"
+                                                                                  : user?.clock_status === "O"
+                                                                                  ? "Timely Out"
+                                                                                  : user?.clock_status === "E"
+                                                                                  ? "Early Out"
+                                                                                  : "Late In"}
+                                                                          </span>
+                                                                      </div> */}
                                   <div>
                                     <h4 className="font-medium text-lg text-teal-500 mb-2">
                                       Rejection Remarks
@@ -700,33 +718,35 @@ function AttendanceDashboard() {
                                           />
                                         </>
                                       }
-                                      onConfirm={() =>{
-                                        console.log(user?.in_date_time)
+                                      onConfirm={() => {
+                                        console.log(user?.in_date_time);
                                         confirm(
                                           user?.emp_id,
-                                          user?.in_date_time.split("T")[0]+" "+new Date(user?.in_date_time)
-                                          ?.toLocaleTimeString("en-GB", {
-                                            hour: "2-digit",
-                                            minute: "2-digit",
-                                            second: "2-digit",
-                                            hour12: false,
-                                          })
-                                          .replace("am", "")
-                                          .replace("pm", "")
-                                        )
-                                      }
-                                      }
+                                          user?.in_date_time.split("T")[0] +
+                                            " " +
+                                            new Date(user?.in_date_time)
+                                              ?.toLocaleTimeString("en-GB", {
+                                                hour: "2-digit",
+                                                minute: "2-digit",
+                                                second: "2-digit",
+                                                hour12: false,
+                                              })
+                                              .replace("am", "")
+                                              .replace("pm", "")
+                                        );
+                                      }}
                                       onCancel={cancel}
                                       okText="Reject"
                                       cancelText="Cancel"
                                     >
-                                    {user?.attan_status !== "R" &&  <button className="inline-flex items-center px-4 py-2 mt-4 text-sm font-medium text-white bg-red-500 border border-red-500 rounded-full hover:bg-red-600 hover:border-red-600 transition ease-in-out duration-300">
-                                        <CheckCircleOutlined />
-                                        <span className="ml-2">
-                                          Reject Attendance
-                                        </span>
-                                      </button>
-}
+                                      {user?.attan_status !== "R" && (
+                                        <button className="inline-flex items-center px-4 py-2 mt-4 text-sm font-medium text-white bg-red-500 border border-red-500 rounded-full hover:bg-red-600 hover:border-red-600 transition ease-in-out duration-300">
+                                          <CheckCircleOutlined />
+                                          <span className="ml-2">
+                                            Reject Attendance
+                                          </span>
+                                        </button>
+                                      )}
                                     </Popconfirm>
                                   </div>
                                 </div>
@@ -760,15 +780,16 @@ function AttendanceDashboard() {
               </Tooltip>
               <Tooltip title="Print">
                 <button
-                  onClick={() =>
+                  onClick={() => {
+                    console.log(metadataDtls);
                     printTableRegular(
                       reportData,
                       "Attendance Report",
                       metadataDtls,
                       fromDate,
                       toDate
-                    )
-                  }
+                    );
+                  }}
                   className="mt-5 justify-center items-center rounded-full text-pink-600"
                 >
                   <PrinterOutlined
@@ -786,4 +807,4 @@ function AttendanceDashboard() {
   );
 }
 
-export default AttendanceDashboard;
+export default AttendanceBM;
