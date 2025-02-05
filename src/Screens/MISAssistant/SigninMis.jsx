@@ -44,7 +44,7 @@ function SigninMis() {
 	const onSubmit = async (values) => {
 		setLoading(true)
 		console.log(values)
-
+        console.log(user_type_id==4 , branch!="")
 		const creds = {
 			emp_id: values?.user_id,
 			password: values?.password,
@@ -93,7 +93,7 @@ function SigninMis() {
 				Message("error", "Some error on server while logging in...")
 			})
 		}
-        else{
+        else if (user_type_id!=4){
 			await axios
 			.post(`${url}/login_app`, creds)
 			.then((res) => {
@@ -234,7 +234,9 @@ function SigninMis() {
 							mode={2}
 							data={branches}
 						/>
-						
+						{user_type_id==4 && !branch ? (
+							<VError title={"Branch is mandatory"} />
+						) : null}
 					</div>}
 					<div
 						className="flex justify-between gap-5"
@@ -242,7 +244,7 @@ function SigninMis() {
 							width: 280,
 						}}
 					>
-						<Link to={routePaths.SIGN_UP}>
+						{/* <Link to={routePaths.SIGN_UP}>
 							<p className="text-sm text-[#DA4167] font-bold hover:underline cursor-pointer">
 								Sign Up
 							</p>
@@ -251,7 +253,7 @@ function SigninMis() {
 							<p className="text-sm text-[#DA4167] font-bold hover:underline cursor-pointer">
 								Forgot password?
 							</p>
-						</Link>
+						</Link> */}
 					</div>
 					<Spin
 						indicator={<LoadingOutlined spin />}

@@ -73,16 +73,16 @@ function ManageUser() {
 		setMasterData(
 			copyLoanApplications?.filter(
 				(e) =>
-					e?.bank_name
+					e?.emp_id
 						?.toString()
 						?.toLowerCase()
 						.includes(word?.toLowerCase()) ||
-					e?.branch_name
+					e?.emp_name
 						?.toString()
 						?.toLowerCase()
 						?.includes(word?.toLowerCase()) ||
-					e?.ifsc?.toString()?.toLowerCase()?.includes(word?.toLowerCase()) ||
-					e?.sol_id?.toString()?.toLowerCase()?.includes(word?.toLowerCase())
+					e?.brn_code?.toString()?.toLowerCase()?.includes(word?.toLowerCase()) ||
+					e?.branch_name?.toString()?.toLowerCase()?.includes(word?.toLowerCase())
 			)
 		)
 	}

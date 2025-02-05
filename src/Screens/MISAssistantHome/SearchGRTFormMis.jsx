@@ -61,6 +61,7 @@ function SearchGRTFormMis() {
 		setLoading(true)
 		const creds = {
 			search_appl: searchKeywords,
+			branch_code:userDetails.brn_code
 		}
 		await axios
 			.post(`${url}/admin/search_application`, creds)

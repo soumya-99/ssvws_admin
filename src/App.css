@@ -124,3 +124,25 @@ table.table_Custome_2nd tbody tr td{
 
 table.table_Custome_1st thead tr th:first-child{width: 70px;}
 table.table_Custome_2nd thead tr th:first-child{width: auto;}
+
+
+.p-multiselect{
+  border: #a8a7a7 solid 1px;
+}
+
+.p-multiselect-token{
+  background-color: #0694A2;
+}
+
+.p-multiselect-token{
+  background-color: #0694A2;
+
+}
+
+.p-multiselect-label-container{
+  height:38px;
+  display: flex;
+  align-items: center;
+  font-size: 14px;
+  color:black
+}

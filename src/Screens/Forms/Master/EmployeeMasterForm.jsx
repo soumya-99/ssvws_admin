@@ -72,7 +72,7 @@ function EmployeeMasterForm() {
 		ifsc: "",
 		acc_no: "",
 		remarks: "",
-		active_flag: "",
+		// active_flag: "",
 	})
 
 	const handleChangeForm = (e) => {
@@ -183,7 +183,7 @@ function EmployeeMasterForm() {
 					ifsc: res?.data?.msg[0]?.ifsc || "",
 					acc_no: res?.data?.msg[0]?.acc_no || "",
 					remarks: res?.data?.msg[0]?.remarks || "",
-					active_flag: res?.data?.msg[0]?.active_flag || "",
+					// active_flag: res?.data?.msg[0]?.active_flag || "",
 				})
 			})
 			.catch((err) => {
@@ -228,7 +228,7 @@ function EmployeeMasterForm() {
 			ifsc: employeeMasterDetails?.ifsc || "",
 			acc_no: employeeMasterDetails?.acc_no || "",
 			remarks: employeeMasterDetails?.remarks || "",
-			active_flag: employeeMasterDetails?.remarks || "",
+			// active_flag: employeeMasterDetails?.remarks || "",
 		})
 	}, [])
 
@@ -259,7 +259,7 @@ function EmployeeMasterForm() {
 			voter_id: masterEmployeeData.voter_no || "",
 			pan_no: masterEmployeeData.pan_no || "",
 			aadhar_no: masterEmployeeData.aadhaar_no || "",
-			active_flag: masterEmployeeData.active_flag || "",
+			// active_flag: masterEmployeeData.active_flag || "",
 			bank_name: masterEmployeeData.bank_name || "",
 			branch_name: masterEmployeeData.bank_branch_name || "",
 			ifsc: masterEmployeeData.ifsc || "",
@@ -296,7 +296,7 @@ function EmployeeMasterForm() {
 			voter_id: masterEmployeeData.voter_no || "",
 			pan_no: masterEmployeeData.pan_no || "",
 			aadhar_no: masterEmployeeData.aadhaar_no || "",
-			active_flag: masterEmployeeData.active_flag || "",
+			// active_flag: masterEmployeeData.active_flag || "",
 			bank_name: masterEmployeeData.bank_name || "",
 			branch_name: masterEmployeeData.bank_branch_name || "",
 			ifsc: masterEmployeeData.ifsc || "",
@@ -427,7 +427,7 @@ function EmployeeMasterForm() {
 				<form onSubmit={onSubmit}>
 						
 							<div className="grid gap-4 sm:grid-cols-3 ">
-								<div>
+								{/* <div>
 									<TDInputTemplateBr
 										placeholder="Active Flag..."
 										type="text"
@@ -441,7 +441,7 @@ function EmployeeMasterForm() {
 											{ code: "N", name: "Inactive" },
 										]}
 									/>
-								</div>
+								</div> */}
 								<div>
 									<TDInputTemplateBr
 										placeholder="Employee Name..."
@@ -767,7 +767,7 @@ function EmployeeMasterForm() {
 										mode={1}
 									/>
 								</div>
-								<div className="sm:col-span-4">
+								<div>
 									<TDInputTemplateBr
 										placeholder="Account No..."
 										type="number"

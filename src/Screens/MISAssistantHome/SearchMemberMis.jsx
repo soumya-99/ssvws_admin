@@ -22,6 +22,7 @@ function SearchMemberMis() {
 		setLoading(true)
 		const creds = {
 			client_name: searchKeywords,
+			branch_code:userDetails.brn_code
 		}
 		await axios
 			.post(`${url}/admin/search_member_web`, creds)

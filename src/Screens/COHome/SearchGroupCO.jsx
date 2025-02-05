@@ -21,6 +21,7 @@ function SearchGroupCO() {
 		setLoading(true)
 		const creds = {
 			group_name: searchKeywords,
+			branch_code:userDetails.brn_code
 		}
 		await axios
 			.post(`${url}/admin/search_group_web`, creds)

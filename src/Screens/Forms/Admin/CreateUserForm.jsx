@@ -19,7 +19,7 @@ import DialogBox from "../../../Components/DialogBox"
 import { disableCondition } from "../disableCondition"
 import { calculateRetirementDate } from "../../../Utils/calculateRetirementDate"
 import moment from "moment/moment"
-
+import { MultiSelect } from 'primereact/multiselect';
 function CreateUserForm() {
 	const params = useParams()
 	const [loading, setLoading] = useState(false)
@@ -35,7 +35,14 @@ function CreateUserForm() {
 	const [visible, setVisible] = useState(() => false)
 
 	// const formattedDob = formatDateToYYYYMMDD(memberDetails?.dob)
-
+	const [selectedBranches, setSelectedBranches] = useState(null);
+    const cities = [
+        { name: 'New York', code: 'NY' },
+        { name: 'Rome', code: 'RM' },
+        { name: 'London', code: 'LDN' },
+        { name: 'Istanbul', code: 'IST' },
+        { name: 'Paris', code: 'PRS' }
+    ];
 	console.log(params, "params")
 	console.log(location, "location")
 	// console.log(memberDetails, "memberDetails")
@@ -65,7 +72,7 @@ function CreateUserForm() {
 			.get(`${url}/fetch_all_branch_dt`)
 			.then((res) => {
 				console.log("QQQQQQQQQQQQQQQQ", res?.data)
-				setBranches(res?.data?.msg)
+				setBranches(res?.data?.msg.map((item)=>{return {code:item.branch_code,name:item.branch_name}}))
 			})
 			.catch((err) => {
 				console.log("?????????????????????", err)
@@ -73,7 +80,17 @@ function CreateUserForm() {
 
 		setLoading(false)
 	}
-
+    useEffect(()=>{
+		
+		axios
+					.get(`${url}/admin/fetch_branch`)
+					.then((res) => {
+						setBranches(res?.data?.msg.map(item=>{return {code:item.branch_code,name:item.branch_name}}))
+					})
+					.catch((err) => {
+						console.log("Some error")
+					})
+	},[])
 	const handleFetchUserTypes = async () => {
 		await axios
 			.get(`${url}/get_user_type`)
@@ -125,7 +142,7 @@ function CreateUserForm() {
 				emp_id: userMasterDetails?.emp_id || "",
 				emp_name: userMasterDetails?.emp_name || "",
 				branch: userMasterDetails?.brn_code || "",
-				designation: userMasterDetails?.designation || "",
+				designation: userMasterDetails?.desig_code || "",
 				user_type: userMasterDetails?.user_type || "",
 				active_flag: userMasterDetails?.user_status || "A",
 				remarks: userMasterDetails?.deactive_remarks || "",
@@ -164,7 +181,7 @@ function CreateUserForm() {
 							" Name: " +
 							res?.data?.msg[0]?.emp_name +
 							" Branch: " +
-							res?.data?.msg[0]?.brn_code
+							res?.data?.msg[0]?.branch_id
 					)
 					onReset()
 					return
@@ -210,12 +227,14 @@ function CreateUserForm() {
 
 	const handleUpdateForm = async () => {
 		setLoading(true)
+		console.log(masterUserData)
 		const creds = {
 			emp_id: masterUserData.emp_id || "",
 			branch_code: masterUserData.branch || 0,
 			user_type: masterUserData.user_type || "Y",
 			user_status: masterUserData.active_flag || "A",
 			user_status: masterUserData.active_flag || "A",
+			designation:masterUserData.designation||"",
 			modified_by: userDetails?.emp_id || "",
 			remarks: masterUserData.remarks || "",
 			deactivated_by: userDetails?.emp_id || "",
@@ -324,10 +343,11 @@ function CreateUserForm() {
 										formControlName={masterUserData.branch}
 										handleChange={handleChangeForm}
 										mode={2}
-										data={branches?.map((item, i) => ({
-											code: item?.branch_code,
-											name: item?.branch_name,
-										}))}
+										// data={branches?.map((item, i) => ({
+										// 	code: item?.branch_code,
+										// 	name: item?.branch_name,
+										// }))}
+										data={branches}
 										disabled={true}
 									/>
 								</div>
@@ -344,7 +364,7 @@ function CreateUserForm() {
 											code: item?.desig_code,
 											name: item?.desig_type,
 										}))}
-										disabled={+params?.id > 0}
+										// disabled={+params?.id > 0}
 									/>
 								</div>
 								<div className={"sm:col-span-3"}>
@@ -368,7 +388,11 @@ function CreateUserForm() {
 										}))}
 									/>
 								</div>
-
+							{(masterUserData.user_type==3 || masterUserData.user_type==10) &&	<div className="sm:col-span-6">
+							   <label className="text-gray-800 font-semibold text-sm my-2">Branches</label>
+								<MultiSelect value={selectedBranches} onChange={(e) => setSelectedBranches(e.value)} options={branches} optionLabel="name" 
+                placeholder="Select branch(es)" maxSelectedLabels={3} className="w-full md:w-20rem my-1.5" />
+				</div>}
 								{+params?.id > 0 && (
 									<>
 										<div className="sm:col-span-2">
@@ -435,25 +459,47 @@ function CreateUserForm() {
 				onPress={() => setVisible(!visible)}
 				visible={visible}
 				onPressYes={() => {
+		console.log(masterUserData)
+
 					if (+params?.id > 0) {
+							if(  
+							masterUserData.active_flag!='A'
+
+							)
 						if (
 							!masterUserData.emp_id ||
 							!masterUserData.emp_name ||
 							!masterUserData.branch ||
 							!masterUserData.active_flag ||
 							!masterUserData.user_type ||
-							!masterUserData.remarks
+							!masterUserData.remarks ||
+							!masterUserData.designation
 						) {
 							Message("warning", "Fill the details correctly.")
 							return
 						}
+					else{
+						if (
+							!masterUserData.emp_id ||
+							!masterUserData.emp_name ||
+							!masterUserData.branch ||
+							!masterUserData.active_flag ||
+							!masterUserData.user_type ||
+							!masterUserData.designation
+						) {
+							Message("warning", "Fill the details correctly.")
+							return
+						}
+					}
 						handleUpdateForm()
 					} else {
 						if (
 							!masterUserData.emp_id ||
 							!masterUserData.emp_name ||
 							!masterUserData.branch ||
-							!masterUserData.user_type
+							!masterUserData.user_type||
+							!masterUserData.designation
+
 						) {
 							Message("warning", "Fill the details correctly.")
 							return

@@ -70,7 +70,7 @@ function MenusBr({ theme }) {
     {
       key: "sub1",
       icon: <LineChartOutlined />,
-      label: <Link to={"/homemco/"}>Dashboard</Link>,
+      label: <Link to={"/homeco/"}>Dashboard</Link>,
     },
     {
       key: "sub2",
@@ -576,7 +576,7 @@ function MenusBr({ theme }) {
       ],
     },
   ];
-  const items_user_type_4 = [
+  const items_user_type_4_100 = [
     {
       key: "sub1",
       icon: <LineChartOutlined />,
@@ -735,23 +735,23 @@ function MenusBr({ theme }) {
         {
           key: "sub6-4",
           icon: <BarChartOutlined />,
-          label: <Link to={"/homebm/loanstatements"}>Loan Statements</Link>,
+          label: <Link to={"/homeadmin/loanstatements"}>Loan Statements</Link>,
         },
         {
           key: "sub6-5",
           icon: <BarChartOutlined />,
-          label: <Link to={"/homebm/loantxns"}>Loan Transactions</Link>,
+          label: <Link to={"/homeadmin/loantxns"}>Loan Transactions</Link>,
         },
         {
           key: "sub6-6",
           icon: <BarChartOutlined />,
-          label: <Link to={"/homebm/demandreport"}>Demand Report</Link>,
+          label: <Link to={"/homeadmin/demandreport"}>Demand Report</Link>,
         },
         {
           key: "sub6-7",
           icon: <BarChartOutlined />,
           label: (
-            <Link to={"/homebm/outstasndingreport"}>Outstanding Report</Link>
+            <Link to={"/homeadmin/outstasndingreport"}>Outstanding Report</Link>
           ),
         },
         // {
@@ -782,20 +782,20 @@ function MenusBr({ theme }) {
         {
           key: "sub6-8",
           icon: <BarChartOutlined />,
-          label: <Link to={"/homebm/fundwisesummary"}>Fundwise Report</Link>,
+          label: <Link to={"/homeadmin/fundwisesummary"}>Fundwise Report</Link>,
         },
         {
           key: "sub6-9",
           icon: <BarChartOutlined />,
           label: (
-            <Link to={"/homebm/schemewisesummary"}>Schemewise Report</Link>
+            <Link to={"/homeadmin/schemewisesummary"}>Schemewise Report</Link>
           ),
         },
         {
           key: "sub6-10",
           icon: <BarChartOutlined />,
           label: (
-            <Link to={"/homebm/demandvscollectionreport"}>
+            <Link to={"/homeadmin/demandvscollectionreport"}>
               Demand vs. Collection
             </Link>
           ),
@@ -1300,7 +1300,7 @@ function MenusBr({ theme }) {
           label: <Link to={"/homeadmin/masteremployees"}>Employees</Link>,
         },
         {
-          key: "sub5-2",
+          key: "sub5-3",
           icon: <DatabaseOutlined />,
           label: <Link to={"/homeadmin/masterdesignations"}>Designations</Link>,
         },
@@ -1433,7 +1433,7 @@ function MenusBr({ theme }) {
         items={ 
          
           userDetails?.id === 1 || userDetails?.id === 2 || userDetails?.id === 5
-            ? userDetails?.id === 2? items_user_type_2:items_user_type_15:userDetails.id==4?items_user_type_4:userDetails.id==3? items_user_type_3:items_user_type_10
+            ? userDetails?.id === 2? items_user_type_2:items_user_type_15:userDetails.id==4?userDetails.brn_code=='100'?items_user_type_4_100:items_user_type_2:userDetails.id==3? items_user_type_3:items_user_type_10
             // : userDetails?.id === 2
             // ? itemsBM
             // : userDetails?.id === 4
