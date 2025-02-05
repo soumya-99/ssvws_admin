@@ -21,6 +21,7 @@ function SearchGroupMis() {
 		setLoading(true)
 		const creds = {
 			group_name: searchKeywords,
+			branch_code:userDetails?.brn_code
 		}
 		await axios
 			.post(`${url}/admin/search_group_web`, creds)
@@ -58,7 +59,7 @@ function SearchGroupMis() {
 						<button
 							icon={<SearchOutlined />}
 							iconPosition="end"
-							className="bg-blue-700 text-white hover:bg-blue-800 p-5 text-center text-sm border-none rounded-lg w-36 h-10 flex justify-center items-center align-middle gap-2 disabled:bg-gray-400 disabled:cursor-not-allowed active:ring-2 active:ring-blue-400"
+							className="bg-pink-600 text-white hover:bg-pink-800 p-5 text-center text-sm border-none rounded-lg w-36 h-10 flex justify-center items-center align-middle gap-2 disabled:bg-gray-400 disabled:cursor-not-allowed active:ring-2 active:ring-blue-400"
 							onClick={fetchSearchedGroups}
 							disabled={!searchKeywords}
 						>

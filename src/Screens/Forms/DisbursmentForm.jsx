@@ -339,6 +339,7 @@ function DisbursmentForm() {
 		setLoading(true)
 		const creds = {
 			member_dtls: personalDetails?.member_code,
+			branch_code:userDetails?.brn_code
 		}
 		await axios
 			.post(`${url}/admin/fetch_loan_application_dtls`, creds)

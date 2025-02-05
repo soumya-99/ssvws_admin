@@ -256,7 +256,7 @@ function AttendanceBM() {
         <main className="px-4 pb-5 bg-slate-50 rounded-lg shadow-lg h-auto my-10 mx-32">
           <div className="flex flex-row gap-3 mt-20  py-3 rounded-xl">
             <div className="text-3xl text-slate-700 font-bold">
-              ATTENDANCE STATS
+              ATTENDANCE STATISTICS
             </div>
           </div>
 
@@ -359,17 +359,17 @@ function AttendanceBM() {
                 // 	code: item?.branch_code,
                 // 	name: item?.branch_name,
                 // }))}
-                //   data={[
-                //     { code: "A", name: "All Employees" },
-                //     ...employees?.map((item, i) => ({
-                //       code: item?.emp_id,
-                //       name: item?.emp_name,
-                //     })),
-                //   ]}
-                data={employees?.map((item, i) => ({
-                  code: item?.emp_id,
-                  name: item?.emp_name,
-                }))}
+                  data={[
+                    { code: "A", name: "All Employees" },
+                    ...employees?.map((item, i) => ({
+                      code: item?.emp_id,
+                      name: item?.emp_name,
+                    })),
+                  ]}
+                // data={employees?.map((item, i) => ({
+                //   code: item?.emp_id,
+                //   name: item?.emp_name,
+                // }))}
               />
             </div>
 
@@ -459,7 +459,8 @@ function AttendanceBM() {
                       <th className="px-4 py-2 text-left">Date</th>
                       <th className="px-4 py-2 text-left">Employee ID</th>
                       <th className="px-4 py-2 text-left">Name</th>
-                      <th className="px-4 py-2 text-left">Effective Hours</th>
+                      {/* <th className="px-4 py-2 text-left">Effective Hours</th> */}
+                      <th className="px-4 py-2 text-left">Clock In/Clock Out</th>
                       <th className="px-4 py-2 text-left">Status</th>
                       <th className="px-4 py-2 text-left"></th>
                     </tr>
@@ -484,7 +485,7 @@ function AttendanceBM() {
                             {user.emp_name}
                           </td>
                           <td className="px-4 py-2 text-left">
-                            {new Date(user?.out_date_time).getTime()
+                            {/* {new Date(user?.out_date_time).getTime()
                               ? timeDifference(
                                   user?.in_date_time,
                                   user?.out_date_time
@@ -495,7 +496,31 @@ function AttendanceBM() {
                                   user?.out_date_time
                                 ).minutes +
                                 "m "
-                              : "00h 00m"}
+                              : "00h 00m"} */}
+                                                                  <Tag color="green" className="mb-2">
+                                      {user?.in_date_time
+                                        ? new Date(user?.in_date_time)
+                                            ?.toLocaleTimeString("en-GB", {
+                                              hour: "2-digit",
+                                              minute: "2-digit",
+                                              hour12: true,
+                                            })
+                                            .replace("am", "AM")
+                                            .replace("pm", "PM")
+                                        : ""}
+                                    </Tag> /  <Tag color="red" className="mb-2">
+                                      {" "}
+                                      {user?.out_date_time
+                                        ? new Date(user?.out_date_time)
+                                            ?.toLocaleTimeString("en-GB", {
+                                              hour: "2-digit",
+                                              minute: "2-digit",
+                                              hour12: true,
+                                            })
+                                            .replace("am", "AM")
+                                            .replace("pm", "PM")
+                                        : ""}
+                                    </Tag>
                           </td>
                           <td className="px-4 py-2 text-left">
                             {/* {user?.clock_status === "I" ? (
@@ -514,6 +539,13 @@ function AttendanceBM() {
                                 : user?.clock_status === "E"
                                 ? "Early Out"
                                 : "Late In"} */}
+                                <span
+                                        className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-sm font-medium ${
+                                          user?.late_in === "L"
+                                            ? "bg-red-100 text-red-800"
+                                            : "bg-green-100 text-green-800"
+                                        }`}
+                                      >
                             {user?.late_in === "L"
                               ? "Late In"
                               : user?.late_in === "E"
@@ -523,6 +555,7 @@ function AttendanceBM() {
                               : user?.clock_status == "O"
                               ? "Timely Out"
                               : ""}
+                              </span>
                           </td>
                           <td className="p-2 text-left">
                             <div

@@ -5,7 +5,8 @@ import { url } from "../../../../Address/BaseUrl"
 import { Message } from "../../../../Components/Message"
 import { Spin } from "antd"
 import { LoadingOutlined } from "@ant-design/icons"
-import EmployeeMasterTable from "../../../../Components/Master/EmployeeMasterTable"
+import BankMasterTable from "../../../../Components/Master/BankMasterTable"
+import DesignationTable from "../../../../Components/Master/DesignationTable"
 
 // const options = [
 // 	{
@@ -26,10 +27,11 @@ import EmployeeMasterTable from "../../../../Components/Master/EmployeeMasterTab
 // 	},
 // ]
 
-function MasterEmployees() {
-	const userDetails = JSON.parse(localStorage.getItem("user_details")) || ""
+
+function MasterDesignations() {
+    const userDetails = JSON.parse(localStorage.getItem("user_details")) || ""
 	const [loading, setLoading] = useState(false)
-	const [masterData, setMasterData] = useState(() => [])
+	const [loanApplications, setLoanApplications] = useState(() => [])
 	const [copyLoanApplications, setCopyLoanApplications] = useState(() => [])
 
 	const [approvalStatus, setApprovalStatus] = useState("U")
@@ -45,11 +47,11 @@ function MasterEmployees() {
 		// }
 
 		await axios
-			.get(`${url}/show_all_emp`)
+			.get(`${url}/admin/show_all_designation`)
 			.then((res) => {
 				console.log("PPPPPPPPPPPPPPPPPPPP", res?.data)
 				if (res?.data?.suc === 1) {
-					setMasterData(res?.data?.msg)
+					setLoanApplications(res?.data?.msg)
 					setCopyLoanApplications(res?.data?.msg)
 
 					console.log("PPPPPPPPPPPPPPPPPPPP", res?.data)
@@ -58,7 +60,7 @@ function MasterEmployees() {
 				}
 			})
 			.catch((err) => {
-				Message("error", "Some error occurred while fetching employees!")
+				Message("error", "Some error occurred while fetching banks!")
 				console.log("ERRR", err)
 			})
 		setLoading(false)
@@ -69,19 +71,13 @@ function MasterEmployees() {
 	}, [])
 
 	const setSearch = (word) => {
-		setMasterData(
+		setLoanApplications(
 			copyLoanApplications?.filter(
 				(e) =>
-					e?.emp_name
+					e?.desig_type
 						?.toString()
 						?.toLowerCase()
-						.includes(word?.toLowerCase()) ||
-					e?.branch_name
-						?.toString()
-						?.toLowerCase()
-						?.includes(word?.toLowerCase()) ||
-					e?.emp_id?.toString()?.toLowerCase()?.includes(word?.toLowerCase()) ||
-					e?.branch_id?.toString()?.toLowerCase()?.includes(word?.toLowerCase())
+						.includes(word?.toLowerCase()) 
 			)
 		)
 	}
@@ -114,10 +110,10 @@ function MasterEmployees() {
 							onChange(value)
 						}}
 					/> */}
-					<EmployeeMasterTable
+					<DesignationTable
 						flag="BM"
-						loanAppData={masterData}
-						title="Employee Master"
+						loanAppData={loanApplications}
+						title="Designation Master"
 						setSearch={(data) => setSearch(data)}
 					/>
 					{/* <DialogBox
@@ -131,4 +127,4 @@ function MasterEmployees() {
 	)
 }
 
-export default MasterEmployees
+export default MasterDesignations

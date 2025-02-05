@@ -1,4 +1,4 @@
-import React, { useState } from "react"
+import React, { useEffect, useState } from "react"
 import * as Yup from "yup"
 import { Link } from "react-router-dom"
 import { useFormik } from "formik"
@@ -19,11 +19,26 @@ import TDInputTemplateBr from "../../Components/TDInputTemplateBr"
 function SigninMis() {
 	const navigate = useNavigate()
 	const [loading, setLoading] = useState(false)
-	// const [loginUserDetails, setLoginUserDetails] = useState(() => "")
-
+	const [user_type_id,setUserTypeId] = useState(0)
+	const [branches,setBranches] = useState([])
+	const [branch,setBranch] = useState("")
+	
+	const [loginUserDetails, setLoginUserDetails] = useState(() => "")
+    useEffect(()=>{
+		if(user_type_id!=0){
+			setLoading(true)
+		axios.get(`${url}/admin/fetch_branch`).then(res=>{
+			console.log(res.data)
+			setBranches(res.data.msg.map(item => ({ code: item.branch_code, name: item.branch_name })))
+			setLoading(false)
+		    
+		})
+	}
+	},[user_type_id])
 	const initialValues = {
 		user_id: "",
 		password: "",
+		// brnch:""
 	}
 
 	const onSubmit = async (values) => {
@@ -33,18 +48,23 @@ function SigninMis() {
 		const creds = {
 			emp_id: values?.user_id,
 			password: values?.password,
+			// brnch:values?.brnch
 		}
-
+        if(user_type_id==4 && branch!=""){
 		await axios
 			.post(`${url}/login_app`, creds)
 			.then((res) => {
+				var userDtls = res?.data?.user_dtls
+                userDtls["brn_code"] = user_type_id==4?branch.toString():  res?.data?.user_dtls?.brn_code
+				userDtls["branch_name"] = user_type_id==4?branches.filter(item=>item.code==branch)[0]?.name: res?.data?.user_dtls?.branch_name
 				if (res?.data?.suc === 1) {
 					// Message("success", res?.data?.msg)
-					// setLoginUserDetails()
+					// setLoginUserDetails(res?.data?.user_dtls)
 
 					localStorage.setItem(
 						"user_details",
-						JSON.stringify(res?.data?.user_dtls)
+						// JSON.stringify(res?.data?.user_dtls)
+						JSON.stringify(userDtls)
 					)
 
 					if (res?.data?.user_dtls?.id == 1) {
@@ -59,7 +79,7 @@ function SigninMis() {
 						navigate(routePaths.MIS_ASSISTANT_HOME)
 					}
 
-					if (res?.data?.user_dtls?.id == 4) {
+					if (res?.data?.user_dtls?.id == 4 || res?.data?.user_dtls?.id == 5 || res?.data?.user_dtls?.id == 10 ) {
 						navigate(routePaths.ADMIN_HOME)
 					}
 				} else if (res?.data?.suc === 0) {
@@ -72,7 +92,50 @@ function SigninMis() {
 				console.log("PPPPPPPPP", err)
 				Message("error", "Some error on server while logging in...")
 			})
+		}
+        else{
+			await axios
+			.post(`${url}/login_app`, creds)
+			.then((res) => {
+				var userDtls = res?.data?.user_dtls
+                userDtls["brn_code"] = user_type_id==4?branch.toString():  res?.data?.user_dtls?.brn_code
+				userDtls["branch_name"] = user_type_id==4?branches.filter(item=>item.code==branch)[0]?.name: res?.data?.user_dtls?.branch_name
+				if (res?.data?.suc === 1) {
+					// Message("success", res?.data?.msg)
+					// setLoginUserDetails(res?.data?.user_dtls)
 
+					localStorage.setItem(
+						"user_details",
+						// JSON.stringify(res?.data?.user_dtls)
+						JSON.stringify(userDtls)
+					)
+
+					if (res?.data?.user_dtls?.id == 1) {
+						navigate(routePaths.CO_HOME)
+					}
+
+					if (res?.data?.user_dtls?.id == 2) {
+						navigate(routePaths.BM_HOME)
+					}
+
+					if (res?.data?.user_dtls?.id == 3) {
+						navigate(routePaths.MIS_ASSISTANT_HOME)
+					}
+
+					if (res?.data?.user_dtls?.id == 4 || res?.data?.user_dtls?.id == 5 || res?.data?.user_dtls?.id == 10 ) {
+						navigate(routePaths.ADMIN_HOME)
+					}
+				} else if (res?.data?.suc === 0) {
+					Message("error", res?.data?.msg)
+				} else {
+					Message("error", "No user found!")
+				}
+			})
+			.catch((err) => {
+				console.log("PPPPPPPPP", err)
+				Message("error", "Some error on server while logging in...")
+			})
+		}
 		setLoading(false)
 	}
 	const validationSchema = Yup.object({
@@ -120,7 +183,17 @@ function SigninMis() {
 							name="user_id"
 							formControlName={formik.values.user_id}
 							handleChange={formik.handleChange}
-							handleBlur={formik.handleBlur}
+							handleBlur={e=>{
+								setLoading(true)
+								formik.handleBlur(e);
+
+								axios.post(`${url}/fetch_emp_type`,{emp_id:e.target.value}).then(res=>{
+									console.log(res.data)
+									setLoading(false)
+									setUserTypeId(res.data?.msg[0]?.id)
+								
+								})
+							}}
 							mode={1}
 						/>
 						{formik.errors.user_id && formik.touched.user_id ? (
@@ -146,6 +219,23 @@ function SigninMis() {
 							<VError title={formik.errors.password} />
 						) : null}
 					</div>
+					{user_type_id==4 && <div
+						style={{
+							width: 280,
+						}}
+					>
+						<TDInputTemplateBr
+							placeholder="Choose Branch"
+							type="text"
+							label="Branch"
+							name="brnch"
+							formControlName={branch}
+							handleChange={e=>setBranch(e.target.value)}
+							mode={2}
+							data={branches}
+						/>
+						
+					</div>}
 					<div
 						className="flex justify-between gap-5"
 						style={{

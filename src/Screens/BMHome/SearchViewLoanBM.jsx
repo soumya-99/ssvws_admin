@@ -22,6 +22,7 @@ function SearchViewLoanBM() {
 		setLoading(true)
 		const creds = {
 			group_name_view: searchKeywords,
+			branch_code:userDetails?.brn_code
 		}
 		await axios
 			.post(`${url}/admin/search_grp_view`, creds)

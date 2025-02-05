@@ -24,6 +24,8 @@ function CreateUserForm() {
 	const params = useParams()
 	const [loading, setLoading] = useState(false)
 	const [branches, setBranches] = useState(() => [])
+	const [designations, setDesignations] = useState(() => [])
+	const [designation, setDesignation] = useState(() => [])
 	const location = useLocation()
 	const userMasterDetails = location.state || {}
 
@@ -43,6 +45,7 @@ function CreateUserForm() {
 		emp_id: "", // onBlur search to fetch
 		emp_name: "",
 		branch: "", // dropdown - prefetched id
+		designation: "", // dropdown - prefetched id
 		user_type: "", // dropdown - CO, BM, MIS Asst., Admin
 		active_flag: "",
 		remarks: "",
@@ -122,6 +125,7 @@ function CreateUserForm() {
 				emp_id: userMasterDetails?.emp_id || "",
 				emp_name: userMasterDetails?.emp_name || "",
 				branch: userMasterDetails?.brn_code || "",
+				designation: userMasterDetails?.designation || "",
 				user_type: userMasterDetails?.user_type || "",
 				active_flag: userMasterDetails?.user_status || "A",
 				remarks: userMasterDetails?.deactive_remarks || "",
@@ -146,6 +150,7 @@ function CreateUserForm() {
 						...prev,
 						emp_id: "",
 						emp_name: "",
+						designation: "",
 						branch: "", // dropdown - prefetched id
 						user_type: "", // dropdown - CO, BM, MIS Asst., Admin
 					}))
@@ -169,6 +174,7 @@ function CreateUserForm() {
 					...prev,
 					emp_name: res?.data?.msg[0]?.emp_name,
 					branch: res?.data?.msg[0]?.branch_id,
+					designation: res?.data?.msg[0]?.designation,
 				}))
 			})
 			.catch((err) => {
@@ -184,6 +190,7 @@ function CreateUserForm() {
 			emp_id: masterUserData.emp_id || "",
 			brn_code: masterUserData.branch || 0,
 			user_type: masterUserData.user_type || "Y",
+			designation: masterUserData.designation || "Y",
 			created_by: userDetails?.emp_id || "",
 		}
 
@@ -232,11 +239,17 @@ function CreateUserForm() {
 		e.preventDefault()
 		setVisible(true)
 	}
-
+    useEffect(() => {
+		axios.get(url + "/get_designation").then(res => {
+			console.log("Designation", res.data.msg)
+			setDesignations(res.data.msg)
+		})},[])
+	
 	const onReset = () => {
 		setMasterUserData({
 			emp_id: "", // onBlur search to fetch
 			emp_name: "",
+			designation:"",
 			branch: "", // dropdown - prefetched id
 			user_type: "", // dropdown - CO, BM, MIS Asst., Admin
 		})
@@ -277,8 +290,8 @@ function CreateUserForm() {
 				<form onSubmit={onSubmit}>
 					<div>
 						<div>
-							<div className="grid gap-4 sm:grid-cols-3 sm:gap-6">
-								<div>
+							<div className="grid gap-4 sm:grid-cols-6 sm:gap-6">
+								<div className="sm:col-span-2">
 									<TDInputTemplateBr
 										placeholder="Employee ID..."
 										type="text"
@@ -291,7 +304,7 @@ function CreateUserForm() {
 										disabled={+params?.id > 0}
 									/>
 								</div>
-								<div>
+								<div className="sm:col-span-2">
 									<TDInputTemplateBr
 										placeholder="Employee Name..."
 										type="text"
@@ -302,7 +315,7 @@ function CreateUserForm() {
 										mode={1}
 									/>
 								</div>
-								<div>
+								<div className="sm:col-span-2">
 									<TDInputTemplateBr
 										placeholder="Branch..."
 										type="text"
@@ -315,10 +328,26 @@ function CreateUserForm() {
 											code: item?.branch_code,
 											name: item?.branch_name,
 										}))}
+										disabled={true}
+									/>
+								</div>
+								<div className="sm:col-span-3">
+									<TDInputTemplateBr
+										placeholder="Designation"
+										type="text"
+										label="Designation"
+										name="designation"
+										formControlName={masterUserData.designation}
+										handleChange={handleChangeForm}
+										mode={2}
+										data={designations?.map((item, i) => ({
+											code: item?.desig_code,
+											name: item?.desig_type,
+										}))}
 										disabled={+params?.id > 0}
 									/>
 								</div>
-								<div className={`${+params?.id > 0 ? "" : "sm:col-span-3"}`}>
+								<div className={"sm:col-span-3"}>
 									<TDInputTemplateBr
 										placeholder="User Type..."
 										type="text"

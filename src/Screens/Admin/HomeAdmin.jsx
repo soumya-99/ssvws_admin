@@ -15,6 +15,8 @@ function HomeAdmin() {
   // useState(() => {
   // 	setTheme(localStorage.getItem("col"))
   // }, [localStorage.getItem("col")])
+  const userDetails = JSON.parse(localStorage.getItem("user_details"));
+
 
   return (
     <div>

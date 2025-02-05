@@ -25,6 +25,7 @@ function EmployeeMasterForm() {
 	const [loading, setLoading] = useState(false)
 	const [branches, setBranches] = useState(() => [])
 	const [districts, setDistricts] = useState(() => [])
+	const [designations, setDesignations] = useState(() => [])
 	const location = useLocation()
 	const employeeMasterDetails = location.state || {}
 
@@ -44,6 +45,7 @@ function EmployeeMasterForm() {
 	const [masterEmployeeData, setMasterEmployeeData] = useState({
 		emp_name: "",
 		branch_name: "", // dropdown
+		designation: "", // dropdown
 		gender: "",
 		guard_name: "",
 		address: "",
@@ -156,6 +158,7 @@ function EmployeeMasterForm() {
 					branch_name: res?.data?.msg[0]?.branch_id || "", // dropdown
 					gender: res?.data?.msg[0]?.gender || "",
 					guard_name: res?.data?.msg[0]?.guardian_name || "",
+					designation: res?.data?.msg[0]?.designation || "",
 					address: res?.data?.msg[0]?.addr || "",
 					district: res?.data?.msg[0]?.district || "", // dropdown
 					pin_code: res?.data?.msg[0]?.pin_code || "",
@@ -200,6 +203,7 @@ function EmployeeMasterForm() {
 			branch_name: employeeMasterDetails?.branch_name || "", // dropdown
 			gender: employeeMasterDetails?.gender || "",
 			guard_name: employeeMasterDetails?.guard_name || "",
+			designation: employeeMasterDetails?.designation || "",
 			address: employeeMasterDetails?.address || "",
 			district: employeeMasterDetails?.district || "", // dropdown
 			pin_code: employeeMasterDetails?.pin_code || "",
@@ -235,6 +239,7 @@ function EmployeeMasterForm() {
 			emp_name: masterEmployeeData.emp_name || "",
 			gender: masterEmployeeData.gender || "",
 			guardian_name: masterEmployeeData.guard_name || "",
+			designation: masterEmployeeData.designation || "",
 			addr: masterEmployeeData.address || "",
 			district: masterEmployeeData.district || "",
 			pin_code: masterEmployeeData.pin_code || "",
@@ -268,6 +273,7 @@ function EmployeeMasterForm() {
 			emp_name: masterEmployeeData.emp_name || "",
 			gender: masterEmployeeData.gender || "",
 			guardian_name: masterEmployeeData.guard_name || "",
+			designation: masterEmployeeData.designation || "",
 			addr: masterEmployeeData.address || "",
 			district: masterEmployeeData.district || "",
 			pin_code: masterEmployeeData.pin_code || "",
@@ -366,13 +372,23 @@ function EmployeeMasterForm() {
 		e.preventDefault()
 		setVisible(true)
 	}
-
+    // useEffect(()=>{
+	// 	axios.get(`${url}/get_designation`).then(res=>{
+	// 		console.log(res)
+	// 	}),[])
+	useEffect(()=>{
+		axios.get(`${url}/get_designation`).then(res=>{
+					console.log(res)
+					setDesignations(res?.data?.msg)
+		})
+	},[])
 	const onReset = () => {
 		setMasterEmployeeData({
 			emp_name: "",
 			branch_name: "",
 			gender: "",
 			guard_name: "",
+			designation: "",
 			address: "",
 			district: "",
 			pin_code: "",
@@ -409,9 +425,8 @@ function EmployeeMasterForm() {
 				spinning={loading}
 			>
 				<form onSubmit={onSubmit}>
-					<div>
-						<div>
-							<div className="grid gap-4 sm:grid-cols-4 sm:gap-6">
+						
+							<div className="grid gap-4 sm:grid-cols-3 ">
 								<div>
 									<TDInputTemplateBr
 										placeholder="Active Flag..."
@@ -456,6 +471,21 @@ function EmployeeMasterForm() {
 								</div>
 								<div>
 									<TDInputTemplateBr
+										placeholder="Designation"
+										type="text"
+										label="Designation"
+										name="designation"
+										formControlName={masterEmployeeData.designation}
+										handleChange={handleChangeForm}
+										mode={2}
+										data={designations?.map((item, i) => ({
+											code: item?.desig_code,
+											name: item?.desig_type,
+										}))}
+									/>
+								</div>
+								<div>
+									<TDInputTemplateBr
 										placeholder="Gender..."
 										type="text"
 										label="Gender"
@@ -469,6 +499,7 @@ function EmployeeMasterForm() {
 										]}
 									/>
 								</div>
+							
 								<div>
 									<TDInputTemplateBr
 										placeholder="Guardian Name..."
@@ -736,7 +767,7 @@ function EmployeeMasterForm() {
 										mode={1}
 									/>
 								</div>
-								<div>
+								<div className="sm:col-span-4">
 									<TDInputTemplateBr
 										placeholder="Account No..."
 										type="number"
@@ -759,12 +790,10 @@ function EmployeeMasterForm() {
 									/>
 								</div>
 							</div>
-						</div>
 
 						<div className="mt-10">
 							<BtnComp mode="A" onReset={onReset} />
 						</div>
-					</div>
 				</form>
 			</Spin>
 

@@ -104,14 +104,17 @@ function Sidebar({ mode = 0 }) {
 				<div className="mt-2 italic ml-10">
 					⇨{" "}
 					{userDetails?.id == 1
-						? `Credit Officer - ${userDetails?.emp_name}`
+						? `Credit Officer - ${userDetails?.emp_name} `
 						: userDetails?.id == 2
-						? `Branch Manager - ${userDetails?.emp_name}`
+						? `Branch Manager - ${userDetails?.emp_name} `
 						: userDetails?.id == 3
-						? `MIS Assistant - ${userDetails?.emp_name}`
+						? `MIS Assistant - ${userDetails?.emp_name} `
 						: userDetails?.id == 4
-						? `Administrator - ${userDetails?.emp_name}`
-						: "Some error!"}
+						? `Administrator - ${userDetails?.emp_name} `
+						:  userDetails?.id == 5
+						? `General User - ${userDetails?.emp_name}`:`HO User - ${userDetails?.emp_name} `}
+
+						({userDetails?.branch_name})
 				</div>
 			</div>
 		</div>
