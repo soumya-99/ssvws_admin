@@ -79,7 +79,7 @@ function A_LoanStatementMain() {
 		setLoading(true)
 		const creds = {
 			memb: search,
-			// branch_code: userDetails?.brn_code,
+			branch_code: userDetails?.brn_code,
 		}
 
 		console.log("::::::::::::>>>>>>>>>>>>", creds)
@@ -127,6 +127,7 @@ function A_LoanStatementMain() {
 			from_dt: formatDateToYYYYMMDD(fromDate),
 			to_dt: formatDateToYYYYMMDD(toDate),
 			loan_id: loanId || "",
+			branch_id:userDetails.brn_code
 		}
 
 		await axios
@@ -242,8 +243,8 @@ function A_LoanStatementMain() {
 						/>
 					</div>
 
-					<div className="grid grid-cols-2 gap-5 mt-5">
-						<div>
+					<div className="flex justify-center gap-5 mt-5">
+						<div className="w-full">
 							<TDInputTemplateBr
 								placeholder={
 									searchType === "M" ? `Member Name / ID` : `Group Name / ID`
@@ -317,14 +318,14 @@ function A_LoanStatementMain() {
 						</div>
 					)}
 
-					<div className="mt-5">
+					<div className="mt-5 flex justify-center">
 						<button
-							className="w-24 h-9 bg-teal-400 text-white rounded-full"
+							className="w-24 h-9 bg-teal-500 hover:bg-green-600 text-white rounded-full"
 							onClick={() => {
 								handleSubmit()
 							}}
 						>
-							SUBMIT
+							Submit
 						</button>
 					</div>
 

@@ -528,7 +528,7 @@ function FamilyMemberDetailsForm({ memberDetails }) {
 							/>
 						</div>
 
-						{userDetails?.id == 3 && memberDetails?.approval_status === "S" && (
+						{userDetails?.id == 10 && memberDetails?.approval_status === "S" && (   //previously 3
 							<div className="mt-10">
 								<BtnComp
 									mode="B"
@@ -554,7 +554,7 @@ function FamilyMemberDetailsForm({ memberDetails }) {
 								/>
 							</div>
 						)}
-						{userDetails?.id == 2 && memberDetails?.approval_status === "U" && (
+						{userDetails?.id == 2  && memberDetails?.approval_status === "U" && (
 							<div className="mt-10">
 								<BtnComp
 									mode="B"
@@ -596,8 +596,8 @@ function FamilyMemberDetailsForm({ memberDetails }) {
 					if (userDetails?.id == 2) {
 						handleForwardApplicationBM()
 					}
-					if (userDetails?.id == 3) {
-						handleForwardApplicationMis()
+					if (userDetails?.id == 10) {     //previously 3
+ 						handleForwardApplicationMis()
 					}
 				}}
 				onPressNo={() => setVisible3(!visible3)}

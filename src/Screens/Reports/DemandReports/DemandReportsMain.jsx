@@ -238,8 +238,8 @@ function DemandReportsMain() {
 					</div>
 
 					{searchType === "C" && (
-						<div className="mb-2 flex justify-start gap-5">
-							<div>
+						<div className="mb-2 w-full flex justify-center gap-5">
+							<div className="w-full">
 								<TDInputTemplateBr
 									placeholder="Choose CO..."
 									type="text"
@@ -283,8 +283,8 @@ function DemandReportsMain() {
 						</div> */}
 					</div>
 
-					<div className="grid grid-cols-3 gap-5 mt-5 items-end">
-						<div>
+					<div className="grid grid-cols-2 gap-5 mt-5 items-end">
+						<div >
 							<TDInputTemplateBr
 								placeholder="From Date"
 								type="date"
@@ -309,7 +309,9 @@ function DemandReportsMain() {
 							/>
 						</div>
 
-						<div>
+						
+					</div>
+					<div className="flex justify-center my-3">
 							<button
 								className={`inline-flex items-center px-4 py-2 mt-0 ml-0 sm:mt-0 text-sm font-small text-center text-white border hover:border-green-600 border-teal-500 bg-teal-500 transition ease-in-out hover:bg-green-600 duration-300 rounded-full  dark:focus:ring-primary-900`}
 								onClick={() => {
@@ -319,8 +321,6 @@ function DemandReportsMain() {
 								<SearchOutlined /> <spann class={`ml-2`}>Search</spann>
 							</button>
 						</div>
-					</div>
-
 					{/* "Memberwise" */}
 
 					{reportData.length > 0 && searchType === "M" && (

@@ -85,7 +85,10 @@ function CreateUserForm() {
 		axios
 					.get(`${url}/admin/fetch_branch`)
 					.then((res) => {
-						setBranches(res?.data?.msg.map(item=>{return {code:item.branch_code,name:item.branch_name}}))
+						setBranches(res?.data?.msg.map(item=>{return {
+							code:item.branch_code,name:item.branch_name
+						
+						}}))
 					})
 					.catch((err) => {
 						console.log("Some error")
@@ -213,6 +216,7 @@ function CreateUserForm() {
 
 	const handleSaveForm = async () => {
 		setLoading(true)
+		if(((masterUserData.user_type==3 ||  masterUserData.user_type==10) && selectedBranches) || (masterUserData.user_type!=3 && masterUserData.user_type!=10)){
 		const credsForSave = {
 			emp_id: masterUserData.emp_id || "",
 			brn_code: masterUserData.branch || 0,
@@ -220,7 +224,7 @@ function CreateUserForm() {
 			designation: masterUserData.designation || "Y",
 			created_by: userDetails?.emp_id || "",
 			modified_by: userDetails?.emp_id || "",
-			assigndtls:selectedBranches.map(item=>{return{branch_assign_id:item.code}})
+			assigndtls:selectedBranches?.map(item=>{return{branch_assign_id:item.code}}) || []
 		}
 
 		await axios
@@ -235,11 +239,18 @@ function CreateUserForm() {
 				console.log("ERR", err)
 			})
 		setLoading(false)
+		}
+		else{
+			setLoading(false)
+			Message("warning", "Please assign branche(s) before saving!")
+
+		}
 	}
 
 	const handleUpdateForm = async () => {
 		setLoading(true)
 		console.log(masterUserData)
+		if(((masterUserData.user_type==3 ||  masterUserData.user_type==10) && selectedBranches) || (masterUserData.user_type!=3 && masterUserData.user_type!=10)){
 		const creds = {
 			emp_id: masterUserData.emp_id || "",
 			branch_code: masterUserData.branch || 0,
@@ -267,6 +278,11 @@ function CreateUserForm() {
 				console.log("ERR", err)
 			})
 		setLoading(false)
+		}
+		else{
+			setLoading(false)
+			Message("warning", "Please assign branche(s) before saving!")
+		}
 	}
 
 	const onSubmit = (e) => {
@@ -405,7 +421,7 @@ function CreateUserForm() {
 								</div>
 							{(masterUserData.user_type==3 || masterUserData.user_type==10) &&	<div className="sm:col-span-6">
 							   <label className="text-gray-800 font-semibold text-sm my-2">Branches</label>
-								<MultiSelect value={selectedBranches} onChange={(e) => setSelectedBranches(e.value)} options={branches} optionLabel="name" 
+								<MultiSelect value={selectedBranches} onChange={(e) => setSelectedBranches(e.value)} options={branches?.filter(i=>i.code!=100)} optionLabel="name" 
                 placeholder="Select branch(es)" maxSelectedLabels={3} className="w-full md:w-20rem my-1.5" />
 				</div>}
 								{+params?.id > 0 && (

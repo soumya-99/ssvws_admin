@@ -273,7 +273,7 @@ function A_DemandReportsMain() {
 						</div> */}
 					</div>
 
-					<div className="grid grid-cols-2 gap-5 mt-5 items-end">
+					<div className="grid grid-cols-3 gap-5 mt-5 items-end">
 						<div>
 							<TDInputTemplateBr
 								placeholder="From Date"
@@ -350,8 +350,7 @@ function A_DemandReportsMain() {
 						</div>
 
 						{searchType === "C" && (
-							<div className="mb-2 flex justify-start gap-5">
-								<div>
+							<div className="mb-2 col-span-3 gap-5">
 									<TDInputTemplateBr
 										placeholder="Choose CO..."
 										type="text"
@@ -373,11 +372,12 @@ function A_DemandReportsMain() {
 											name: `${item?.emp_name} - (${item?.emp_id})`,
 										}))}
 									/>
-								</div>
 							</div>
 						)}
 
-						<div>
+						
+					</div>
+					<div className="flex justify-center mt-4 mb-3">
 							<button
 								className={`inline-flex items-center px-4 py-2 mt-0 ml-0 sm:mt-0 text-sm font-small text-center text-white border hover:border-green-600 border-teal-500 bg-teal-500 transition ease-in-out hover:bg-green-600 duration-300 rounded-full  dark:focus:ring-primary-900`}
 								onClick={() => {
@@ -387,8 +387,6 @@ function A_DemandReportsMain() {
 								<SearchOutlined /> <spann class={`ml-2`}>Search</spann>
 							</button>
 						</div>
-					</div>
-
 					{/* "Memberwise" */}
 
 					{reportData.length > 0 && searchType === "M" && (

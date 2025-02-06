@@ -103,6 +103,7 @@ function LoanStatementMain() {
 			from_dt: formatDateToYYYYMMDD(fromDate),
 			to_dt: formatDateToYYYYMMDD(toDate),
 			loan_id: loanId || "",
+			branch_id:userDetails.brn_code
 		}
 
 		await axios
@@ -125,6 +126,7 @@ function LoanStatementMain() {
 			from_dt: formatDateToYYYYMMDD(fromDate),
 			to_dt: formatDateToYYYYMMDD(toDate),
 			group_code: grpCode || "",
+			branch_code:userDetails.brn_code
 		}
 
 		await axios
@@ -214,8 +216,8 @@ function LoanStatementMain() {
 					</div>
 
 					{/* <div class="my-4 mx-auto"> */}
-					<div class="grid grid-cols-3 gap-5 mt-5 items-end">
-						<div>
+					<div class="w-full gap-5 mt-5 items-end">
+						<div className="w-full">
 							<TDInputTemplateBr
 								placeholder={
 									searchType === "M" ? `Member Name / ID` : `Group Name / ID`
@@ -230,7 +232,7 @@ function LoanStatementMain() {
 								mode={1}
 							/>
 						</div>
-						<div>
+						<div className="flex justify-center my-3">
 							<button
 								className={`inline-flex items-center px-4 py-2 mt-0 ml-0 sm:mt-0 text-sm font-small text-center text-white border hover:border-green-600 border-teal-500 bg-teal-500 transition ease-in-out hover:bg-green-600 duration-300 rounded-full  dark:focus:ring-primary-900`}
 								onClick={() => {

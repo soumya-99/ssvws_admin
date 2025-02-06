@@ -217,8 +217,8 @@ function A_OutstandingReportMain() {
 						</div>
 					</div>
 
-					<div className="mb-2 flex justify-between items-center">
-						<div>
+					<div className="mb-2 grid grid-cols-2 gap-5">
+						<div className="col-span-2">
 							<Radiobtn
 								data={options}
 								val={searchType}
@@ -227,7 +227,9 @@ function A_OutstandingReportMain() {
 								}}
 							/>
 
-							<div>
+							
+						</div>
+						<div className="col-span-1">
 								<TDInputTemplateBr
 									placeholder="Branch..."
 									type="text"
@@ -277,8 +279,19 @@ function A_OutstandingReportMain() {
 									// ]}
 								/>
 							</div>
-						</div>
+						<div className="col-span-1">
+							<TDInputTemplateBr
+								placeholder="From Date"
+								type="date"
+								label="From Date"
+								name="fromDate"
+								formControlName={fromDate}
+								handleChange={(e) => setFromDate(e.target.value)}
+								min={"1900-12-31"}
+								mode={1}
+							/>
 
+						<div>
 						{/* R.I.P Sweet bro */}
 
 						{/* <div>
@@ -334,30 +347,10 @@ function A_OutstandingReportMain() {
 					/> */}
 
 					{/* <div className="grid grid-cols-2 gap-5 mt-5 align-middle items-center"> */}
-					<div class="grid grid-cols-3 gap-5 mt-5 items-end">
-						<div>
-							<TDInputTemplateBr
-								placeholder="From Date"
-								type="date"
-								label="From Date"
-								name="fromDate"
-								formControlName={fromDate}
-								handleChange={(e) => setFromDate(e.target.value)}
-								min={"1900-12-31"}
-								mode={1}
-							/>
+					
+							
 						</div>
-
-						<div>
-							<button
-								className={`inline-flex items-center px-4 py-2 mt-0 ml-0 sm:mt-0 text-sm font-small text-center text-white border hover:border-green-600 border-teal-500 bg-teal-500 transition ease-in-out hover:bg-green-600 duration-300 rounded-full  dark:focus:ring-primary-900`}
-								onClick={() => {
-									handleSubmit()
-								}}
-							>
-								<SearchOutlined /> <spann class={`ml-2`}>Search</spann>
-							</button>
-						</div>
+					
 						{/* <div>
 							<TDInputTemplateBr
 								placeholder="To Date"
@@ -380,7 +373,17 @@ function A_OutstandingReportMain() {
 							/>
 						</div> */}
 					</div>
+					<div className="flex justify-center items-center my-2">
+						<button
+								className={`inline-flex items-center px-4 py-2 mt-0 ml-0 sm:mt-0 text-sm font-small text-center text-white border hover:border-green-600 border-teal-500 bg-teal-500 transition ease-in-out hover:bg-green-600 duration-300 rounded-full  dark:focus:ring-primary-900`}
+								onClick={() => {
+									handleSubmit()
+								}}
+							>
+								<SearchOutlined /> <spann class={`ml-2`}>Search</spann>
+							</button>
 
+						</div>
 					{/* For Memberwise Results */}
 
 					{searchType === "M" && reportData.length > 0 && (

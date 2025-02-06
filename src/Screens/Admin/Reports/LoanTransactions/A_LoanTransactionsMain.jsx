@@ -410,7 +410,9 @@ function A_LoanTransactionsMain() {
 							/>
 						</div>
 
-						<div>
+						
+					</div>
+					<div className="flex justify-center my-4">
 							<button
 								className={`inline-flex items-center px-4 py-2 mt-0 ml-0 sm:mt-0 text-sm font-small text-center text-white border hover:border-green-600 border-teal-500 bg-teal-500 transition ease-in-out hover:bg-green-600 duration-300 rounded-full  dark:focus:ring-primary-900`}
 								onClick={() => {
@@ -420,8 +422,6 @@ function A_LoanTransactionsMain() {
 								<SearchOutlined /> <spann class={`ml-2`}>Search</spann>
 							</button>
 						</div>
-					</div>
-
 					{/* For Recovery/Collection Results MR */}
 
 					{searchType === "R" &&
