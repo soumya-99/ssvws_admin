@@ -90,6 +90,16 @@ function CreateUserForm() {
 					.catch((err) => {
 						console.log("Some error")
 					})
+
+		if(params.id>0){
+			axios.post(`${url}/fetch_assign_branch`,{emp_id:userMasterDetails.emp_id}).then(res=>{
+				console.log(res)
+			    if(res?.data?.msg?.length){
+					setSelectedBranches(res?.data?.msg)
+				}
+			
+			})
+		}
 	},[])
 	const handleFetchUserTypes = async () => {
 		await axios
@@ -209,6 +219,8 @@ function CreateUserForm() {
 			user_type: masterUserData.user_type || "Y",
 			designation: masterUserData.designation || "Y",
 			created_by: userDetails?.emp_id || "",
+			modified_by: userDetails?.emp_id || "",
+			assigndtls:selectedBranches.map(item=>{return{branch_assign_id:item.code}})
 		}
 
 		await axios
@@ -236,8 +248,11 @@ function CreateUserForm() {
 			user_status: masterUserData.active_flag || "A",
 			designation:masterUserData.designation||"",
 			modified_by: userDetails?.emp_id || "",
+			created_by: userDetails?.emp_id || "",
 			remarks: masterUserData.remarks || "",
 			deactivated_by: userDetails?.emp_id || "",
+			assigndtls:selectedBranches.map(item=>{return{branch_assign_id:item.code}})
+
 		}
 
 		await axios
