@@ -522,7 +522,7 @@ function FamilyMemberDetailsForm({ memberDetails }) {
 								handleChange={(e) => setRemarks(e.target.value)}
 								mode={3}
 								disabled={
-									userDetails?.id !== 3 &&
+									userDetails?.id !== 10 &&
 									memberDetails?.approval_status === "S"
 								}
 							/>

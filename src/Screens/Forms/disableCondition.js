@@ -3,11 +3,11 @@ export const disableCondition = (userType, approvalStatus) => {
 	// const approvalStatus = memberDetails?.approval_status
 	// const userType = formik.values.userType // Assuming userType is stored in formik
 
-	if (userType == 3) {
+	if (userType == 10) {
 		return true
 	}
 
-	if (userType === 3 && approvalStatus === "A") {
+	if (userType === 10 && approvalStatus === "A") {
 		// No one can edit if approval status is "A"
 		return true
 	}
