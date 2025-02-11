@@ -223,6 +223,8 @@ function GroupExtendedForm({ groupDataArr }) {
 
 	const editGroup = async () => {
 		setLoading(true)
+		console.log(formik.values.g_bank_branch, formik.values.g_bank_name, formik.values.g_acc1, formik.values.g_acc2)
+		if(formik.values.g_bank_branch && formik.values.g_bank_name && formik.values.g_acc1 && formik.values.g_acc2){
 		const creds = {
 			branch_code: branch?.split(",")[1],
 			group_name: formik.values.g_group_name,
@@ -251,15 +253,25 @@ function GroupExtendedForm({ groupDataArr }) {
 		await axios
 			.post(`${url}/admin/edit_group_web`, creds)
 			.then((res) => {
+		setLoading(false)
+
 				Message("success", "Updated successfully.")
 				console.log("IIIIIIIIIIIIIIIIIIIIIII", res?.data)
 			})
 			.catch((err) => {
+		setLoading(false)
+
 				Message("error", "Some error occurred while updating.")
 				console.log("LLLLLLLLLLLLLLLLLLLLLLLL", err)
 			})
 		console.log("VVVVVVVVVVVVVVVVVVVVVVVV", creds)
+
+		}
+		else{
 		setLoading(false)
+
+			Message("warning","Please fill up all bank related data!")
+		}
 	}
 
 	const removeMemberFromGroup = async (member) => {
@@ -563,9 +575,9 @@ function GroupExtendedForm({ groupDataArr }) {
 
 							<div>
 								<TDInputTemplateBr
-									placeholder="Account No. 1"
+									placeholder="SB Account"
 									type="number"
-									label="Account No. 1"
+									label="SB Account"
 									name="g_acc1"
 									handleChange={formik.handleChange}
 									handleBlur={formik.handleBlur}
@@ -579,9 +591,9 @@ function GroupExtendedForm({ groupDataArr }) {
 
 							<div>
 								<TDInputTemplateBr
-									placeholder="Account No. 2"
+									placeholder="Loan Account"
 									type="number"
-									label="Account No. 2"
+									label="Loan Account"
 									name="g_acc2"
 									handleChange={formik.handleChange}
 									handleBlur={formik.handleBlur}

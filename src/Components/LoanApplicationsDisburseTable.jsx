@@ -119,22 +119,15 @@ function LoanApplicationsDisburseTable({
 							{/* <th scope="col" className="p-4">
 								#
 							</th> */}
+						
 							<th scope="col" className="p-4">
-								Form No.
-							</th>
-							{flag === "MIS" && (
-								<th scope="col" className="p-4">
-									Branch Name
-								</th>
-							)}
-							<th scope="col" className="p-4">
-								Member Name
+								Group Code
 							</th>
 							<th scope="col" className="p-4">
-								Member Code
+								Group Name
 							</th>
 							<th scope="col" className="p-4">
-								Application Date
+								Group Type
 							</th>
 							{/* <th scope="col" className="p-4">
 								Status
@@ -168,30 +161,19 @@ function LoanApplicationsDisburseTable({
 									>
 										{item.sl_no}
 									</th> */}
-									<td className="px-6 py-3 font-bold text-slate-800">{item.form_no || "-----"}</td>
-									{flag === "MIS" && (
-										<td className="px-6 py-3">{item.branch_name || ""}</td>
-									)}
-									<td className="px-6 py-3">{item.client_name}</td>
-									<td className="px-6 py-3">{item.member_code}</td>
-									<td className="px-6 py-3">
-										{new Date(item?.application_date).toLocaleDateString(
-											"en-GB"
-										)}
-									</td>
-									{/* <td className="px-6 py-3">{item.member_name}</td> */}
-									{/* <td className="px-6 py-3">
-										{item.branch_name}
-									</td>
-									<td className="px-6 py-3">{item.loan_type_name}</td> */}
-									{/* <td className="px-6 py-3">{item.member_name}</td> */}
+									
+									<td className="px-6 py-3">{item.group_code}</td>
+									<td className="px-6 py-3">{item.group_name}</td>
+									<td className="px-6 py-3">{item.group_type=='J'?'JLG':'SHG'}</td>
+									
+									
 									<td className="px-6 py-3">
 										{flag === "MIS" ? (
 											<button
 												// to={routePaths.BM_EDIT_GRT + item?.form_no}
 												onClick={() => {
 													console.log("LLSKSIODFUISFH", item)
-													navigate(`/homemis/editgrtform/${item?.form_no}`, {
+													navigate(`/homemis/editgrtform/${item?.group_code}`, {
 														state: item,
 													})
 												}}

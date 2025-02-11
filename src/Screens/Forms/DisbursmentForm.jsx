@@ -57,6 +57,7 @@ function DisbursmentForm() {
 	console.log("D/R", loanType)
 
 	const [personalDetailsData, setPersonalDetailsData] = useState({
+		b_groupcode:"",
 		b_memCode: "",
 		b_clientName: "",
 		b_groupName: "",
@@ -190,6 +191,7 @@ function DisbursmentForm() {
 	useEffect(() => {
 		if (!disburseOrNot)
 			setPersonalDetailsData({
+		        b_groupcode:personalDetails?.group_code || "",
 				b_memCode: personalDetails?.member_code || "",
 				b_clientName: personalDetails?.client_name || "",
 				b_groupName: personalDetails?.group_name || "",
@@ -595,14 +597,26 @@ function DisbursmentForm() {
 			>
 				<form onSubmit={onSubmit}>
 					<div>
-						<div>
+					<div>
 							<div className="grid gap-4 sm:grid-cols-2 sm:gap-6">
 								<div className="text-xl mb-2 text-[#DA4167] font-semibold underline">
-									1. Personal Details
+									1. Group Details
 								</div>
 							</div>
 							<div className="grid gap-4 sm:grid-cols-4 sm:gap-6">
-								<div className="sm:col-span-4 bg-slate-200 border-slate-200 text-lime-900 p-5 rounded-2xl grid grid-cols-4 gap-5">
+								<div className="sm:col-span-4 text-lime-900 p-5 rounded-2xl grid grid-cols-4 gap-5">
+									<div className="sm:col-span-2">
+										<TDInputTemplateBr
+											placeholder="Group code..."
+											type="text"
+											label="Group Code"
+											name="b_groupcode"
+											formControlName={personalDetailsData?.b_groupcode}
+											handleChange={handleChangePersonalDetails}
+											mode={1}
+											disabled
+										/>
+									</div>
 									<div className="sm:col-span-2">
 										<TDInputTemplateBr
 											placeholder="Group name..."
@@ -617,9 +631,9 @@ function DisbursmentForm() {
 									</div>
 									<div>
 										<TDInputTemplateBr
-											placeholder="Account No. 1..."
+											placeholder="Branch Code"
 											type="text"
-											label="Account No. 1"
+											label="Branch Code"
 											name="b_acc1"
 											formControlName={personalDetailsData?.b_acc1}
 											handleChange={handleChangePersonalDetails}
@@ -629,9 +643,33 @@ function DisbursmentForm() {
 									</div>
 									<div>
 										<TDInputTemplateBr
-											placeholder="Account No. 2..."
+											placeholder="Branch Name"
 											type="text"
-											label="Account No. 2"
+											label="Branch Name"
+											name="b_acc2"
+											formControlName={personalDetailsData?.b_acc2}
+											handleChange={handleChangePersonalDetails}
+											mode={1}
+											disabled
+										/>
+									</div>
+									<div>
+										<TDInputTemplateBr
+											placeholder="SB Account"
+											type="text"
+											label="SB Account"
+											name="b_acc1"
+											formControlName={personalDetailsData?.b_acc1}
+											handleChange={handleChangePersonalDetails}
+											mode={1}
+											disabled
+										/>
+									</div>
+									<div>
+										<TDInputTemplateBr
+											placeholder="Loan Account"
+											type="text"
+											label="Loan Account"
 											name="b_acc2"
 											formControlName={personalDetailsData?.b_acc2}
 											handleChange={handleChangePersonalDetails}
@@ -640,7 +678,7 @@ function DisbursmentForm() {
 										/>
 									</div>
 								</div>
-								<div>
+								{/* <div>
 									<TDInputTemplateBr
 										placeholder="Member Code"
 										type="text"
@@ -702,18 +740,7 @@ function DisbursmentForm() {
 										disabled
 									/>
 								</div>
-								{/* <div>
-									<TDInputTemplateBr
-										placeholder="Purpose..."
-										type="text"
-										label="Purpose"
-										name="b_purpose"
-										formControlName={personalDetailsData?.b_purpose}
-										handleChange={handleChangePersonalDetails}
-										mode={1}
-										disabled
-									/>
-								</div> */}
+								
 								<div>
 									<TDInputTemplateBr
 										placeholder="Select Purpose"
@@ -730,18 +757,7 @@ function DisbursmentForm() {
 										disabled={disburseOrNot}
 									/>
 								</div>
-								{/* <div className="sm:col-span-2">
-									<TDInputTemplateBr
-										placeholder="Sub Purpose..."
-										type="text"
-										label="Sub Purpose"
-										name="b_subPurpose"
-										formControlName={personalDetailsData?.b_subPurpose}
-										handleChange={handleChangePersonalDetails}
-										mode={1}
-										disabled
-									/>
-								</div> */}
+								
 								<div className="sm:col-span-2">
 									<TDInputTemplateBr
 										placeholder="Select Sub Purpose"
@@ -781,6 +797,174 @@ function DisbursmentForm() {
 										mode={1}
 										disabled
 									/>
+								</div> */}
+							</div>
+						</div>
+						<div>
+							<div className="grid gap-4 sm:grid-cols-2 sm:gap-6 my-3">
+								<div className="text-xl mb-2 text-[#DA4167] font-semibold underline">
+									2. Member Details
+								</div>
+							</div>
+							<div className="grid gap-4 px-3 sm:grid-cols-4 sm:gap-6">
+								{/* <div className="sm:col-span-4 bg-slate-200 border-slate-200 text-lime-900 p-5 rounded-2xl grid grid-cols-4 gap-5">
+									<div className="sm:col-span-2">
+										<TDInputTemplateBr
+											placeholder="Group name..."
+											type="text"
+											label="Group Name"
+											name="b_groupName"
+											formControlName={personalDetailsData?.b_groupName}
+											handleChange={handleChangePersonalDetails}
+											mode={1}
+											disabled
+										/>
+									</div>
+									<div>
+										<TDInputTemplateBr
+											placeholder="Account No. 1..."
+											type="text"
+											label="Account No. 1"
+											name="b_acc1"
+											formControlName={personalDetailsData?.b_acc1}
+											handleChange={handleChangePersonalDetails}
+											mode={1}
+											disabled
+										/>
+									</div>
+									<div>
+										<TDInputTemplateBr
+											placeholder="Account No. 2..."
+											type="text"
+											label="Account No. 2"
+											name="b_acc2"
+											formControlName={personalDetailsData?.b_acc2}
+											handleChange={handleChangePersonalDetails}
+											mode={1}
+											disabled
+										/>
+									</div>
+								</div> */}
+								<div>
+									<TDInputTemplateBr
+										placeholder="Form Number"
+										type="text"
+										label="Form Number"
+										name="b_formNo"
+										formControlName={personalDetailsData?.b_formNo}
+										mode={1}
+										disabled
+									/>
+								</div>
+
+								<div>
+									<TDInputTemplateBr
+										placeholder="GRT Approve date..."
+										type="text"
+										label="GRT Approve Date"
+										name="b_grtApproveDate"
+										formControlName={personalDetailsData?.b_grtApproveDate}
+										handleChange={handleChangePersonalDetails}
+										mode={1}
+										disabled
+									/>
+								</div>
+								<div>
+									<TDInputTemplateBr
+										placeholder="Member Code"
+										type="text"
+										label="Member Code"
+										name="b_memCode"
+										formControlName={personalDetailsData?.b_memCode}
+										handleChange={handleChangePersonalDetails}
+										mode={1}
+										disabled
+									/>
+								</div>
+
+								<div>
+									<TDInputTemplateBr
+										placeholder="Type member name..."
+										type="text"
+										label="Member Name"
+										name="b_clientName"
+										formControlName={personalDetailsData?.b_clientName}
+										handleChange={handleChangePersonalDetails}
+										mode={1}
+										disabled
+									/>
+								</div>
+
+								
+								{/* <div>
+									<TDInputTemplateBr
+										placeholder="Branch..."
+										type="text"
+										label="Branch"
+										name="b_branch"
+										formControlName={personalDetailsData?.b_branch}
+										handleChange={handleChangePersonalDetails}
+										mode={1}
+										disabled
+									/>
+								</div> */}
+								
+								{/* <div>
+									<TDInputTemplateBr
+										placeholder="Select Purpose"
+										type="text"
+										label="Purpose"
+										name="b_purpose"
+										formControlName={personalDetailsData?.b_purpose}
+										handleChange={handleChangePersonalDetails}
+										data={purposeOfLoan?.map((item, _) => ({
+											code: item?.loan_purpose,
+											name: item?.purpose_id,
+										}))}
+										mode={2}
+										disabled={disburseOrNot}
+									/>
+								</div> */}
+								
+								{/* <div className="sm:col-span-2">
+									<TDInputTemplateBr
+										placeholder="Select Sub Purpose"
+										type="text"
+										label="Sub Purpose"
+										name="b_subPurpose"
+										formControlName={personalDetailsData?.b_subPurpose}
+										handleChange={handleChangePersonalDetails}
+										data={subPurposeOfLoan?.map((item, _) => ({
+											code: item?.sub_purp_id,
+											name: item?.sub_purp_name,
+										}))}
+										mode={2}
+										disabled={disburseOrNot}
+									/>
+								</div> */}
+								<div className="sm:col-span-2">
+									<TDInputTemplateBr
+										placeholder="Application Date..."
+										type="text"
+										label="Application Date"
+										name="b_applicationDate"
+										formControlName={personalDetailsData?.b_applicationDate}
+										handleChange={handleChangePersonalDetails}
+										mode={1}
+										disabled
+									/>
+								</div>
+								<div className="sm:col-span-2">
+									<TDInputTemplateBr
+										placeholder="Applied Amount..."
+										type="text"
+										label="Applied Amount"
+										name="b_appliedAmt"
+										formControlName={personalDetailsData?.b_appliedAmt}
+										handleChange={handleChangePersonalDetails}
+										mode={1}
+										disabled
+									/>
 								</div>
 							</div>
 						</div>
@@ -788,12 +972,274 @@ function DisbursmentForm() {
 						{/* ///////////////////////// */}
 
 						<div>
-							<div className="grid gap-4 sm:grid-cols-2 sm:gap-6">
+							<div className="grid gap-4 sm:grid-cols-2 sm:gap-6 my-3">
 								<div className="text-xl mb-2 mt-5 text-[#DA4167] font-semibold underline">
-									2. Disbursement Details
+									3. Disbursement Details
+								</div>
+							</div>
+							<div className="grid gap-4 sm:grid-cols-3 sm:gap-6">
+								<div>
+									<TDInputTemplateBr
+										placeholder="Member Code"
+										type="text"
+										label="Member Code"
+										name="b_scheme"
+										formControlName={disbursementDetailsData.b_scheme}
+										handleChange={handleChangeDisburseDetails}
+										data={schemes?.map((item, _) => ({
+											code: item?.scheme_id,
+											name: item?.scheme_name,
+										}))}
+										// data={[
+										// 	{ code: "S1", name: "Scheme 1" },
+										// 	{ code: "S1", name: "Scheme 2" },
+										// 	{ code: "S3", name: "Scheme 3" },
+										// ]}
+										mode={2}
+										disabled={disburseOrNot}
+									/>
+								</div>
+
+								<div>
+									<TDInputTemplateBr
+										placeholder="Member Name"
+										type="text"
+										label="Member Name"
+										name="b_mode"
+										formControlName={disbursementDetailsData?.b_mode}
+										handleChange={handleChangeDisburseDetails}
+										data={[
+											{
+												code: "Monthly",
+												name: "Monthly",
+											},
+											{
+												code: "Weekly",
+												name: "Weekly",
+											},
+										]}
+										mode={2}
+										disabled={
+											!disbursementDetailsData.b_scheme || disburseOrNot
+										}
+									/>
+								</div>
+
+								<div>
+									<TDInputTemplateBr
+										placeholder="Amount..."
+										type="text"
+										label="Amount"
+										name="b_period"
+										formControlName={disbursementDetailsData.b_period}
+										handleChange={handleChangeDisburseDetails}
+										mode={1}
+										disabled
+									/>
+								</div>
+								
+							</div>
+						</div>
+
+						{/* ///////////////////////// */}
+
+						<div>
+							<div className="grid gap-4 sm:grid-cols-2 sm:gap-6 my-3">
+								<div className="text-xl mb-2 mt-5 text-[#DA4167] font-semibold underline">
+									4. Transaction Details
 								</div>
 							</div>
 							<div className="grid gap-4 sm:grid-cols-4 sm:gap-6">
+							<div>
+									<TDInputTemplateBr
+										placeholder="Select Purpose"
+										type="text"
+										label="Purpose"
+										name="b_purpose"
+										formControlName={personalDetailsData?.b_purpose}
+										handleChange={handleChangePersonalDetails}
+										data={purposeOfLoan?.map((item, _) => ({
+											code: item?.loan_purpose,
+											name: item?.purpose_id,
+										}))}
+										mode={2}
+										disabled={disburseOrNot}
+									/>
+								</div>
+								
+								<div>
+									<TDInputTemplateBr
+										placeholder="Select Sub Purpose"
+										type="text"
+										label="Sub Purpose"
+										name="b_subPurpose"
+										formControlName={personalDetailsData?.b_subPurpose}
+										handleChange={handleChangePersonalDetails}
+										data={subPurposeOfLoan?.map((item, _) => ({
+											code: item?.sub_purp_id,
+											name: item?.sub_purp_name,
+										}))}
+										mode={2}
+										disabled={disburseOrNot}
+									/>
+								</div>
+								<div>
+									<TDInputTemplateBr
+										placeholder="Transaction date..."
+										type="date"
+										label="Transaction Date"
+										name="b_tnxDate"
+										formControlName={transactionDetailsData.b_tnxDate}
+										handleChange={handleChangeTnxDetailsDetails}
+										min={"1900-12-31"}
+										max={formatDateToYYYYMMDD(new Date())}
+										mode={1}
+										disabled={disburseOrNot}
+									/>
+								</div>
+								<div>
+									<TDInputTemplateBr
+										placeholder="Select Scheme..."
+										type="text"
+										label="Scheme"
+										name="b_scheme"
+										formControlName={disbursementDetailsData.b_scheme}
+										handleChange={handleChangeDisburseDetails}
+										data={schemes?.map((item, _) => ({
+											code: item?.scheme_id,
+											name: item?.scheme_name,
+										}))}
+										// data={[
+										// 	{ code: "S1", name: "Scheme 1" },
+										// 	{ code: "S1", name: "Scheme 2" },
+										// 	{ code: "S3", name: "Scheme 3" },
+										// ]}
+										mode={2}
+										disabled={disburseOrNot}
+									/>
+								</div>
+								<div>
+									<TDInputTemplateBr
+										placeholder="Period..."
+										type="text"
+										label="Period"
+										name="b_period"
+										formControlName={disbursementDetailsData.b_period}
+										handleChange={handleChangeDisburseDetails}
+										mode={1}
+										disabled
+									/>
+								</div>
+								<div>
+									<TDInputTemplateBr
+										placeholder="R.O.I..."
+										type="text"
+										label="Rate of Interest"
+										name="b_roi"
+										formControlName={disbursementDetailsData.b_roi}
+										handleChange={handleChangeDisburseDetails}
+										mode={1}
+										disabled
+									/>
+								</div>
+								<div>
+									<TDInputTemplateBr
+										placeholder="Select Fund..."
+										type="text"
+										label="Fund"
+										name="b_fund"
+										formControlName={disbursementDetailsData.b_fund}
+										handleChange={handleChangeDisburseDetails}
+										data={funds?.map((item, _) => ({
+											code: item?.fund_id,
+											name: item?.fund_name,
+										}))}
+										mode={2}
+										disabled={
+											!disbursementDetailsData?.b_scheme || disburseOrNot
+										}
+									/>
+								</div>
+								{disbursementDetailsData.b_mode === "Monthly" ? (
+									<div>
+										<TDInputTemplateBr
+											placeholder="Day of Recovery..."
+											type="number"
+											label={`Day of Recovery ${
+												disbursementDetailsData.b_dayOfRecovery
+													? `(${getOrdinalSuffix(
+															disbursementDetailsData.b_dayOfRecovery
+													  )} of every month)`
+													: ""
+											}`}
+											name="b_dayOfRecovery"
+											formControlName={disbursementDetailsData.b_dayOfRecovery}
+											handleChange={handleChangeDisburseDetails}
+											mode={1}
+											disabled={
+												!disbursementDetailsData?.b_scheme || disburseOrNot
+											}
+										/>
+										{(disbursementDetailsData.b_dayOfRecovery < 1 ||
+											disbursementDetailsData.b_dayOfRecovery > 31) && (
+											<VError title={`Day should be between 1 to 31`} />
+										)}
+									</div>
+								) : (
+									<div>
+										<TDInputTemplateBr
+											placeholder="Select Weekday"
+											type="text"
+											label="Day of Recovery"
+											name="b_dayOfRecovery"
+											formControlName={disbursementDetailsData?.b_dayOfRecovery}
+											handleChange={handleChangeDisburseDetails}
+											data={WEEKS}
+											mode={2}
+											disabled={
+												!disbursementDetailsData.b_scheme || disburseOrNot
+											}
+										/>
+									</div>
+								)}
+								<div className="sm:col-span-2">
+									<TDInputTemplateBr
+										placeholder="Bank charges..."
+										type="number"
+										label="Bank Charges"
+										name="b_bankCharges"
+										formControlName={disbursementDetailsData.b_bankCharges}
+										handleChange={handleChangeDisburseDetails}
+										mode={1}
+										disabled={
+											!disbursementDetailsData?.b_scheme || disburseOrNot
+										}
+									/>
+								</div>
+								<div className="sm:col-span-2">
+									<TDInputTemplateBr
+										placeholder="Processing charges..."
+										type="number"
+										label="Processing Charges"
+										name="b_processingCharges"
+										formControlName={
+											disbursementDetailsData.b_processingCharges
+										}
+										handleChange={handleChangeDisburseDetails}
+										mode={1}
+										disabled={
+											!disbursementDetailsData?.b_scheme || disburseOrNot
+										}
+									/>
+								</div>
+								
+							
+							
+								
+                                 {/* need to uncomment */}
+								{/* 
+								
+									<div className="grid gap-4 sm:grid-cols-4 sm:gap-6">
 								<div>
 									<TDInputTemplateBr
 										placeholder="Select Scheme..."
@@ -977,17 +1423,13 @@ function DisbursmentForm() {
 									</div>
 								)}
 							</div>
-						</div>
-
-						{/* ///////////////////////// */}
-
-						<div>
-							<div className="grid gap-4 sm:grid-cols-2 sm:gap-6">
-								<div className="text-xl mb-2 mt-5 text-[#DA4167] font-semibold underline">
-									3. Transaction Details
-								</div>
-							</div>
-							<div className="grid gap-4 sm:grid-cols-4 sm:gap-6">
+								
+								
+								
+								
+								
+								
+								*/}
 								{/* <div className="sm:col-span-2">
 									<TDInputTemplateBr
 										placeholder="Bank Name..."
@@ -1000,7 +1442,7 @@ function DisbursmentForm() {
 										disabled={disburseOrNot}
 									/>
 								</div> */}
-								<div className="sm:col-span-2">
+								<div className="sm:col-span-4">
 									<TDInputTemplateBr
 										placeholder="Select Bank..."
 										type="text"
@@ -1016,20 +1458,7 @@ function DisbursmentForm() {
 										disabled={disburseOrNot}
 									/>
 								</div>
-								<div>
-									<TDInputTemplateBr
-										placeholder="Transaction date..."
-										type="date"
-										label="Transaction Date"
-										name="b_tnxDate"
-										formControlName={transactionDetailsData.b_tnxDate}
-										handleChange={handleChangeTnxDetailsDetails}
-										min={"1900-12-31"}
-										max={formatDateToYYYYMMDD(new Date())}
-										mode={1}
-										disabled={disburseOrNot}
-									/>
-								</div>
+								
 
 								{transactionDetailsData.b_tnxMode === "B" && (
 									<>
@@ -1065,7 +1494,7 @@ function DisbursmentForm() {
 									</>
 								)}
 
-								<div>
+								{/* <div>
 									<TDInputTemplateBr
 										placeholder="Select Transaction Type..."
 										type="text"
@@ -1096,7 +1525,7 @@ function DisbursmentForm() {
 										mode={2}
 										disabled={disburseOrNot}
 									/>
-								</div>
+								</div> */}
 
 								<div className="sm:col-span-4">
 									<TDInputTemplateBr
@@ -1280,7 +1709,7 @@ function DisbursmentForm() {
 						!personalDetailsData.b_purpose ||
 						!personalDetailsData.b_subPurpose ||
 						!personalDetailsData.b_applicationDate ||
-						!personalDetailsData.b_appliedAmt ||
+						// !personalDetailsData.b_appliedAmt ||
 						!disbursementDetailsData.b_scheme ||
 						!disbursementDetailsData.b_fund ||
 						!disbursementDetailsData.b_period ||
