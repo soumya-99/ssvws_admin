@@ -112,7 +112,10 @@ function Sidebar({ mode = 0 }) {
 						: userDetails?.id == 4
 						? `Administrator - ${userDetails?.emp_name} `
 						:  userDetails?.id == 5
-						? `General User - ${userDetails?.emp_name}`:`HO User - ${userDetails?.emp_name} `}
+						? `General User - ${userDetails?.emp_name}`
+						: userDetails?.id==11?
+						`Admin 2 - ${userDetails?.emp_name}`
+						:`HO User - ${userDetails?.emp_name} `}
 
 						({userDetails?.branch_name})
 				</div>

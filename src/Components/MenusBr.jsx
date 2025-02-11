@@ -1432,8 +1432,8 @@ function MenusBr({ theme }) {
         selectedKeys={[current]}
         items={ 
          
-          userDetails?.id === 1 || userDetails?.id === 2 || userDetails?.id === 5
-            ? userDetails?.id === 2? items_user_type_2:items_user_type_15:userDetails.id==4?userDetails.brn_code=='100'?items_user_type_4_100:items_user_type_2:userDetails.id==3? items_user_type_3:items_user_type_10
+          userDetails?.id === 1 || userDetails?.id === 2 || userDetails?.id === 5 || userDetails.id==11
+            ? (userDetails?.id === 2 || userDetails.id===11)? items_user_type_2:items_user_type_15:userDetails.id==4?userDetails.brn_code=='100'?items_user_type_4_100:items_user_type_2:userDetails.id==3? items_user_type_3:items_user_type_10
             // : userDetails?.id === 2
             // ? itemsBM
             // : userDetails?.id === 4

@@ -77,21 +77,23 @@ const UserProfileUpdateForm = ({ mode }) => {
 	const fetchProfileDetails = async () => {
 		const creds = {
 			emp_id: userDetails?.emp_id || "",
+			id: userDetails?.id || "",
 		}
 
 		await axios
 			.post(`${url}/user_profile_details`, creds)
 			.then((res) => {
+				console.log(res?.data?.msg.filter(e=>+e.branch_assign_id==+userDetails.brn_code)[0])
 				// setMasterData(res?.data?.msg)
 				setFormData({
 					emp_id: res?.data?.msg[0]?.emp_id,
-					branch_code: res?.data?.msg[0]?.brn_code,
+					branch_code: res?.data?.msg.filter(e=>+e.branch_assign_id==+userDetails.brn_code)[0]?.branch_assign_id || +userDetails.brn_code,
 					user_type: res?.data?.msg[0]?.user_type,
 				})
 			})
 			.catch((err) => {
 				console.log("Errr", err)
-				Message("error", "Soem error while fetching profile details...")
+				Message("error", "Some error while fetching profile details...")
 			})
 	}
 

@@ -281,17 +281,17 @@ function EmployeeMasterForm() {
 			phone_mobile: masterEmployeeData.mobile_2 || "",
 			email: masterEmployeeData.email || "",
 			nationality: masterEmployeeData.nationality || "",
-			dob: moment(masterEmployeeData.dob)?.format("yyyy-MM-DD") || "",
+			dob: masterEmployeeData.dob?moment(masterEmployeeData.dob)?.format("yyyy-MM-DD") : "0000-00-00",
 			married: masterEmployeeData.marital_status || "",
 			language_known: masterEmployeeData.language_known || "",
-			doj:
-				moment(masterEmployeeData.date_of_joining)?.format("yyyy-MM-DD") || "",
+			doj:masterEmployeeData.date_of_joining?
+				moment(masterEmployeeData.date_of_joining)?.format("yyyy-MM-DD") : "0000-00-00",
 			prob_period: masterEmployeeData.probation_period || "",
 			retairment_age: masterEmployeeData.retirement_age || "",
-			conf_dt:
-				moment(masterEmployeeData.confirm_date)?.format("yyyy-MM-DD") || "",
-			retair_dt:
-				moment(masterEmployeeData.retire_date)?.format("yyyy-MM-DD") || "",
+			conf_dt:masterEmployeeData.confirm_date?
+				moment(masterEmployeeData.confirm_date)?.format("yyyy-MM-DD") : "0000-00-00",
+			retair_dt:masterEmployeeData.retire_date?
+				moment(masterEmployeeData.retire_date)?.format("yyyy-MM-DD") : "0000-00-00",
 			blood_grp: masterEmployeeData.blood_group || "",
 			voter_id: masterEmployeeData.voter_no || "",
 			pan_no: masterEmployeeData.pan_no || "",

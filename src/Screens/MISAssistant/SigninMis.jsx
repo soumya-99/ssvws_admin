@@ -54,17 +54,17 @@ function SigninMis() {
       password: values?.password,
       // brnch:values?.brnch
     };
-    if ((user_type_id == 4 || user_type_id==10) && branch != "") {
+    if ((user_type_id == 4 || user_type_id==10 || user_type_id==11) && branch != "") {
       await axios
         .post(`${url}/login_app`, creds)
         .then((res) => {
           var userDtls = res?.data?.user_dtls;
           userDtls["brn_code"] =
-            user_type_id == 4
+            user_type_id == 4 || user_type_id==11
               ? branch.toString()
               : res?.data?.user_dtls?.brn_code;
           userDtls["branch_name"] =
-            user_type_id == 4
+            user_type_id == 4 || user_type_id==11
               ? branches.filter((item) => item.code == branch)[0]?.name
               : res?.data?.user_dtls?.branch_name;
           if (res?.data?.suc === 1) {
@@ -81,7 +81,7 @@ function SigninMis() {
               navigate(routePaths.CO_HOME);
             }
 
-            if (res?.data?.user_dtls?.id == 2) {
+            if (res?.data?.user_dtls?.id == 2 || res?.data?.user_dtls.id==11) {
               navigate(routePaths.BM_HOME);
             }
 
@@ -106,17 +106,17 @@ function SigninMis() {
           console.log("PPPPPPPPP", err);
           Message("error", "Some error on server while logging in...");
         });
-    } else if (user_type_id != 4 && user_type_id!=10) {
+    } else if (user_type_id != 4 && user_type_id!=10 && user_type_id!=11) {
       await axios
         .post(`${url}/login_app`, creds)
         .then((res) => {
           var userDtls = res?.data?.user_dtls;
           userDtls["brn_code"] =
-            user_type_id == 4
+            user_type_id == 4 || user_type_id==11
               ? branch.toString()
               : res?.data?.user_dtls?.brn_code;
           userDtls["branch_name"] =
-            user_type_id == 4
+            user_type_id == 4 || user_type_id==11
               ? branches.filter((item) => item.code == branch)[0]?.name
               : res?.data?.user_dtls?.branch_name;
           if (res?.data?.suc === 1) {
@@ -144,7 +144,8 @@ function SigninMis() {
             if (
               res?.data?.user_dtls?.id == 4 ||
               res?.data?.user_dtls?.id == 5 ||
-              res?.data?.user_dtls?.id == 10
+              res?.data?.user_dtls?.id == 10 
+
             ) {
               navigate(routePaths.ADMIN_HOME);
             }
@@ -216,7 +217,7 @@ function SigninMis() {
                     console.log(res.data);
                     setLoading(false);
                     setUserTypeId(res.data?.msg[0]?.id);
-                    if (res.data?.msg[0]?.id == 10) {
+                    if (res.data?.msg[0]?.id == 10 || res.data?.msg[0]?.id == 11 ) {
                       axios
                         .post(`${url}/fetch_brn_assign`, {
                           emp_id: e.target.value,
@@ -261,7 +262,7 @@ function SigninMis() {
               <VError title={formik.errors.password} />
             ) : null}
           </div>
-          {(user_type_id == 4 || user_type_id==10) && (
+          {(user_type_id == 4 || user_type_id==10 || user_type_id==11) && (
             <div
               style={{
                 width: 280,
@@ -277,7 +278,7 @@ function SigninMis() {
                 mode={2}
                 data={branches}
               />
-              {(user_type_id == 4 || user_type_id==10) && !branch ? (
+              {(user_type_id == 4 || user_type_id==10 ||  user_type_id==11) && !branch ? (
                 <VError title={"Branch is mandatory"} />
               ) : null}
             </div>
