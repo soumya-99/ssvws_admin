@@ -27,7 +27,7 @@ function Sidebar({ mode = 0 }) {
 		setOpen(false)
 	}
 	const drawerWidth = 257
-
+   
 	return (
 		<div className="bg-gray-200 dark:bg-gray-800 ">
 			<button
@@ -72,10 +72,10 @@ function Sidebar({ mode = 0 }) {
 					mode === 0
 						? "fixed top-0 z-20 left-0 w-full h-auto transition-transform -translate-x-full sm:translate-x-0 p-4 justify-center bg-red-800"
 						: mode === 1
-						? "fixed top-0 z-20 left-0 w-full h-auto transition-transform -translate-x-full sm:translate-x-0 p-4 justify-center bg-slate-800"
+						? "fixed top-0 z-20 left-0 w-full h-auto transition-transform -translate-x-full sm:translate-x-0 p-4 justify-center bg-slate-800 shadow-lg"
 						: mode === 2
-						? "fixed top-0 z-20 left-0 w-full h-auto transition-transform -translate-x-full sm:translate-x-0 p-4 justify-center bg-slate-800"
-						: "fixed top-0 z-20 left-0 w-full h-auto transition-transform -translate-x-full sm:translate-x-0 p-4 justify-center bg-slate-800"
+						? "fixed top-0 z-20 left-0 w-full h-auto transition-transform -translate-x-full sm:translate-x-0 p-4 justify-center bg-slate-800 shadow-lg"
+						: "fixed top-0 z-20 left-0 w-full h-auto transition-transform -translate-x-full sm:translate-x-0 p-4 justify-center bg-slate-800 shadow-lg"
 				}
 				aria-label="Sidebar"
 			>
@@ -98,7 +98,7 @@ function Sidebar({ mode = 0 }) {
 			</aside>
 
 			<div
-				className={`w-full p-0.5 bg-slate-600 text-slate-100 justify-center align-middle
+				className={`w-full p-0.5 py-1 bg-slate-600 text-slate-100 justify-center align-middle
 				 font-thin text-sm fixed left-0 top-20 shadow-sm z-10`}
 			>
 				<div className="mt-2 italic ml-10">

@@ -76,7 +76,7 @@ function GroupExtendedForm({ groupDataArr }) {
 		g_phone1: Yup.string().required("Phone 1 is required"),
 		// g_phone2: Yup.string(),
 		// g_email: Yup.string(),
-		// g_bank_name: Yup.string(),
+		// g_bank_name:  Yup.string().required("Bank is required"),
 		// g_bank_branch: Yup.string(),
 		// g_ifsc: Yup.string(),
 		// g_micr: Yup.string(),
@@ -224,7 +224,7 @@ function GroupExtendedForm({ groupDataArr }) {
 	const editGroup = async () => {
 		setLoading(true)
 		console.log(formik.values.g_bank_branch, formik.values.g_bank_name, formik.values.g_acc1, formik.values.g_acc2)
-		if(formik.values.g_bank_branch && formik.values.g_bank_name && formik.values.g_acc1 && formik.values.g_acc2){
+		// if(formik.values.g_bank_branch && formik.values.g_bank_name && formik.values.g_acc1 && formik.values.g_acc2){
 		const creds = {
 			branch_code: branch?.split(",")[1],
 			group_name: formik.values.g_group_name,
@@ -266,12 +266,12 @@ function GroupExtendedForm({ groupDataArr }) {
 			})
 		console.log("VVVVVVVVVVVVVVVVVVVVVVVV", creds)
 
-		}
-		else{
-		setLoading(false)
+		// }
+		// else{
+		// setLoading(false)
 
-			Message("warning","Please fill up all bank related data!")
-		}
+			// Message("warning","Please fill up all bank related data!")
+		// }
 	}
 
 	const removeMemberFromGroup = async (member) => {

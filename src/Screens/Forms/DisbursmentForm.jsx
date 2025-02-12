@@ -45,6 +45,7 @@ function DisbursmentForm() {
 	const [tnxTypes, setTnxTypes] = useState(() => [])
 	const [tnxModes, setTnxModes] = useState(() => [])
 	const [banks, setBanks] = useState(() => [])
+	const [members, setMembers] = useState(() => [])
 
 	const [fetchedLoanData, setFetchedLoanData] = useState(() => Object)
 	const [fetchedTnxData, setFetchedTnxData] = useState(() => Object)
@@ -58,7 +59,11 @@ function DisbursmentForm() {
 
 	const [personalDetailsData, setPersonalDetailsData] = useState({
 		b_groupcode:"",
-		b_memCode: "",
+		b_branchcode:"",
+		b_branchname:"",
+		b_bank_name:"",
+		b_bank_branch:"",
+		b_memCode: [],
 		b_clientName: "",
 		b_groupName: "",
 		b_acc1: "",
@@ -192,20 +197,22 @@ function DisbursmentForm() {
 		if (!disburseOrNot)
 			setPersonalDetailsData({
 		        b_groupcode:personalDetails?.group_code || "",
-				b_memCode: personalDetails?.member_code || "",
-				b_clientName: personalDetails?.client_name || "",
+		        b_branchcode:personalDetails?.branch_code || "",
+		        b_branchname:personalDetails?.branch_name || "",
+				// b_memCode: personalDetails?.member_code || "",
+				// b_clientName: personalDetails?.client_name || "",
 				b_groupName: personalDetails?.group_name || "",
 				b_acc1: personalDetails?.acc_no1 || "",
 				b_acc2: personalDetails?.acc_no2 || "",
-				b_formNo: personalDetails?.form_no || "",
-				b_grtApproveDate: personalDetails?.grt_approve_date || "",
-				b_branch: personalDetails?.branch_name || "",
-				b_purpose: personalDetails?.purpose_id || "",
-				b_subPurpose: personalDetails?.sub_pupose || "",
-				b_purposeId: personalDetails?.loan_purpose || "",
-				b_subPurposeId: personalDetails?.sub_pupose || "",
-				b_applicationDate: personalDetails?.application_date || "",
-				b_appliedAmt: personalDetails?.applied_amt || "",
+				// b_formNo: personalDetails?.form_no || "",
+				// b_grtApproveDate: personalDetails?.grt_approve_date || "",
+				// b_branch: personalDetails?.branch_name || "",
+				// b_purpose: personalDetails?.purpose_id || "",
+				// b_subPurpose: personalDetails?.sub_pupose || "",
+				// b_purposeId: personalDetails?.loan_purpose || "",
+				// b_subPurposeId: personalDetails?.sub_pupose || "",
+				// b_applicationDate: personalDetails?.application_date || "",
+				// b_appliedAmt: personalDetails?.applied_amt || "",
 			})
 
 		console.log("?????????????????????", personalDetails)
@@ -259,7 +266,12 @@ function DisbursmentForm() {
 		getTnxTypes()
 		getTnxModes()
 	}, [])
-
+	const handleDisbursementChange=(index,event)=>{
+		let dt=[...members]
+		dt[index][event.target.name] = event.target.value
+		setMembers(dt)
+		console.log(dt)
+	 }
 	const getParticularScheme = async (schemeId) => {
 		setLoading(true)
 		const creds = {
@@ -340,29 +352,37 @@ function DisbursmentForm() {
 	const fetchSearchedApplication = async () => {
 		setLoading(true)
 		const creds = {
-			member_dtls: personalDetails?.member_code,
-			branch_code:userDetails?.brn_code
+			// member_dtls: personalDetails?.member_code,
+			branch_code:userDetails?.brn_code,
+			grp_dt:personalDetails.group_code
 		}
 		await axios
-			.post(`${url}/admin/fetch_loan_application_dtls`, creds)
+			// .post(`${url}/admin/fetch_loan_application_dtls`, creds)
+			.post(`${url}/admin/fetch_appl_dtls_via_grp`, creds)
 			.then((res) => {
 				console.log("KKKKKKKKkkkkkKKKKKkkkkKKKK", res?.data)
 				// setLoanApplications(res?.data?.msg)
+				setMembers(res?.data?.msg[0]?.mem_dt_grp)
 				setPersonalDetailsData({
-					b_memCode: res?.data?.msg[0]?.member_code,
+					// b_memCode: res?.data?.msg[0]?.member_code,
 					b_clientName: res?.data?.msg[0]?.client_name,
 					b_groupName: res?.data?.msg[0]?.group_name,
+					b_branchcode: res?.data?.msg[0]?.branch_code,
+					b_branchname: res?.data?.msg[0]?.branch_name,
+					b_bank_name: res?.data?.msg[0]?.bank_name,
+		            b_bank_branch:res?.data?.msg[0]?.brn_name,
 					b_acc1: res?.data?.msg[0]?.acc_no1,
 					b_acc2: res?.data?.msg[0]?.acc_no2,
-					b_formNo: res?.data?.msg[0]?.form_no,
-					b_grtApproveDate: res?.data?.msg[0]?.grt_approve_date,
-					b_branch: res?.data?.msg[0]?.branch_name,
-					b_purpose: res?.data?.msg[0]?.purpose_id,
-					b_purposeId: res?.data?.msg[0]?.loan_purpose,
-					b_subPurpose: res?.data?.msg[0]?.sub_pupose,
-					b_subPurposeId: res?.data?.msg[0]?.sub_pupose,
-					b_applicationDate: res?.data?.msg[0]?.application_date,
-					b_appliedAmt: res?.data?.msg[0]?.applied_amt,
+					b_memCode:res?.data?.msg[0]?.mem_dt_grp
+					// b_formNo: res?.data?.msg[0]?.form_no,
+					// b_grtApproveDate: res?.data?.msg[0]?.grt_approve_date,
+					// b_branch: res?.data?.msg[0]?.branch_name,
+					// b_purpose: res?.data?.msg[0]?.purpose_id,
+					// b_purposeId: res?.data?.msg[0]?.loan_purpose,
+					// b_subPurpose: res?.data?.msg[0]?.sub_pupose,
+					// b_subPurposeId: res?.data?.msg[0]?.sub_pupose,
+					// b_applicationDate: res?.data?.msg[0]?.application_date,
+					// b_appliedAmt: res?.data?.msg[0]?.applied_amt,
 				})
 			})
 			.catch((err) => {
@@ -577,7 +597,7 @@ function DisbursmentForm() {
 		<>
 			{disburseOrNot && (
 				<Badge.Ribbon
-					className="bg-slate-500 absolute top-10 z-10"
+					className="bg-slate-500 absolute top-10 z-5"
 					text={"Disbursement Initiated"}
 					style={{
 						fontSize: 17,
@@ -629,13 +649,37 @@ function DisbursmentForm() {
 											disabled
 										/>
 									</div>
+									<div className="sm:col-span-2">
+										<TDInputTemplateBr
+											placeholder="Bank Name"
+											type="text"
+											label="Bank Name"
+											name="b_bank_name"
+											formControlName={personalDetailsData?.b_bank_name}
+											handleChange={handleChangePersonalDetails}
+											mode={1}
+											disabled
+										/>
+									</div>
+									<div className="sm:col-span-2">
+										<TDInputTemplateBr
+											placeholder="Bank Branch"
+											type="text"
+											label="Bank Branch"
+											name="b_bank_branch"
+											formControlName={personalDetailsData?.b_bank_branch}
+											handleChange={handleChangePersonalDetails}
+											mode={1}
+											disabled
+										/>
+									</div>
 									<div>
 										<TDInputTemplateBr
 											placeholder="Branch Code"
 											type="text"
 											label="Branch Code"
-											name="b_acc1"
-											formControlName={personalDetailsData?.b_acc1}
+											name="b_branchcode"
+											formControlName={personalDetailsData?.b_branchcode}
 											handleChange={handleChangePersonalDetails}
 											mode={1}
 											disabled
@@ -646,8 +690,8 @@ function DisbursmentForm() {
 											placeholder="Branch Name"
 											type="text"
 											label="Branch Name"
-											name="b_acc2"
-											formControlName={personalDetailsData?.b_acc2}
+											name="b_branchname"
+											formControlName={personalDetailsData?.b_branchname}
 											handleChange={handleChangePersonalDetails}
 											mode={1}
 											disabled
@@ -677,6 +721,7 @@ function DisbursmentForm() {
 											disabled
 										/>
 									</div>
+									
 								</div>
 								{/* <div>
 									<TDInputTemplateBr
@@ -806,7 +851,8 @@ function DisbursmentForm() {
 									2. Member Details
 								</div>
 							</div>
-							<div className="grid gap-4 px-3 sm:grid-cols-4 sm:gap-6">
+							{members?.map(item=>(
+							<div className="grid gap-4  bg-slate-200 p-5 rounded-md shadow-md sm:grid-cols-4 my-4 sm:gap-6">
 								{/* <div className="sm:col-span-4 bg-slate-200 border-slate-200 text-lime-900 p-5 rounded-2xl grid grid-cols-4 gap-5">
 									<div className="sm:col-span-2">
 										<TDInputTemplateBr
@@ -851,7 +897,7 @@ function DisbursmentForm() {
 										type="text"
 										label="Form Number"
 										name="b_formNo"
-										formControlName={personalDetailsData?.b_formNo}
+										formControlName={item?.form_no}
 										mode={1}
 										disabled
 									/>
@@ -863,7 +909,7 @@ function DisbursmentForm() {
 										type="text"
 										label="GRT Approve Date"
 										name="b_grtApproveDate"
-										formControlName={personalDetailsData?.b_grtApproveDate}
+										formControlName={item?.grt_approve_date || '0000-00-00'}
 										handleChange={handleChangePersonalDetails}
 										mode={1}
 										disabled
@@ -875,7 +921,7 @@ function DisbursmentForm() {
 										type="text"
 										label="Member Code"
 										name="b_memCode"
-										formControlName={personalDetailsData?.b_memCode}
+										formControlName={item?.member_code}
 										handleChange={handleChangePersonalDetails}
 										mode={1}
 										disabled
@@ -888,7 +934,7 @@ function DisbursmentForm() {
 										type="text"
 										label="Member Name"
 										name="b_clientName"
-										formControlName={personalDetailsData?.b_clientName}
+										formControlName={item?.client_name}
 										handleChange={handleChangePersonalDetails}
 										mode={1}
 										disabled
@@ -948,7 +994,7 @@ function DisbursmentForm() {
 										type="text"
 										label="Application Date"
 										name="b_applicationDate"
-										formControlName={personalDetailsData?.b_applicationDate}
+										formControlName={item?.application_date}
 										handleChange={handleChangePersonalDetails}
 										mode={1}
 										disabled
@@ -960,93 +1006,26 @@ function DisbursmentForm() {
 										type="text"
 										label="Applied Amount"
 										name="b_appliedAmt"
-										formControlName={personalDetailsData?.b_appliedAmt}
+										formControlName={item?.applied_amt}
 										handleChange={handleChangePersonalDetails}
 										mode={1}
 										disabled
 									/>
 								</div>
-							</div>
+							</div>))
+}
 						</div>
+
+						{/* ///////////////////////// */}
+
+					
 
 						{/* ///////////////////////// */}
 
 						<div>
 							<div className="grid gap-4 sm:grid-cols-2 sm:gap-6 my-3">
 								<div className="text-xl mb-2 mt-5 text-[#DA4167] font-semibold underline">
-									3. Disbursement Details
-								</div>
-							</div>
-							<div className="grid gap-4 sm:grid-cols-3 sm:gap-6">
-								<div>
-									<TDInputTemplateBr
-										placeholder="Member Code"
-										type="text"
-										label="Member Code"
-										name="b_scheme"
-										formControlName={disbursementDetailsData.b_scheme}
-										handleChange={handleChangeDisburseDetails}
-										data={schemes?.map((item, _) => ({
-											code: item?.scheme_id,
-											name: item?.scheme_name,
-										}))}
-										// data={[
-										// 	{ code: "S1", name: "Scheme 1" },
-										// 	{ code: "S1", name: "Scheme 2" },
-										// 	{ code: "S3", name: "Scheme 3" },
-										// ]}
-										mode={2}
-										disabled={disburseOrNot}
-									/>
-								</div>
-
-								<div>
-									<TDInputTemplateBr
-										placeholder="Member Name"
-										type="text"
-										label="Member Name"
-										name="b_mode"
-										formControlName={disbursementDetailsData?.b_mode}
-										handleChange={handleChangeDisburseDetails}
-										data={[
-											{
-												code: "Monthly",
-												name: "Monthly",
-											},
-											{
-												code: "Weekly",
-												name: "Weekly",
-											},
-										]}
-										mode={2}
-										disabled={
-											!disbursementDetailsData.b_scheme || disburseOrNot
-										}
-									/>
-								</div>
-
-								<div>
-									<TDInputTemplateBr
-										placeholder="Amount..."
-										type="text"
-										label="Amount"
-										name="b_period"
-										formControlName={disbursementDetailsData.b_period}
-										handleChange={handleChangeDisburseDetails}
-										mode={1}
-										disabled
-									/>
-								</div>
-								
-							</div>
-						</div>
-
-						{/* ///////////////////////// */}
-
-						<div>
-							<div className="grid gap-4 sm:grid-cols-2 sm:gap-6 my-3">
-								<div className="text-xl mb-2 mt-5 text-[#DA4167] font-semibold underline">
-									4. Transaction Details
+									3. Transaction Details
 								</div>
 							</div>
 							<div className="grid gap-4 sm:grid-cols-4 sm:gap-6">
@@ -1541,6 +1520,77 @@ function DisbursmentForm() {
 								</div>
 							</div>
 						</div>
+						<div>
+							<div className="grid gap-4 sm:grid-cols-2 sm:gap-6 my-3">
+								<div className="text-xl mb-2 mt-5 text-[#DA4167] font-semibold underline">
+									4. Disbursement Details
+								</div>
+							</div>
+							{members?.map((item,index)=>(
+							<div className="grid gap-4 p-5 my-4 sm:grid-cols-3 bg-slate-200 rounded-md shadow-md sm:gap-6">
+								<div>
+									<TDInputTemplateBr
+										placeholder="Member Code"
+										type="text"
+										label="Member Code"
+										name="member_code"
+										formControlName={item.member_code}
+										// handleChange={handleChangeDisburseDetails}
+										// data={schemes?.map((item, _) => ({
+										// 	code: item?.scheme_id,
+										// 	name: item?.scheme_name,
+										// }))}
+										// data={[
+										// 	{ code: "S1", name: "Scheme 1" },
+										// 	{ code: "S1", name: "Scheme 2" },
+										// 	{ code: "S3", name: "Scheme 3" },
+										// ]}
+										mode={1}
+										disabled={disburseOrNot}
+									/>
+								</div>
+
+								<div>
+									<TDInputTemplateBr
+										placeholder="Member Name"
+										type="text"
+										label="Member Name"
+										name="client_name"
+										formControlName={item?.client_name}
+										// handleChange={handleChangeDisburseDetails}
+										// data={[
+										// 	{
+										// 		code: "Monthly",
+										// 		name: "Monthly",
+										// 	},
+										// 	{
+										// 		code: "Weekly",
+										// 		name: "Weekly",
+										// 	},
+										// ]}
+										mode={1}
+										disabled={
+											!disbursementDetailsData.b_scheme || disburseOrNot
+										}
+									/>
+								</div>
+
+								<div>
+									<TDInputTemplateBr
+										placeholder="Amount..."
+										type="text"
+										label="Amount"
+										name="b_period"
+										formControlName={24}
+										handleChange={e=>handleDisbursementChange(index,e)}
+										mode={1}
+										// disabled
+									/>
+								</div>
+								
+							</div>
+							))}
+						</div>
 
 						{!disburseOrNot && (
 							<div className="mt-10">
@@ -1696,7 +1746,7 @@ function DisbursmentForm() {
 				visible={visible}
 				onPressYes={() => {
 					if (
-						!personalDetailsData.b_memCode ||
+						// !personalDetailsData.b_memCode ||
 						!personalDetailsData.b_clientName ||
 						!personalDetailsData.b_groupName ||
 						!personalDetails.acc_no1 ||
