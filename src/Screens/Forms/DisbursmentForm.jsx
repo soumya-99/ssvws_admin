@@ -9,7 +9,7 @@ import * as Yup from "yup";
 import axios from "axios";
 import { Message } from "../../Components/Message";
 import { url } from "../../Address/BaseUrl";
-import { Badge, Spin, Card } from "antd";
+import { Badge, Spin, Card, Tag } from "antd";
 import { LoadingOutlined } from "@ant-design/icons";
 import { useLocation } from "react-router";
 import TDInputTemplateBr from "../../Components/TDInputTemplateBr";
@@ -25,7 +25,7 @@ function DisbursmentForm() {
   const location = useLocation();
   const personalDetails = location.state[0] || {};
   const loanType = location.state[1] || "D";
-
+  
   const navigate = useNavigate();
   const userDetails = JSON.parse(localStorage.getItem("user_details"));
 
@@ -49,7 +49,7 @@ function DisbursmentForm() {
   const [membersForDisb, setMembersForDisb] = useState(() => []);
   const [fetchedLoanData, setFetchedLoanData] = useState(() => Object);
   const [fetchedTnxData, setFetchedTnxData] = useState(() => Object);
-
+  const [totDisb,setTotDisb] = useState(()=>0)
   // const formattedDob = formatDateToYYYYMMDD(memberDetails?.dob)
 
   console.log(params, "params");
@@ -267,10 +267,14 @@ function DisbursmentForm() {
     getTnxModes();
   }, []);
   const handleDisbursementChange = (index, event) => {
-    let dt = [...members];
-    dt[index][event.target.name] = event.target.value;
-    setMembers(dt);
+    let dt = [...membersForDisb];
+    dt[index][event.target.name] = +event.target.value;
+    setMembersForDisb(dt);
     console.log(dt);
+    setTotDisb(membersForDisb.reduce(
+      (accumulator, e) => accumulator + e.prn_disb_amt,
+      0,
+    ))
   };
   const getParticularScheme = async (schemeId) => {
     setLoading(true);
@@ -365,8 +369,10 @@ function DisbursmentForm() {
         setMembers(res?.data?.msg[0]?.mem_dt_grp);
         membersForDisb.length = 0;
         for (let i of res?.data?.msg[0]?.mem_dt_grp) {
+          setTotDisb(prev=>prev+i.prn_disb_amt)
           membersForDisb.push({
-			grt_form_no:i.form_no,
+            applied_amt:i.applied_amt,
+            grt_form_no: i.form_no,
             member_code: i.member_code,
             client_name: i.client_name,
             prn_disb_amt: 0,
@@ -426,7 +432,8 @@ function DisbursmentForm() {
           // b_roi: res?.data?.loan_dt?.curr_roi || "",
           b_roi: "",
           b_mode: "",
-          b_disburseAmt: res?.data?.loan_dt?.prn_disb_amt || "",
+          // b_disburseAmt: res?.data?.loan_dt?.prn_disb_amt || "",
+          b_disburseAmt: "",
           // b_dayOfRecovery: res?.data?.loan_dt?.recovery_day || "",
           b_dayOfRecovery: "",
           b_bankCharges: res?.data?.loan_trans?.bank_charge || 0,
@@ -434,9 +441,10 @@ function DisbursmentForm() {
         });
 
         setTransactionDetailsData({
-          b_tnxDate: res?.data?.loan_dt?.last_trn_dt
-            ? formatDateToYYYYMMDD(new Date(res?.data?.loan_dt?.last_trn_dt))
-            : formatDateToYYYYMMDD(new Date()),
+          // b_tnxDate: res?.data?.loan_dt?.last_trn_dt
+          //   ? formatDateToYYYYMMDD(new Date(res?.data?.loan_dt?.last_trn_dt))
+          //   : formatDateToYYYYMMDD(new Date()),
+          b_tnxDate: formatDateToYYYYMMDD(new Date()),
           b_bankName: res?.data?.loan_trans?.bank_name || "",
           b_chequeOrRefNo: res?.data?.loan_trans?.cheque_id || "",
           b_chequeOrRefDate: res?.data?.loan_trans?.chq_dt
@@ -517,41 +525,36 @@ function DisbursmentForm() {
   const handleSubmitDisbursementForm = async () => {
     setLoading(true);
     const creds = {
-	  group_code:personalDetails?.group_code,
+      group_code: personalDetails?.group_code,
       branch_code: personalDetails?.branch_code || "",
-	  purpose: personalDetailsData?.b_purposeId || "",
+      purpose: personalDetailsData?.b_purposeId || "",
       sub_purpose: personalDetailsData?.b_subPurposeId || "",
       scheme_id: disbursementDetailsData?.b_scheme || "",
       fund_id: disbursementDetailsData?.b_fund || "",
       period: disbursementDetailsData?.b_period || "",
       curr_roi: disbursementDetailsData?.b_roi || "",
       od_roi: "0",
-      prn_disb_amt: disbursementDetailsData?.b_disburseAmt || "",
-	  old_prn_amt: "0",
+      old_prn_amt: "0",
       od_intt_amt: "0",
       recovery_date: disbursementDetailsData?.b_dayOfRecovery || "",
       period_mode: disbursementDetailsData?.b_mode || "",
       created_by: userDetails?.emp_id || "",
       loan_code: params?.id || "",
-	  bank_charge: disbursementDetailsData?.b_bankCharges || "",
+      bank_charge: disbursementDetailsData?.b_bankCharges || "",
       proc_charge: disbursementDetailsData?.b_processingCharges || "",
       bank_name: transactionDetailsData?.b_bankName || "",
       cheque_id: transactionDetailsData?.b_chequeOrRefNo || "",
-	  particulars: transactionDetailsData?.b_remarks || "",
+      particulars: transactionDetailsData?.b_remarks || "",
       trans_date: transactionDetailsData?.b_tnxDate || "",
-      applied_amt: personalDetails?.applied_amt || "",
 
-	  disbdtls:membersForDisb
+      disbdtls: membersForDisb,
 
-    //   group_code: personalDetails?.prov_grp_code || "",
-    //   member_code: personalDetails?.member_code || "",
-    //   grt_form_no: personalDetails?.form_no || "",
-      
-    //   applied_amt: personalDetails?.applied_amt || "",
-      
-      
-      
-     
+      //   group_code: personalDetails?.prov_grp_code || "",
+      //   member_code: personalDetails?.member_code || "",
+      //   grt_form_no: personalDetails?.form_no || "",
+
+      //   applied_amt: personalDetails?.applied_amt || "",
+
       // deposit_by: "",
       // bill_no: "",
       // trn_lat: "",
@@ -915,7 +918,7 @@ function DisbursmentForm() {
                       placeholder="Form Number"
                       type="text"
                       label="Form Number"
-                      name="b_formNo"
+                      name="form_no"
                       formControlName={item?.form_no}
                       mode={1}
                       disabled
@@ -927,7 +930,7 @@ function DisbursmentForm() {
                       placeholder="GRT Approve date..."
                       type="text"
                       label="GRT Approve Date"
-                      name="b_grtApproveDate"
+                      name="grt_approve_date"
                       formControlName={item?.grt_approve_date || "0000-00-00"}
                       handleChange={handleChangePersonalDetails}
                       mode={1}
@@ -939,7 +942,7 @@ function DisbursmentForm() {
                       placeholder="Member Code"
                       type="text"
                       label="Member Code"
-                      name="b_memCode"
+                      name="member_code"
                       formControlName={item?.member_code}
                       handleChange={handleChangePersonalDetails}
                       mode={1}
@@ -952,7 +955,7 @@ function DisbursmentForm() {
                       placeholder="Type member name..."
                       type="text"
                       label="Member Name"
-                      name="b_clientName"
+                      name="client_name"
                       formControlName={item?.client_name}
                       handleChange={handleChangePersonalDetails}
                       mode={1}
@@ -1011,7 +1014,7 @@ function DisbursmentForm() {
                       placeholder="Application Date..."
                       type="text"
                       label="Application Date"
-                      name="b_applicationDate"
+                      name="application_date"
                       formControlName={item?.application_date}
                       handleChange={handleChangePersonalDetails}
                       mode={1}
@@ -1023,7 +1026,7 @@ function DisbursmentForm() {
                       placeholder="Applied Amount..."
                       type="text"
                       label="Applied Amount"
-                      name="b_appliedAmt"
+                      name="applied_amt"
                       formControlName={item?.applied_amt}
                       handleChange={handleChangePersonalDetails}
                       mode={1}
@@ -1564,7 +1567,7 @@ function DisbursmentForm() {
                   4. Disbursement Details
                 </div>
               </div>
-              {members?.map((item, index) => (
+              {membersForDisb?.map((item, index) => (
                 <div className="grid gap-4 p-5 my-4 sm:grid-cols-3 bg-slate-200 rounded-md shadow-md sm:gap-6">
                   <div>
                     <TDInputTemplateBr
@@ -1625,8 +1628,13 @@ function DisbursmentForm() {
                       // disabled
                     />
                   </div>
+
                 </div>
               ))}
+              <div className="flex justify-end">
+              <Tag className="bg-teal-500 text-white text-lg">Total Disbursement : {totDisb}</Tag>
+
+              </div>
             </div>
 
             {!disburseOrNot && (
@@ -1782,42 +1790,42 @@ function DisbursmentForm() {
         onPress={() => setVisible(!visible)}
         visible={visible}
         onPressYes={() => {
-        //   if (
-        //     !personalDetailsData.b_clientName ||
-        //     !personalDetailsData.b_groupName ||
-        //     !personalDetails.acc_no1 ||
-        //     !+personalDetails.acc_no1 === 0 ||
-        //     !personalDetails.acc_no2 ||
-        //     !+personalDetails.acc_no2 === 0 ||
-        //     !personalDetailsData.b_formNo ||
-        //     !personalDetailsData.b_grtApproveDate ||
-        //     !personalDetailsData.b_branch ||
-        //     !personalDetailsData.b_purpose ||
-        //     !personalDetailsData.b_subPurpose ||
-        //     !personalDetailsData.b_applicationDate ||
-        //     !disbursementDetailsData.b_scheme ||
-        //     !disbursementDetailsData.b_fund ||
-        //     !disbursementDetailsData.b_period ||
-        //     !disbursementDetailsData.b_roi ||
-        //     !disbursementDetailsData.b_mode ||
-        //     !disbursementDetailsData.b_disburseAmt ||
-        //     disbursementDetailsData.b_dayOfRecovery < 1 ||
-        //     disbursementDetailsData.b_dayOfRecovery > 31 ||
-        //     !transactionDetailsData.b_tnxDate ||
-        //     !transactionDetailsData.b_bankName ||
-        //     (transactionDetailsData.b_tnxMode === "B" &&
-        //       (!transactionDetailsData.b_chequeOrRefNo ||
-        //         !transactionDetailsData.b_chequeOrRefDate)) ||
-        //     !transactionDetailsData.b_tnxMode ||
-        //     !transactionDetailsData.b_remarks
-        //   ) {
-        //     Message(
-        //       "warning",
-        //       "Fill all the values properly OR Update the Account Numbers from Group!"
-        //     );
-        //     setVisible(false);
-        //     return;
-        //   }
+          //   if (
+          //     !personalDetailsData.b_clientName ||
+          //     !personalDetailsData.b_groupName ||
+          //     !personalDetails.acc_no1 ||
+          //     !+personalDetails.acc_no1 === 0 ||
+          //     !personalDetails.acc_no2 ||
+          //     !+personalDetails.acc_no2 === 0 ||
+          //     !personalDetailsData.b_formNo ||
+          //     !personalDetailsData.b_grtApproveDate ||
+          //     !personalDetailsData.b_branch ||
+          //     !personalDetailsData.b_purpose ||
+          //     !personalDetailsData.b_subPurpose ||
+          //     !personalDetailsData.b_applicationDate ||
+          //     !disbursementDetailsData.b_scheme ||
+          //     !disbursementDetailsData.b_fund ||
+          //     !disbursementDetailsData.b_period ||
+          //     !disbursementDetailsData.b_roi ||
+          //     !disbursementDetailsData.b_mode ||
+          //     !disbursementDetailsData.b_disburseAmt ||
+          //     disbursementDetailsData.b_dayOfRecovery < 1 ||
+          //     disbursementDetailsData.b_dayOfRecovery > 31 ||
+          //     !transactionDetailsData.b_tnxDate ||
+          //     !transactionDetailsData.b_bankName ||
+          //     (transactionDetailsData.b_tnxMode === "B" &&
+          //       (!transactionDetailsData.b_chequeOrRefNo ||
+          //         !transactionDetailsData.b_chequeOrRefDate)) ||
+          //     !transactionDetailsData.b_tnxMode ||
+          //     !transactionDetailsData.b_remarks
+          //   ) {
+          //     Message(
+          //       "warning",
+          //       "Fill all the values properly OR Update the Account Numbers from Group!"
+          //     );
+          //     setVisible(false);
+          //     return;
+          //   }
           handleSubmitDisbursementForm();
           setVisible(!visible);
         }}
