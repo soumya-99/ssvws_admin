@@ -25,7 +25,7 @@ function DisbursmentForm() {
   const location = useLocation();
   const personalDetails = location.state[0] || {};
   const loanType = location.state[1] || "D";
-  
+  const [checkTot,setCheckTot] = useState(0)
   const navigate = useNavigate();
   const userDetails = JSON.parse(localStorage.getItem("user_details"));
 
@@ -275,6 +275,21 @@ function DisbursmentForm() {
       (accumulator, e) => accumulator + e.prn_disb_amt,
       0,
     ))
+    const creds = {
+      member_code: dt.map(e=>{return {member_code:e.member_code}}),
+      tot_disb_amt: membersForDisb.reduce(
+        (accumulator, e) => accumulator + e.prn_disb_amt,
+        0,
+      )
+    };
+    axios
+    .post(`${url}/admin/verify_tot_dib_amt`, creds).then(res=>{
+      console.log(res)
+      setCheckTot(res?.data?.suc)
+      if(res?.data?.suc==0)
+      Message('error',res?.data?.msg)
+    
+    })
   };
   const getParticularScheme = async (schemeId) => {
     setLoading(true);
@@ -368,16 +383,20 @@ function DisbursmentForm() {
         console.log("KKKKKKKKkkkkkKKKKKkkkkKKKK", res?.data);
         setMembers(res?.data?.msg[0]?.mem_dt_grp);
         membersForDisb.length = 0;
+        var count= 0 
         for (let i of res?.data?.msg[0]?.mem_dt_grp) {
+          count+=i.prn_disb_amt
           setTotDisb(prev=>prev+i.prn_disb_amt)
           membersForDisb.push({
             applied_amt:i.applied_amt,
             grt_form_no: i.form_no,
             member_code: i.member_code,
             client_name: i.client_name,
-            prn_disb_amt: 0,
+            prn_disb_amt:i.prn_disb_amt || 0,
           });
         }
+        setTotDisb(count)
+        count=0
         setMembersForDisb(membersForDisb);
         console.log(members);
         setPersonalDetailsData({
@@ -411,7 +430,9 @@ function DisbursmentForm() {
   const checkDisbursedOrNot = async () => {
     setLoading(true);
     const creds = {
-      form_no: personalDetails?.form_no,
+      // form_no: personalDetails?.form_no,
+      group_code: personalDetails?.group_code,
+      branch_code: userDetails?.brn_code,
     };
     await axios
       .post(`${url}/admin/fetch_existing_loan`, creds)
@@ -419,7 +440,7 @@ function DisbursmentForm() {
         console.log("checkDisbursedOrNot --------+++++++", res?.data);
 
         // setDisburseOrNot(res?.data?.msg)
-        setFetchedLoanData(res?.data?.loan_dt);
+        setFetchedLoanData(res?.data?.msg[0]);
         setFetchedTnxData(res?.data?.loan_trans);
 
         setDisbursementDetailsData({
@@ -473,6 +494,27 @@ function DisbursmentForm() {
               ).toFixed(2) || "",
           });
         }
+        axios.post(`${url}/admin/fetch_disb_trans_dtls`, creds).then(resDisb=>{
+          console.log('fetch_disb_trans_dtls',resDisb)
+   
+          setDisbursementDetailsData({
+            b_scheme: resDisb?.data?.msg[0]?.scheme_id || "",
+            b_fund: resDisb?.data?.msg[0]?.fund_id || "",
+            b_period: resDisb?.data?.msg[0]?.period || "",
+            b_roi: resDisb?.data?.msg[0]?.curr_roi || "",
+            b_mode: resDisb?.data?.msg[0]?.period_mode || "",
+            b_disburseAmt: resDisb?.data?.msg[0]?.prn_disb_amt || "",
+            b_dayOfRecovery: resDisb?.data?.msg[0]?.recovery_day || "",
+            b_bankCharges: resDisb?.data?.msg[0]?.bank_charge || 0,
+            b_processingCharges: resDisb?.data?.msg[0]?.proc_charge || 0,
+          });
+          setTransactionDetailsData({
+            b_bankName: +resDisb?.data?.msg[0]?.code || 0,
+            b_remarks: resDisb?.data?.msg[0]?.particulars || "",
+
+          })
+        })
+
       })
       .catch((err) => {
         Message("error", "Some error during fetching the status of the form.");
@@ -1632,7 +1674,7 @@ function DisbursmentForm() {
                 </div>
               ))}
               <div className="flex justify-end">
-              <Tag className="bg-teal-500 text-white text-lg">Total Disbursement : {totDisb}</Tag>
+              <Tag className="bg-teal-500 text-white text-lg">Tot. Disbursement Amt. : {totDisb}</Tag>
 
               </div>
             </div>
@@ -1826,6 +1868,7 @@ function DisbursmentForm() {
           //     setVisible(false);
           //     return;
           //   }
+          if(checkTot==1)
           handleSubmitDisbursementForm();
           setVisible(!visible);
         }}
