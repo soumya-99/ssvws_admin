@@ -282,9 +282,9 @@ function DisbursmentForm() {
     let dt = [...membersForDisb];
     dt[index][event.target.name] = +event.target.value;
     setMembersForDisb(dt);
-    console.log(dt);
+    // console.log(dt, 'dttttttttttttt', personalDetailsData.b_appliedAmt);
     setTotDisb(membersForDisb.reduce(
-      (accumulator, e) => accumulator + e.applied_amt,
+      (accumulator, e) => accumulator + e.prn_disb_amt,
       0,
     ))
     const creds = {
@@ -393,7 +393,7 @@ function DisbursmentForm() {
       // .post(`${url}/admin/fetch_loan_application_dtls`, creds)
       .post(`${url}/admin/fetch_appl_dtls_via_grp`, creds)
       .then((res) => {
-        console.log("KKKKKKKKkkkkkKKKKKkkkkKKKK", res?.data);
+        console.log("KKKKKKKKkkkkkKKKKKkkkkKKKK", res?.data?.msg[0]?.mem_dt_grp);
         setMembers(res?.data?.msg[0]?.mem_dt_grp);
         membersForDisb.length = 0;
         var count= 0 
@@ -405,7 +405,7 @@ function DisbursmentForm() {
             grt_form_no: i.form_no,
             member_code: i.member_code,
             client_name: i.client_name,
-            prn_disb_amt:i.prn_disb_amt || 0,
+            prn_disb_amt:+i.applied_amt || 0,
           });
         }
         setTotDisb(count)
@@ -651,21 +651,24 @@ function DisbursmentForm() {
     // period_mode_cus = creds.period_mode;
     // setPeriod_mode_valid(creds.period_mode)
 
+    console.log(creds, 'KKKKKKKKkkkkkKKKKKkkkkKKKK');
+    
+
     if(disbursementDetailsData.b_mode.length > 0){
-      await axios
-      .post(`${url}/admin/save_loan_transaction`, creds)
-      .then((res) => {
-        console.log("Disbursement initiated successfully", res?.data);
-        Message("success", "Submitted successfully.");
-        navigate(-1);
-      })
-      .catch((err) => {
-        Message(
-          "error",
-          "Some error occurred while submitting disbursement form!"
-        );
-        console.log("DDEEERRR", err);
-      });
+      // await axios
+      // .post(`${url}/admin/save_loan_transaction`, creds)
+      // .then((res) => {
+      //   console.log("Disbursement initiated successfully", res?.data);
+      //   Message("success", "Submitted successfully.");
+      //   navigate(-1);
+      // })
+      // .catch((err) => {
+      //   Message(
+      //     "error",
+      //     "Some error occurred while submitting disbursement form!"
+      //   );
+      //   console.log("DDEEERRR", err);
+      // });
     setLoading(false);
     } else {
       setLoading(false);
@@ -1741,9 +1744,10 @@ function DisbursmentForm() {
                       placeholder="Amount..."
                       type="text"
                       label="Amount"
-                      name="applied_amt"
+                      name="prn_disb_amt"
+                      // value= {item.prn_disb_amt}
                       // formControlName={item.prn_disb_amt}
-                      formControlName={item.applied_amt}
+                      formControlName={item.prn_disb_amt}
                       handleChange={(e) => handleDisbursementChange(index, e)}
                       mode={1}
                       // disabled
