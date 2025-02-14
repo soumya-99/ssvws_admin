@@ -152,6 +152,7 @@ const DialogBox = ({
 					</div>
 				</p>
 			)}
+			
 		</Dialog>
 	)
 }
