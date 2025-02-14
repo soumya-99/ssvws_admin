@@ -487,6 +487,9 @@ function DisbursmentForm() {
             b_principleDisbursedAmount: res?.data?.loan_dt?.prn_disb_amt || "",
             b_principleEMIAmount: res?.data?.loan_dt?.prn_emi || "",
             b_totalEMIAmount: res?.data?.loan_dt?.tot_emi || "",
+             // b_tnxDate: res?.data?.loan_dt?.last_trn_dt
+          //   ? formatDateToYYYYMMDD(new Date(res?.data?.loan_dt?.last_trn_dt))
+          //   : formatDateToYYYYMMDD(new Date()),
             b_receivable:
               Math.round(
                 +res?.data?.loan_dt?.prn_disb_amt +
@@ -511,6 +514,9 @@ function DisbursmentForm() {
           setTransactionDetailsData({
             b_bankName: +resDisb?.data?.msg[0]?.code || 0,
             b_remarks: resDisb?.data?.msg[0]?.particulars || "",
+             b_tnxDate: res?.data?.msg[0]?.last_trn_dt
+            ? formatDateToYYYYMMDD(new Date(res?.data?.msg[0].last_trn_dt))
+            : formatDateToYYYYMMDD(new Date()),
 
           })
         })
@@ -604,6 +610,9 @@ function DisbursmentForm() {
 
       ///////////////////////////////////////////////////////
     };
+
+    // console.log(creds, 'credscredscredscredscreds');
+    
     await axios
       .post(`${url}/admin/save_loan_transaction`, creds)
       .then((res) => {
@@ -1868,10 +1877,11 @@ function DisbursmentForm() {
           //     setVisible(false);
           //     return;
           //   }
-          if(checkTot==1)
+          // if(checkTot==1)
           handleSubmitDisbursementForm();
           setVisible(!visible);
-        }}
+        }
+      }
         onPressNo={() => setVisible(!visible)}
       />
 
