@@ -12,6 +12,9 @@ import RecoveryGroupApproveTable from "../../Components/RecoveryGroupApproveTabl
 import RecoveryCoApproveTable from "../../Components/RecoveryCoApproveTable"
 import TDInputTemplateBr from "../../Components/TDInputTemplateBr"
 import { formatDateToYYYYMMDD } from "../../Utils/formateDate"
+import RecoveryGroupDisbursTable from "../../Components/RecoveryGroupDisbursTable"
+import RecoveryCoDisbursTable from "../../Components/RecoveryCoDisbursTable"
+import RecoveryMemberDisbursTable from "../../Components/RecoveryMemberDisbursTable"
 
 const options = [
 	{
@@ -66,8 +69,8 @@ function DisbursedLoanApproveSingleBM() {
 		// }
 
 		await axios
-			.post(`${url}/admin/fetch_loan_trans_dtls`, {
-				tr_type: loanType,
+			.post(`${url}/fetch_groupwise_disburse_admin`, {
+				// tr_type: loanType,
 				branch_code: userDetails?.brn_code,
 			})
 			.then((res) => {
@@ -79,7 +82,7 @@ function DisbursedLoanApproveSingleBM() {
 					setLoanApplicationsGroup(res?.data?.msg)
 					setCopyLoanApplicationsGroup(res?.data?.msg)
 
-					console.log("PPPPPPPPPPPPPPPPPPPP", res?.data)
+					// console.log("dddddddddddddddd", res?.data)
 				} else {
 					Message("error", "No incoming loan applications found.")
 				}
@@ -91,30 +94,6 @@ function DisbursedLoanApproveSingleBM() {
 		setLoading(false)
 	}
 	
-	const fetchLoanApplicationsGroup_ = async () => {
-		setLoading(true)
-		await axios
-			.post(`${url}/fetch_groupwise_recovery_admin`, {
-				branch_code: userDetails?.brn_code,
-				// from_dt : formatDateToYYYYMMDD(fromDate),
-				// to_dt : formatDateToYYYYMMDD(toDate)
-			})
-			.then((res) => {
-				if (res?.data?.suc === 1) {
-					// console.log(res?.data?.msg, 'xxxxxxxxx');
-
-					setLoanApplicationsGroup(res?.data?.msg)
-					setCopyLoanApplicationsGroup(res?.data?.msg)
-				} else {
-					Message("error", "No incoming loan applications found.")
-				}
-			})
-			.catch((err) => {
-				Message("error", "Some error occurred while fetching loans!")
-				console.log("ERRR", err)
-			})
-		setLoading(false)
-	}
 
 	const fetchLoanApplicationsCo = async () => {
 		console.log(
@@ -126,7 +105,7 @@ function DisbursedLoanApproveSingleBM() {
 		)
 		setLoading(true)
 		await axios
-			.post(`${url}/fetch_cowise_recov_data`, {
+			.post(`${url}/fetch_cowise_disb_data`, {
 				branch_code: userDetails?.brn_code,
 				// from_dt : formatDateToYYYYMMDD(fromDate),
 				// to_dt : formatDateToYYYYMMDD(toDate),
@@ -134,7 +113,7 @@ function DisbursedLoanApproveSingleBM() {
 			})
 			.then((res) => {
 				if (res?.data?.suc === 1) {
-					console.log(res?.data?.msg, "xxxxxxxxx")
+					// console.log(res?.data?.msg, "xxxxxxxxx")
 					setLoanApplicationsCo(res?.data?.msg)
 					setCopyLoanApplicationsCo(res?.data?.msg)
 				} else {
@@ -151,13 +130,15 @@ function DisbursedLoanApproveSingleBM() {
 	const fetchLoanApplicationsMember = async () => {
 		setLoading(true)
 		await axios
-			.post(`${url}/fetch_memberwise_recovery_admin`, {
+			.post(`${url}/fetch_memberwise_disburse_admin`, {
 				branch_code: userDetails?.brn_code,
 				// from_dt : formatDateToYYYYMMDD(fromDate),
 				// to_dt : formatDateToYYYYMMDD(toDate)
 			})
 			.then((res) => {
 				if (res?.data?.suc === 1) {
+					console.log(res?.data?.msg, 'uhuhuhuh');
+					
 					setLoanApplicationsMember(res?.data?.msg)
 					setCopyLoanApplicationsMember(res?.data?.msg)
 				} else {
@@ -174,7 +155,7 @@ function DisbursedLoanApproveSingleBM() {
 	const fetchCoList = async () => {
 		setLoading(true)
 		await axios
-			.post(`${url}/fetch_branch_co`, {
+			.post(`${url}/fetch_branch_co_disb`, {
 				branch_code: userDetails?.brn_code,
 			})
 			.then((res) => {
@@ -264,14 +245,11 @@ function DisbursedLoanApproveSingleBM() {
 
 	useEffect(() => {
 
-		console.log(fromDate, "fetchLoanApplicationsDate", toDate)
+		// console.log(fromDate, "fetchLoanApplicationsDate", toDate)
 
 		if (loanType === "G") {
 			fetchLoanApplicationsGroup('D')
 		} else if (loanType === "C") {
-			// setLoanApplicationsGroup(() => [])
-			// setLoanApplicationsCo(() => [])
-			// setCopyLoanApplicationsCo(() => [])
 			fetchLoanApplicationsCo()
 		} else if (loanType === "M") {
 			fetchLoanApplicationsMember()
@@ -329,7 +307,7 @@ function DisbursedLoanApproveSingleBM() {
 
 					</div> */}
 
-							<RecoveryGroupApproveTable
+							<RecoveryGroupDisbursTable
 								flag="BM"
 								loanAppData={loanApplicationsGroup}
 								title="Approve Transaction"
@@ -394,7 +372,7 @@ function DisbursedLoanApproveSingleBM() {
 								</div>
 							</div>
 
-							<RecoveryCoApproveTable
+							<RecoveryCoDisbursTable
 								flag="BM"
 								loanAppData={loanApplicationsCo}
 								title="Approve Transaction"
@@ -436,7 +414,7 @@ function DisbursedLoanApproveSingleBM() {
 							/>
 						</div>
 					</div> */}
-							<RecoveryMemberApproveTable
+							<RecoveryMemberDisbursTable
 								flag="BM"
 								loanAppData={loanApplicationsMember}
 								title="Approve Transaction"
