@@ -10,7 +10,7 @@ import axios from "axios";
 import { Message } from "../../Components/Message";
 import { url } from "../../Address/BaseUrl";
 import { Badge, Spin, Card, Tag } from "antd";
-import { LoadingOutlined } from "@ant-design/icons";
+import { CheckCircleOutlined, EyeInvisibleOutlined, EyeOutlined, LoadingOutlined } from "@ant-design/icons";
 import { useLocation } from "react-router";
 import TDInputTemplateBr from "../../Components/TDInputTemplateBr";
 import { formatDateToYYYYMMDD } from "../../Utils/formateDate";
@@ -18,6 +18,15 @@ import DialogBox from "../../Components/DialogBox";
 // import { disableInputArray } from "./disableInputArray"
 import { disableCondition } from "./disableCondition";
 import { getOrdinalSuffix } from "../../Utils/ordinalSuffix";
+
+
+const initialValues = {
+  b_mode: '',
+};
+
+const validationSchema = Yup.object({
+  b_mode: Yup.string().required('Please enter your Name'),
+});
 
 function DisbursmentForm() {
   const params = useParams();
@@ -32,6 +41,9 @@ function DisbursmentForm() {
   const [visible, setVisible] = useState(() => false);
   const [visible2, setVisible2] = useState(() => false);
   const [visible3, setVisible3] = useState(() => false);
+  const [visibleMember, setVisibleMember] = useState(() => false)
+
+  const [AppliedDisbursLoan, setAppliedDisbursLoan] = useState(() => true)
 
   const [disburseOrNot, setDisburseOrNot] = useState(() => false);
   const [maxDisburseAmountForAScheme, setMaxDisburseAmountForAScheme] =
@@ -50,6 +62,7 @@ function DisbursmentForm() {
   const [fetchedLoanData, setFetchedLoanData] = useState(() => Object);
   const [fetchedTnxData, setFetchedTnxData] = useState(() => Object);
   const [totDisb,setTotDisb] = useState(()=>0)
+  const [Period_mode_valid, setPeriod_mode_valid] = useState('');
   // const formattedDob = formatDateToYYYYMMDD(memberDetails?.dob)
 
   console.log(params, "params");
@@ -190,6 +203,7 @@ function DisbursmentForm() {
   };
 
   useEffect(() => {
+    // handleChangePersonalDetails()
     getBanks();
   }, []);
 
@@ -267,10 +281,11 @@ function DisbursmentForm() {
     getTnxModes();
   }, []);
   const handleDisbursementChange = (index, event) => {
+    // alert()
     let dt = [...membersForDisb];
     dt[index][event.target.name] = +event.target.value;
     setMembersForDisb(dt);
-    console.log(dt);
+    // console.log(dt, 'dttttttttttttt', personalDetailsData.b_appliedAmt);
     setTotDisb(membersForDisb.reduce(
       (accumulator, e) => accumulator + e.prn_disb_amt,
       0,
@@ -282,12 +297,34 @@ function DisbursmentForm() {
         0,
       )
     };
+
+    
+  
+
+
+
     axios
     .post(`${url}/admin/verify_tot_dib_amt`, creds).then(res=>{
-      console.log(res)
-      setCheckTot(res?.data?.suc)
-      if(res?.data?.suc==0)
-      Message('error',res?.data?.msg)
+      
+      membersForDisb.forEach((member) => {
+        if (member.applied_amt < member.prn_disb_amt) {
+            // alert(`Alert: Applied amount (${member.applied_amt}) is less than disbursed amount (${member.prn_disb_amt}) for ${member.client_name}`);
+            setCheckTot(res?.data?.suc)
+            Message('error',res?.data?.msg)
+            setAppliedDisbursLoan(false)
+          } else {
+            setAppliedDisbursLoan(true)
+        }
+    });
+      
+      // if(res?.data?.suc==0){
+      //   setCheckTot(res?.data?.suc)
+      //   Message('error',res?.data?.msg)
+      //   setAppliedDisbursLoan(false)
+      // } else{
+      //   setAppliedDisbursLoan(true)
+      // }
+      
     
     })
   };
@@ -370,6 +407,7 @@ function DisbursmentForm() {
   }, [personalDetailsData?.b_purposeId]);
 
   const fetchSearchedApplication = async () => {
+    
     setLoading(true);
     const creds = {
       // member_dtls: personalDetails?.member_code,
@@ -380,19 +418,20 @@ function DisbursmentForm() {
       // .post(`${url}/admin/fetch_loan_application_dtls`, creds)
       .post(`${url}/admin/fetch_appl_dtls_via_grp`, creds)
       .then((res) => {
-        console.log("KKKKKKKKkkkkkKKKKKkkkkKKKK", res?.data);
+        console.log("KKKKKKKKkkkkk8888KKKKKkkkkKKKK", res?.data?.msg[0]?.mem_dt_grp);
         setMembers(res?.data?.msg[0]?.mem_dt_grp);
         membersForDisb.length = 0;
         var count= 0 
         for (let i of res?.data?.msg[0]?.mem_dt_grp) {
           count+=i.prn_disb_amt
-          setTotDisb(prev=>prev+i.prn_disb_amt)
+          // setTotDisb(prev=>prev+i.applied_amt)
           membersForDisb.push({
             applied_amt:i.applied_amt,
             grt_form_no: i.form_no,
             member_code: i.member_code,
             client_name: i.client_name,
-            prn_disb_amt:i.prn_disb_amt || 0,
+            // prn_disb_amt:+i.applied_amt || 0,
+            prn_disb_amt: i.prn_disb_amt > 0 ? +i.prn_disb_amt : +i.applied_amt,
           });
         }
         setTotDisb(count)
@@ -533,6 +572,14 @@ function DisbursmentForm() {
   }, []);
 
   // useEffect(() => {
+  //   const totalAmount = membersForDisb?.reduce((sum, item) => sum + (parseFloat(item.applied_amt) || 0), 0);
+    
+  //   setTotDisb(totalAmount);
+  //   alert(totalAmount)
+    
+  // }, [membersForDisb]);
+
+  // useEffect(() => {
   // 	if (approvalStat === "A") {
   // 		fetchRecoveryDetails()
   // 	}
@@ -540,6 +587,17 @@ function DisbursmentForm() {
 
   //////////////////////////////////////////////////
   //////////////////////////////////////////////////
+
+  const showMember_Fn = ()=>{
+    if(visibleMember){
+      setVisibleMember(false)
+    }
+
+    if(!visibleMember){
+      setVisibleMember(true)
+    }
+    
+  }
 
   const onSubmit = (e) => {
     e.preventDefault();
@@ -569,6 +627,11 @@ function DisbursmentForm() {
       b_remarks: "",
     });
   };
+
+  useEffect(() => {
+    setPeriod_mode_valid(disbursementDetailsData.b_mode)
+  }, [disbursementDetailsData.b_mode]);
+
 
   const handleSubmitDisbursementForm = async () => {
     setLoading(true);
@@ -611,9 +674,14 @@ function DisbursmentForm() {
       ///////////////////////////////////////////////////////
     };
 
-    // console.log(creds, 'credscredscredscredscreds');
+    // period_mode_cus = creds.period_mode;
+    // setPeriod_mode_valid(creds.period_mode)
+
+    console.log(creds, 'KKKKKKKKkkkkkKKKKKkkkkKKKK');
     
-    await axios
+
+    if(disbursementDetailsData.b_mode.length > 0){
+      await axios
       .post(`${url}/admin/save_loan_transaction`, creds)
       .then((res) => {
         console.log("Disbursement initiated successfully", res?.data);
@@ -628,6 +696,10 @@ function DisbursmentForm() {
         console.log("DDEEERRR", err);
       });
     setLoading(false);
+    } else {
+      setLoading(false);
+    }
+    
   };
 
   const handleApproveLoanDisbursement = async () => {
@@ -725,16 +797,17 @@ function DisbursmentForm() {
                   </div>
                   <div className="sm:col-span-2">
                     <TDInputTemplateBr
-                      placeholder="Bank Name"
+                      placeholder="Branch Code"
                       type="text"
-                      label="Bank Name"
-                      name="b_bank_name"
-                      formControlName={personalDetailsData?.b_bank_name}
+                      label="Branch Code"
+                      name="b_branchcode"
+                      formControlName={personalDetailsData?.b_branchcode}
                       handleChange={handleChangePersonalDetails}
                       mode={1}
                       disabled
                     />
                   </div>
+                  
                   <div className="sm:col-span-2">
                     <TDInputTemplateBr
                       placeholder="Bank Branch"
@@ -749,11 +822,11 @@ function DisbursmentForm() {
                   </div>
                   <div>
                     <TDInputTemplateBr
-                      placeholder="Branch Code"
+                      placeholder="Bank Name"
                       type="text"
-                      label="Branch Code"
-                      name="b_branchcode"
-                      formControlName={personalDetailsData?.b_branchcode}
+                      label="Bank Name"
+                      name="b_bank_name"
+                      formControlName={personalDetailsData?.b_bank_name}
                       handleChange={handleChangePersonalDetails}
                       mode={1}
                       disabled
@@ -920,10 +993,25 @@ function DisbursmentForm() {
             </div>
             <div>
               <div className="grid gap-4 sm:grid-cols- sm:gap-6 my-3">
-                <div className="text-xl mb-2 text-[#DA4167] font-semibold underline">
-                  2. Member Details
+                <div className="text-xl mb-2 text-[#DA4167] font-semibold underline items-center">
+                  2. Member Details 
+            <button type="button"
+            className={`inline-flex float-right items-center px-4 py-2 mt-0 ml-0 ml-auto sm:mt-0 text-sm font-small text-center text-white border hover:border-green-600 border-teal-500 bg-teal-500 transition ease-in-out hover:bg-green-600 duration-300 rounded-full  dark:focus:ring-primary-900`}
+            onClick={() => {
+              // setVisible(true)
+              showMember_Fn();
+            }}
+          >
+            {/* <CheckCircleOutlined />  */}
+            {visibleMember === false ? <EyeOutlined /> : <EyeInvisibleOutlined />}
+            
+            <span class={`ml-2`}>{visibleMember === false ? "Show Detail" : "Hide Detail"}</span>
+          </button>
                 </div>
               </div>
+              
+              {visibleMember && (
+              <>
               {members?.map((item) => (
                 <div className="grid gap-4  bg-slate-200 p-5 rounded-md shadow-md sm:grid-cols-4 my-4 sm:gap-6">
                   {/* <div className="sm:col-span-4 bg-slate-200 border-slate-200 text-lime-900 p-5 rounded-2xl grid grid-cols-4 gap-5">
@@ -1086,6 +1174,9 @@ function DisbursmentForm() {
                   </div>
                 </div>
               ))}
+              </>
+              )}
+              
             </div>
 
             {/* ///////////////////////// */}
@@ -1116,7 +1207,7 @@ function DisbursmentForm() {
                   />
                 </div>
 
-                <div className="sm:col-span-1">
+                {/* <div className="sm:col-span-1">
                   <TDInputTemplateBr
                     placeholder="Select Sub Purpose"
                     type="text"
@@ -1131,7 +1222,7 @@ function DisbursmentForm() {
                     mode={2}
                     // disabled={disburseOrNot}
                   />
-                </div>
+                </div> */}
                 <div className="sm:col-span-1">
                   <TDInputTemplateBr
                     placeholder="Transaction date..."
@@ -1178,12 +1269,15 @@ function DisbursmentForm() {
                     mode={1}
                     disabled
                   />
+                  
                 </div>
-                <div className="sm:col-span-1">
+                <div className="sm:col-span-1" style={{position: "relative"}}>
+                {Period_mode_valid ==  'Weekly' || Period_mode_valid ==  'Monthly' ? "" : <span style={{color: "red"}} className="right-0 ant-tag ant-tag-error ant-tag-borderless text-[12.6px] my-0 css-dev-only-do-not-override-1tse2sn absolute">Field is Requir</span>}
+
                   <TDInputTemplateBr
                     placeholder="Select Mode"
                     type="text"
-                    label="Mode"
+                    label="Mode*"
                     name="b_mode"
                     formControlName={disbursementDetailsData?.b_mode}
                     handleChange={handleChangeDisburseDetails}
@@ -1202,6 +1296,8 @@ function DisbursmentForm() {
                     // 	!disbursementDetailsData.b_scheme || disburseOrNot
                     // }
                   />
+                  {/* {JSON.stringify(Period_mode_valid, 2)} */}
+                  
                 </div>
 
                 <div className="sm:col-span-1">
@@ -1277,7 +1373,7 @@ function DisbursmentForm() {
                     />
                   </div>
                 )}
-                <div>
+                {/* <div>
                   <TDInputTemplateBr
                     placeholder="Bank charges..."
                     type="number"
@@ -1290,7 +1386,7 @@ function DisbursmentForm() {
                     // 	!disbursementDetailsData?.b_scheme || disburseOrNot
                     // }
                   />
-                </div>
+                </div> */}
                 <div>
                   <TDInputTemplateBr
                     placeholder="Processing charges..."
@@ -1618,7 +1714,9 @@ function DisbursmentForm() {
                   4. Disbursement Details
                 </div>
               </div>
+              
               {membersForDisb?.map((item, index) => (
+                
                 <div className="grid gap-4 p-5 my-4 sm:grid-cols-3 bg-slate-200 rounded-md shadow-md sm:gap-6">
                   <div>
                     <TDInputTemplateBr
@@ -1673,13 +1771,15 @@ function DisbursmentForm() {
                       type="text"
                       label="Amount"
                       name="prn_disb_amt"
+                      // value= {item.prn_disb_amt}
+                      // formControlName={item.prn_disb_amt}
                       formControlName={item.prn_disb_amt}
                       handleChange={(e) => handleDisbursementChange(index, e)}
                       mode={1}
                       // disabled
                     />
                   </div>
-
+                  {JSON.stringify(AppliedDisbursLoan, 2)}
                 </div>
               ))}
               <div className="flex justify-end">
@@ -1687,11 +1787,22 @@ function DisbursmentForm() {
 
               </div>
             </div>
-
+            
             {!disburseOrNot && (
-              <div className="mt-10">
+              <>
+              {AppliedDisbursLoan && (
+                <div className="mt-10">
+                {/* {Period_mode_valid ==  'Weekly' || Period_mode_valid ==  'Monthly' ? "" : ""}  */}
+                {Period_mode_valid === 'Weekly' || Period_mode_valid === 'Monthly' ? (
                 <BtnComp mode="A" onReset={onReset} />
+              ) : (
+                <BtnComp mode="B" onReset={onReset} disabled />
+              )}
+
+                
               </div>
+              )}
+              </>
             )}
 
             {disburseOrNot && params?.id > 0 && (
@@ -1836,7 +1947,10 @@ function DisbursmentForm() {
         </form>
       </Spin>
 
-      <DialogBox
+      
+          {disbursementDetailsData?.b_mode.length>0 &&(
+            <>
+            <DialogBox
         flag={4}
         onPress={() => setVisible(!visible)}
         visible={visible}
@@ -1884,6 +1998,9 @@ function DisbursmentForm() {
       }
         onPressNo={() => setVisible(!visible)}
       />
+            </>
+          )}
+      
 
       {/* For Approve */}
       <DialogBox
