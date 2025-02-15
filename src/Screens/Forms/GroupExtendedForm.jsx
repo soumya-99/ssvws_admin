@@ -366,8 +366,8 @@ function GroupExtendedForm({ groupDataArr }) {
 							</div>
 
 							<div>
-								<TDInputTemplateBr
-									placeholder="Group Type"
+								{/* <TDInputTemplateBr
+									// placeholder="Group Type"
 									type="text"
 									label="Group Type"
 									name="g_group_type"
@@ -375,17 +375,39 @@ function GroupExtendedForm({ groupDataArr }) {
 									handleChange={formik.handleChange}
 									handleBlur={formik.handleBlur}
 									data={[
-										{
-											code: "S",
-											name: "SHG",
-										},
+										// {
+										// 	code: "S",
+										// 	name: "SHG",
+										// },
 										{
 											code: "J",
 											name: "JLG",
 										},
 									]}
 									mode={2}
-								/>
+								/> */}
+
+<TDInputTemplateBr
+  placeholder="Group Type"
+  type="text"
+  label="Group Type"
+  name="g_group_type"
+  formControlName={formik.values.g_group_type || "J"} // Default to SHG
+  handleChange={formik.handleChange}
+  handleBlur={formik.handleBlur}
+  data={[
+    // {
+    //   code: "S",
+    //   name: "SHG",
+    // },
+    {
+      code: "J",
+      name: "JLG",
+    },
+  ]}
+  mode={2}
+/>
+
 								{formik.errors.g_group_type && formik.touched.g_group_type ? (
 									<VError title={formik.errors.g_group_type} />
 								) : null}

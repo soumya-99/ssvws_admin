@@ -43,6 +43,8 @@ function DisbursmentForm() {
   const [visible3, setVisible3] = useState(() => false);
   const [visibleMember, setVisibleMember] = useState(() => false)
 
+  const [AppliedDisbursLoan, setAppliedDisbursLoan] = useState(() => true)
+
   const [disburseOrNot, setDisburseOrNot] = useState(() => false);
   const [maxDisburseAmountForAScheme, setMaxDisburseAmountForAScheme] =
     useState(() => "");
@@ -279,6 +281,7 @@ function DisbursmentForm() {
     getTnxModes();
   }, []);
   const handleDisbursementChange = (index, event) => {
+    // alert()
     let dt = [...membersForDisb];
     dt[index][event.target.name] = +event.target.value;
     setMembersForDisb(dt);
@@ -294,12 +297,34 @@ function DisbursmentForm() {
         0,
       )
     };
+
+    
+  
+
+
+
     axios
     .post(`${url}/admin/verify_tot_dib_amt`, creds).then(res=>{
-      console.log(res)
-      setCheckTot(res?.data?.suc)
-      if(res?.data?.suc==0)
-      Message('error',res?.data?.msg)
+      
+      membersForDisb.forEach((member) => {
+        if (member.applied_amt < member.prn_disb_amt) {
+            // alert(`Alert: Applied amount (${member.applied_amt}) is less than disbursed amount (${member.prn_disb_amt}) for ${member.client_name}`);
+            setCheckTot(res?.data?.suc)
+            Message('error',res?.data?.msg)
+            setAppliedDisbursLoan(false)
+          } else {
+            setAppliedDisbursLoan(true)
+        }
+    });
+      
+      // if(res?.data?.suc==0){
+      //   setCheckTot(res?.data?.suc)
+      //   Message('error',res?.data?.msg)
+      //   setAppliedDisbursLoan(false)
+      // } else{
+      //   setAppliedDisbursLoan(true)
+      // }
+      
     
     })
   };
@@ -393,19 +418,20 @@ function DisbursmentForm() {
       // .post(`${url}/admin/fetch_loan_application_dtls`, creds)
       .post(`${url}/admin/fetch_appl_dtls_via_grp`, creds)
       .then((res) => {
-        console.log("KKKKKKKKkkkkkKKKKKkkkkKKKK", res?.data?.msg[0]?.mem_dt_grp);
+        console.log("KKKKKKKKkkkkk8888KKKKKkkkkKKKK", res?.data?.msg[0]?.mem_dt_grp);
         setMembers(res?.data?.msg[0]?.mem_dt_grp);
         membersForDisb.length = 0;
         var count= 0 
         for (let i of res?.data?.msg[0]?.mem_dt_grp) {
-          count+=i.applied_amt
+          count+=i.prn_disb_amt
           // setTotDisb(prev=>prev+i.applied_amt)
           membersForDisb.push({
             applied_amt:i.applied_amt,
             grt_form_no: i.form_no,
             member_code: i.member_code,
             client_name: i.client_name,
-            prn_disb_amt:+i.applied_amt || 0,
+            // prn_disb_amt:+i.applied_amt || 0,
+            prn_disb_amt: i.prn_disb_amt > 0 ? +i.prn_disb_amt : +i.applied_amt,
           });
         }
         setTotDisb(count)
@@ -655,20 +681,20 @@ function DisbursmentForm() {
     
 
     if(disbursementDetailsData.b_mode.length > 0){
-      // await axios
-      // .post(`${url}/admin/save_loan_transaction`, creds)
-      // .then((res) => {
-      //   console.log("Disbursement initiated successfully", res?.data);
-      //   Message("success", "Submitted successfully.");
-      //   navigate(-1);
-      // })
-      // .catch((err) => {
-      //   Message(
-      //     "error",
-      //     "Some error occurred while submitting disbursement form!"
-      //   );
-      //   console.log("DDEEERRR", err);
-      // });
+      await axios
+      .post(`${url}/admin/save_loan_transaction`, creds)
+      .then((res) => {
+        console.log("Disbursement initiated successfully", res?.data);
+        Message("success", "Submitted successfully.");
+        navigate(-1);
+      })
+      .catch((err) => {
+        Message(
+          "error",
+          "Some error occurred while submitting disbursement form!"
+        );
+        console.log("DDEEERRR", err);
+      });
     setLoading(false);
     } else {
       setLoading(false);
@@ -1753,7 +1779,7 @@ function DisbursmentForm() {
                       // disabled
                     />
                   </div>
-                  {/* {JSON.stringify(membersForDisb, 2)} */}
+                  {JSON.stringify(AppliedDisbursLoan, 2)}
                 </div>
               ))}
               <div className="flex justify-end">
@@ -1763,8 +1789,9 @@ function DisbursmentForm() {
             </div>
             
             {!disburseOrNot && (
-              
-              <div className="mt-10">
+              <>
+              {AppliedDisbursLoan && (
+                <div className="mt-10">
                 {/* {Period_mode_valid ==  'Weekly' || Period_mode_valid ==  'Monthly' ? "" : ""}  */}
                 {Period_mode_valid === 'Weekly' || Period_mode_valid === 'Monthly' ? (
                 <BtnComp mode="A" onReset={onReset} />
@@ -1774,6 +1801,8 @@ function DisbursmentForm() {
 
                 
               </div>
+              )}
+              </>
             )}
 
             {disburseOrNot && params?.id > 0 && (
