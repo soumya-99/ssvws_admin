@@ -238,6 +238,8 @@ function DisbursedLoanApproveSingleBM() {
 		// Save the emp_id of the selected employee
 		const selectedId = e.target.value
 		setSelectedEmployeeId(selectedId) // Save to state
+		// console.log(selectedId, 'radio1 checked', 'kkkkkk');
+		
 		// const [selectedEmployeeObj, setSelectedEmployeeObj] = useState(() => {});
 
 		// console.log("Selected Employee ID:", selectedId); // Log the selected emp_id
