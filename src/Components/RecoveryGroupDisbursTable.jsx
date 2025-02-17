@@ -74,6 +74,8 @@ function RecoveryGroupDisbursTable({
 		if (loanAppData.length > 0) {
 			setLoanAppData(loanAppData)
 		}
+		console.log(loanAppData, 'fffffffffffffffffffffffffffffffff');
+		
 	}, [loanAppData])
 
 	useEffect(() => {
@@ -191,6 +193,8 @@ function RecoveryGroupDisbursTable({
 			.then((res) => {
 				if (res?.data?.suc === 1) {
 					setLoanAppData(res?.data?.msg)
+					console.log(res?.data?.msg, 'fffffffffffffffffffffffffffffffff');
+					
 					setSelectedProducts([])
 					// setTotalEMI(0)
 					// setCreditAmount(0)
