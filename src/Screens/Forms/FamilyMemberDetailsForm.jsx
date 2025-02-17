@@ -521,10 +521,15 @@ function FamilyMemberDetailsForm({ memberDetails }) {
 								formControlName={remarks}
 								handleChange={(e) => setRemarks(e.target.value)}
 								mode={3}
-								disabled={
-									userDetails?.id !== 10 &&
-									memberDetails?.approval_status === "S"
-								}
+								// disabled={
+								// 	userDetails?.id !== 10 &&
+								// 	memberDetails?.approval_status === "S"
+								// }
+								disabled={disableCondition(
+									userDetails?.id,
+									memberDetails?.approval_status
+								)}
+								
 							/>
 						</div>
 
@@ -537,8 +542,8 @@ function FamilyMemberDetailsForm({ memberDetails }) {
 									onRejectApplication={() => setVisible2(true)}
 									showForward={true}
 									onForwardApplication={() => setVisible3(true)}
-									showSendToBM={true}
-									onSendBackToBM={() => setVisible4(true)}
+									// showSendToBM={true}
+									// onSendBackToBM={() => setVisible4(true)}
 								/>
 							</div>
 						)}

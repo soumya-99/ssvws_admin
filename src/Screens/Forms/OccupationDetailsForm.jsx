@@ -314,7 +314,7 @@ function OccupationDetailsForm({ memberDetails }) {
 								) : null}
 							</div>
 
-							<div>
+							{/* <div>
 								<TDInputTemplateBr
 									placeholder="Sub Purpose of Loan"
 									type="text"
@@ -337,7 +337,7 @@ function OccupationDetailsForm({ memberDetails }) {
 								formik.touched.o_sub_purpose_of_loan ? (
 									<VError title={formik.errors.o_sub_purpose_of_loan} />
 								) : null}
-							</div>
+							</div> */}
 
 							<div>
 								<TDInputTemplateBr

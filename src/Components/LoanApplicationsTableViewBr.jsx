@@ -8,6 +8,7 @@ import {
 	CheckCircleOutlined,
 	ClockCircleOutlined,
 	EditOutlined,
+	EyeOutlined,
 	FileTextOutlined,
 	SyncOutlined,
 } from "@ant-design/icons"
@@ -199,10 +200,15 @@ function LoanApplicationsTableViewBr({
 													})
 												}}
 											>
-												<EditOutlined
+												{/* <EditOutlined
 													className={`text-md text-[#da4167]
 													}`}
+												/> */}
+												<EyeOutlined 
+												className={`text-md  text-[#DA4167]
+													`}
 												/>
+
 											</button>
 										) : flag === "BM" ? (
 											// </Link>
@@ -215,8 +221,12 @@ function LoanApplicationsTableViewBr({
 													})
 												}}
 											>
-												<EditOutlined
+												{/* <EditOutlined
 													className={`text-md text-[#DA4167]
+													`}
+												/> */}
+												<EyeOutlined 
+												className={`text-md  text-[#DA4167]
 													`}
 												/>
 											</button>
@@ -231,10 +241,14 @@ function LoanApplicationsTableViewBr({
 													})
 												}}
 											>
-												<EditOutlined
-													className={`text-md  text-[#DA4167]
+												<EyeOutlined 
+												className={`text-md  text-[#DA4167]
 													`}
 												/>
+												{/* <EditOutlined
+													className={`text-md  text-[#DA4167]
+													`}
+												/> */}
 											</button>
 										)}
 									</td>
