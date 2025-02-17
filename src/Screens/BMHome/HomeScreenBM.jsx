@@ -9,10 +9,10 @@ import LoanApplicationsTableViewBr from "../../Components/LoanApplicationsTableV
 import Radiobtn from "../../Components/Radiobtn"
 
 const options = [
-	{
-		label: "Pending",
-		value: "U",
-	},
+	// {
+	// 	label: "Pending",
+	// 	value: "U",
+	// },
 	{
 		label: "Sent to MIS",
 		value: "S",
@@ -33,7 +33,7 @@ function HomeScreenBM() {
 	const [loanApplications, setLoanApplications] = useState(() => [])
 	const [copyLoanApplications, setCopyLoanApplications] = useState(() => [])
 
-	const [approvalStatus, setApprovalStatus] = useState("U")
+	const [approvalStatus, setApprovalStatus] = useState("S")
 	// const [value2, setValue2] = useState("S")
 
 	const fetchLoanApplications = async (approvalStat) => {
@@ -68,7 +68,7 @@ function HomeScreenBM() {
 	}
 
 	useEffect(() => {
-		fetchLoanApplications("U")
+		fetchLoanApplications("S")
 	}, [])
 
 	const setSearch = (word) => {

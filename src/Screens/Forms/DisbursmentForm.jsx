@@ -1779,7 +1779,7 @@ function DisbursmentForm() {
                       // disabled
                     />
                   </div>
-                  {JSON.stringify(AppliedDisbursLoan, 2)}
+                  {/* {JSON.stringify(AppliedDisbursLoan, 2)} */}
                 </div>
               ))}
               <div className="flex justify-end">

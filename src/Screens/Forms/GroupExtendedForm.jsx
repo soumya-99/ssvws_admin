@@ -10,8 +10,8 @@ import * as Yup from "yup"
 import axios from "axios"
 import { Message } from "../../Components/Message"
 import { url } from "../../Address/BaseUrl"
-import { Spin, Button, Popconfirm, Tag, Timeline, Divider } from "antd"
-import { LoadingOutlined, InfoCircleFilled } from "@ant-design/icons"
+import { Spin, Button, Popconfirm, Tag, Timeline, Divider, Typography, List } from "antd"
+import { LoadingOutlined, InfoCircleFilled, CheckCircleOutlined } from "@ant-design/icons"
 import FormHeader from "../../Components/FormHeader"
 import { routePaths } from "../../Assets/Data/Routes"
 import { useLocation } from "react-router"
@@ -24,6 +24,23 @@ import {
 	DeleteOutline,
 	InfoOutlined,
 } from "@mui/icons-material"
+import { Checkbox } from "antd";
+// const members = [
+// 	{ client_name: "Soumyadeep Mondal", form_no: 2025000154, member_code: 1202880324 },
+// 	{ client_name: "Soumyadeep Mondal hhh", form_no: 202458800014, member_code: 120777280324 },
+// 	{ client_name: "Soumyadeep Mondaluuu", form_no: 2025700014, member_code: 1207280324 },
+// 	{ client_name: "Soumyadeep Mondalttt", form_no: 202500014, member_code: 1270280324 },
+// 	{ client_name: "Soumyadeep Mondalrr", form_no: 2027500014, member_code: 1202780324 },
+// 	// { form_no: 202500015, member_code: 120280325, client_name: "Somnath Thakur" },
+// 	// { form_no: 202500016, member_code: 120280326, client_name: "Subham Samanta" },
+// 	// { form_no: 202500017, member_code: 120280327, client_name: "Suvrajit Banerjee" },
+// 	// { form_no: 202500019, member_code: 120280329, client_name: "Tanmoy" },
+// 	// { form_no: 202500021, member_code: 120280331, client_name: "Tanmoy" },
+// 	// { form_no: 202500022, member_code: 120280332, client_name: "Utsab" },
+// 	// { form_no: 202500023, member_code: 120280333, client_name: "Lokesh" },
+// 	// { form_no: 202500024, member_code: 120280334, client_name: "Sayantika" },
+//   ];
+
 
 function GroupExtendedForm({ groupDataArr }) {
 	const params = useParams()
@@ -38,6 +55,16 @@ function GroupExtendedForm({ groupDataArr }) {
 	const [branches, setBranches] = useState(() => [])
 	const [branch, setBranch] = useState(() => "")
 
+	const [CEOData_s, setCEOData_s] = useState(() => [])
+	const [CEOData, setCEOData] = useState(() => [])
+
+	const [COMemList_s, setCOMemList_s] = useState(() => [])
+	const [COMemList_Show, setCOMemList_Show] = useState()
+
+	const [COMemList_select, setCOMemList_select] = useState([])
+	const [COMemList_Store, setCOMemList_Store] = useState([])
+
+
 	const [blocks, setBlocks] = useState(() => [])
 	const [block, setBlock] = useState(() => "")
 
@@ -46,12 +73,25 @@ function GroupExtendedForm({ groupDataArr }) {
 	const [visible, setVisible] = useState(() => false)
 	const [remarksForDelete, setRemarksForDelete] = useState(() => "")
 
-	console.log(params, "paramsssssssssssssss")
+
+
+	// const [checkedValues, setCheckedValues] = useState([]);
+	
+
+
+
+
+	console.log(COMemList_select , "paramsssssssssssssss")
 	console.log(location, "location")
 
 	const initialValues = {
 		g_group_name: "",
-		g_group_type: "",
+		g_group_type: "J",
+
+		g_branch: "",
+		g_ceo: "",
+		g_block: "",
+
 		g_address: "",
 		g_pin: "",
 		// g_group_block: "",
@@ -70,6 +110,11 @@ function GroupExtendedForm({ groupDataArr }) {
 	const validationSchema = Yup.object({
 		g_group_name: Yup.string().required("Group name is required"),
 		g_group_type: Yup.string().required("Group type is required"),
+
+		g_branch: Yup.string(),
+		g_ceo: Yup.string(),
+		g_block: Yup.string(),
+
 		g_address: Yup.string().required("Group address is required"),
 		g_pin: Yup.string().required("PIN No. is required"),
 		// g_group_block: Yup.string().required("Group block is required"),
@@ -92,7 +137,7 @@ function GroupExtendedForm({ groupDataArr }) {
 		await axios
 			.post(`${url}/admin/fetch_search_group_web`, creds)
 			.then((res) => {
-				console.log("........>>>>>>>>>>", res?.data)
+				console.log("VVVVVVVVVVVVVVVVVVVVVVVV", res?.data?.msg[0])
 				setValues({
 					g_group_name: res?.data?.msg[0]?.group_name,
 					g_group_type: res?.data?.msg[0]?.group_type,
@@ -113,6 +158,7 @@ function GroupExtendedForm({ groupDataArr }) {
 				setBranch(
 					res?.data?.msg[0]?.disctrict + "," + res?.data?.msg[0]?.branch_code
 				)
+				setCEOData(res?.data?.msg[0]?.co_id)
 				setBlock(res?.data?.msg[0]?.block)
 			})
 			.catch((err) => {
@@ -123,6 +169,8 @@ function GroupExtendedForm({ groupDataArr }) {
 	useEffect(() => {
 		fetchGroupDetails()
 	}, [])
+
+	
 
 	// const fetchGroupAndMembersDetails = async () => {
 	// 	setLoading(true)
@@ -179,7 +227,115 @@ function GroupExtendedForm({ groupDataArr }) {
 		setLoading(false)
 	}
 
+	const handleFetchCEO = async () => {
+		setLoading(true)
+		const creds_CEO = {
+			brn_code: userDetails?.brn_code,
+		}
+		await axios
+			// .post(`${url}/fetch_co_brnwise=${userDetails?.brn_code}`)
+			.post(`${url}/fetch_co_brnwise`, creds_CEO)
+			.then((res) => {
+				// console.log("QQQQQrrrrQQQQQQQQQQQ", res?.data?.msg)
+				setCEOData_s(res?.data?.msg)
+			})
+			.catch((err) => {
+				console.log("?????????????????????", err)
+			})
+
+		setLoading(false)
+	}
+
+	const handleFetchMemberDetailsCowise = async () => {
+		setLoading(true)
+		const creds_MemberListCo = {
+			branch_code: userDetails?.brn_code,
+			// co_id: userDetails?.emp_id
+			co_id: CEOData
+			// co_id: 10157
+		}
+		await axios
+			.post(`${url}/fetch_member_dtls_cowise`, creds_MemberListCo)
+			.then((res) => {
+				console.log(creds_MemberListCo, "QQQQQrrrrQQQQQQQQQQQ", res?.data?.msg)
+				setCOMemList_s(res?.data?.msg)
+			})
+			.catch((err) => {
+				console.log("?????????????????????", err)
+			})
+
+		setLoading(false)
+	}
+
+	// userDetails?.emp_id
+
 	useEffect(() => {
+		handleFetchMemberDetailsCowise()
+	}, [CEOData])
+
+	useEffect(() => {
+		const selectedMembers = [
+			{ "form_no": 202500014, "member_code": 120280324 },
+			{ "form_no": 202500015, "member_code": 120280325 },
+			{ "form_no": 202500016, "member_code": 120280326 }
+		];
+
+		const allMembers = [
+			{ "form_no": 202500014, "member_code": 120280324, "client_name": "Soumyadeep Mondal" },
+			{ "form_no": 202500015, "member_code": 120280325, "client_name": "Somnath Thakur" },
+			{ "form_no": 202500016, "member_code": 120280326, "client_name": "Subham Samanta" },
+			{ "form_no": 202500017, "member_code": 120280327, "client_name": "Suvrajit Banerjee" },
+			{ "form_no": 202500019, "member_code": 120280329, "client_name": "Tanmoy" },
+			{ "form_no": 202500021, "member_code": 120280331, "client_name": "Tanmoy" },
+			{ "form_no": 202500022, "member_code": 120280332, "client_name": "Utsab" },
+			{ "form_no": 202500023, "member_code": 120280333, "client_name": "Lokesh" },
+			{ "form_no": 202500024, "member_code": 120280334, "client_name": "Sayantika" }
+		];
+
+
+		const displayFrmSaveData = allMembers?.filter(member =>
+			selectedMembers.some(sel => sel.form_no === member.form_no && sel.member_code === member.member_code)
+		);
+		console.log(displayFrmSaveData, 'eeeeeeeeeeeeeeee');
+		setCOMemList_Show(displayFrmSaveData)
+	}, [CEOData])
+
+
+	const options_Member = COMemList_s.map((member) => ({
+
+		  label: (
+			<>
+			  {member.client_name} <strong>Form No:</strong> {member.form_no} (<strong>Member Code:</strong>{member.member_code})
+			</>
+		  ),
+		value: `${member.form_no} , ${member.member_code}`,
+	  }));
+
+	const onChange = (checkedList) => {
+		
+		// setCOMemList(checkedList);
+		if (checkedList.length <= 4) {
+			
+			setCOMemList_select(checkedList);
+
+			const transformArray = (arr) => {
+			return arr.map((item) => {
+			const [form_no, member_code] = item.split(",").map(val => val.trim()); // Split by comma and trim spaces
+			return {
+			form_no: Number(form_no), // Convert form_no to number
+			member_code: Number(member_code) // Convert member_code to number
+			};
+			});
+			};
+			const result = transformArray(checkedList);
+			setCOMemList_Store(result)
+			console.log(COMemList_Store, 'QQQQQrrrrQQQQQQQQQQQ - ', result);
+		}
+	  };
+
+
+	useEffect(() => {
+		handleFetchCEO()
 		handleFetchBranches()
 	}, [])
 
@@ -200,6 +356,7 @@ function GroupExtendedForm({ groupDataArr }) {
 	useEffect(() => {
 		handleFetchBlocks(branch)
 	}, [branch])
+	
 
 	const onSubmit = async (values) => {
 		console.log("onsubmit called")
@@ -228,7 +385,13 @@ function GroupExtendedForm({ groupDataArr }) {
 		const creds = {
 			branch_code: branch?.split(",")[1],
 			group_name: formik.values.g_group_name,
-			group_type: formik.values.g_group_type,
+			// group_type: formik.values.g_group_type,
+			group_type: initialValues.g_group_type,
+
+			// g_branch: formik.values.g_branch,
+			// g_ceo: formik.values.g_ceo,
+			// g_block: formik.values.g_block,
+
 			// co_id: userDetails?.id,
 			phone1: formik.values.g_phone1,
 			phone2: formik.values.g_phone2,
@@ -248,8 +411,11 @@ function GroupExtendedForm({ groupDataArr }) {
 			group_code: params?.id,
 			district: branch?.split(",")[0], // this is dist_code, stored in selection of branch
 			block: block,
-			co_id: userDetails?.emp_id,
+			// co_id: userDetails?.emp_id,
+			co_id: CEOData,
+			grp_memberdtls: COMemList_Store
 		}
+
 		await axios
 			.post(`${url}/admin/edit_group_web`, creds)
 			.then((res) => {
@@ -350,6 +516,9 @@ function GroupExtendedForm({ groupDataArr }) {
 								</div>
 							)}
 							<div>
+
+							
+
 								<TDInputTemplateBr
 									placeholder="Group Name"
 									type="text"
@@ -387,26 +556,29 @@ function GroupExtendedForm({ groupDataArr }) {
 									mode={2}
 								/> */}
 
-<TDInputTemplateBr
-  placeholder="Group Type"
-  type="text"
-  label="Group Type"
-  name="g_group_type"
-  formControlName={formik.values.g_group_type || "J"} // Default to SHG
-  handleChange={formik.handleChange}
-  handleBlur={formik.handleBlur}
-  data={[
-    // {
-    //   code: "S",
-    //   name: "SHG",
-    // },
-    {
-      code: "J",
-      name: "JLG",
-    },
-  ]}
-  mode={2}
-/>
+								<TDInputTemplateBr
+								placeholder="Group Type"
+								type="text"
+								label="Group Type"
+								name="g_group_type"
+								formControlName={formik.values.g_group_type || "J"} // Default to SHG
+								handleChange={formik.handleChange}
+								handleBlur={formik.handleBlur}
+								data={[
+								// {
+								//   code: "S",
+								//   name: "SHG",
+								// },
+								{
+								code: "J",
+								name: "JLG",
+								},
+								]}
+								mode={2}
+								disabled={true}
+								/>
+
+
 
 								{formik.errors.g_group_type && formik.touched.g_group_type ? (
 									<VError title={formik.errors.g_group_type} />
@@ -415,7 +587,7 @@ function GroupExtendedForm({ groupDataArr }) {
 
 							{/* {userDetails?.id === 3 && ( */}
 							<>
-								<div className="sm:col-span-2">
+								<div>
 									<TDInputTemplateBr
 										placeholder="Choose Branch"
 										type="text"
@@ -424,15 +596,79 @@ function GroupExtendedForm({ groupDataArr }) {
 										formControlName={branch}
 										handleChange={(e) => {
 											setBranch(e.target.value)
-											console.log(e.target.value)
+											console.log(e.target.value,'VVVVVVVVVVVVVVVVVVVVVVVV')
 										}}
+										// handleBlur={formik.handleBlur}
+										// handleChange={formik.handleChange}
 										data={branches?.map((item, i) => ({
 											code: item?.dist_code + "," + item?.branch_code,
 											name: item?.branch_name,
 										}))}
 										mode={2}
 									/>
+									{formik.errors.g_branch && formik.touched.g_branch ? (
+									<VError title={formik.errors.g_branch} />
+								) : null}
+
+{/* {JSON.stringify(branch, 2)}  */}
 								</div>
+
+								<div>
+									{/* <TDInputTemplateBr
+										placeholder="Choose Branch"
+										type="text"
+										label="Choose CEO"
+										name="g_ceo"
+										// formControlName={CEOData}
+										formControlName={formik.values.g_ceo}
+										handleChange={(e) => {
+											setCEOData(e.target.value)
+											console.log(e.target.value)
+										}}
+										data={CEOData_s?.map((item, i) => ({
+											code: item?.emp_id + "," + item?.brn_code,
+											name: item?.emp_name,
+										}))}
+										mode={2}
+									/>
+									{formik.errors.g_ceo && formik.touched.g_ceo ? (
+									<VError title={formik.errors.g_ceo} />
+								) : null} */}
+
+
+								<TDInputTemplateBr
+								placeholder="Choose CEO"
+								label="Choose CEO"
+								name="g_ceo"
+								formControlName={CEOData} // Default to SHG
+								// handleChange={formik.handleChange}
+								handleChange={(e) => {
+									setCEOData(e.target.value)
+									console.log(e.target.value, 'VVVVVVVVVVVVVVVVVVVVVVVV')
+								}}
+								// handleBlur={formik.handleBlur}
+								data={CEOData_s?.map((item, i) => ({
+									code: item?.emp_id,
+									name: item?.emp_name,
+								}))}
+								mode={2}
+								/>
+
+								{formik.errors.g_ceo && formik.touched.g_ceo ? (
+								<VError title={formik.errors.g_ceo} />
+								) : null}
+
+
+
+
+{/* {JSON.stringify(CEOData, 2)}  */}
+
+
+								</div>
+
+
+
+
 								<div className="sm:col-span-2">
 									<TDInputTemplateBr
 										placeholder="Group Block"
@@ -447,6 +683,11 @@ function GroupExtendedForm({ groupDataArr }) {
 										}))}
 										mode={2}
 									/>
+									{formik.errors.g_block && formik.touched.g_block ? (
+									<VError title={formik.errors.g_block} />
+								) : null}
+
+{/* {JSON.stringify(block, 2)}  */}
 								</div>
 							</>
 							{/* )} */}
@@ -626,6 +867,10 @@ function GroupExtendedForm({ groupDataArr }) {
 									<VError title={formik.errors.g_acc2} />
 								) : null}
 							</div>
+
+							
+							
+
 						</div>
 						{params.id > 0 && (
 							<Divider
@@ -809,7 +1054,49 @@ function GroupExtendedForm({ groupDataArr }) {
 								</div>
 							</div>
 						)}
+
+
+
 					</div>
+
+					{COMemList_s.length>0 &&(
+						<div className="flex justify-start gap-5 mt-5">
+								<div className="grid gap-4 sm:grid-cols-1 sm:gap-2 w-1/2">
+								<label class="block mb-2 text-sm capitalize font-bold text-slate-800
+					 dark:text-gray-100"> Asigne Group Member  
+<span style={{color:'red'}} class="ant-tag ml-2 ant-tag-error ant-tag-borderless text-[12.6px] my-2">
+(You can Select Maxmimum 4 Member)</span>
+					 </label>
+	
+								<Checkbox.Group
+								options={options_Member}
+								value={COMemList_select}
+								onChange={onChange}
+								style={{ display: "grid", fontSize:13 }}
+								/>
+	{/* {JSON.stringify(COMemList_select, 2)} */}
+								</div>
+								{params?.id > 0 && (
+								<div className="w-1/2 gap-3 space-x-7">
+								{/* <label class="block mb-2 text-sm capitalize font-bold text-slate-800
+					 dark:text-gray-100"> Selected Group Member </label> */}
+<span class="ant-tag ant-tag-has-color text-white mb-2 font-bold css-dev-only-do-not-override-19m0pdw" 
+style={{backgroundColor:'rgb(218, 65, 103)', fontSize: 13, padding:5, marginBottom:9, borderRadius:5, display:'block'}}>Selected Group Member</span>
+					 <ul style={{margin:0, padding:0}}>
+						{COMemList_Show.map((item, i) => (
+
+						<li className="text-[12.6px]" style={{fontSize:13}}><CheckCircleOutlined style={{marginRight:4}} />
+						{item.client_name} <strong>Form No:</strong> {item.form_no} (<strong>Member Code:</strong>{item.member_code})
+						</li>
+						))}
+					 </ul>
+	{/* {JSON.stringify(COMemList_Show, 2)} */}
+
+								</div>
+								)}
+
+								</div>
+							)}
 					<BtnComp
 						mode="A"
 						// rejectBtn={true}
