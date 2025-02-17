@@ -436,7 +436,7 @@ function GroupExtendedForm({ groupDataArr }) {
 	const onSubmit = async (values) => {
 		console.log("onsubmit called")
 		console.log(values, "onsubmit vendor")
-
+		console.log(values, "VVVVVVVVVVVVVVVVVVVVVVVV")
 		if(params?.id < 1){
 			if(COMemList_Store.length < 1){
 				Message("error", "Please Asigne Group Member")
@@ -454,6 +454,15 @@ function GroupExtendedForm({ groupDataArr }) {
 				setLoading(false)
 			}
 		}
+
+	if(params?.id > 0){
+		console.log(values, "VVVVVVVVVVVVVVVVVVVVVVVV", 'hhhh')
+		setLoading(true)
+	
+		setVisible(true)
+	
+		setLoading(false)
+	}
 		
 		
 	}
@@ -469,22 +478,16 @@ function GroupExtendedForm({ groupDataArr }) {
 	})
 
 	const editGroup = async () => {
-		setLoading(true)
+		if(params?.id < 1){
+
+			setLoading(true)
 		console.log(formik.values.g_bank_branch, formik.values.g_bank_name, formik.values.g_acc1, formik.values.g_acc2)
-		// if(formik.values.g_bank_branch && formik.values.g_bank_name && formik.values.g_acc1 && formik.values.g_acc2){
 		
 		const creds = {
 			branch_code: branch?.split(",")[1],
 			prov_grp_code: COMemList_Store
 		}
 		console.log("VVVVVVVVVVVVVVVVVVVVVVVV", creds)
-
-		// if(creds.grp_memberdtls.length < 1){
-		// 	Message("error", "Please Asigne Group Member Any One")
-		// 	setLoading(false)
-			
-		// }
-
 
 		await axios
 			.post(`${url}/admin/verify_four_mem_assign_grp`, creds)
@@ -500,6 +503,14 @@ function GroupExtendedForm({ groupDataArr }) {
 				Message("error", "Please Asigne Group Member Maxmimum 4")
 				console.log("LLLLLLLLLLLLLLLLLLLLLLLL", err)
 			})
+
+		}
+
+		if(params?.id > 0){
+			setLoading(true)
+			saveGroupData()
+		}
+		
 
 			
 		
@@ -555,6 +566,11 @@ function GroupExtendedForm({ groupDataArr }) {
 
 		Message("success", "Updated successfully.")
 		console.log("IIIIIIIIIIIIIIIIIIIIIII", res?.data)
+		
+		if(params?.id < 1){
+		navigate(`/homebm/searchgroup/`)
+		}
+		
 		})
 		.catch((err) => {
 		setLoading(false)
