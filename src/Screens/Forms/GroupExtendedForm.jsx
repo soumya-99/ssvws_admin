@@ -270,8 +270,8 @@ function GroupExtendedForm({ groupDataArr }) {
 		const creds_MemberListCo = {
 			branch_code: userDetails?.brn_code,
 			// co_id: userDetails?.emp_id
-			// co_id: CEOData
-			co_id: 10157
+			co_id: CEOData
+			// co_id: 10157
 		}
 		await axios
 			.post(`${url}/fetch_member_dtls_cowise`, creds_MemberListCo)
