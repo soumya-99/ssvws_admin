@@ -20,7 +20,7 @@ import { Message } from "@mui/icons-material"
 import axios from "axios"
 import { url } from "../Address/BaseUrl"
 
-function LoanRecovApplicationsTableViewBr({
+function LoanApprovalApplicationsTableViewBr({
 	loanAppData,
 	loanType,
 	setSearch,
@@ -439,4 +439,4 @@ function LoanRecovApplicationsTableViewBr({
 	)
 }
 
-export default LoanRecovApplicationsTableViewBr
+export default LoanApprovalApplicationsTableViewBr

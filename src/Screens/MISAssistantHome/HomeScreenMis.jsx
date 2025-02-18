@@ -9,20 +9,21 @@ import LoanApplicationsTableViewBr from "../../Components/LoanApplicationsTableV
 import Radiobtn from "../../Components/Radiobtn"
 import LoanRecovApplicationsTableViewBr from "../../Components/LoanRecovApplicationsTableViewBr"
 import TDInputTemplateBr from "../../Components/TDInputTemplateBr"
+import LoanApprovalApplicationsTableViewBr from "../../Components/LoanApprovalApplicationsTableViewBr"
 
 const options = [
 	{
-		label: "Received",
+		label: "Pending",
 		value: "S",
 	},
-	// {
-	// 	label: "Approved",
-	// 	value: "A",
-	// },
 	{
 		label: "Rejected",
 		value: "R",
 	},
+	{
+		label: "Approved",
+		value: "A",
+	}
 ]
 
 function HomeScreenMis() {
@@ -37,35 +38,35 @@ function HomeScreenMis() {
 	const [coListData, setCoListData] = useState(() => [])
 	const [selectedEmployeeId, setSelectedEmployeeId] = useState(() => null)
 
-	const fetchLoanApplications = async () => {
-		setLoading(true)
-		// const creds = {
-		// 	// prov_grp_code: 0,
-		// 	// user_type: userDetails?.id,
-		// 	// branch_code: userDetails?.brn_code,
-		// 	approval_status: loanType,
-		// }
+	// const fetchLoanApplications = async () => {
+	// 	setLoading(true)
+	// 	// const creds = {
+	// 	// 	// prov_grp_code: 0,
+	// 	// 	// user_type: userDetails?.id,
+	// 	// 	// branch_code: userDetails?.brn_code,
+	// 	// 	approval_status: loanType,
+	// 	// }
 
-		await axios
-			.get(
-				`${url}/admin/fetch_form_fwd_bm_web?approval_status=${loanType}&branch_code=${userDetails?.brn_code}`
-			)
-			.then((res) => {
-				if (res?.data?.suc === 1) {
-					setLoanApplications(res?.data?.msg)
-					setCopyLoanApplications(res?.data?.msg)
+	// 	await axios
+	// 		.get(
+	// 			`${url}/admin/fetch_form_fwd_bm_web?approval_status=${loanType}&branch_code=${userDetails?.brn_code}`
+	// 		)
+	// 		.then((res) => {
+	// 			if (res?.data?.suc === 1) {
+	// 				setLoanApplications(res?.data?.msg)
+	// 				setCopyLoanApplications(res?.data?.msg)
 
-					console.log("PPPPPPPPPPrrrrPPPPPPPPPP", res?.data)
-				} else {
-					Message("error", "No incoming loan applications found.")
-				}
-			})
-			.catch((err) => {
-				Message("error", "Some error occurred while fetching loans!")
-				console.log("ERRR", err)
-			})
-		setLoading(false)
-	}
+	// 				console.log("PPPPPPPPPPrrrrPPPPPPPPPP", res?.data)
+	// 			} else {
+	// 				Message("error", "No incoming loan applications found.")
+	// 			}
+	// 		})
+	// 		.catch((err) => {
+	// 			Message("error", "Some error occurred while fetching loans!")
+	// 			console.log("ERRR", err)
+	// 		})
+	// 	setLoading(false)
+	// }
 
 	const fetchCoList_ID = async () => {
 		setLoading(true)
@@ -165,7 +166,7 @@ function HomeScreenMis() {
 	}
 
 	useEffect(() => {
-		fetchLoanApplications()
+		// fetchLoanApplications()
 		fetchCoList_ID()
 	}, [])
 
@@ -184,12 +185,12 @@ function HomeScreenMis() {
 		fetchCoList_CO_Shorting(selectedId)
 	}
 
-	useEffect(() => {
-		fetchLoanApplications()
-	}, [loanType])
+	// useEffect(() => {
+	// 	// fetchLoanApplications()
+	// }, [selectedEmployeeId])
 
 	const setSearch = (word) => {
-		if (loanType === "S") {
+		// if (loanType === "S") {
 		setLoanApplications(
 			copyLoanApplications?.filter(
 				(e) =>
@@ -207,27 +208,27 @@ function HomeScreenMis() {
 						?.includes(word?.toLowerCase())
 			)
 		)
-		}
+		// }
 
-	if (loanType === "R") {
-		setLoanApplications(
-			copyLoanApplications?.filter(
-				(e) =>
-					e?.form_no
-						?.toString()
-						?.toLowerCase()
-						.includes(word?.toLowerCase()) ||
-					e?.branch_name
-						?.toString()
-						?.toLowerCase()
-						?.includes(word?.toLowerCase()) ||
-					e?.member_code
-						?.toString()
-						?.toLowerCase()
-						?.includes(word?.toLowerCase())
-			)
-		)
-		}
+	// if (loanType === "R") {
+	// 	setLoanApplications(
+	// 		copyLoanApplications?.filter(
+	// 			(e) =>
+	// 				e?.form_no
+	// 					?.toString()
+	// 					?.toLowerCase()
+	// 					.includes(word?.toLowerCase()) ||
+	// 				e?.branch_name
+	// 					?.toString()
+	// 					?.toLowerCase()
+	// 					?.includes(word?.toLowerCase()) ||
+	// 				e?.member_code
+	// 					?.toString()
+	// 					?.toLowerCase()
+	// 					?.includes(word?.toLowerCase())
+	// 		)
+	// 	)
+	// 	}
 
 	}
 
@@ -242,9 +243,13 @@ function HomeScreenMis() {
 				console.log('fff', 'SSSSSSSSSSSSSSSSSS');
 				
 			} else if (loanType === "R") {
-				fetchLoanApplications()
+				fetchLoanApplications_GroupWise('R')
+				console.log('fff', 'RRRRRRRRRRRRRRR');
+			} else if (loanType === "A") {
+				fetchLoanApplications_GroupWise('A')
 				console.log('fff', 'RRRRRRRRRRRRRRR');
 			}
+
 		}, [loanType])
 
 	return (
@@ -272,41 +277,10 @@ function HomeScreenMis() {
 					/> */}
 
 					{loanType === "S" ? (
-						<>
-							{/* <RecoveryGroupDisbursTable
-								flag="MIS"
-								loanAppData={loanApplicationsGroup}
-								title="GRT Forms"
-								setSearch_Group={(data) => setSearch_Group(data)}
-								loanType={loanType}
-								// fetchLoanApplications={fetchLoanApplications}
-								fetchLoanApplicationsDate={{ fromDate, toDate }}
-							/> */}
+					<>
+							
 					<div className="grid grid-cols-3 gap-5 mt-5">
-								{/* <div>
-							<TDInputTemplateBr
-								placeholder="From Date"
-								type="date"
-								label="From Date"
-								name="fromDate"
-								formControlName={fromDate}
-								handleChange={(e) => setFromDate(e.target.value)}
-								min={"1900-12-31"}
-								mode={1}
-							/>
-						</div>
-						<div>
-							<TDInputTemplateBr
-								placeholder="To Date"
-								type="date"
-								label="To Date"
-								name="toDate"
-								formControlName={toDate}
-								handleChange={(e) => setToDate(e.target.value)}
-								min={"1900-12-31"}
-								mode={1}
-							/>
-						</div> */}
+								
 
 								<div>
 									<TDInputTemplateBr
@@ -339,6 +313,51 @@ function HomeScreenMis() {
 						loanType={loanType}
 						title="GRT Forms"
 						setSearch={(data) => setSearch(data)}
+						fetchLoanApplicationsDate={{
+							selectedEmployeeId
+						}}
+					/>
+					</>
+					) : loanType === "R" ? (
+						<>
+							
+					<div className="grid grid-cols-3 gap-5 mt-5">
+								
+
+								<div>
+									<TDInputTemplateBr
+										placeholder="Select Collector Name..."
+										type="text"
+										label="Collectorwise"
+										name="b_clientGender"
+										// handleChange={(e) => console.log("Selected Employee:", e.target.value)}
+										handleChange={handleEmployeeChange}
+										// data={[
+										// { code: "M", name: "Male" },
+										// { code: "F", name: "Female" },
+										// { code: "O", name: "Others" },
+										// ]}
+										data={coListData.map((emp) => ({
+											code: emp.emp_id,
+											name: `${emp.emp_name}`,
+										}))}
+										mode={2}
+										disabled={false} // Static value to make it always disabled
+									/>
+
+									{/* {JSON.stringify(selectedEmployeeId, 2)} */}
+								</div>
+							</div>
+
+					<LoanApplicationsTableViewBr
+						flag="MIS"
+						loanAppData={loanApplications}
+						loanType={loanType}
+						title="GRT Forms"
+						setSearch={(data) => setSearch(data)}
+						fetchLoanApplicationsDate={{
+							selectedEmployeeId
+						}}
 					/>
 
 						{/* <LoanApplicationsTableViewBr
@@ -349,28 +368,55 @@ function HomeScreenMis() {
 						/> */}
 
 						</>
-					) : loanType === "R" ? (
+					) : loanType === "A" ? (
 						<>
 							
-						<LoanApplicationsTableViewBr
+					<div className="grid grid-cols-3 gap-5 mt-5">
+								
+
+								<div>
+									<TDInputTemplateBr
+										placeholder="Select Collector Name..."
+										type="text"
+										label="Collectorwise"
+										name="b_clientGender"
+										// handleChange={(e) => console.log("Selected Employee:", e.target.value)}
+										handleChange={handleEmployeeChange}
+										// data={[
+										// { code: "M", name: "Male" },
+										// { code: "F", name: "Female" },
+										// { code: "O", name: "Others" },
+										// ]}
+										data={coListData.map((emp) => ({
+											code: emp.emp_id,
+											name: `${emp.emp_name}`,
+										}))}
+										mode={2}
+										disabled={false} // Static value to make it always disabled
+									/>
+
+									{/* {JSON.stringify(selectedEmployeeId, 2)} */}
+								</div>
+							</div>
+
+					<LoanApprovalApplicationsTableViewBr
+						flag="MIS"
+						loanAppData={loanApplications}
+						loanType={loanType}
+						title="GRT Forms"
+						setSearch={(data) => setSearch(data)}
+						fetchLoanApplicationsDate={{
+							selectedEmployeeId
+						}}
+					/>
+
+						{/* <LoanApplicationsTableViewBr
 						flag="MIS"
 						loanAppData={loanApplications}
 						title="GRT Forms"
 						setSearch={(data) => setSearch(data)}
-						/>
-							{/* <RecoveryCoDisbursTable
-								flag="BM"
-								loanAppData={loanApplicationsCo}
-								title="Approve Transaction"
-								setSearch_Co={(data) => setSearch_Co(data)}
-								loanType={loanType}
-								// fetchLoanApplications={fetchLoanApplications}
-								fetchLoanApplicationsDate={{
-									fromDate,
-									toDate,
-									selectedEmployeeId,
-								}}
-							/> */}
+						/> */}
+
 						</>
 					) : null}
 

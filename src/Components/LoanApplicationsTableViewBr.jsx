@@ -1,4 +1,4 @@
-import React, { useState } from "react"
+import React, { useEffect, useRef, useState } from "react"
 import { routePaths } from "../Assets/Data/Routes"
 import { Link } from "react-router-dom"
 import Tooltip from "@mui/material/Tooltip"
@@ -8,30 +8,206 @@ import {
 	CheckCircleOutlined,
 	ClockCircleOutlined,
 	EditOutlined,
-	EyeOutlined,
 	FileTextOutlined,
 	SyncOutlined,
 } from "@ant-design/icons"
 import { useNavigate } from "react-router-dom"
 import { Tag } from "antd"
+import { DataTable } from "primereact/datatable"
+import Column from "antd/es/table/Column"
+import { Toast } from "primereact/toast"
+import { Message } from "@mui/icons-material"
+import axios from "axios"
+import { url } from "../Address/BaseUrl"
 
 function LoanApplicationsTableViewBr({
 	loanAppData,
+	loanType,
 	setSearch,
 	title,
 	flag,
 	showSearch = true,
 	isForwardLoan = false,
 	isRejected = false,
+	fetchLoanApplicationsDate,
 }) {
 	const navigate = useNavigate()
 
+	const userDetails = JSON.parse(localStorage.getItem("user_details")) || ""
+
 	const [first, setFirst] = useState(0)
 	const [rows, setRows] = useState(10)
+	const [expandedRows, setExpandedRows] = useState(null)
+	const toast = useRef(null)
+	const isMounted = useRef(false)
+	const [selectedProducts, setSelectedProducts] = useState(null)
+	const [currentPage, setCurrentPage] = useState(0)
+	const [rowsPerPage, setRowsPerPage] = useState(10)
+	const [getloanAppData, setLoanAppData] = useState([])
+
+	const [loading, setLoading] = useState(() => false)
+	const [LoanGroupMember, setLoanGroupMember] = useState(() => [])
+
+
+
+	// const fetchLoanApplications = async () => {
+	// 	setLoading(true)
+	// 	// const creds = {
+	// 	// 	// prov_grp_code: 0,
+	// 	// 	// user_type: userDetails?.id,
+	// 	// 	// branch_code: userDetails?.brn_code,
+	// 	// 	approval_status: loanType,
+	// 	// }
+
+	// 	await axios
+	// 		.get(
+	// 			`${url}/admin/fetch_form_fwd_bm_web?approval_status=${loanType}&branch_code=${userDetails?.brn_code}`
+	// 		)
+	// 		.then((res) => {
+	// 			if (res?.data?.suc === 1) {
+	// 				setLoanApplications(res?.data?.msg)
+	// 				setCopyLoanApplications(res?.data?.msg)
+
+	// 				console.log("PPPPPPPPPPPPPPPPPPPP", res?.data)
+	// 			} else {
+	// 				Message("error", "No incoming loan applications found.")
+	// 			}
+	// 		})
+	// 		.catch((err) => {
+	// 			Message("error", "Some error occurred while fetching loans!")
+	// 			console.log("ERRR", err)
+	// 		})
+	// 	setLoading(false)
+	// }
+
+
+	const fetchLoanGroupMember = async (group_code, loanType) => {
+		console.log(group_code, "res?.data?.msg", {
+			branch_code : userDetails?.brn_code,
+			approval_status : loanType,
+			prov_grp_code : group_code
+		})
+
+		setLoading(true)
+		await axios
+			.post(`${url}/admin/form_fwd_bm_to_mis_mem_dtls`, {
+				branch_code : userDetails?.brn_code,
+				approval_status : loanType,
+				prov_grp_code : group_code
+			})
+			.then((res) => {
+				if (res?.data?.suc === 1) {
+					setLoading(false)
+					setLoanGroupMember(res?.data?.msg)
+					console.log(res?.data?.msg, "res?.data?.msg", 'sucsess')
+				} else {
+					Message("error", "No incoming loan applications found.")
+				}
+			})
+			.catch((err) => {
+				Message("error", "Some error occurred while fetching loans!")
+				console.log("ERRR", err)
+			})
+	}
+
+
+
+
+
+	useEffect(() => {
+
+		// alert(loanType)
+		if (loanAppData.length > 0) {
+			setLoanAppData(loanAppData)
+		}
+		console.log(loanAppData, 'fffffffffffffffffffffffffffffffff');
+		
+	}, [loanAppData,])
+
+
+
+	
+
+	useEffect(() => {
+		// setSetData(loanAppData)
+		if (isMounted.current) {
+			const summary =
+				expandedRows !== null ? "All Rows Expanded" : "All Rows Collapsed"
+			toast.current.show({
+				severity: "success",
+				summary: `${summary}`,
+				life: 3000,
+			})
+		}
+		// console.log(NewDataList, 'NewGroupList');
+	}, [expandedRows])
+
+	const onRowExpand = (event) => {
+		setExpandedRows(null)
+		console.log(event.data.group_code, "res?.data?.msg", event?.data)
+		// console.log('itemitemitemitem', 'lll', event.data);
+		// fetchLoanGroupMember(event?.data?.group_code, event?.data?.transaction_date)
+		fetchLoanGroupMember(event?.data?.prov_grp_code, loanType)
+
+		// toast.current.show({severity: 'info', summary: 'Product Expanded', detail: event.data.name, life: 3000});
+	}
+
+	const onRowCollapse = (event) => {
+		console.log(event.data, "event.data close")
+		// toast.current.show({severity: 'success', summary: 'Product Collapsed', detail: event.data.name, life: 3000});
+	}
+
+	const allowExpansion = (rowData) => {
+		return getloanAppData.length > 0
+	}
+
+	useEffect(() => {
+		fetchLoanGroupMember([])
+		setExpandedRows(null);
+		console.log(loanAppData, 'fffffffffffffffffffffffffffffffff');
+		
+	}, [fetchLoanApplicationsDate,])
 
 	const onPageChange = (event) => {
 		setFirst(event.first)
 		setRows(event.rows)
+	}
+
+	const handleSelectionChange = (e) => {
+		// Update the selected products setPaymentDate
+		console.log(e.value, "kkkkkkkkkkkkkkkkkkkk")
+
+		// Perform any additional logic here, such as enabling a button or triggering another action
+		setSelectedProducts(e.value)
+		if (e.value.length > 0) {
+			const selectedRows = e.value
+
+			// setDebitAmount(
+			// 	selectedRows
+			// 		.reduce((sum, item) => sum + parseFloat(item.debit_amt || 0), 0)
+			// 		.toFixed(2)
+			// )
+
+
+			// const group_Data = selectedRows.map((item) => {
+			// 	return {
+			// 		payment_date: item?.transaction_date,
+			// 		branch_code: item?.branch_code,
+			// 		group_code: item?.group_code,
+			// 	}
+			// })
+
+
+			// setCachedDateGcode(group_Data)
+			// setRejectCachedPaymentId(reject_group_Data);
+			// setShowApprov(true)
+			// console.log("You selected  rows", cachedDateGcode, ">>>", group_Data)
+		} else {
+			// setShowApprov(false)
+			// setDebitAmount(0)
+			// setCachedDateGcode([])
+			console.log("No rows selected")
+		}
 	}
 
 	// const goTo = (item) => {
@@ -43,6 +219,64 @@ function LoanApplicationsTableViewBr({
 	// useEffect(() => {
 	// 	goTo()
 	// })
+
+	const rowExpansionTemplate = () => {
+			return (
+				<div className="orders-subtable">
+					<DataTable
+						value={LoanGroupMember}
+						responsiveLayout="scroll"
+						tableClassName="w-full text-sm text-left rtl:text-right shadow-lg text-green-900dark:text-gray-400 table_Custome table_Custome_2nd"
+					>
+						{/* <Column field="transaction_date" header="Payment Date" sortable></Column> */}
+						<Column
+							field="form_no"
+							header="Form No."
+							// body={(rowData) =>
+							// 	new Date(rowData?.transaction_date).toLocaleDateString("en-GB")
+							// }
+						></Column>
+						<Column field="member_code" header="Member Code"
+						></Column>
+						<Column field="client_name" header="Client Name"></Column>
+						<Column field="grt_date" header="GRT Date"
+						body={(rowData) =>
+							new Date(rowData?.grt_date).toLocaleDateString("en-GB")
+						}
+						></Column>
+						<Column
+    field=""
+    header="Action"
+    body={(rowData) => (
+        <button
+            onClick={() => {
+                console.log("Selected Item:", rowData);
+                if (flag === "MIS") {
+                    navigate(`/homemis/editgrtform/${rowData?.form_no}`, {
+                        state: rowData,
+                    });
+                } else if (flag === "BM") {
+                    navigate(`/homebm/editgrtform/${rowData?.form_no}`, {
+                        state: rowData,
+                    });
+                } else {
+                    navigate(`/homeco/editgrtform/${rowData?.form_no}`, {
+                        state: rowData,
+                    });
+                }
+            }}
+        >
+			{/* {JSON.stringify(flag, 2)}  */}
+            <EditOutlined className="text-md text-[#DA4167]" />
+        </button>
+    )}
+/>
+						<Column headerStyle={{ width: '4rem'}}></Column>
+					</DataTable>
+				</div>
+			)
+		}
+
 
 	return (
 		<>
@@ -105,165 +339,102 @@ function LoanApplicationsTableViewBr({
 					</div>
 				</div>
 			</motion.section>
+
 			<motion.section
 				initial={{ opacity: 0 }}
 				animate={{ opacity: 1 }}
 				transition={{ delay: 0.5, type: "spring", stiffness: 30 }}
 			>
-				<table className="w-full text-sm text-left rtl:text-right shadow-lg text-green-900dark:text-gray-400">
-					<thead
-						className={`text-md text-gray-700 capitalize  bg-slate-300
-						 dark:bg-gray-700 dark:text-gray-400`}
-					>
-						<tr>
-							{/* <th scope="col" className="p-4">
-								#
-							</th> */}
-							<th scope="col" className="p-4">
-								Form No.
-							</th>
-							{flag === "MIS" && (
-								<th scope="col" className="p-4">
-									Branch Name
-								</th>
-							)}
-							<th scope="col" className="p-4">
-								Member Name
-							</th>
-							<th scope="col" className="p-4">
-								Member Code
-							</th>
-							<th scope="col" className="p-4">
-								GRT Date
-							</th>
-							{/* <th scope="col" className="p-4">
-								Status
-							</th> */}
-							{/* <th scope="col" className="p-4">
-								Branch
-							</th>
-							<th scope="col" className="p-4">
-								Loan Type
-							</th> */}
-							{/* <th scope="col" className="p-4">
-								Created By
-							</th> */}
-							<th scope="col" className="p-4">
-								Action
-							</th>
-						</tr>
-					</thead>
-					<tbody>
-						{loanAppData &&
-							loanAppData?.slice(first, rows + first).map((item, i) => (
-								<tr
-									className={
-										"bg-white border-2 border-b-pink-200 dark:bg-gray-800 dark:border-gray-700"
-									}
-									key={i}
-								>
-									{/* <th
-										scope="row"
-										className="px-3 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white"
-									>
-										{item.sl_no}
-									</th> */}
-									<td className="px-6 py-3 font-bold text-slate-800">{item.form_no || "-----"}</td>
-									{flag === "MIS" && (
-										<td className="px-6 py-3 text-slate-800">{item.branch_name || ""}</td>
-									)}
-									<td className="px-6 py-3 text-slate-800">{item.client_name}</td>
-									<td className="px-6 py-3 text-slate-600">{item.member_code}</td>
-									<td className="px-6 py-3 text-slate-600">
-										{new Date(item?.grt_date).toLocaleDateString("en-GB")}
-									</td>
-									{/* <td className="px-6 py-3">{item.member_name}</td> */}
-									{/* <td className="px-6 py-3">
-										{item.branch_name}
-									</td>
-									<td className="px-6 py-3">{item.loan_type_name}</td> */}
-									{/* <td className="px-6 py-3">{item.member_name}</td> */}
-									<td className="px-6 py-3">
-										{flag === "MIS" ? (
-											// <Link
-											// 	to={
-											// 		routePaths.MIS_ASSISTANT_EDIT_GROUP +
-											// 		item?.prov_grp_code
-											// 	}
-											// >
-											<button
-												// to={routePaths.BM_EDIT_GRT + item?.form_no}
-												onClick={() => {
-													console.log("LLSKSIODFUISFH", item)
-													navigate(`/homemis/editgrtform/${item?.form_no}`, {
-														state: item,
-													})
-												}}
-											>
-												{/* <EditOutlined
-													className={`text-md text-[#da4167]
-													}`}
-												/> */}
-												<EyeOutlined 
-												className={`text-md  text-[#DA4167]
-													`}
-												/>
+				<Toast ref={toast} />
 
-											</button>
-										) : flag === "BM" ? (
-											// </Link>
-											<button
-												// to={routePaths.BM_EDIT_GRT + item?.form_no}
-												onClick={() => {
-													console.log("LLSKSIODFUISFH", item)
-													navigate(`/homebm/editgrtform/${item?.form_no}`, {
-														state: item,
-													})
-												}}
-											>
-												{/* <EditOutlined
-													className={`text-md text-[#DA4167]
-													`}
-												/> */}
-												<EyeOutlined 
-												className={`text-md  text-[#DA4167]
-													`}
-												/>
-											</button>
-										) : (
-											// </Link>
-											<button
-												// to={routePaths.BM_EDIT_GRT + item?.form_no}
-												onClick={() => {
-													console.log("LLSKSIODFUISFH", item)
-													navigate(`/homeco/editgrtform/${item?.form_no}`, {
-														state: item,
-													})
-												}}
-											>
-												<EyeOutlined 
-												className={`text-md  text-[#DA4167]
-													`}
-												/>
-												{/* <EditOutlined
-													className={`text-md  text-[#DA4167]
-													`}
-												/> */}
-											</button>
-										)}
-									</td>
-								</tr>
-							))}
-					</tbody>
-				</table>
-				<Paginator
-					first={first}
-					rows={rows}
-					totalRecords={loanAppData?.length}
-					rowsPerPageOptions={[3, 5, 10, 15, 20, 30, loanAppData?.length]}
-					onPageChange={onPageChange}
-				/>
+				{/* {ShowApprov && (
+
+				<motion.section
+				initial={{ opacity: 0 }}
+				animate={{ opacity: 1 }}
+				transition={{ delay: 0.5, type: "spring", stiffness: 30 }}
+				>
+				<div className='grid-cols-2 gap-5 mb-3 items-center text-left'>
+				<button 
+				className={`inline-flex items-center px-4 py-2 mt-0 ml-0 sm:mt-0 text-sm font-small text-center text-white border hover:border-green-600 border-teal-500 bg-teal-500 transition ease-in-out hover:bg-green-600 duration-300 rounded-full  dark:focus:ring-primary-900`}
+				onClick={() => {
+
+				setVisible(true)
+				}}><CheckCircleOutlined class={`mr-2`} /> Approve  
+
+				</button>
+
+				<button 
+				className={`inline-flex items-center px-4 py-2 mt-0 ml-4 sm:mt-0 text-sm font-medium text-center text-white border border-[#DA4167] bg-[#DA4167] transition ease-in-out hover:bg-[#ac3246] hover:border-[#ac3246] duration-300 rounded-full  dark:focus:ring-primary-900`}
+				onClick={() => {
+				setVisible_Reject(true)
+				}}><CheckCircleOutlined class={`mr-2`} /> Reject  
+
+				</button>		
+				</div>
+				</motion.section>
+
+				)} */}
+
+				{/* <>{JSON.stringify(getloanAppData, null, 2)}</> */}
+				<DataTable
+					value={getloanAppData?.map((item, i) => [{ ...item, id: i }]).flat()}
+					expandedRows={expandedRows}
+					onRowToggle={(e) => setExpandedRows(e.data)}
+					onRowExpand={onRowExpand}
+					onRowCollapse={onRowCollapse}
+					selectionMode="checkbox"
+					selection={selectedProducts}
+					// onSelectionChange={(e) => setSelectedProducts(e.value)}
+					onSelectionChange={(e) => handleSelectionChange(e)}
+					tableStyle={{ minWidth: "50rem" }}
+					rowExpansionTemplate={rowExpansionTemplate}
+					dataKey="id"
+					// paginator
+					// rows={rowsPerPage}
+					// first={currentPage}
+					// onPage={onPageChange}
+					// rowsPerPageOptions={[5, 10, 20]} // Add options for number of rows per page
+					tableClassName="w-full text-sm text-left rtl:text-right shadow-lg text-green-900dark:text-gray-400 table_Custome table_Custome_1st" // Apply row classes
+				>
+					<Column
+						header="Sl No."
+						body={(rowData) => (
+							<span style={{ fontWeight: "bold" }}>{rowData?.id + 1}</span>
+						)}
+					></Column>
+					<Column expander={allowExpansion} style={{ width: "3em" }} />
+					<Column
+						field="group_name"
+						header="Group Name"
+					></Column>
+					
+					<Column
+						field="prov_grp_code"
+						header="Group Code"
+					></Column>
+
+					<Column
+						field="branch_name"
+						header="Branch Name"
+					></Column>
+					<Column
+						field="co_name"
+						header="CO Name"
+					></Column>
+
+					<Column
+						field="created_by"
+						header="Created By"
+					></Column>
+
+
+
+				</DataTable>
+
 			</motion.section>
+
+			
 		</>
 	)
 }
