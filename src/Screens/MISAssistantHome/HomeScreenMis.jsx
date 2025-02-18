@@ -174,6 +174,8 @@ function HomeScreenMis() {
 	// 	console.log("radio1 checked")
 	// 	// fetchCoList_CO_Short()
 	// }, [coListData])
+
+
 	
 
 	const handleEmployeeChange = (e) => {
@@ -232,22 +234,25 @@ function HomeScreenMis() {
 
 	}
 
+	useEffect(() => {
+		setCoListData(() => [])
+		fetchCoList_ID()
+	}, [loanType])
+
 	
 		useEffect(() => {
 	
-			// console.log(fromDate, "fetchLoanApplicationsDate", toDate)
-	
 			if (loanType === "S") {
 				fetchLoanApplications_GroupWise('S')
-				// fetchLoanApplications()
-				console.log('fff', 'SSSSSSSSSSSSSSSSSS');
+				setSelectedEmployeeId(() => [])
+				console.log('fff', 'SSSSSSSSSSSSSSS');
 				
 			} else if (loanType === "R") {
 				fetchLoanApplications_GroupWise('R')
 				console.log('fff', 'RRRRRRRRRRRRRRR');
 			} else if (loanType === "A") {
 				fetchLoanApplications_GroupWise('A')
-				console.log('fff', 'RRRRRRRRRRRRRRR');
+				console.log('fff', 'AAAAAAAAAAAAAAAAA');
 			}
 
 		}, [loanType])
