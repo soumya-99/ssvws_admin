@@ -60,11 +60,11 @@ function SigninMis() {
         .then((res) => {
           var userDtls = res?.data?.user_dtls;
           userDtls["brn_code"] =
-            user_type_id == 4 || user_type_id==11
+            user_type_id == 4 || user_type_id==11 || user_type_id==10
               ? branch.toString()
               : res?.data?.user_dtls?.brn_code;
           userDtls["branch_name"] =
-            user_type_id == 4 || user_type_id==11
+            user_type_id == 4 || user_type_id==11 || user_type_id==10
               ? branches.filter((item) => item.code == branch)[0]?.name
               : res?.data?.user_dtls?.branch_name;
           if (res?.data?.suc === 1) {
@@ -112,11 +112,11 @@ function SigninMis() {
         .then((res) => {
           var userDtls = res?.data?.user_dtls;
           userDtls["brn_code"] =
-            user_type_id == 4 || user_type_id==11
+            user_type_id == 4 || user_type_id==11 || user_type_id==10
               ? branch.toString()
               : res?.data?.user_dtls?.brn_code;
           userDtls["branch_name"] =
-            user_type_id == 4 || user_type_id==11
+            user_type_id == 4 || user_type_id==11 || user_type_id==10
               ? branches.filter((item) => item.code == branch)[0]?.name
               : res?.data?.user_dtls?.branch_name;
           if (res?.data?.suc === 1) {
@@ -217,6 +217,7 @@ function SigninMis() {
                     console.log(res.data);
                     setLoading(false);
                     setUserTypeId(res.data?.msg[0]?.id);
+                    console.log(res.data?.msg[0], 'ggggggggggggggggggggggggggggggggggggg');
                     if (res.data?.msg[0]?.id == 10 || res.data?.msg[0]?.id == 11 ) {
                       axios
                         .post(`${url}/fetch_brn_assign`, {
@@ -227,6 +228,8 @@ function SigninMis() {
 						  if(resbrn?.data?.suc==1){
 
 						  setBranches(resbrn?.data?.msg)
+              
+              
 						  }
 						  if(resbrn?.data?.suc==0){
 							setBranches([])
