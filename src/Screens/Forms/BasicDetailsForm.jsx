@@ -185,6 +185,7 @@ function BasicDetailsForm({ memberDetails }) {
 					b_clientMobile: res?.data?.msg[0]?.client_mobile,
 					b_clientEmail: res?.data?.msg[0]?.email_id,
 					b_guardianName: res?.data?.msg[0]?.gurd_name,
+					b_husbandName: res?.data?.msg[0]?.husband_name,
 					b_guardianMobile: res?.data?.msg[0]?.gurd_mobile,
 					b_clientAddress: res?.data?.msg[0]?.client_addr,
 					b_clientPin: res?.data?.msg[0]?.pin_no,
@@ -222,6 +223,7 @@ function BasicDetailsForm({ memberDetails }) {
 			client_name: formik.values.b_clientName,
 			client_mobile: formik.values.b_clientMobile,
 			gurd_name: formik.values.b_guardianName,
+			husband_name: formik.values.b_husbandName,
 			gurd_mobile: formik.values.b_guardianMobile,
 			client_addr: formik.values.b_clientAddress,
 			pin_no: formik.values.b_clientPin,
@@ -242,6 +244,8 @@ function BasicDetailsForm({ memberDetails }) {
 			other_education: formik.values.b_otherEducation || "",
 			grt_date: formik.values.b_grtDate,
 		}
+		// console.log(creds, 'credscredscredscredscredscredscreds');
+		
 		await axios
 			.post(`${url}/admin/edit_basic_dtls_web`, creds)
 			.then((res) => {
@@ -585,7 +589,13 @@ function BasicDetailsForm({ memberDetails }) {
 									label="PIN No."
 									name="b_clientPin"
 									formControlName={formik.values.b_clientPin}
-									handleChange={formik.handleChange}
+									// handleChange={formik.handleChange}
+									handleChange={(e) => {
+										const value = e.target.value;
+										if (value.length <= 6) { // Ensuring max length of 6 digits
+											formik.setFieldValue("b_clientPin", value);
+										}
+									}}
 									handleBlur={formik.handleBlur}
 									mode={1}
 									disabled={disableCondition(
@@ -605,7 +615,13 @@ function BasicDetailsForm({ memberDetails }) {
 									label="Member Mobile Number"
 									name="b_clientMobile"
 									formControlName={formik.values.b_clientMobile}
-									handleChange={formik.handleChange}
+									// handleChange={formik.handleChange}
+									handleChange={(e) => {
+										const value = e.target.value;
+										if (value.length <= 10) { // Ensuring max length of 6 digits
+											formik.setFieldValue("b_clientMobile", value);
+										}
+									}}
 									handleBlur={formik.handleBlur}
 									mode={1}
 									disabled={disableCondition(
@@ -640,9 +656,9 @@ function BasicDetailsForm({ memberDetails }) {
 
 							<div>
 								<TDInputTemplateBr
-									placeholder="Type Guardian's Name..."
+									placeholder="Type Father's Name..."
 									type="text"
-									label="Guardian's Name"
+									label="Father's Name"
 									name="b_guardianName"
 									formControlName={formik.values.b_guardianName}
 									handleChange={formik.handleChange}
@@ -659,14 +675,22 @@ function BasicDetailsForm({ memberDetails }) {
 								) : null}
 							</div>
 
+							
+
 							<div>
 								<TDInputTemplateBr
-									placeholder="Type Guardian Mobile Number..."
+									placeholder="Type Father's/Husband Mobile Number..."
 									type="number"
-									label="Guardian Mobile Number"
+									label="Father's/Husband Mobile Number"
 									name="b_guardianMobile"
 									formControlName={formik.values.b_guardianMobile}
-									handleChange={formik.handleChange}
+									// handleChange={formik.handleChange}
+									handleChange={(e) => {
+										const value = e.target.value;
+										if (value.length <= 10) { // Ensuring max length of 6 digits
+											formik.setFieldValue("b_guardianMobile", value);
+										}
+									}}
 									handleBlur={formik.handleBlur}
 									mode={1}
 									disabled={disableCondition(
@@ -678,6 +702,27 @@ function BasicDetailsForm({ memberDetails }) {
 								formik.touched.b_guardianMobile ? (
 									<VError title={formik.errors.b_guardianMobile} />
 								) : null}
+							</div>
+
+							<div>
+								<TDInputTemplateBr
+									placeholder="Type Husband Name..."
+									type="text"
+									label="Husband Name"
+									name="b_husbandName"
+									formControlName={formik.values.b_husbandName}
+									handleChange={formik.handleChange}
+									handleBlur={formik.handleBlur}
+									mode={1}
+									disabled={disableCondition(
+										userDetails?.id,
+										memberDetails?.approval_status
+									)}
+								/>
+								{/* {formik.errors.b_guardianMobile &&
+								formik.touched.b_guardianMobile ? (
+									<VError title={formik.errors.b_guardianMobile} />
+								) : null} */}
 							</div>
 
 							<div>
