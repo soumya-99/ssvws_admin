@@ -15,6 +15,7 @@ import { useLocation } from "react-router"
 import DialogBox from "../../Components/DialogBox"
 import TDInputTemplateBr from "../../Components/TDInputTemplateBr"
 import { disableCondition } from "./disableCondition"
+import { routePaths } from "../../Assets/Data/Routes"
 
 function HouseholdDetailsForm({ memberDetails }) {
 	const params = useParams()
@@ -24,6 +25,11 @@ function HouseholdDetailsForm({ memberDetails }) {
 	const navigate = useNavigate()
 	const userDetails = JSON.parse(localStorage.getItem("user_details"))
 	const [visible, setVisible] = useState(() => false)
+	const [visible2, setVisible2] = useState(() => false)
+	const [visible3, setVisible3] = useState(() => false)
+	const [visible4, setVisible4] = useState(() => false)
+
+	const [remarks, setRemarks] = useState(() => "")
 
 	console.log(params, "params")
 	console.log(location, "location")
@@ -137,7 +143,9 @@ function HouseholdDetailsForm({ memberDetails }) {
 			parental_addr: formik.values.h_parental_address,
 			parental_phone: formik.values.h_parental_phone,
 			modified_by: userDetails?.emp_id,
+			// remarks: remarks
 		}
+		// console.log(creds, 'Approve Application 1', 'editHouseholdDetails');
 		await axios
 			.post(`${url}/admin/edit_household_dtls_web`, creds)
 			.then((res) => {
@@ -146,6 +154,98 @@ function HouseholdDetailsForm({ memberDetails }) {
 			})
 			.catch((err) => {
 				console.log("HOUSEEE ERRRR", err)
+			})
+		setLoading(false)
+	}
+
+	// important Reject Application
+	const handleRejectApplication = async () => {
+		setLoading(true)
+		const creds = {
+			approval_status: "R",
+			form_no: params?.id,
+			remarks: remarks,
+			member_code: memberDetails?.member_code,
+			rejected_by: userDetails?.emp_id,
+		}
+		// console.log(creds, 'Reject Application 1', 'handleRejectApplication');
+		await axios
+			.post(`${url}/admin/delete_member_mis`, creds)
+			.then((res) => {
+				Message("success", "Application rejected!")
+				navigate(routePaths.MIS_ASSISTANT_HOME)
+			})
+			.catch((err) => {
+				Message("error", "Some error occurred while rejecting application.")
+			})
+		setLoading(false)
+	}
+
+	// important Send To BM
+	const handleForwardApplicationMis = async () => {
+		setLoading(true)
+		await editHouseholdDetails()
+		const creds = {
+			form_no: params?.id,
+			approved_by: userDetails?.emp_id,
+			remarks: remarks,
+			member_id: memberDetails?.member_code,
+		}
+		// console.log(creds, 'Approve Application 1', 'handleForwardApplicationMis');
+		await axios
+			.post(`${url}/admin/forward_mis_asst`, creds)
+			.then((res) => {
+				Message("success", "Application forwarded!")
+				navigate(routePaths.MIS_ASSISTANT_HOME)
+			})
+			.catch((err) => {
+				Message("error", "Some error occurred while forwarding application.")
+			})
+		setLoading(false)
+	}
+
+	// important Approve Application
+	const handleForwardApplicationBM = async () => {
+		setLoading(true)
+		// await editHouseholdDetails()
+		const creds = {
+			modified_by: userDetails?.emp_id,
+			form_no: params?.id,
+			branch_code: userDetails?.brn_code,
+			remarks: remarks,
+		}
+		// console.log(creds, 'Approve Application 1', 'handleForwardApplicationBM');
+		await axios
+			.post(`${url}/final_submit`, creds)
+			.then((res) => {
+				Message("success", "Application forwarded!")
+				navigate(routePaths.BM_HOME)
+			})
+			.catch((err) => {
+				Message("error", "Some error occurred while forwarding application.")
+			})
+		setLoading(false)
+	}
+
+	const sendingBackToBM = async () => {
+		setLoading(true)
+		const creds = {
+			remarks: remarks,
+			modified_by: userDetails?.emp_id,
+			form_no: memberDetails?.form_no,
+			member_id: memberDetails?.member_code,
+		}
+		// console.log(creds, 'Send To BM 1', 'sendingBackToBM');
+		await axios
+			.post(`${url}/admin/back_to_bm`, creds)
+			.then((res) => {
+				Message("success", "Sending back to BM successsfully.")
+				console.log("Sending back to BM", res?.data)
+				navigate(routePaths.MIS_ASSISTANT_HOME)
+			})
+			.catch((err) => {
+				Message("error", "Error while sending back to bm")
+				console.log("Error while sending back to bm")
 			})
 		setLoading(false)
 	}
@@ -161,7 +261,7 @@ function HouseholdDetailsForm({ memberDetails }) {
 				<form onSubmit={formik.handleSubmit}>
 					<div className="">
 						<div className="grid gap-4 sm:grid-cols-3 sm:gap-6">
-							<div>
+							{/* <div>
 								<TDInputTemplateBr
 									placeholder="No. of rooms"
 									type="number"
@@ -179,7 +279,7 @@ function HouseholdDetailsForm({ memberDetails }) {
 								{formik.errors.h_no_of_rooms && formik.touched.h_no_of_rooms ? (
 									<VError title={formik.errors.h_no_of_rooms} />
 								) : null}
-							</div>
+							</div> */}
 							<div>
 								<TDInputTemplateBr
 									placeholder="Type Parental Address..."
@@ -432,16 +532,78 @@ function HouseholdDetailsForm({ memberDetails }) {
 									<VError title={formik.errors.h_washing_machine} />
 								) : null}
 							</div>
+
+							
 						</div>
 
-						{!disableCondition(
+						<div className="mt-10">
+							<TDInputTemplateBr
+								placeholder="Type Remarks..."
+								type="text"
+								label={`Remarks`}
+								name="remarks"
+								formControlName={remarks}
+								handleChange={(e) => setRemarks(e.target.value)}
+								mode={3}
+								// disabled={
+								// 	userDetails?.id !== 10 &&
+								// 	memberDetails?.approval_status === "S"
+								// }
+								disabled={disableCondition(
+									userDetails?.id,
+									memberDetails?.approval_status
+								)}
+								
+							/>
+						</div>
+
+						{userDetails?.id == 10 && memberDetails?.approval_status === "S" && (   //previously 3
+							<div className="mt-10">
+								<BtnComp
+									mode="B"
+									showUpdateAndReset={false}
+									showReject={true}
+									onRejectApplication={() => setVisible2(true)}
+									showForward={true}
+									onForwardApplication={() => setVisible3(true)}
+									showSendToBM={true}
+									onSendBackToBM={() => setVisible4(true)}
+								/>
+							</div>
+						)}
+						{userDetails?.id == 2 && memberDetails?.approval_status === "R" && (
+							<div className="mt-10">
+								<BtnComp
+									mode="B"
+									showUpdateAndReset={false}
+									showReject={true}
+									onRejectApplication={() => setVisible2(true)}
+									showForward={true}
+									onForwardApplication={() => setVisible3(true)}
+								/>
+							</div>
+						)}
+						{userDetails?.id == 2  && memberDetails?.approval_status === "U" && (
+							<div className="mt-10">
+								<BtnComp
+									mode="B"
+									showUpdateAndReset={false}
+									showReject={true}
+									onRejectApplication={() => setVisible2(true)}
+									showForward={true}
+									onForwardApplication={() => setVisible3(true)}
+								/>
+							</div>
+						)}
+
+						{/* {!disableCondition(
 							userDetails?.id,
 							memberDetails?.approval_status
 						) && (
 							<div className="mt-10">
 								<BtnComp mode="A" onReset={formik.resetForm} />
 							</div>
-						)}
+						)} */}
 
 						{/* {loanApproveStatus !== "A" && loanApproveStatus !== "R" ? (
 							<div className="mt-10">
@@ -483,6 +645,56 @@ function HouseholdDetailsForm({ memberDetails }) {
 				</form>
 			</Spin>
 
+			{/* <DialogBox
+				flag={4}
+				onPress={() => setVisible(!visible)}
+				visible={visible}
+				onPressYes={() => {
+					editHouseholdDetails()
+					setVisible(!visible)
+				}}
+				onPressNo={() => setVisible(!visible)}
+			/> */}
+
+			{/* Approve Popup */}
+			<DialogBox
+				flag={4}
+				onPress={() => setVisible3(!visible3)}
+				visible={visible3}
+				onPressYes={() => {
+					if (!remarks) {
+						Message("error", "Please write remarks!")
+						setVisible3(!visible3)
+						return
+					}
+					setVisible3(!visible3)
+					if (userDetails?.id == 2) {
+						handleForwardApplicationBM()
+					}
+					if (userDetails?.id == 10) {     //previously 3
+ 						handleForwardApplicationMis()
+					}
+				}}
+				onPressNo={() => setVisible3(!visible3)}
+			/>
+
+			{/* Reject Popup */}
+			<DialogBox
+				flag={4}
+				onPress={() => setVisible2(!visible2)}
+				visible={visible2}
+				onPressYes={() => {
+					if (!remarks) {
+						Message("error", "Please write remarks!")
+						setVisible2(!visible2)
+						return
+					}
+					setVisible2(!visible2)
+					handleRejectApplication()
+				}}
+				onPressNo={() => setVisible2(!visible2)}
+			/>
+
 			<DialogBox
 				flag={4}
 				onPress={() => setVisible(!visible)}
@@ -493,6 +705,19 @@ function HouseholdDetailsForm({ memberDetails }) {
 				}}
 				onPressNo={() => setVisible(!visible)}
 			/>
+
+			{/* Send To BM Popup */}
+			<DialogBox
+				flag={4}
+				onPress={() => setVisible4(!visible4)}
+				visible={visible4}
+				onPressYes={() => {
+					sendingBackToBM()
+					setVisible4(!visible4)
+				}}
+				onPressNo={() => setVisible4(!visible4)}
+			/>
+			
 		</>
 	)
 }

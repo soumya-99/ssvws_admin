@@ -172,6 +172,7 @@ function FamilyMemberDetailsForm({ memberDetails }) {
 		e.preventDefault()
 	}
 
+	// important Reject Application
 	const handleRejectApplication = async () => {
 		setLoading(true)
 		const creds = {
@@ -193,6 +194,7 @@ function FamilyMemberDetailsForm({ memberDetails }) {
 		setLoading(false)
 	}
 
+	// important Send To BM
 	const handleForwardApplicationMis = async () => {
 		setLoading(true)
 		await editFamilyMemberDetails()
@@ -214,6 +216,7 @@ function FamilyMemberDetailsForm({ memberDetails }) {
 		setLoading(false)
 	}
 
+	// important Approve Application
 	const handleForwardApplicationBM = async () => {
 		setLoading(true)
 		await editFamilyMemberDetails()
@@ -542,8 +545,8 @@ function FamilyMemberDetailsForm({ memberDetails }) {
 									onRejectApplication={() => setVisible2(true)}
 									showForward={true}
 									onForwardApplication={() => setVisible3(true)}
-									// showSendToBM={true}
-									// onSendBackToBM={() => setVisible4(true)}
+									showSendToBM={true}
+									onSendBackToBM={() => setVisible4(true)}
 								/>
 							</div>
 						)}
