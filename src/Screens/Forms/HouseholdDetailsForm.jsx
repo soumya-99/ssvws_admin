@@ -46,6 +46,8 @@ function HouseholdDetailsForm({ memberDetails }) {
 		h_bike: "",
 		h_fridge: "",
 		h_washing_machine: "",
+		// remarks : RemarkValues.remarks 
+		// remarks : 'ghfgh' 
 	}
 
 	const [formValues, setValues] = useState({
@@ -62,6 +64,10 @@ function HouseholdDetailsForm({ memberDetails }) {
 		h_washing_machine: "",
 	})
 
+	// const [RemarkValues, setRemarkValues] = useState({
+	// 	remarks: "",
+	// })
+
 	const validationSchema = Yup.object({
 		h_no_of_rooms: Yup.string().required("Required"),
 		h_parental_address: Yup.string().required("Required"),
@@ -75,6 +81,27 @@ function HouseholdDetailsForm({ memberDetails }) {
 		h_fridge: Yup.string().required("Required"),
 		h_washing_machine: Yup.string().required("Required"),
 	})
+
+	const handleFetchBasicDetails_forRemarks = async () => {
+		setLoading(true)
+		const creds = {
+			branch_code: userDetails?.brn_code,
+			form_no: params?.id,
+			approval_status: memberDetails?.approval_status,
+		}
+		await axios
+			.post(`${url}/admin/fetch_basic_dtls_web`, creds)
+			.then((res) => {
+				console.log("++--++--++--", res?.data)
+				setRemarks(res?.data?.msg[0]?.remarks)
+
+				console.log("memberDetails_______________", 'remark' , res?.data.msg)
+			})
+			.catch((err) => {
+				console.log("--------------", err)
+			})
+		setLoading(false)
+	}
 
 	const fetchHouseholdDetails = async () => {
 		await axios
@@ -103,6 +130,7 @@ function HouseholdDetailsForm({ memberDetails }) {
 	}
 
 	useEffect(() => {
+		handleFetchBasicDetails_forRemarks()
 		console.log("KKKKKKKKKKKKKKKKKKKKKKKKK")
 		fetchHouseholdDetails()
 	}, [])
@@ -542,7 +570,9 @@ function HouseholdDetailsForm({ memberDetails }) {
 								type="text"
 								label={`Remarks`}
 								name="remarks"
+								// formControlName={remarks}
 								formControlName={remarks}
+								// formControlName={remarks == null ? RemarkValues.remarks : remarks}
 								handleChange={(e) => setRemarks(e.target.value)}
 								mode={3}
 								// disabled={

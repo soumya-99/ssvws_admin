@@ -44,7 +44,7 @@ function BasicDetailsForm({ memberDetails }) {
 
 	console.log(params, "params")
 	console.log(location, "location")
-	console.log(memberDetails, "memberDetails")
+	console.log(memberDetails?.branch_name, "memberDetails_______________", memberDetails)
 
 	const initialValues = {
 		b_clientName: "",
@@ -70,6 +70,7 @@ function BasicDetailsForm({ memberDetails }) {
 	}
 	const [formValues, setValues] = useState({
 		b_clientName: "",
+		b_branch_name: "",
 		b_clientGender: "",
 		b_clientMobile: "",
 		b_clientEmail: "",
@@ -181,6 +182,7 @@ function BasicDetailsForm({ memberDetails }) {
 				console.log("++--++--++--", res?.data)
 				setValues({
 					b_clientName: res?.data?.msg[0]?.client_name,
+					b_branch_name: res?.data?.msg[0]?.branch_name,
 					b_clientGender: res?.data?.msg[0]?.gender,
 					b_clientMobile: res?.data?.msg[0]?.client_mobile,
 					b_clientEmail: res?.data?.msg[0]?.email_id,
@@ -202,6 +204,31 @@ function BasicDetailsForm({ memberDetails }) {
 					b_dob: formatDateToYYYYMMDD(res?.data?.msg[0]?.dob),
 					b_grtDate: formatDateToYYYYMMDD(res?.data?.msg[0]?.grt_date),
 				})
+
+				console.log({
+					b_clientName: res?.data?.msg[0]?.client_name,
+					b_branch_name: res?.data?.msg[0]?.branch_name,
+					b_clientGender: res?.data?.msg[0]?.gender,
+					b_clientMobile: res?.data?.msg[0]?.client_mobile,
+					b_clientEmail: res?.data?.msg[0]?.email_id,
+					b_guardianName: res?.data?.msg[0]?.gurd_name,
+					b_husbandName: res?.data?.msg[0]?.husband_name,
+					b_guardianMobile: res?.data?.msg[0]?.gurd_mobile,
+					b_clientAddress: res?.data?.msg[0]?.client_addr,
+					b_clientPin: res?.data?.msg[0]?.pin_no,
+					b_aadhaarNumber: res?.data?.msg[0]?.aadhar_no,
+					b_panNumber: res?.data?.msg[0]?.pan_no,
+					b_religion: res?.data?.msg[0]?.religion,
+					b_caste: res?.data?.msg[0]?.caste,
+					b_education: res?.data?.msg[0]?.education,
+					b_otherReligion: res?.data?.msg[0]?.other_religion,
+					b_otherCaste: res?.data?.msg[0]?.other_caste,
+					b_otherEducation: res?.data?.msg[0]?.other_education,
+					b_groupCode: res?.data?.msg[0]?.prov_grp_code,
+					b_groupCodeName: "",
+					b_dob: formatDateToYYYYMMDD(res?.data?.msg[0]?.dob),
+					b_grtDate: formatDateToYYYYMMDD(res?.data?.msg[0]?.grt_date),
+				}, "memberDetails_______________", res?.data.msg)
 			})
 			.catch((err) => {
 				console.log("--------------", err)
@@ -426,7 +453,7 @@ function BasicDetailsForm({ memberDetails }) {
 									type="text"
 									label="Branch Name"
 									name="branch_name"
-									formControlName={memberDetails?.branch_name}
+									formControlName={memberDetails?.branch_name == undefined ? formValues.b_branch_name : memberDetails?.branch_name}
 									mode={1}
 									disabled
 								/>
