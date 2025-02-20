@@ -39,6 +39,7 @@ import AttendanceBM from "./Screens/BMHome/AttendanceBM"
 import GroupClose from "./Screens/Reports/GroupClose/GroupClose"
 import MasterDesignations from "./Screens/Admin/Master/Designations/MasterDesignations"
 import EditMasterDesignations from "./Screens/Admin/Master/Designations/EditMasterDesignations"
+import TranceferCO from "./Screens/BMHome/TranceferCO"
 // import A_LoanStatementMain from "./Screens/Admin/Reports/LoanStatements/A_LoanStatementMain"
 // import A_LoanTransactionsMain from "./Screens/Admin/Reports/LoanTransactions/A_LoanTransactionsMain"
 // import A_DemandReportsMain from "./Screens/Admin/Reports/DemandReports/A_DemandReportsMain"
@@ -332,6 +333,10 @@ const router = createBrowserRouter([
 							{
 								path: "groupclosereport",
 								element: <GroupClose />,
+							},
+							{
+								path: "tranceferco",
+								element: <TranceferCO />,
 							},
 							// {
 							// 	path: "summaryreports",
