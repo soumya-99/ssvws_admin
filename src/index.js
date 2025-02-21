@@ -40,6 +40,8 @@ import GroupClose from "./Screens/Reports/GroupClose/GroupClose"
 import MasterDesignations from "./Screens/Admin/Master/Designations/MasterDesignations"
 import EditMasterDesignations from "./Screens/Admin/Master/Designations/EditMasterDesignations"
 import TranceferCO from "./Screens/BMHome/TranceferCO"
+import TransferCOScreen from "./Screens/BMHome/TransferCOScreen"
+import TranceferCOApproveForm from "./Screens/BMHome/TranceferCOApproveForm"
 // import A_LoanStatementMain from "./Screens/Admin/Reports/LoanStatements/A_LoanStatementMain"
 // import A_LoanTransactionsMain from "./Screens/Admin/Reports/LoanTransactions/A_LoanTransactionsMain"
 // import A_DemandReportsMain from "./Screens/Admin/Reports/DemandReports/A_DemandReportsMain"
@@ -335,9 +337,22 @@ const router = createBrowserRouter([
 								element: <GroupClose />,
 							},
 							{
-								path: "tranceferco",
+								path: "trancefercofrom",
 								element: <TranceferCO />,
 							},
+							{
+								path: "tranceferco",
+								element: <TransferCOScreen />,
+							},
+							{
+								path: "trancefercofrom/:id",
+								element: <TranceferCO />,
+							},
+							{
+								path: "trancefercofromapprove/:id",
+								element: <TranceferCOApproveForm />,
+							}
+
 							// {
 							// 	path: "summaryreports",
 							// 	children: [

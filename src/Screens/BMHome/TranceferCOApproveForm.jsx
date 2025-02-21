@@ -32,7 +32,7 @@ import { debounce } from "@mui/material"
 
 
 
-function TranceferCO({ groupDataArr }) {
+function TranceferCOApproveForm({ groupDataArr }) {
 	const params = useParams()
 	const [loading, setLoading] = useState(false)
 	const location = useLocation()
@@ -308,7 +308,9 @@ useEffect(() => {
 
 
 const handleFetchAllFormData = async () => {
+	// alert('lllllllllllllllll')
 		setLoading(true)
+		
 		const creds = {
 			group_code: params?.id,
 			flag: location.state.approval_status
@@ -318,16 +320,21 @@ const handleFetchAllFormData = async () => {
 			// .post(`${url}/fetch_co_brnwise=${userDetails?.brn_code}`)
 			.post(`${url}/transfer_co_view_all_details`, creds)
 			.then((res) => {
-				console.log("transfer_co_view_all_details", res?.data?.msg)
+				console.log("transfer_co_view_all_details", res?.data?.msg[0], 'llllllllllllllll', res?.data?.msg[0]?.group_code)
 				// setCEOData_s(res?.data?.msg)
 				setValues({
-					Grp_wit_Co: res?.data?.msg[0]?.group_name,
+					Grp_wit_Co: res?.data?.msg[0]?.group_code,
 					frm_co: res?.data?.msg[0]?.from_co_name,
 					frm_branch: res?.data?.msg[0]?.from_brn_name,
 					to_co: res?.data?.msg[0]?.to_co,
 					to_branch: res?.data?.msg[0]?.to_brn_name,
 					remarks_: res?.data?.msg[0]?.remarks,
-						})
+					})
+
+				console.log(formValues, 'transfer_co_view_all_details', 'formValues');
+				
+
+
       
 			})
 			.catch((err) => {
@@ -337,6 +344,37 @@ const handleFetchAllFormData = async () => {
 		setLoading(false)
 	}
 
+
+const handleApproveForm = async () => {
+		setLoading(true)
+		await editGroup()
+		const creds = {
+			group_code: params?.id,
+			flag: location.state.approval_status
+		}
+		console.log(creds, "transfer_co_view_all_details", params?.id)
+		// await axios
+		// 	// .post(`${url}/fetch_co_brnwise=${userDetails?.brn_code}`)
+		// 	.post(`${url}/transfer_co_view_all_details`, creds)
+		// 	.then((res) => {
+		// 		console.log("transfer_co_view_all_details", res?.data?.msg)
+		// 		// setCEOData_s(res?.data?.msg)
+		// 		setValues({
+		// 			Grp_wit_Co: res?.data?.msg[0]?.group_code,
+		// 			frm_co: res?.data?.msg[0]?.from_co_name,
+		// 			frm_branch: res?.data?.msg[0]?.from_brn_name,
+		// 			to_co: res?.data?.msg[0]?.to_co,
+		// 			to_branch: res?.data?.msg[0]?.to_brn_name,
+		// 			remarks_: res?.data?.msg[0]?.remarks,
+		// 				})
+      
+		// 	})
+		// 	.catch((err) => {
+		// 		console.log("?????????????????????", err)
+		// 	})
+
+		// setLoading(false)
+	}
 
 
 	
@@ -670,15 +708,14 @@ const handleFetchAllFormData = async () => {
 				// 	// formik.handleChange(e)
 				// 	console.log(e.target.value,'valuevaluevaluevaluevalue')
 				// }}
-				value={formik.values.Grp_wit_Co || ""} // Controlled value
+				// value={COPickup} // Controlled value
 				onChange={(value) => {
 					setCOPickup(value)
-					formik.setFieldValue("Grp_wit_Co", );
+					formik.setFieldValue("Grp_wit_Co", value);
 				  }}
                   options={options__Group}
                 //   style={{ width: 250 }}
 				mode={2}
-				disabled={location?.state.approval_status == "A" ? true : false} //location?.state.approval_status == null ? '': location?.state.approval_status
                   />
 									{formik.errors.Grp_wit_Co && formik.touched.Grp_wit_Co ? (
 									<VError title={formik.errors.Grp_wit_Co} />
@@ -766,7 +803,6 @@ const handleFetchAllFormData = async () => {
 				// 	console.log(e.target.value,'valuevaluevaluevaluevalue')
 				// }}
 				// value={COPickup} // Controlled value
-				value={formik.values.to_branch} // Controlled value
 				onChange={(value) => {
 					setToBranchName(value)
 					console.log(value, 'jjjj');
@@ -776,7 +812,6 @@ const handleFetchAllFormData = async () => {
                   options={options__Branch}
                 //   style={{ width: 250 }}
 				mode={2}
-				disabled={location?.state.approval_status == "A" ? true : false}
                   />
 
 								{formik.errors.to_branch && formik.touched.to_branch ? (
@@ -787,8 +822,7 @@ const handleFetchAllFormData = async () => {
 							</div>
 
               <div>
-			  {/* disabled={location?.state.approval_status == "A" ? true : false} */}
-			  
+
             <TDInputTemplateBr
             placeholder="Select To CO"
             label="To CO"
@@ -797,8 +831,6 @@ const handleFetchAllFormData = async () => {
             // formControlName={formik.values.to_co}
 			formControlName={To_COData?.length > 0 ? To_COData[0]?.to_co_name : formik.values.to_co}
             // handleChange={formik.handleChange}
-			// value={formik.values.to_co || ""} // Controlled value
-			
             handleChange={(e) => {
             setCEOData(e.target.value)
             formik.handleChange(e)
@@ -822,7 +854,7 @@ const handleFetchAllFormData = async () => {
             </div>
 
 
-			{/* {JSON.stringify(COAndBranch, 2)} */}
+			{JSON.stringify(formValues[0], 2)}
         
 
 
@@ -867,42 +899,25 @@ const handleFetchAllFormData = async () => {
 						)} */}
 						
 
-
-						{/* {params?.id > 0 && () */}
-					{/* {userDetails?.id == ''  && location?.state.approval_status === "N" && (   //previously 3 */}
-					<div className="mt-10">
-					<BtnComp
-					mode="A"
-					// rejectBtn={true}
-					// onReject={() => {
-					// 	setVisibleModal(false)
-					// }}
-					onReset={formik.resetForm}
-					// sendToText="Credit Manager"
-					// onSendTo={() => console.log("dsaf")}
-					// condition={fetchedFileDetails?.length > 0}
-					// showSave
-					// param={params?.id}
-					/>
-
-					</div>
-					{/* )} */}
-{JSON.stringify(userDetails?.id, null, 2)} // {location?.state.approval_status == null ? '': location?.state.approval_status }
-
-{userDetails?.id == '2'  && location?.state.approval_status === "P" && (   //previously 3
-							<div className="mt-10">
+						<div className="mt-10">
 							<BtnComp
 								mode="B"
 								showUpdateAndReset={false}
-								showReject={true}
-								onRejectApplication={() => setVisible2(true)}
+								// showReject={true}
+								// onRejectApplication={() => setVisible2(true)}
 								showForward={true}
 								onForwardApplication={() => setVisible3(true)}
-								showSendToBM={true}
-								onSendBackToBM={() => setVisible4(true)}
+								// showSendToBM={true}
+								// onSendBackToBM={() => setVisible4(false)}
 							/>
 						</div>
-						)}
+
+					
+{JSON.stringify(userDetails?.id, null, 2)} // {location?.state.approval_status == null ? '': location?.state.approval_status }
+
+{/* {userDetails?.id == '2'  && location?.state.approval_status === "P" && (   //previously 3
+							
+						)} */}
 						{/* {userDetails?.id == 2 && memberDetails?.approval_status === "R" && (
 							<div className="mt-10">
 								<BtnComp
@@ -932,15 +947,36 @@ const handleFetchAllFormData = async () => {
 			</Spin>
 
 	
+			{/* <DialogBox
+				flag={4}
+				onPress={() => setVisible3(!visible3)}
+				visible={visible3}
+				onPressYes={() => {
+					if (!remarks) {
+						Message("error", "Please write remarks!")
+						setVisible3(!visible3)
+						return
+					}
+					setVisible3(!visible3)
+					if (userDetails?.id == 2) {
+						handleForwardApplicationBM()
+					}
+					if (userDetails?.id == 10) {     //previously 3
+ 						handleForwardApplicationMis()
+					}
+				}}
+				onPressNo={() => setVisible3(!visible3)}
+			/> */}
+
 			<DialogBox
 				flag={4}
-				onPress={() => setVisible(!visible)}
-				visible={visible}
+				onPress={() => setVisible3(!visible3)}
+				visible={visible3}
 				onPressYes={() => {
-					editGroup()
-					setVisible(!visible)
+					handleApproveForm()
+					setVisible3(!visible3)
 				}}
-				onPressNo={() => setVisible(!visible)}
+				onPressNo={() => setVisible3(!visible)}
 			/>
 
 			{/* <DialogBox
@@ -957,4 +993,4 @@ const handleFetchAllFormData = async () => {
 	)
 }
 
-export default TranceferCO
+export default TranceferCOApproveForm

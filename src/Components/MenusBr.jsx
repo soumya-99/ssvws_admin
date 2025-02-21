@@ -20,6 +20,7 @@ import {
   SettingOutlined,
   FastForwardOutlined,
   SubnodeOutlined,
+  SendOutlined,
 } from "@ant-design/icons";
 import { Menu } from "antd";
 import { Link } from "react-router-dom";
@@ -282,6 +283,16 @@ function MenusBr({ theme }) {
           icon: <PlusCircleOutlined />,
           label: <Link to={"/homebm/editgroupform/0"}>Add Group</Link>,
         },
+        {
+          key: "sub3-3",
+          icon: <SendOutlined />,
+          label: <Link to={"/homebm/trancefercofrom"}>Trancefer CO Form</Link>,
+        },
+        {
+          key: "sub3-3",
+          icon: <SendOutlined />,
+          label: <Link to={"/homebm/tranceferco"}>Trancefer CO</Link>,
+        }
     //    {
     //      key: "sub3-3",
     //      icon: <SubnodeOutlined />,
@@ -483,7 +494,7 @@ function MenusBr({ theme }) {
           key: "sub3-2",
           icon: <PlusCircleOutlined />,
           label: <Link to={"/homebm/editgroupform/0"}>Add Group</Link>,
-        },
+        }
     //    {
     //      key: "sub3-3",
     //      icon: <SubnodeOutlined />,
