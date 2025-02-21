@@ -268,15 +268,15 @@ function EditGRTFormCO() {
 										>
 											<ArrowLeftOutlined />
 										</Button>
-										<Button
+										{/* <Button
 											className="rounded-full p-5 text-white bg-blue-800 border-blue-800 gap-2 ring-blue-500"
 											onClick={() => stepperRef.current.nextCallback()}
 										>
 											<ArrowRightOutlined />
-										</Button>
+										</Button> */}
 									</div>
 								</StepperPanel>
-								<StepperPanel header="Family Member Details">
+								{/* <StepperPanel header="Family Member Details">
 									<div className="flex flex-column h-12rem">
 										<div className="border-2 p-5 border-dashed rounded-3xl surface-border border-round surface-ground flex-auto font-medium">
 											<FamilyMemberDetailsForm
@@ -292,7 +292,7 @@ function EditGRTFormCO() {
 											<ArrowLeftOutlined />
 										</Button>
 									</div>
-								</StepperPanel>
+								</StepperPanel> */}
 							</Stepper>
 						</div>
 					</Spin>
