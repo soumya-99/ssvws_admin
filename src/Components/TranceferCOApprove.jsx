@@ -359,6 +359,10 @@ function TranceferCOApprove({
 						new Date(rowData?.trf_date).toLocaleDateString("en-GB")
 						}
 					></Column>
+					{/* <Column
+						field="from_co"
+						header="From"
+					></Column> */}
 					<Column
     field=""
     header="Action"
@@ -372,23 +376,11 @@ function TranceferCOApprove({
 				navigate(`/homebm/trancefercofrom/${rowData?.group_code}`, {
 				state: {
 				...rowData, // Spread existing rowData
-				approval_status: radioType, // Explicitly include approval_status
+				approval_status: radioType,
+				from_co: rowData?.from_co // Explicitly include approval_status
 				},
 				});
-				// console.log("Selected Item:", rowData);
-				// if (flag === "BM") {
-				// navigate(`/homebm/trancefercofrom/${rowData?.prov_grp_code}`, {
-				// state: rowData,
-				// });
-				// } else if (flag === "BM") {
-				// navigate(`/homebm/trancefercofrom/${rowData?.prov_grp_code}`, {
-				// state: rowData,
-				// });
-				// } else {
-				// navigate(`/homebm/trancefercofrom/${rowData?.prov_grp_code}`, {
-				// state: rowData,
-				// });
-				// }
+			
 				}}
 				>
 		
@@ -397,20 +389,28 @@ function TranceferCOApprove({
 				)}
 				{rowData?.approval_status === "U" && (
 				<button
-				onClick={() => {
-				console.log("Selected Item:", rowData);
+				// onClick={() => {
+				// console.log("Selected Item:", rowData);
 				// navigate(`/homebm/trancefercofrom/${rowData?.group_code}`, {
-				// state: rowData,
+				// state: {
+				// ...rowData, // Spread existing rowData
+				// approval_status: radioType, // Explicitly include approval_status
+				// },
 				// });
 		
-				navigate(`/homebm/trancefercofrom/${rowData?.group_code}`, {
-				state: {
-				...rowData, // Spread existing rowData
-				approval_status: radioType, // Explicitly include approval_status
-				},
-				});
-		
-				}}
+				// }}
+
+				onClick={() => {
+					navigate(`/homebm/trancefercofromapprove/${rowData?.group_code}`, {
+					state: {
+					...rowData, // Spread existing rowData
+					approval_status: radioType,
+					from_co: rowData?.from_co // Explicitly include approval_status
+					},
+					});
+				
+					}}
+
 				>
 		
 				<EditOutlined className="text-md text-[#DA4167]" /> {JSON.stringify(rowData, null, 2)}
@@ -428,7 +428,7 @@ function TranceferCOApprove({
 
 
 				</DataTable>
-				<>{JSON.stringify(getloanAppData[0], null, 2)} //  // </>
+				{/* <>{JSON.stringify(getloanAppData[0], null, 2)} //  // </> */}
 
 			</motion.section>
 

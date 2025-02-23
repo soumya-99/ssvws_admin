@@ -386,23 +386,35 @@ function TranceferCOPending({
 		
 		{rowData?.approval_status === "U" && (
 		<button
-		onClick={() => {
-		console.log("Selected Item:", rowData);
-		// navigate(`/homebm/trancefercofrom/${rowData?.group_code}`, {
-		// state: rowData,
+		// onClick={() => {
+		// console.log("Selected Item:", rowData);
+		// // navigate(`/homebm/trancefercofrom/${rowData?.group_code}`, {
+		// // state: rowData,
+		// // });
+
+		// navigate(`/homebm/trancefercofromapprove/${rowData?.group_code}`, {
+		// state: {
+		// ...rowData, // Spread existing rowData
+		// approval_status: radioType, // Explicitly include approval_status
+		// },
 		// });
 
-		navigate(`/homebm/trancefercofromapprove/${rowData?.group_code}`, {
-		state: {
-		...rowData, // Spread existing rowData
-		approval_status: radioType, // Explicitly include approval_status
-		},
-		});
+		// }}
 
-		}}
+		onClick={() => {
+			navigate(`/homebm/trancefercofromapprove/${rowData?.group_code}`, {
+			state: {
+			...rowData, // Spread existing rowData
+			approval_status: radioType,
+			from_co: rowData?.from_co // Explicitly include approval_status
+			},
+			});
+		
+			}}
 		>
 
-		<EditOutlined className="text-md text-[#DA4167]" /> {JSON.stringify(rowData, null, 2)}
+		<EditOutlined className="text-md text-[#DA4167]" /> 
+		
 		</button>
 		)}
 		
@@ -417,7 +429,7 @@ function TranceferCOPending({
 
 
 				</DataTable>
-				<>{JSON.stringify(getloanAppData[0], null, 2)}  // </>
+				{/* <>{JSON.stringify(getloanAppData[0], null, 2)}  // </> */}
 
 			</motion.section>
 
