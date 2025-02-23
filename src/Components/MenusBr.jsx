@@ -290,12 +290,12 @@ function MenusBr({ theme }) {
         },
         {
           key: "sub3-4",
-          icon: <SendOutlined />,
+          icon: <EyeOutlined />,
           label: <Link to={"/homebm/tranceferco"}>View Group Transfer</Link>,
         },
         {
           key: "sub3-5",
-          icon: <SendOutlined />,
+          icon: <CheckCircleOutlined />,
           label: <Link to={"/homebm/trancefercofromapprove-unic"}>Approve Group Transfer</Link>,
         }
 
