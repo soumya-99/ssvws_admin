@@ -15,10 +15,10 @@ import TranceferCOApprove from "../../Components/TranceferCOApprove"
 import { useNavigate } from "react-router-dom"
 
 const options = [
-	// {
-	// 	label: "Pending",
-	// 	value: "P",
-	// },
+	{
+		label: "Pending",
+		value: "P",
+	},
 	{
 		label: "Approved",
 		value: "A",
@@ -27,7 +27,7 @@ const options = [
 	
 ]
 
-function TransferCOScreen() {
+function TransferCOApprovalUnic() {
 	const userDetails = JSON.parse(localStorage.getItem("user_details")) || ""
 	const [loading, setLoading] = useState(false)
 	const [loanApplications, setLoanApplications] = useState(() => [])
@@ -35,7 +35,7 @@ function TransferCOScreen() {
 
 	const navigate = useNavigate()
 
-	const [radioType, setRadioType] = useState("A")
+	const [radioType, setRadioType] = useState("P")
 
 
 	const [coListData, setCoListData] = useState(() => [])
@@ -299,7 +299,7 @@ function TransferCOScreen() {
 						flag="MIS"
 						loanAppData={loanApplications}
 						radioType={radioType}
-						title="View Group Transfer"
+						title="Approve Trancefer CO List"
 						setSearch={(data) => setSearch(data)}
 						// fetchLoanApplicationsDate={{
 						// 	selectedEmployeeId
@@ -326,4 +326,4 @@ function TransferCOScreen() {
 	)
 }
 
-export default TransferCOScreen
+export default TransferCOApprovalUnic

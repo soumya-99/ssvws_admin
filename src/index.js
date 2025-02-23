@@ -42,6 +42,7 @@ import EditMasterDesignations from "./Screens/Admin/Master/Designations/EditMast
 import TranceferCO from "./Screens/BMHome/TranceferCO"
 import TransferCOScreen from "./Screens/BMHome/TransferCOScreen"
 import TranceferCOApproveForm from "./Screens/BMHome/TranceferCOApproveForm"
+import TransferCOApprovalUnic from "./Screens/BMHome/TransferCOApprovalUnic"
 // import A_LoanStatementMain from "./Screens/Admin/Reports/LoanStatements/A_LoanStatementMain"
 // import A_LoanTransactionsMain from "./Screens/Admin/Reports/LoanTransactions/A_LoanTransactionsMain"
 // import A_DemandReportsMain from "./Screens/Admin/Reports/DemandReports/A_DemandReportsMain"
@@ -351,6 +352,10 @@ const router = createBrowserRouter([
 							{
 								path: "trancefercofromapprove/:id",
 								element: <TranceferCOApproveForm />,
+							},
+							{
+								path: "trancefercofromapprove-unic",
+								element: <TransferCOApprovalUnic />,
 							}
 
 							// {
