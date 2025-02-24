@@ -37,7 +37,7 @@ function TranceferCO({ groupDataArr }) {
 	const [loading, setLoading] = useState(false)
 	const location = useLocation()
 	const { loanAppData } = location.state || {}
-	const approval_status = location.state?.approval_status || "N"; 
+	const approval_status = location.state?.approval_status || "N";
 	const navigate = useNavigate()
 	const userDetails = JSON.parse(localStorage.getItem("user_details"))
 
@@ -63,6 +63,11 @@ function TranceferCO({ groupDataArr }) {
 	const [visible2, setVisible2] = useState(() => false)
 	const [visible3, setVisible3] = useState(() => false)
 	const [visible4, setVisible4] = useState(() => false)
+
+	const [MemberList, setMemberList] = useState(() => [])
+
+	const [MemberListView, setMemberListView] = useState(() => [])
+	const [GroupCode, setGroupCode] = useState('')
 
 
 	// const [COMemList_Show, setCOMemList_Show] = useState()
@@ -127,48 +132,9 @@ function TranceferCO({ groupDataArr }) {
 		frm_co: Yup.string(),
 		frm_branch: Yup.string(),
 		to_branch: params?.id > 0 ? Yup.string() : Yup.string().required("To Branch is required"),
-		to_co:  params?.id > 0 ? Yup.string() : Yup.string().required("To CO is required"),
+		to_co: params?.id > 0 ? Yup.string() : Yup.string().required("To CO is required"),
 		remarks_: params?.id > 0 ? Yup.string() : Yup.string().required("Remarks is required"),
-
-		// Grp_wit_Co: Yup.string(),
-		// frm_co: Yup.string(),
-		// frm_branch: Yup.string(),
-		// to_branch: Yup.string(),
-		// to_co: Yup.string(),
-		// remarks_: Yup.string(),
 	})
-
-	const fetchGroupDetails = async () => {
-		const creds = {
-			group_code: params?.id,
-			branch_code: userDetails?.brn_code,
-		}
-		await axios
-			.post(`${url}/admin/fetch_search_group_web`, creds)
-			.then((res) => {
-				console.log("VVVVVVVVVVVVVVVVVVVVVVVV", res?.data?.msg[0])
-				setValues({
-					Grp_wit_Co: res?.data?.msg[0]?.group_name,
-					frm_co: res?.data?.msg[0]?.group_name,
-					frm_branch: res?.data?.msg[0]?.group_name,
-					to_co: res?.data?.msg[0]?.to_co,
-					to_branch: res?.data?.msg[0]?.to_branch,
-					remarks_: res?.data?.msg[0]?.grp_addr,
-				})
-				setGroupData(res?.data?.msg)
-				setCOPickup(
-					res?.data?.msg[0]?.disctrict + "," + res?.data?.msg[0]?.branch_code
-				)
-				setCEOData(res?.data?.msg[0]?.co_id)
-				setBlock(res?.data?.msg[0]?.block)
-			})
-			.catch((err) => {
-				Message("error", "Some error occurred while fetching group form")
-			})
-	}
-
-
-
 
 	const [options__Group, setOptions__Group] = useState([
 		{ value: "0", label: "Search" },
@@ -217,26 +183,7 @@ function TranceferCO({ groupDataArr }) {
 		setLoading(false);
 	}, 500); // Debounced to prevent excessive API calls
 
-	const handleFetchMemberDetailsCowise = async () => {
-		setLoading(true)
-		const creds_MemberListCo = {
-			branch_code: userDetails?.brn_code,
-			// co_id: userDetails?.emp_id
-			co_id: CEOData
-			// co_id: 10157
-		}
-		await axios
-			.post(`${url}/fetch_member_dtls_cowise`, creds_MemberListCo)
-			.then((res) => {
-				console.log(creds_MemberListCo, "QQQQQrrrrQQQQQQQQQQQ", res?.data?.msg)
-				setCOMemList_s(res?.data?.msg)
-			})
-			.catch((err) => {
-				console.log("?????????????????????", err)
-			})
 
-		setLoading(false)
-	}
 
 	const handleFetch_Branch = debounce(async (value) => {
 		if (!value) return;
@@ -298,24 +245,6 @@ function TranceferCO({ groupDataArr }) {
 	}
 
 
-	// userDetails?.emp_id
-
-	// useEffect(() => {
-	// 	console.log(location_, 'location_location_');
-	// 	// handleFetchMemberDetailsCowise()
-	// }, [CEOData])
-
-	useEffect(() => {
-
-        // console.log("Received loanAppData:", approval_status);
-    }, []); // Log whenever loanAppData changes
-
-	useEffect(() => {
-		console.log('////////////////////////', ToBranchName);
-
-		handleFetch_CO_By_Branch()
-	}, [ToBranchName])
-
 
 	const handleFetchAllFormData = async () => {
 		setLoading(true)
@@ -324,12 +253,13 @@ function TranceferCO({ groupDataArr }) {
 			flag: approval_status,
 			from_co: location.state.from_co
 		}
-		console.log(creds, "hhhhhhhhhhhhhhhhhh", params?.id)
+		// console.log(creds, "hhhhhhhhhhhhhhhhhh", params?.id)
 		await axios
 			// .post(`${url}/fetch_co_brnwise=${userDetails?.brn_code}`)
 			.post(`${url}/transfer_co_view_all_details`, creds)
 			.then((res) => {
-				console.log("fetch__data_view", res?.data?.msg)
+				// console.log("fetch__data_view", res?.data?.msg)
+				console.log("transfer_co_view_all_details", res?.data?.msg);
 				// setCEOData_s(res?.data?.msg)
 				setValues({
 					Grp_wit_Co: res?.data?.msg[0]?.group_name,
@@ -338,9 +268,17 @@ function TranceferCO({ groupDataArr }) {
 					to_co: res?.data?.msg[0]?.to_co_name,
 					to_branch: res?.data?.msg[0]?.to_brn_name,
 					remarks_: res?.data?.msg[0]?.remarks,
+					group_code_custom: res?.data?.msg[0]?.group_code,
+
+					approved_by: res?.data?.msg[0]?.approved_by,
+					approved_at: res?.data?.msg[0]?.approved_at,
+					created_by: res?.data?.msg[0]?.created_by,
+					created_at: res?.data?.msg[0]?.created_at,
 				})
 				// console.log(formValues.b_branch_name);
-				console.log(formValues, 'xxxxxxxxxxxxxxxxxxxxx', res?.data?.msg);
+				
+
+				setGroupCode(res?.data?.msg[0]?.group_code)
 
 
 
@@ -352,8 +290,62 @@ function TranceferCO({ groupDataArr }) {
 		setLoading(false)
 	}
 
+	const handleFetchMemberList = async () => {
+		setLoading(true)
+		const creds = {
+			group_code: COAndBranch[0]?.group_code,
+		}
+		await axios.post(`${url}/groupwise_mem_details`, creds)
+			.then((res) => {
+				console.log("ttttttttttttttttttttttttttttttttt", res?.data?.msg)
+				setMemberList(res?.data?.msg)
+
+			})
+			.catch((err) => {
+				console.log("?????????????????????", err)
+			})
+
+		setLoading(false)
+	}
 
 
+	const handleFetchMemberListView = async () => {
+		setLoading(true)
+		const creds = {
+			group_code: params?.id,
+		}
+		await axios.post(`${url}/groupwise_mem_details`, creds)
+			.then((res) => {
+				console.log(formValues, "groupwise_mem_details", res?.data?.msg)
+				setMemberListView(res?.data?.msg)
+
+			})
+			.catch((err) => {
+				console.log("?????????????????????", err)
+			})
+
+		setLoading(false)
+	}
+
+	useEffect(() => {
+		console.log('////////////////////////', ToBranchName);
+
+		handleFetch_CO_By_Branch()
+	}, [ToBranchName])
+
+
+	useEffect(() => {
+		handleFetchMemberList()
+	}, [COAndBranch])
+
+	useEffect(() => {
+		console.log(COAndBranch[0]?.group_code, 'ttttttttttttttttttt', params?.id, 'tttttttttttttt', GroupCode);
+
+		if (params?.id > 0) {
+			handleFetchMemberListView()
+		}
+
+	}, [])
 
 
 	const handleSelectionChange = (e) => {
@@ -380,25 +372,10 @@ function TranceferCO({ groupDataArr }) {
 	}
 
 
-	// const onPageChange = (event) => {
-	// 	setCurrentPage(event.first)
-	// 	setRowsPerPage(event.rows)
-	// }
-
-
-
-
-
 	useEffect(() => {
-
 		if (params?.id > 0) {
-			// console.log(params?.id, 'param', location.state.approval_status, '//', location.state.from_co);
-			// const approv_stat = useLocation();
-			// setApprovStatus(approv_stat.state.approval_status)
-			// console.log(location.state.approval_status, 'approval_statusapproval_statusapproval_statusapproval_status', params.id);
 			handleFetchAllFormData()
 		}
-
 	}, [])
 
 	const handleFetchCOBranch = async (group_code) => {
@@ -409,9 +386,7 @@ function TranceferCO({ groupDataArr }) {
 		}
 
 
-		await axios
-			// .get(`${url}/get_block?dist_id=${group_code}`)
-			.post(`${url}/fetch_grp_co_dtls_for_transfer`, creds)
+		await axios.post(`${url}/fetch_grp_co_dtls_for_transfer`, creds)
 			.then((res) => {
 				console.log(res?.data?.msg, 'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx');
 				setCOAndBranch(res?.data?.msg)
@@ -423,14 +398,12 @@ function TranceferCO({ groupDataArr }) {
 	}
 
 	useEffect(() => {
-		// console.log(COPickup, 'VVVVVVVVV', COAndBranch, 'VVVVVVVVVVVVVVV-utsabbbbbb', COPickup?.split(",")[1]);
-
 		handleFetchCOBranch(COPickup)
 	}, [COPickup])
 
 
 	const onSubmit = async (values) => {
-		
+
 		console.log(values, "VVVVVVVVVVVVVVVVVVVVVVVV", 'hhhh')
 		setLoading(true)
 
@@ -478,7 +451,7 @@ function TranceferCO({ groupDataArr }) {
 				// if (params?.id < 1) {
 				// 	navigate(`/homebm/tranceferco/`)
 				// }
-				navigate(-1); 
+				navigate(-1);
 
 			})
 			.catch((err) => {
@@ -489,46 +462,100 @@ function TranceferCO({ groupDataArr }) {
 
 	}
 
-	
 
-	const cancel = (e) => {
-		console.log(e)
-		// message.error('Click on No');
-	}
+
+	// const cancel = (e) => {
+	// 	console.log(e)
+	// 	// message.error('Click on No');
+	// }
 
 	return (
 		<>
-<section className="dark:bg-[#001529] flex justify-center align-middle p-5">
-<div className=" p-5 w-4/5 min-h-screen rounded-3xl">
-<div className="w-auto mx-14 my-4">
+			<section className="dark:bg-[#001529] flex justify-center align-middle p-5">
+				<div className=" p-5 w-4/5 min-h-screen rounded-3xl">
+					<div className="w-auto mx-14 my-4">
 						<FormHeader
 							text={`${params?.id == 0 ? "Transfer Group" : "View Group Transfer"}`}
 							mode={2}
 						/>
 					</div>
-			<Spin
-				indicator={<LoadingOutlined spin />}
-				size="large"
-				className="text-blue-800 dark:text-gray-400"
-				spinning={loading}
-			>
+					<Spin
+						indicator={<LoadingOutlined spin />}
+						size="large"
+						className="text-blue-800 dark:text-gray-400"
+						spinning={loading}
+					>
 
-				
-				{/* <main className="px-4 pb-5 bg-slate-50 rounded-lg shadow-lg h-auto my-10 mx-32"> */}
-				<div className="card bg-white border-2 p-5 mx-16 shadow-lg rounded-3xl surface-border border-round surface-ground flex-auto font-medium">
-					{/* <div className="flex flex-row gap-3 mt-0  py-3 rounded-xl">
+
+						{/* <main className="px-4 pb-5 bg-slate-50 rounded-lg shadow-lg h-auto my-10 mx-32"> */}
+						<div className="card bg-white border-2 p-5 mx-16 shadow-lg rounded-3xl surface-border border-round surface-ground flex-auto font-medium">
+							{/* <div className="flex flex-row gap-3 mt-0  py-3 rounded-xl">
 						<div className="text-3xl text-slate-700 font-bold">
 							Transfer CO
 						</div>
 					</div> */}
-					<form onSubmit={formik.handleSubmit}>
-						{/* <div className="flex justify-start gap-5"> */}
-						<div className="grid grid-cols-3 gap-5 mt-5">
+							<form onSubmit={formik.handleSubmit}>
+								{/* <div className="flex justify-start gap-5"> */}
+
+								<div className="grid grid-cols-3 gap-5 mt-5">
+								{params?.id > 0 && (
+											<>
+										<div>
+											<TDInputTemplateBr
+												// placeholder="From CO"
+												type="text"
+												label="Created By "
+												formControlName={formValues.created_by}
+												value={formValues.created_by}
+												disabled={true}
+												mode={1}
+											/>
+											</div>
+
+											<div>
+											<TDInputTemplateBr
+											type="text"
+											label="Created Date"
+											formControlName={formValues.created_at ? new Date(formValues.created_at).toLocaleDateString("en-GB") : ""}
+											value={formValues.created_at ? new Date(formValues.created_at).toLocaleDateString("en-GB") : ""}
+											disabled={true}
+											mode={1}
+											/>
+
+											</div>
+
+											<div>
+											<TDInputTemplateBr
+												// placeholder="From CO"
+												type="text"
+												label="Created By "
+												formControlName={formValues.approved_by}
+												value={formValues.approved_by}
+												disabled={true}
+												mode={1}
+											/>
+											</div>
+
+											<div>
+											<TDInputTemplateBr
+											type="text"
+											label="Created Date"
+											formControlName={formValues.approved_at ? new Date(formValues.approved_at).toLocaleDateString("en-GB") : ""}
+											value={formValues.approved_at ? new Date(formValues.approved_at).toLocaleDateString("en-GB") : ""}
+											disabled={true}
+											mode={1}
+											/>
+
+											</div>
+											</>
+										)}
+								</div>
+								<div className="grid grid-cols-3 gap-5 mt-5">
 
 
 
-							<div>
-								{/* <TDInputTemplateBr
+									<div>
+										{/* <TDInputTemplateBr
 										placeholder="Search Name Code or Group"
                     label="Group Code With Name"
 										type="text"
@@ -550,255 +577,257 @@ function TranceferCO({ groupDataArr }) {
 									/> */}
 
 
-								{params?.id < 1 && (
-									<>
-										<label for="frm_co" class="block mb-2 text-sm capitalize font-bold text-slate-800
+										{params?.id < 1 && (
+											<>
+												<label for="frm_co" class="block mb-2 text-sm capitalize font-bold text-slate-800
 				 dark:text-gray-100">Search Group Name or Code</label>
-										<Select
-											showSearch
-											placeholder={formValues.Grp_wit_Co ? formValues.Grp_wit_Co : "Search Name Code or Group"}
-											label="Group Code With Name"
-											name="Grp_wit_Co"
-											filterOption={false} // Disable default filtering to use API search
-											onSearch={handleFetch_CO} // Call API on typing
-											notFoundContent={loading ? <Spin size="small" /> : "No results found"}
-											formControlName={COPickup}
-											// formControlName={formValues.Grp_wit_Co ? formValues.Grp_wit_Co : COPickup}
-											//   handleChange={(e) => {
-											// 	// setCOPickup(e.target.value)
-											// 	// formik.handleChange(e)
-											// 	console.log(e.target.value,'valuevaluevaluevaluevalue')
-											// }}
-											// value={formValues.Grp_wit_Co ? formValues.Grp_wit_Co : COPickup} // Controlled value
-											onChange={(value) => {
-												setCOPickup(value)
-												formik.setFieldValue("Grp_wit_Co", value);
-											}}
-											options={options__Group}
-											//   style={{ width: 250 }}
-											mode={2}
-										// disabled={location?.state.approval_status == "A" ? true : false} //location?.state.approval_status == null ? '': location?.state.approval_status
+												<Select
+													showSearch
+													placeholder={formValues.Grp_wit_Co ? formValues.Grp_wit_Co : "Search Name Code or Group"}
+													label="Group Code With Name"
+													name="Grp_wit_Co"
+													filterOption={false} // Disable default filtering to use API search
+													onSearch={handleFetch_CO} // Call API on typing
+													notFoundContent={loading ? <Spin size="small" /> : "No results found"}
+													formControlName={COPickup}
+													// formControlName={formValues.Grp_wit_Co ? formValues.Grp_wit_Co : COPickup}
+													//   handleChange={(e) => {
+													// 	// setCOPickup(e.target.value)
+													// 	// formik.handleChange(e)
+													// 	console.log(e.target.value,'valuevaluevaluevaluevalue')
+													// }}
+													// value={formValues.Grp_wit_Co ? formValues.Grp_wit_Co : COPickup} // Controlled value
+													onChange={(value) => {
+														setCOPickup(value)
+														formik.setFieldValue("Grp_wit_Co", value);
+													}}
+													options={options__Group}
+													//   style={{ width: 250 }}
+													mode={2}
+												// disabled={location?.state.approval_status == "A" ? true : false} //location?.state.approval_status == null ? '': location?.state.approval_status
+												/>
+											</>
+
+										)}
+
+										{params?.id > 0 && (
+											<TDInputTemplateBr
+												// placeholder="From CO"
+												type="text"
+												label="Search Group Name or Code"
+												name="Grp_wit_Co"
+												handleChange={formik.handleChange}
+												handleBlur={formik.handleBlur}
+												value={formValues.Grp_wit_Co}
+												// formControlName={formik.values.frm_co}
+												formControlName={formik.values.Grp_wit_Co}
+												disabled={true}
+												mode={1}
+											/>
+										)}
+
+										{formik.errors.Grp_wit_Co && formik.touched.Grp_wit_Co ? (
+											<VError title={formik.errors.Grp_wit_Co} />
+										) : null}
+
+
+
+									</div>
+
+
+									<div>
+
+
+
+										<TDInputTemplateBr
+											placeholder="From CO"
+											type="text"
+											label="From CO"
+											name="frm_co"
+											handleChange={formik.handleChange}
+											handleBlur={formik.handleBlur}
+											// formControlName={formik.values.frm_co}
+											formControlName={COAndBranch.length > 0 ? COAndBranch[0].co_name : formik.values.frm_co}
+											disabled={true}
+											mode={1}
 										/>
-									</>
+										{formik.errors.frm_co && formik.touched.frm_co ? (
+											<VError title={formik.errors.frm_co} />
+										) : null}
 
-								)}
+									</div>
 
-								{params?.id > 0 && (
-									<TDInputTemplateBr
-										// placeholder="From CO"
-										type="text"
-										label="Search Group Name or Code"
-										name="Grp_wit_Co"
-										handleChange={formik.handleChange}
-										handleBlur={formik.handleBlur}
-										value={formValues.Grp_wit_Co}
-										// formControlName={formik.values.frm_co}
-										formControlName={formik.values.Grp_wit_Co}
-										disabled={true}
-										mode={1}
-									/>
-								)}
+									<div>
+										<TDInputTemplateBr
+											placeholder="From Branch"
+											type="text"
+											label="From Branch"
+											name="frm_branch"
+											handleChange={formik.handleChange}
+											handleBlur={formik.handleBlur}
+											// formControlName={formik.values.frm_branch}
+											formControlName={COAndBranch.length > 0 ? COAndBranch[0].co_brn_name : formik.values.frm_branch}
+											mode={1}
+											// disabled={params.id > 0 ? true : false}
+											disabled={true}
+										/>
+										{formik.errors.frm_branch && formik.touched.frm_branch ? (
+											<VError title={formik.errors.frm_branch} />
+										) : null}
+									</div>
+									{/* {JSON.stringify(COAndBranch, 2)} */}
+									<div>
 
-								{formik.errors.Grp_wit_Co && formik.touched.Grp_wit_Co ? (
-									<VError title={formik.errors.Grp_wit_Co} />
-								) : null}
-
-
-
-							</div>
-
-
-							<div>
-
-
-
-								<TDInputTemplateBr
-									placeholder="From CO"
-									type="text"
-									label="From CO"
-									name="frm_co"
-									handleChange={formik.handleChange}
-									handleBlur={formik.handleBlur}
-									// formControlName={formik.values.frm_co}
-									formControlName={COAndBranch.length > 0 ? COAndBranch[0].co_name : formik.values.frm_co}
-									disabled={true}
-									mode={1}
-								/>
-								{formik.errors.frm_co && formik.touched.frm_co ? (
-									<VError title={formik.errors.frm_co} />
-								) : null}
-
-							</div>
-
-							<div>
-								<TDInputTemplateBr
-									placeholder="From Branch"
-									type="text"
-									label="From Branch"
-									name="frm_branch"
-									handleChange={formik.handleChange}
-									handleBlur={formik.handleBlur}
-									// formControlName={formik.values.frm_branch}
-									formControlName={COAndBranch.length > 0 ? COAndBranch[0].group_name : formik.values.frm_co}
-									mode={1}
-									// disabled={params.id > 0 ? true : false}
-									disabled={true}
-								/>
-								{formik.errors.frm_branch && formik.touched.frm_branch ? (
-									<VError title={formik.errors.frm_branch} />
-								) : null}
-							</div>
-
-							<div>
-
-							{params?.id < 1 &&(
-								<>
-								<label for="frm_co" class="block mb-2 text-sm capitalize font-bold text-slate-800
+										{params?.id < 1 && (
+											<>
+												<label for="frm_co" class="block mb-2 text-sm capitalize font-bold text-slate-800
 				 dark:text-gray-100">To Branch</label>
 
-								<Select
+												<Select
 
-									showSearch
-									placeholder="Search Branch Name Or Code"
-									//   label="Branch  With Name"
-									name="to_branch"
-									filterOption={false} // Disable default filtering to use API search
-									onSearch={handleFetch_Branch} // Call API on typing
-									notFoundContent={loading ? <Spin size="small" /> : "No results found"}
-									formControlName={ToBranchName}
-									// value={formValues.to_branch ? formValues.to_branch : ToBranchName}
-									onChange={(value) => {
-										setToBranchName(value)
-										console.log(value, 'jjjj');
+													showSearch
+													placeholder="Search Branch Name Or Code"
+													//   label="Branch  With Name"
+													name="to_branch"
+													filterOption={false} // Disable default filtering to use API search
+													onSearch={handleFetch_Branch} // Call API on typing
+													notFoundContent={loading ? <Spin size="small" /> : "No results found"}
+													formControlName={ToBranchName}
+													// value={formValues.to_branch ? formValues.to_branch : ToBranchName}
+													onChange={(value) => {
+														setToBranchName(value)
+														console.log(value, 'jjjj');
 
-										formik.setFieldValue("to_branch", value);
-									}}
-									options={options__Branch}
-									//   style={{ width: 250 }}
-									mode={2}
-									// disabled={location?.state.approval_status == "A" ? true : false}
-									disabled={false}
-								/>
-								</>
-							)}
-								
+														formik.setFieldValue("to_branch", value);
+													}}
+													options={options__Branch}
+													//   style={{ width: 250 }}
+													mode={2}
+													// disabled={location?.state.approval_status == "A" ? true : false}
+													disabled={false}
+												/>
+											</>
+										)}
 
-							{params?.id > 0 &&(
-									<TDInputTemplateBr
-									placeholder="To Branch"
-									type="text"
-									label="To Branch"
-									name="to_branch"
-									handleChange={formik.handleChange}
-									handleBlur={formik.handleBlur}
-									// formControlName={formik.values.frm_branch}
-									formControlName={formik.values.to_branch}
-									value={formValues.to_branch}
-									mode={1}
-									// disabled={params.id > 0 ? true : false}
-									disabled={true}
-								/>
-								)}
+										{/* {JSON.stringify(ToBranchName, 2)}  jjj {JSON.stringify(COAndBranch, 2)} */}
+										{params?.id > 0 && (
+											<TDInputTemplateBr
+												placeholder="To Branch"
+												type="text"
+												label="To Branch"
+												name="to_branch"
+												handleChange={formik.handleChange}
+												handleBlur={formik.handleBlur}
+												// formControlName={formik.values.frm_branch}
+												formControlName={formik.values.to_branch}
+												value={formValues.to_branch}
+												mode={1}
+												// disabled={params.id > 0 ? true : false}
+												disabled={true}
+											/>
+										)}
 
-								{formik.errors.to_branch && formik.touched.to_branch ? (
-									<VError title={formik.errors.to_branch} />
-								) : null}
-{/* {JSON.stringify(ToBranchName, 2)}  // {JSON.stringify(formik.values.to_branch, 2)} */}
+										{formik.errors.to_branch && formik.touched.to_branch ? (
+											<VError title={formik.errors.to_branch} />
+										) : null}
+										{/* {JSON.stringify(ToBranchName, 2)}  // 
+// {JSON.stringify(formik.values.to_branch, 2)} */}
 
-							</div>
+									</div>
 
-							<div>
-								{/* disabled={location?.state.approval_status == "A" ? true : false} */}
-								{params?.id < 1 &&(
-								
-								<TDInputTemplateBr
-									placeholder="Select CO"
-									label="To CO"
-									name="to_co"
-									// formControlName={CEOData} // Default to SHG
-									// formControlName={formik.values.to_co}
-									// formControlName={To_COData?.length > 0 ? To_COData[0]?.to_co_name : formik.values.to_co}
-									formControlName={To_COData[0]?.to_co_name}
-									// handleChange={formik.handleChange}
-									// value={formik.values.to_co || ""} // Controlled value
-									// value={formValues.to_co ? formValues.to_co : To_COData[0]?.to_co_name}
-									handleChange={(e) => {
-										setCEOData(e.target.value)
-										formik.handleChange(e)
-										console.log(e.target.value, 'VVVVVVVVVVVVVVVVVVVVVVVV')
-									}}
-									// handleBlur={formik.handleBlur}
-									data={
-										To_COData && To_COData.length > 0
-											? To_COData.map((item) => ({
-												code: item?.to_co_id,
-												name: item?.to_co_name,
-											}))
-											: [{ code: '', name: 'No Data Available' }] // Fallback option
-									}
-									mode={2}
-								/>
-								)}
+									<div>
+										{/* disabled={location?.state.approval_status == "A" ? true : false} */}
+										{params?.id < 1 && (
 
-								{params?.id > 0 &&(
-									<TDInputTemplateBr
-									// placeholder="To CO"
-									type="text"
-									label="To CO"
-									name="to_co"
-									handleChange={formik.handleChange}
-									handleBlur={formik.handleBlur}
-									// formControlName={formik.values.frm_branch}
-									formControlName={formik.values.to_co}
-									value={formValues.to_co}
-									mode={1}
-									// disabled={params.id > 0 ? true : false}
-									disabled={true}
-								/>
-								)}
+											<TDInputTemplateBr
+												placeholder="Select CO"
+												label="To CO"
+												name="to_co"
+												// formControlName={CEOData} // Default to SHG
+												// formControlName={formik.values.to_co}
+												// formControlName={To_COData?.length > 0 ? To_COData[0]?.to_co_name : formik.values.to_co}
+												// formControlName={To_COData[0]?.to_co_name}
+												formControlName={formik.values.to_co}
+												// handleChange={formik.handleChange}
+												// value={formik.values.to_co || ""} // Controlled value
+												// value={formValues.to_co ? formValues.to_co : To_COData[0]?.to_co_name}
+												handleChange={(e) => {
+													setCEOData(e.target.value)
+													formik.handleChange(e)
+													console.log(e.target.value, 'VVVVVVVVVVVVVVVVVVVVVVVV')
+												}}
+												// handleBlur={formik.handleBlur}
+												data={
+													To_COData && To_COData.length > 0
+														? To_COData.map((item) => ({
+															code: item?.to_co_id,
+															name: item?.to_co_name,
+														}))
+														: [{ code: '', name: 'No Data Available' }] // Fallback option
+												}
+												mode={2}
+											/>
+										)}
 
-								{formik.errors.to_co && formik.touched.to_co ? (
-									<VError title={formik.errors.to_co} />
-								) : null}
-							</div>
+										{params?.id > 0 && (
+											<TDInputTemplateBr
+												// placeholder="To CO"
+												type="text"
+												label="To CO"
+												name="to_co"
+												handleChange={formik.handleChange}
+												handleBlur={formik.handleBlur}
+												// formControlName={formik.values.frm_branch}
+												formControlName={formik.values.to_co}
+												value={formValues.to_co}
+												mode={1}
+												// disabled={params.id > 0 ? true : false}
+												disabled={true}
+											/>
+										)}
 
-					
-
-
-
-
-
-
-							<div className="sm:col-span-3">
-								<TDInputTemplateBr
-									placeholder="Remarks..."
-									type="text"
-									label={`Remarks`}
-									name="remarks_"
-									formControlName={formik.values.remarks_}
-									handleChange={formik.handleChange}
-									handleBlur={formik.handleBlur}
-									mode={3}
-									disabled={params.id > 0 ? true : false}
-								/>
-								{formik.errors.remarks_ && formik.touched.remarks_ ? (
-									<VError title={formik.errors.remarks_} />
-								) : null}
-							</div>
+										{formik.errors.to_co && formik.touched.to_co ? (
+											<VError title={formik.errors.to_co} />
+										) : null}
+									</div>
 
 
 
 
 
 
-						</div>
+
+
+									<div className="sm:col-span-3">
+										<TDInputTemplateBr
+											placeholder="Remarks..."
+											type="text"
+											label={`Remarks`}
+											name="remarks_"
+											formControlName={formik.values.remarks_}
+											handleChange={formik.handleChange}
+											handleBlur={formik.handleBlur}
+											mode={3}
+											disabled={params.id > 0 ? true : false}
+										/>
+										{formik.errors.remarks_ && formik.touched.remarks_ ? (
+											<VError title={formik.errors.remarks_} />
+										) : null}
+									</div>
 
 
 
 
-						{/* </div> */}
 
-						{/* {params.id > 0 && (
+
+								</div>
+
+
+
+
+								{/* </div> */}
+
+								{/* {params.id > 0 && (
 							<Divider
 								type="vertical"
 								style={{
@@ -807,63 +836,160 @@ function TranceferCO({ groupDataArr }) {
 							/>
 						)} */}
 
+								{/* {JSON.stringify(MemberList, 2)} kkkkkkkkkkk
+{JSON.stringify(MemberListView, 2)} */}
+
+								{MemberList.length > 0 && (
+									<div className="sm:col-span-2 mt-5">
+										<div>
+											<label class="block mb-2 text-sm capitalize font-bold text-slate-800
+					dark:text-gray-100"> Member List
+												{/* <span style={{color:'red'}} class="ant-tag ml-2 ant-tag-error ant-tag-borderless text-[12.6px] my-2">
+					(You can Select Maxmimum 4 Member)</span> */}
+											</label>
 
 
-						{/* {params?.id > 0 && () */}
-						{params?.id < 1 && (   //previously 3
-							<div className="mt-10">
-								<BtnComp
-									mode="A"
-									// rejectBtn={true}
-									// onReject={() => {
-									// 	setVisibleModal(false)
-									// }}
-									onReset={formik.resetForm}
-								// sendToText="Credit Manager"
-								// onSendTo={() => console.log("dsaf")}
-								// condition={fetchedFileDetails?.length > 0}
-								// showSave
-								// param={params?.id}
-								/>
+											<Toast ref={toast} />
+											
+											<DataTable
+												value={MemberList?.map((item, i) => [{ ...item, id: i }]).flat()}
+												// expandedRows={expandedRows}
+												// onRowToggle={(e) => setExpandedRows(e.data)}
+												// onRowExpand={onRowExpand}
+												// onRowCollapse={onRowCollapse}
+												selectionMode="checkbox"
+												// selection={COMemList_select}
+												// onSelectionChange={(e) => setSelectedProducts(e.value)}
+												// onSelectionChange={(e) => handleSelectionChange(e)}
+												tableStyle={{ minWidth: "50rem" }}
+												// rowExpansionTemplate={rowExpansionTemplate}
+												dataKey="id"
+												// paginator
+												// rows={rowsPerPage}
+												// first={currentPage}
+												// onPage={onPageChange}
+												// rowsPerPageOptions={[5, 10, 20]} // Add options for number of rows per page
+												tableClassName="w-full text-sm text-left rtl:text-right shadow-lg text-green-900dark:text-gray-400 table_Custome table_Custome_1st" // Apply row classes
+											>
+												<Column
+													header="Sl No."
+													body={(rowData) => (
+														<span style={{ fontWeight: "bold" }}>{rowData?.id + 1}</span>
+													)}
+												></Column>
 
-							</div>
-						)}
+												<Column
+													field="member_code"
+													header="Member Code"
+												></Column>
 
-						{/* {JSON.stringify(userDetails?.id, null, 2)} // 
-						{approval_status == null ? approval_status : approval_status}
-						{JSON.stringify(approval_status, null, 2)} */}
+												<Column
+													field="client_name"
+													header="Member Name"
+												></Column>
+												<Column
+													field="outstanding"
+													header="Outstanding"
+												></Column>
+
+											</DataTable>
+
+										</div>
 
 
-						{/* {userDetails?.id == 2 && memberDetails?.approval_status === "R" && (
-							<div className="mt-10">
-								<BtnComp
-									mode="B"
-									showUpdateAndReset={false}
-									showReject={true}
-									onRejectApplication={() => setVisible2(true)}
-									showForward={true}
-									onForwardApplication={() => setVisible3(true)}
-								/>
-							</div>
-						)}
-						{userDetails?.id == 2  && memberDetails?.approval_status === "U" && (
-							<div className="mt-10">
-								<BtnComp
-									mode="B"
-									showUpdateAndReset={false}
-									showReject={true}
-									onRejectApplication={() => setVisible2(true)}
-									showForward={true}
-									onForwardApplication={() => setVisible3(true)}
-								/>
-							</div>
-						)} */}
-					</form>
-				{/* </main> */}
+									</div>
+								)}
+
+						{MemberListView?.length > 0 && (
+									<div className="sm:col-span-2 mt-5">
+										<div>
+											<label class="block mb-2 text-sm capitalize font-bold text-slate-800
+					dark:text-gray-100"> Member List
+												{/* <span style={{color:'red'}} class="ant-tag ml-2 ant-tag-error ant-tag-borderless text-[12.6px] my-2">
+					(You can Select Maxmimum 4 Member)</span> */}
+											</label>
+
+
+											<Toast ref={toast} />
+											
+											<DataTable
+												value={MemberListView?.map((item, i) => [{ ...item, id: i }]).flat()}
+												// expandedRows={expandedRows}
+												// onRowToggle={(e) => setExpandedRows(e.data)}
+												// onRowExpand={onRowExpand}
+												// onRowCollapse={onRowCollapse}
+												selectionMode="checkbox"
+												// selection={COMemList_select}
+												// onSelectionChange={(e) => setSelectedProducts(e.value)}
+												onSelectionChange={(e) => handleSelectionChange(e)}
+												tableStyle={{ minWidth: "50rem" }}
+												// rowExpansionTemplate={rowExpansionTemplate}
+												dataKey="id"
+												// paginator
+												// rows={rowsPerPage}
+												// first={currentPage}
+												// onPage={onPageChange}
+												// rowsPerPageOptions={[5, 10, 20]} // Add options for number of rows per page
+												tableClassName="w-full text-sm text-left rtl:text-right shadow-lg text-green-900dark:text-gray-400 table_Custome table_Custome_1st" // Apply row classes
+											>
+												<Column
+													header="Sl No."
+													body={(rowData) => (
+														<span style={{ fontWeight: "bold" }}>{rowData?.id + 1}</span>
+													)}
+												></Column>
+
+												<Column
+													field="member_code"
+													header="Member Code"
+												></Column>
+
+												<Column
+													field="client_name"
+													header="Member Name"
+												></Column>
+												<Column
+													field="outstanding"
+													header="Outstanding"
+												></Column>
+
+											</DataTable>
+
+										</div>
+
+
+									</div>
+								)}
+
+								{/* {params?.id > 0 && () */}
+								{params?.id < 1 && (   //previously 3
+									<div className="mt-10">
+										<BtnComp
+											mode="A"
+											// rejectBtn={true}
+											// onReject={() => {
+											// 	setVisibleModal(false)
+											// }}
+											onReset={formik.resetForm}
+										// sendToText="Credit Manager"
+										// onSendTo={() => console.log("dsaf")}
+										// condition={fetchedFileDetails?.length > 0}
+										// showSave
+										// param={params?.id}
+										/>
+
+									</div>
+								)}
+
+
+
+
+							</form>
+							{/* </main> */}
+						</div>
+					</Spin>
+
 				</div>
-			</Spin>
-
-			</div>
 			</section>
 
 

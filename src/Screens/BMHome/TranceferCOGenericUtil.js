@@ -50,6 +50,14 @@ export const TRANSFER_CO_PARAMS = {
         name: "to_brn",
         label: "To Branch"
     },
+    CREATED_BY: {
+        name: "created_by",
+        label: "Created By"
+    },
+    CREATED_DATE: {
+        name: "created_at",
+        label: "Created Date"
+    },
 }
 
 export const defaultTransferCOGenericFormProps = {
