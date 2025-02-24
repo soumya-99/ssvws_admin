@@ -280,6 +280,9 @@ function TranceferCO({ groupDataArr }) {
 
 				setGroupCode(res?.data?.msg[0]?.group_code)
 
+				
+				
+
 
 
 			})
@@ -451,7 +454,12 @@ function TranceferCO({ groupDataArr }) {
 				// if (params?.id < 1) {
 				// 	navigate(`/homebm/tranceferco/`)
 				// }
-				navigate(-1);
+				// navigate(-1);
+				// navigate(`/homebm/trancefercofromapprove-unic`);
+				setTimeout(() => {
+					window.location.reload();
+				}, 500);
+
 
 			})
 			.catch((err) => {
@@ -515,9 +523,35 @@ function TranceferCO({ groupDataArr }) {
 											<div>
 											<TDInputTemplateBr
 											type="text"
-											label="Created Date"
-											formControlName={formValues.created_at ? new Date(formValues.created_at).toLocaleDateString("en-GB") : ""}
-											value={formValues.created_at ? new Date(formValues.created_at).toLocaleDateString("en-GB") : ""}
+											label="Created Date & Time"
+											// formControlName={formValues.created_at ? new Date(formValues.created_at).toLocaleDateString("en-GB") : ""}
+											// value={formValues.created_at ? new Date(formValues.created_at).toLocaleDateString("en-GB") : ""}
+											formControlName={
+												formValues.approved_at
+													? new Date(formValues.created_at).toLocaleString("en-GB", {
+														  day: "2-digit",
+														  month: "2-digit",
+														  year: "numeric",
+														  hour: "2-digit",
+														  minute: "2-digit",
+														  second: "2-digit",
+														  hour12: false, // Use 24-hour format
+													  })
+													: ""
+											}
+											value={
+												formValues.approved_at
+													? new Date(formValues.created_at).toLocaleString("en-GB", {
+														  day: "2-digit",
+														  month: "2-digit",
+														  year: "numeric",
+														  hour: "2-digit",
+														  minute: "2-digit",
+														  second: "2-digit",
+														  hour12: false, // Use 24-hour format
+													  })
+													: ""
+											}
 											disabled={true}
 											mode={1}
 											/>
@@ -528,7 +562,7 @@ function TranceferCO({ groupDataArr }) {
 											<TDInputTemplateBr
 												// placeholder="From CO"
 												type="text"
-												label="Created By "
+												label="Approved By "
 												formControlName={formValues.approved_by}
 												value={formValues.approved_by}
 												disabled={true}
@@ -539,9 +573,33 @@ function TranceferCO({ groupDataArr }) {
 											<div>
 											<TDInputTemplateBr
 											type="text"
-											label="Created Date"
-											formControlName={formValues.approved_at ? new Date(formValues.approved_at).toLocaleDateString("en-GB") : ""}
-											value={formValues.approved_at ? new Date(formValues.approved_at).toLocaleDateString("en-GB") : ""}
+											label="Approved Date & Time"
+											formControlName={
+												formValues.approved_at
+													? new Date(formValues.approved_at).toLocaleString("en-GB", {
+														  day: "2-digit",
+														  month: "2-digit",
+														  year: "numeric",
+														  hour: "2-digit",
+														  minute: "2-digit",
+														  second: "2-digit",
+														  hour12: false, // Use 24-hour format
+													  })
+													: ""
+											}
+											value={
+												formValues.approved_at
+													? new Date(formValues.approved_at).toLocaleString("en-GB", {
+														  day: "2-digit",
+														  month: "2-digit",
+														  year: "numeric",
+														  hour: "2-digit",
+														  minute: "2-digit",
+														  second: "2-digit",
+														  hour12: false, // Use 24-hour format
+													  })
+													: ""
+											}
 											disabled={true}
 											mode={1}
 											/>
