@@ -289,14 +289,14 @@ function MenusBr({ theme }) {
           label: <Link to={"/homebm/trancefercofrom/0"}>Transfer Group</Link>,
         },
         {
-          key: "sub3-4",
-          icon: <EyeOutlined />,
-          label: <Link to={"/homebm/tranceferco"}>View Group Transfer</Link>,
-        },
-        {
           key: "sub3-5",
           icon: <CheckCircleOutlined />,
           label: <Link to={"/homebm/trancefercofromapprove-unic"}>Approve Group Transfer</Link>,
+        },
+        {
+          key: "sub3-4",
+          icon: <EyeOutlined />,
+          label: <Link to={"/homebm/tranceferco"}>View Group Transfer</Link>,
         }
 
     //    {

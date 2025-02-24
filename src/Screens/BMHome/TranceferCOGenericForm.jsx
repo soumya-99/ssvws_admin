@@ -11,6 +11,8 @@ import axios from "axios";
 import { url } from "../../Address/BaseUrl";
 import { Message } from "../../Components/Message"
 import { useNavigate } from "react-router-dom"
+import { DataTable } from "primereact/datatable";
+import Column from "antd/es/table/Column";
 const mcClass = "px-4 pb-5 bg-slate-50 rounded-lg shadow-lg h-auto my-10 mx-32";
 const labelClass = "block mb-2 text-sm capitalize font-bold text-slate-800";
 
@@ -21,7 +23,7 @@ const {
     TO_BRANCH,
     TO_CO,
     GROUP_NAME_CODE,
-    REMARKS } = TRANSFER_CO_PARAMS;
+    REMARKS, CREATED_BY, CREATED_DATE } = TRANSFER_CO_PARAMS;
 
 const TranceferCOGenericForm = (props) => {
 
@@ -31,6 +33,7 @@ const TranceferCOGenericForm = (props) => {
     const userDetails = JSON.parse(localStorage.getItem("user_details"))
     const navigate = useNavigate()
     const [loading, setLoading] = useState(false)
+    const [MemberListView, setMemberListView] = useState(() => [])
 
 
     const { inactiveSearchGroup,
@@ -102,6 +105,33 @@ const TranceferCOGenericForm = (props) => {
                 label={GROUP_NAME_CODE.label}
             />
         </div>
+
+    }, [inactiveSearchGroup, receivedData, getEditBox, getActualFormFiled]);
+
+
+
+
+    const SearchCreatedName = useMemo(() => {
+        const { created_by } = receivedData;
+        if (inactiveSearchGroup && created_by) {
+            return <div>
+                <label class={labelClass}>Created By</label>
+                <span>{created_by}</span>
+            </div>
+        }
+
+    }, [inactiveSearchGroup, receivedData, getEditBox, getActualFormFiled]);
+
+
+    const SearchCreatedDate = useMemo(() => {
+        const { created_at } = receivedData;
+        const formattedDate = created_at ? new Date(created_at).toLocaleDateString("en-GB") : "";
+        if (inactiveSearchGroup && created_at) {
+            return <div>
+                <label class={labelClass}>Created Date</label>
+                <span>{formattedDate}</span>
+            </div>
+        }
 
     }, [inactiveSearchGroup, receivedData, getEditBox, getActualFormFiled]);
 
@@ -259,7 +289,29 @@ const TranceferCOGenericForm = (props) => {
             setLoading(false); // Reset loading state
         }
     }, [transferCOFormManager, url, navigate]);
+
+
+    const handleFetchMemberListView = async () => {
+		setLoading(true)
+		const creds = {
+			group_code: receivedData.group_code,
+		}
+		await axios.post(`${url}/groupwise_mem_details`, creds)
+			.then((res) => {
+				console.log("groupwise_mem_details", res?.data?.msg)
+				setMemberListView(res?.data?.msg)
+
+			})
+			.catch((err) => {
+				console.log("?????????????????????", err)
+			})
+
+		setLoading(false)
+	}
     
+        useEffect(() => {
+            handleFetchMemberListView()
+        }, [])
     
 
     return  <div className="card bg-white border-2 p-5 mx-16 shadow-lg rounded-3xl surface-border border-round surface-ground flex-auto font-medium">
@@ -270,6 +322,11 @@ const TranceferCOGenericForm = (props) => {
             </div>
         </div> */}
         <form>
+            <div className="grid grid-cols-3 gap-5 mt-5">
+                {SearchCreatedName}
+                {SearchCreatedDate}
+            </div>
+            
             <div className="grid grid-cols-3 gap-5 mt-5">
                 {SearchGroupName}
                 {FromCO}
@@ -288,6 +345,67 @@ const TranceferCOGenericForm = (props) => {
             )}
                 
             </div>
+
+            {MemberListView?.length > 0 && (
+									<div className="sm:col-span-2 mt-5">
+										<div>
+											<label class="block mb-2 text-sm capitalize font-bold text-slate-800
+					dark:text-gray-100"> Member List
+												{/* <span style={{color:'red'}} class="ant-tag ml-2 ant-tag-error ant-tag-borderless text-[12.6px] my-2">
+					(You can Select Maxmimum 4 Member)</span> */}
+											</label>
+
+
+											{/* <Toast ref={toast} /> */}
+											
+											<DataTable
+												value={MemberListView?.map((item, i) => [{ ...item, id: i }]).flat()}
+												// expandedRows={expandedRows}
+												// onRowToggle={(e) => setExpandedRows(e.data)}
+												// onRowExpand={onRowExpand}
+												// onRowCollapse={onRowCollapse}
+												selectionMode="checkbox"
+												// selection={COMemList_select}
+												// onSelectionChange={(e) => setSelectedProducts(e.value)}
+												// onSelectionChange={(e) => handleSelectionChange(e)}
+												tableStyle={{ minWidth: "50rem" }}
+												// rowExpansionTemplate={rowExpansionTemplate}
+												dataKey="id"
+												// paginator
+												// rows={rowsPerPage}
+												// first={currentPage}
+												// onPage={onPageChange}
+												// rowsPerPageOptions={[5, 10, 20]} // Add options for number of rows per page
+												tableClassName="w-full text-sm text-left rtl:text-right shadow-lg text-green-900dark:text-gray-400 table_Custome table_Custome_1st" // Apply row classes
+											>
+												<Column
+													header="Sl No."
+													body={(rowData) => (
+														<span style={{ fontWeight: "bold" }}>{rowData?.id + 1}</span>
+													)}
+												></Column>
+
+												<Column
+													field="member_code"
+													header="Member Code"
+												></Column>
+
+												<Column
+													field="client_name"
+													header="Member Name"
+												></Column>
+												<Column
+													field="outstanding"
+													header="Outstanding"
+												></Column>
+
+											</DataTable>
+
+										</div>
+
+
+									</div>
+								)}
             <div className="mt-0">
                 {/* <Button onClick={transferCOSubmit}>{actionLabel ?? 'Submit'}</Button> */}
                 {/* <BtnComp
