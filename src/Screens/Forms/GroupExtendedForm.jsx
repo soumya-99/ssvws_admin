@@ -355,12 +355,13 @@ function GroupExtendedForm({ groupDataArr }) {
 	
 
 	const onSubmit = async (values) => {
-
+		console.log(COMemList_Store, 'COMemList_Store', COMemList_s.length);
 		// var groupMemberExistList = groupData[0]?.memb_dt.length;
 		// var restOfList = groupMemberRequirList - groupData[0]?.memb_dt.length
 		// console.log(restOfList, "groupMember")
-
-		if(params?.id < 1){
+		
+		if(params?.id < 1 && COMemList_s.length){
+			
 			if(COMemList_Store.length < 1){
 				Message("error", "Please Asigne Group Member")
 			}
@@ -369,7 +370,7 @@ function GroupExtendedForm({ groupDataArr }) {
 				Message("error", "Please Asigne Group Member Maxmimum 4")
 			}
 			
-			if(COMemList_Store.length > 0 && COMemList_Store.length <= groupMemberRequirList){
+			if(COMemList_Store.length > 0){
 				setLoading(true)
 	
 				setVisible(true)
@@ -378,8 +379,16 @@ function GroupExtendedForm({ groupDataArr }) {
 			}
 		}
 
-	if(params?.id > 0){
+		if(params?.id < 1 && COMemList_s.length === 0){
+			setLoading(true)
+	
+			setVisible(true)
+	
+			setLoading(false)
+		}
 
+		if(params?.id > 0 && COMemList_s.length){
+	
 		if(COMemList_Store.length < 1){
 			Message("error", "Please Asigne Group Member")
 		}
@@ -400,6 +409,14 @@ function GroupExtendedForm({ groupDataArr }) {
 		// setLoading(true)
 		// setVisible(true)
 		// setLoading(false)
+	} 
+	
+	if(params?.id > 0 && COMemList_s.length === 0){
+		setLoading(true)
+
+		setVisible(true)
+
+		setLoading(false)
 	}
 		
 		
