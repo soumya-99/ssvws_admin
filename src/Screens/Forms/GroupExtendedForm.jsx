@@ -92,6 +92,7 @@ function GroupExtendedForm({ groupDataArr }) {
 	const [visible, setVisible] = useState(() => false)
 	const [remarksForDelete, setRemarksForDelete] = useState(() => "")
 
+	var groupMemberRequirList = 4;
 
 
 	// const [checkedValues, setCheckedValues] = useState([]);
@@ -187,50 +188,14 @@ function GroupExtendedForm({ groupDataArr }) {
 	}
 
 	useEffect(() => {
-		fetchGroupDetails()
+		if(params?.id > 0){
+			fetchGroupDetails()
+		}
+		
 	}, [])
-
 	
 
-	// const fetchGroupAndMembersDetails = async () => {
-	// 	setLoading(true)
-	// 	const creds = {
-	// 		prov_grp_code: params?.id,
-	// 		user_type: userDetails?.id,
-	// 		branch_code: userDetails?.brn_code,
-	// 	}
-	// 	await axios
-	// 		.post(`${url}/admin/fetch_bmfwd_dtls_web`, creds)
-	// 		.then((res) => {
-	// 			console.log("TETETETETTETETETTETE", res?.data)
-	// 			setValues({
-	// 				g_group_name: res?.data?.msg[0]?.group_name,
-	// 				g_group_type: res?.data?.msg[0]?.group_type,
-	// 				g_address: res?.data?.msg[0]?.grp_addr,
-	// 				g_pin: res?.data?.msg[0]?.pin_no,
-	// 				g_group_block: res?.data?.msg[0]?.block,
-	// 				g_phone1: res?.data?.msg[0]?.phone1,
-	// 				g_phone2: res?.data?.msg[0]?.phone2,
-	// 				g_email: res?.data?.msg[0]?.email_id,
-	// 				g_bank_name: res?.data?.msg[0]?.bank_name,
-	// 				g_bank_branch: res?.data?.msg[0]?.branch_name,
-	// 				g_ifsc: res?.data?.msg[0]?.ifsc,
-	// 				g_micr: res?.data?.msg[0]?.micr,
-	// 				g_acc1: res?.data?.msg[0]?.acc_no1,
-	// 				g_acc2: res?.data?.msg[0]?.acc_no2,
-	// 			})
-	// 			setGroupDetails(res?.data?.msg[0])
-	// 			setMemberDetails(res?.data?.msg[0]?.memb_dt)
-	// 		})
-	// 		.catch((err) => {
-	// 			console.log("ERRRRRRPPPPEEEE", err)
-	// 		})
-	// 	setLoading(false)
-	// }
-
-	// useEffect(() => {
-	// 	fetchGroupAndMembersDetails()
-	// }, [])
+	
 
 	const handleFetchBranches = async () => {
 		setLoading(true)
@@ -320,7 +285,7 @@ function GroupExtendedForm({ groupDataArr }) {
 	const handleSelectionChange = (e) => {
 		
 		
-		if (e.value.length <= 4) {
+		if (e.value.length <= groupMemberRequirList) {
 
 			// Update the selected products setPaymentDate
 		console.log(e.value, "kkkkkkkkkkkkkkkkkkkk")
@@ -335,80 +300,35 @@ function GroupExtendedForm({ groupDataArr }) {
 		const output = transformData(e.value);
 		setCOMemList_Store(output)
 		console.log(output, 'kkkkkkkkkkkkkkkkkkkk');
-
+		console.log(output,'outputoutputoutputoutputoutput');
 		}
 		
 	}
 
-	// useEffect(() => {
-	// 		// setSetData(loanAppData)
-	// 		if (isMounted.current) {
-	// 			const summary =
-	// 				expandedRows !== null ? "All Rows Expanded" : "All Rows Collapsed"
-	// 			toast.current.show({
-	// 				severity: "success",
-	// 				summary: `${summary}`,
-	// 				life: 3000,
-	// 			})
-	// 		}
-	// 		// console.log(NewDataList, 'NewGroupList');
-	// 	}, [expandedRows])
+
+	const handleSelectionChange_approve = (e) => {
+		
+		if (e.value.length <= groupMemberRequirList - groupData[0]?.memb_dt.length) {
+		setCOMemList_select(e.value)
+		function transformData(inputArray) {
+			return inputArray.map(({ form_no, member_code }) => ({ form_no, member_code }));
+		}
+		const output = transformData(e.value);
+		setCOMemList_Store(output)
+		console.log(output,'outputoutputoutputoutputoutput');
+		
+		}
+		
+	}
+
 	
-		// const onRowExpand = (event) => {
-		// 	setExpandedRows(null)
-		// 	console.log(event.data.group_code, "event.data")
-		// 	// console.log('itemitemitemitem', 'lll', event.data);
-		// 	// fetchLoanGroupMember(event?.data?.group_code, event?.data?.transaction_date)
-	
-		// 	// toast.current.show({severity: 'info', summary: 'Product Expanded', detail: event.data.name, life: 3000});
-		// }
-	
-		// const onRowCollapse = (event) => {
-		// 	console.log(event.data, "event.data close")
-		// 	// toast.current.show({severity: 'success', summary: 'Product Collapsed', detail: event.data.name, life: 3000});
-		// }
-	
-		// const allowExpansion = (rowData) => {
-		// 	return getloanAppData.length > 0
-		// }
 		const onPageChange = (event) => {
 			setCurrentPage(event.first)
 			setRowsPerPage(event.rows)
 		}
 
 
-	// const options_Member = COMemList_s.map((member) => ({
-
-	// 	  label: (
-	// 		<>
-	// 		  {member.client_name} <strong>Form No:</strong> {member.form_no} (<strong>Member Code:</strong>{member.member_code})
-	// 		</>
-	// 	  ),
-	// 	value: `${member.form_no} , ${member.member_code}`,
-	//   }));
-
-	// const onChange = (checkedList) => {
-		
-	// 	// setCOMemList(checkedList);
-	// 	if (checkedList.length <= 4) {
-			
-	// 		setCOMemList_select(checkedList);
-
-	// 		const transformArray = (arr) => {
-	// 		return arr.map((item) => {
-	// 		const [form_no, member_code] = item.split(",").map(val => val.trim()); // Split by comma and trim spaces
-	// 		return {
-	// 		form_no: Number(form_no), // Convert form_no to number
-	// 		member_code: Number(member_code) // Convert member_code to number
-	// 		};
-	// 		});
-	// 		};
-	// 		const result = transformArray(checkedList);
-	// 		setCOMemList_Store(result)
-	// 		console.log(COMemList_Store, 'QQQQQrrrrQQQQQQQQQQQ - ', result);
-	// 	}
-	//   };
-
+	
 
 	useEffect(() => {
 		handleFetchCEO()
@@ -435,19 +355,21 @@ function GroupExtendedForm({ groupDataArr }) {
 	
 
 	const onSubmit = async (values) => {
-		console.log("onsubmit called")
-		console.log(values, "onsubmit vendor")
-		console.log(values, "VVVVVVVVVVVVVVVVVVVVVVVV")
+
+		// var groupMemberExistList = groupData[0]?.memb_dt.length;
+		// var restOfList = groupMemberRequirList - groupData[0]?.memb_dt.length
+		// console.log(restOfList, "groupMember")
+
 		if(params?.id < 1){
 			if(COMemList_Store.length < 1){
 				Message("error", "Please Asigne Group Member")
 			}
 
-			if(COMemList_Store.length > 4){
+			if(COMemList_Store.length > groupMemberRequirList){
 				Message("error", "Please Asigne Group Member Maxmimum 4")
 			}
 			
-			if(COMemList_Store.length > 0){
+			if(COMemList_Store.length > 0 && COMemList_Store.length <= groupMemberRequirList){
 				setLoading(true)
 	
 				setVisible(true)
@@ -457,12 +379,27 @@ function GroupExtendedForm({ groupDataArr }) {
 		}
 
 	if(params?.id > 0){
-		console.log(values, "VVVVVVVVVVVVVVVVVVVVVVVV", 'hhhh')
-		setLoading(true)
-	
-		setVisible(true)
-	
-		setLoading(false)
+
+		if(COMemList_Store.length < 1){
+			Message("error", "Please Asigne Group Member")
+		}
+
+		if(COMemList_Store.length > 4){
+			Message("error", "Please Asigne Group Member Maxmimum 4")
+		}
+
+		if(COMemList_Store.length > 0 && COMemList_Store.length <= groupMemberRequirList - groupData[0]?.memb_dt.length){
+			setLoading(true)
+
+			setVisible(true)
+
+			setLoading(false)
+		}
+
+		// console.log(values, "VVVVVVVVVVVVVVVVVVVVVVVV", 'hhhh')
+		// setLoading(true)
+		// setVisible(true)
+		// setLoading(false)
 	}
 		
 		
@@ -488,7 +425,7 @@ function GroupExtendedForm({ groupDataArr }) {
 			branch_code: branch?.split(",")[1],
 			prov_grp_code: COMemList_Store
 		}
-		console.log("VVVVVVVVVVVVVVVVVVVVVVVV", creds)
+		// console.log("verify_four_mem_assign_grp", creds)
 
 		await axios
 			.post(`${url}/admin/verify_four_mem_assign_grp`, creds)
@@ -560,6 +497,9 @@ function GroupExtendedForm({ groupDataArr }) {
 			grp_memberdtls: COMemList_Store
 		}
 
+		// console.log(COMemList_Store, 'COMemList_StoreCOMemList_Store', creds);
+		
+
 		await axios
 		.post(`${url}/admin/edit_group_web`, creds)
 		.then((res) => {
@@ -571,6 +511,10 @@ function GroupExtendedForm({ groupDataArr }) {
 		if(params?.id < 1){
 		navigate(`/homebm/searchgroup/`)
 		}
+
+		if(params?.id > 0){
+			navigate(`/homebm/searchgroup/`)
+			}
 		
 		})
 		.catch((err) => {
@@ -1045,7 +989,8 @@ function GroupExtendedForm({ groupDataArr }) {
 							/>
 						)} */}
 						{params?.id > 0 && (
-							// <div className="w-1/2 gap-3 space-x-7">
+							<>
+							{/* // <div className="w-1/2 gap-3 space-x-7"> */}
 							<div className="sm:col-span-2 mt-5">
 								<div>
 									<Tag color="#DA4167" className="text-white mb-2 font-bold">
@@ -1190,35 +1135,70 @@ function GroupExtendedForm({ groupDataArr }) {
 										</table>
 									</div>
 
-									{/* <Tag
-											key={i}
-											icon={<UserOutlined />}
-											color={
-												item?.approval_status === "U" ||
-												(userDetails?.id == 3 && item?.approval_status === "S")
-													? "geekblue"
-													: "red"
-											}
-											className="text-lg cursor-pointer mb-5 rounded-3xl
-									"
-											onClick={
-												userDetails?.id == 2
-													? () =>
-															navigate(`/homebm/editgrtform/${item?.form_no}`, {
-																state: item,
-															})
-													: () =>
-															navigate(`/homeco/editgrtform/${item?.form_no}`, {
-																state: item,
-															})
-											}
-										>
-											{item?.client_name}
-										</Tag> */}
-									{/* ))} */}
+									
 								</div>
 							</div>
-						)}
+
+							{/* groupData[0]?.memb_dt */}
+							{/* {JSON.stringify(groupData[0]?.memb_dt.length, null, 2)} pppppppppppp {groupMemberRequirList - groupData[0]?.memb_dt.length}
+							yyyyyyyyyy {JSON.stringify(COMemList_s, null, 2)} */}
+
+							{COMemList_s.length>0 &&(
+							<div className="sm:col-span-2 mt-5">
+							<div>
+							<label class="block mb-2 text-sm capitalize font-bold text-slate-800
+							dark:text-gray-100"> Asigne Group Member  
+							<span style={{color:'red'}} class="ant-tag ml-2 ant-tag-error ant-tag-borderless text-[12.6px] my-2">
+							(You can Select Maxmimum 4 Member)</span>
+							</label>
+
+
+							<Toast ref={toast} />
+							<DataTable
+							value={COMemList_s?.map((item, i) => [{ ...item, id: i }]).flat()}
+							selectionMode="checkbox"
+							selection={COMemList_select}
+							onSelectionChange={(e) => handleSelectionChange_approve(e)}
+							tableStyle={{ minWidth: "50rem" }}
+							dataKey="id"
+							paginator
+							rows={rowsPerPage}
+							first={currentPage}
+							onPage={onPageChange}
+							rowsPerPageOptions={[5, 10, 20]} // Add options for number of rows per page
+							tableClassName="w-full text-sm text-left rtl:text-right shadow-lg text-green-900dark:text-gray-400 table_Custome table_Custome_1st" // Apply row classes
+							>
+							<Column
+							header="Sl No."
+							body={(rowData) => (
+							<span style={{ fontWeight: "bold" }}>{rowData?.id + 1}</span>
+							)}
+							></Column>
+							<Column 
+							selectionMode="multiple"
+							headerStyle={{ pointerEvents: "none" }} // Disable "Select All"
+							></Column>
+							<Column
+							field="client_name"
+							header="Name "
+							></Column>
+
+							<Column
+							field="form_no"
+							header="Form No."
+							></Column>
+
+							</DataTable>
+
+							</div>
+
+
+							</div>
+							)}
+
+							</>
+							
+					)}
 
 
 					{params?.id < 1 && (
