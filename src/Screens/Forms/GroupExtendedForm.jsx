@@ -156,7 +156,7 @@ function GroupExtendedForm({ groupDataArr }) {
 		await axios
 			.post(`${url}/admin/fetch_search_group_web`, creds)
 			.then((res) => {
-				console.log("VVVVVVVVVVVVVVVVVVVVVVVV", res?.data?.msg[0])
+				console.log("fetch_search_group_web", res?.data?.msg[0].brn_name)
 				setValues({
 					g_group_name: res?.data?.msg[0]?.group_name,
 					g_group_type: res?.data?.msg[0]?.group_type,
@@ -172,6 +172,7 @@ function GroupExtendedForm({ groupDataArr }) {
 					g_micr: res?.data?.msg[0]?.micr,
 					g_acc1: res?.data?.msg[0]?.acc_no1,
 					g_acc2: res?.data?.msg[0]?.acc_no2,
+					brn_name: res?.data?.msg[0]?.brn_name,
 				})
 				setGroupData(res?.data?.msg)
 				setBranch(
@@ -236,7 +237,7 @@ function GroupExtendedForm({ groupDataArr }) {
 		await axios
 			.get(`${url}/admin/branch_name_mis?branch_code=${userDetails?.brn_code}`)
 			.then((res) => {
-				console.log("QQQQQQQQQQQQQQQQ", res?.data)
+				console.log(userDetails?.brn_code, "QQQQQQQQQQQQQQQQ", res?.data)
 				setBranches(res?.data?.msg)
 			})
 			.catch((err) => {
@@ -735,11 +736,30 @@ function GroupExtendedForm({ groupDataArr }) {
 							{/* {userDetails?.id === 3 && ( */}
 							<>
 								<div>
+
+									{params.id > 0 &&(
+
+									<TDInputTemplateBr
+									placeholder="Branch"
+									type="text"
+									label="Branch"
+									// name="g_group_name"
+									// handleChange={formik.handleChange}
+									// handleBlur={formik.handleBlur}
+									formControlName={formValues.brn_name}
+									disabled = {true}
+									mode={1}
+									/>
+									)}
+
+									{params.id < 1 &&(
+										<>
 									<TDInputTemplateBr
 										placeholder="Choose Branch"
 										type="text"
 										label="Branch"
 										name="g_branch"
+										// formControlName={branch}
 										formControlName={branch}
 										handleChange={(e) => {
 											setBranch(e.target.value)
@@ -758,8 +778,11 @@ function GroupExtendedForm({ groupDataArr }) {
 									{formik.errors.g_branch && formik.touched.g_branch ? (
 									<VError title={formik.errors.g_branch} />
 								) : null}
+								</>
+								)}
+									
 
-{/* {JSON.stringify(branch, 2)}  */}
+{/* {JSON.stringify(branch, 2)} //// {JSON.stringify(formValues.brn_name, 2)}  */}
 								</div>
 
 								{params?.id < 1 && (

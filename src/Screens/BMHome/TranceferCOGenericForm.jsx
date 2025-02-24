@@ -125,7 +125,16 @@ const TranceferCOGenericForm = (props) => {
 
     const SearchCreatedDate = useMemo(() => {
         const { created_at } = receivedData;
-        const formattedDate = created_at ? new Date(created_at).toLocaleDateString("en-GB") : "";
+        const formattedDate = created_at ? new Date(created_at).toLocaleString("en-GB", {
+          day: "2-digit",
+          month: "2-digit",
+          year: "numeric",
+          hour: "2-digit",
+          minute: "2-digit",
+          second: "2-digit",
+          hour12: false, // 24-hour format
+      })
+    : "";
         if (inactiveSearchGroup && created_at) {
             return <div>
                 <label class={labelClass}>Created Date</label>
@@ -172,7 +181,8 @@ const TranceferCOGenericForm = (props) => {
     const ToBranch = useMemo(() => {
         const { to_brn_name, to_brn } = receivedData;
         if (inactiveToBranch) {
-            return <div title={to_brn}><label class={labelClass}>{TO_BRANCH.label}{getEditBox(TO_BRANCH.name)}</label><span>{to_brn_name}</span></div>
+            return <div title={to_brn}><label class={labelClass}>{TO_BRANCH.label}{getEditBox(TO_BRANCH.name)}</label>
+            <span style={{backgroundColor:'#d5e6fb', padding:'5px 8px', borderRadius:5, fontSize:14}}>{to_brn_name}</span></div>
         } else {
             return <div>
                 <label for={TO_BRANCH.name} class={labelClass}>Search Branch Name or Code</label>
@@ -202,7 +212,8 @@ const TranceferCOGenericForm = (props) => {
     const ToCO = useMemo(() => {
         const { to_co_name, to_co } = receivedData;
         if (inactiveToCO) {
-            return <div title={to_co}><label class={labelClass}>{TO_CO.label}{getEditBox(TO_CO.name)}</label><span>{to_co_name}</span></div>
+            return <div title={to_co}><label class={labelClass}>{TO_CO.label}{getEditBox(TO_CO.name)}</label>
+            <span style={{backgroundColor:'#d5e6fb', padding:'5px 8px', borderRadius:5, fontSize:14}}>{to_co_name}</span></div>
         } else {
             return <div>
                 <label for={TO_CO.name} class={labelClass}>Set To CO</label>

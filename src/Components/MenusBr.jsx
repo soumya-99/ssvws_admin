@@ -103,8 +103,18 @@ function MenusBr({ theme }) {
         {
           key: "sub3-1",
           icon: <FileSearchOutlined />,
-          label: <Link to={"/homeco/searchgroup/"}>Edit Group</Link>,
+          label: <Link to={"/homeco/searchgroup/"}>Edit Group </Link>,
         },
+        {
+          key: "sub3-3",
+          icon: <SendOutlined />,
+          label: <Link to={"/homebm/trancefercofrom/0"}>Transfer Group</Link>,
+        },
+        {
+          key: "sub3-4",
+          icon: <EyeOutlined />,
+          label: <Link to={"/homebm/tranceferco"}>View Group Transfer</Link>,
+        }
     //    {
     //      key: "sub3-2",
     //      icon: <PlusCircleOutlined />,
@@ -677,6 +687,44 @@ function MenusBr({ theme }) {
         },
       ],
     },
+    {
+      key: "sub3",
+      icon: <DeploymentUnitOutlined />,
+      label: "Groups",
+      children: [
+        {
+          key: "sub3-1",
+          icon: <FileSearchOutlined />,
+          label: <Link to={"/homebm/searchgroup/"}>Edit Group</Link>,
+        },
+        {
+          key: "sub3-2",
+          icon: <PlusCircleOutlined />,
+          label: <Link to={"/homebm/editgroupform/0"}>Add Group</Link>,
+        },
+        {
+          key: "sub3-3",
+          icon: <SendOutlined />,
+          label: <Link to={"/homebm/trancefercofrom/0"}>Transfer Group</Link>,
+        },
+        {
+          key: "sub3-5",
+          icon: <CheckCircleOutlined />,
+          label: <Link to={"/homebm/trancefercofromapprove-unic"}>Approve Group Transfer</Link>,
+        },
+        {
+          key: "sub3-4",
+          icon: <EyeOutlined />,
+          label: <Link to={"/homebm/tranceferco"}>View Group Transfer</Link>,
+        }
+
+    //    {
+    //      key: "sub3-3",
+    //      icon: <SubnodeOutlined />,
+    //      label: <Link to={"/homemis/assignmember"}>Assign Member</Link>,
+    //    },
+      ],
+    },
     // {
     //   key: "sub2",
     //   icon: <ContainerOutlined />,
@@ -883,6 +931,281 @@ function MenusBr({ theme }) {
       ],
     },
   ];
+
+
+  const items_user_type_11 = [
+    {
+      key: "sub1",
+      icon: <LineChartOutlined />,
+      label: <Link to={"/homeadmin/"}>Dashboard</Link>,
+    },
+    {
+      key: "sub5",
+      icon: <DatabaseOutlined />,
+      label: "Master",
+      children: [
+        {
+          key: "sub5-1",
+          icon: <DatabaseOutlined />,
+          label: <Link to={"/homeadmin/masterbanks"}>Banks</Link>,
+        },
+        {
+          key: "sub5-2",
+          icon: <DatabaseOutlined />,
+          label: <Link to={"/homeadmin/masteremployees"}>Employees</Link>,
+        },
+        {
+          key: "sub5-2",
+          icon: <DatabaseOutlined />,
+          label: <Link to={"/homeadmin/masterdesignations"}>Designations</Link>,
+        },
+      ],
+    },
+    {
+      key: "sub3",
+      icon: <DeploymentUnitOutlined />,
+      label: "Groups",
+      children: [
+        {
+          key: "sub3-1",
+          icon: <FileSearchOutlined />,
+          label: <Link to={"/homebm/searchgroup/"}>Edit Group</Link>,
+        },
+        {
+          key: "sub3-2",
+          icon: <PlusCircleOutlined />,
+          label: <Link to={"/homebm/editgroupform/0"}>Add Group</Link>,
+        },
+        {
+          key: "sub3-3",
+          icon: <SendOutlined />,
+          label: <Link to={"/homebm/trancefercofrom/0"}>Transfer Group</Link>,
+        },
+        // {
+        //   key: "sub3-5",
+        //   icon: <CheckCircleOutlined />,
+        //   label: <Link to={"/homebm/trancefercofromapprove-unic"}>Approve Group Transfer</Link>,
+        // },
+        {
+          key: "sub3-4",
+          icon: <EyeOutlined />,
+          label: <Link to={"/homebm/tranceferco"}>View Group Transfer</Link>,
+        }
+
+    //    {
+    //      key: "sub3-3",
+    //      icon: <SubnodeOutlined />,
+    //      label: <Link to={"/homemis/assignmember"}>Assign Member</Link>,
+    //    },
+      ],
+    },
+    // {
+    //   key: "sub2",
+    //   icon: <ContainerOutlined />,
+    //   label:  "Members",
+    //   children: [
+    //     {
+    //       key: "sub2-1",
+    //       icon: <ContainerOutlined />,
+    //       label: <Link to={"/homemis/grtappls/"}>Applications</Link>,
+    //     },
+    //     {
+    //       key: "sub2-2",
+    //       icon: <SearchOutlined />,
+    //       label: <Link to={"/homemis/searchform/"}>Search Form</Link>,
+    //     },
+    //     // {
+    //     //   key: "sub2-4",
+    //     //   icon: <FileSearchOutlined />,
+    //     //   label: <Link to={"/homemis/searchmember/"}>Search Member</Link>,
+    //     // },
+    //   ],
+    // },
+    // {
+    //  key: "sub3",
+    //  icon: <DeploymentUnitOutlined />,
+    //  label: "Groups",
+    //  children: [
+    //    {
+    //      key: "sub3-1",
+    //      icon: <FileSearchOutlined />,
+    //      label: <Link to={"/homemis/searchgroup/"}>Edit Group</Link>,
+    //    },
+    //    {
+    //      key: "sub3-2",
+    //      icon: <PlusCircleOutlined />,
+    //      label: <Link to={"/homemis/editgroupform/0"}>Add Group</Link>,
+    //    },
+    // //     {
+    // //       key: "sub3-3",
+    // //       icon: <SubnodeOutlined />,
+    // //       label: <Link to={"/homemis/assignmember"}>Assign Member</Link>,
+    // //     },
+    //  ],
+    // },
+    {
+      key: "sub_att",
+      icon: <ImportOutlined />,
+      label: "Attendance",
+      children: [
+        {
+          key: "sub4-1",
+          icon: <UserAddOutlined />,
+          label: <Link to={"/homeadmin/attendancedashboard"}>Attendance Dashboard</Link>,
+        },
+      ],
+    },
+    // {
+    //   key: "sub4",
+    //   icon: <ThunderboltOutlined />,
+    //   label: "Loans",
+    //   children: [
+    //     {
+    //       key: "sub4-1",
+    //       icon: <ThunderboltOutlined />,
+    //       label: <Link to={"/homebm/disburseloan"}>Disburse Loan</Link>,
+    //     },
+    //     {
+    //       key: "sub4-3",
+    //       icon: <EyeOutlined />,
+    //       label: <Link to={"/homebm/viewloan"}>View Loan</Link>,
+    //     },
+    //       {
+    //      key: "sub4-2",
+    //      icon: <CheckCircleOutlined />,
+    //      label: <Link to={"/homebm/approveloan"}>Approve Transaction</Link>,
+    //     },
+    //   ]
+    // },
+    {
+      key: "sub7",
+      icon: <ImportOutlined />,
+      label: "User Management",
+      children: [
+        {
+          key: "sub7-1",
+          icon: <UserAddOutlined />,
+          label: <Link to={"/homeadmin/createuser/0"}>Create User</Link>,
+        },
+        {
+          key: "sub7-2",
+          icon: <SettingOutlined />,
+          label: <Link to={"/homeadmin/manageuser/"}>Manage User</Link>,
+        },
+        {
+          key: "sub7-3",
+          icon: <FastForwardOutlined />,
+          label: <Link to={"/homeadmin/transferuser/0"}>Transfer User</Link>,
+        },
+      ],
+    },
+    {
+      label: "Reports",
+      key: "sub6",
+      icon: <BarsOutlined />,
+      children: [
+        // {
+        //  key: "sub6-1",
+        //  icon: <BarChartOutlined />,
+        //  label: (
+        //    <Link to={"/homebm/memberwiserecoveryreport"}>
+        //      Memberwise Recovery
+        //    </Link>
+        //  ),
+        // },
+        // {
+        //  key: "sub6-2",
+        //  icon: <BarChartOutlined />,
+        //  label: (
+        //    <Link to={"/homebm/groupwiserecoveryreport"}>
+        //      Groupwise Recovery
+        //    </Link>
+        //  ),
+        // },
+        // {
+        //  key: "sub6-3",
+        //  icon: <BarChartOutlined />,
+        //  label: <Link to={"/homebm/demandreport"}>Demand</Link>,
+        // },
+        {
+          key: "sub6-4",
+          icon: <BarChartOutlined />,
+          label: <Link to={"/homeadmin/loanstatements"}>Loan Statements</Link>,
+        },
+        {
+          key: "sub6-5",
+          icon: <BarChartOutlined />,
+          label: <Link to={"/homeadmin/loantxns"}>Loan Transactions</Link>,
+        },
+        {
+          key: "sub6-6",
+          icon: <BarChartOutlined />,
+          label: <Link to={"/homeadmin/demandreport"}>Demand Report</Link>,
+        },
+        {
+          key: "sub6-7",
+          icon: <BarChartOutlined />,
+          label: (
+            <Link to={"/homeadmin/outstasndingreport"}>Outstanding Report</Link>
+          ),
+        },
+        // {
+        //  key: "sub6-8",
+        //  icon: <BarChartOutlined />,
+        //  label: <Link to={"/homebm/summaryreports"}>Summary Reports</Link>,
+        //  children: [
+        //    {
+        //      key: "sub6-8-1",
+        //      icon: <BarChartOutlined />,
+        //      label: (
+        //        <Link to={"/homebm/summaryreports/fundwise"}>
+        //          Fundwise Report
+        //        </Link>
+        //      ),
+        //    },
+        //    {
+        //      key: "sub6-8-2",
+        //      icon: <BarChartOutlined />,
+        //      label: (
+        //        <Link to={"/homebm/summaryreports/schemewise"}>
+        //          Schemewise Report
+        //        </Link>
+        //      ),
+        //    },
+        //  ],
+        // },
+        {
+          key: "sub6-8",
+          icon: <BarChartOutlined />,
+          label: <Link to={"/homeadmin/fundwisesummary"}>Fundwise Report</Link>,
+        },
+        {
+          key: "sub6-9",
+          icon: <BarChartOutlined />,
+          label: (
+            <Link to={"/homeadmin/schemewisesummary"}>Schemewise Report</Link>
+          ),
+        },
+        {
+          key: "sub6-10",
+          icon: <BarChartOutlined />,
+          label: (
+            <Link to={"/homeadmin/demandvscollectionreport"}>
+              Demand vs. Collection
+            </Link>
+          ),
+        },
+        // {
+        //   key: "sub6-10",
+        //   icon: <BarChartOutlined />,
+        //   label: (
+        //     <Link to={"/homebm/groupclosereport"}>Group Close</Link>
+        //   ),
+        // },
+      ],
+    },
+  ];
+
   const items_user_type_3 = [
     {
       key: "sub1",
@@ -1506,7 +1829,7 @@ function MenusBr({ theme }) {
         items={ 
          
           userDetails?.id === 1 || userDetails?.id === 2 || userDetails?.id === 5 || userDetails.id==11
-            ? (userDetails?.id === 2 || userDetails.id===11)? items_user_type_2:items_user_type_15:userDetails.id==4?userDetails.brn_code=='100'?items_user_type_4_100:items_user_type_2:userDetails.id==3? items_user_type_3:items_user_type_10
+            ? (userDetails?.id === 2 || userDetails.id===11)? userDetails.id==11? items_user_type_11: items_user_type_2:items_user_type_15:userDetails.id==4?userDetails.brn_code=='100'?items_user_type_4_100:items_user_type_2:userDetails.id==3? items_user_type_3:items_user_type_10
             // : userDetails?.id === 2
             // ? itemsBM
             // : userDetails?.id === 4
