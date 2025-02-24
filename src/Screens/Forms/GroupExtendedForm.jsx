@@ -850,7 +850,7 @@ function GroupExtendedForm({ groupDataArr }) {
 									name="g_phone2"
 									handleChange={formik.handleChange}
 									handleBlur={formik.handleBlur}
-									formControlName={formik.values.g_phone2}
+									formControlName={formik.values.g_phone2 == '0'? '' : formik.values.g_phone2}
 									mode={1}
 								/>
 								{formik.errors.g_phone2 && formik.touched.g_phone2 ? (
@@ -882,9 +882,10 @@ function GroupExtendedForm({ groupDataArr }) {
 									name="g_bank_name"
 									handleChange={formik.handleChange}
 									handleBlur={formik.handleBlur}
-									formControlName={formik.values.g_bank_name}
+									formControlName={formik.values.g_bank_name == 'null' ? '' : formik.values.g_bank_name}
 									mode={1}
 								/>
+								{/* {JSON.stringify(formik.values.g_bank_name, null, 2)} */}
 								{formik.errors.g_bank_name && formik.touched.g_bank_name ? (
 									<VError title={formik.errors.g_bank_name} />
 								) : null}
@@ -898,7 +899,7 @@ function GroupExtendedForm({ groupDataArr }) {
 									name="g_bank_branch"
 									handleChange={formik.handleChange}
 									handleBlur={formik.handleBlur}
-									formControlName={formik.values.g_bank_branch}
+									formControlName={formik.values.g_bank_branch == 'null' ? '' : formik.values.g_bank_branch}
 									mode={1}
 								/>
 								{formik.errors.g_bank_branch && formik.touched.g_bank_branch ? (
@@ -914,7 +915,7 @@ function GroupExtendedForm({ groupDataArr }) {
 									name="g_ifsc"
 									handleChange={formik.handleChange}
 									handleBlur={formik.handleBlur}
-									formControlName={formik.values.g_ifsc}
+									formControlName={formik.values.g_ifsc == '0' ? '' : formik.values.g_ifsc}
 									mode={1}
 								/>
 								{formik.errors.g_ifsc && formik.touched.g_ifsc ? (
@@ -930,7 +931,7 @@ function GroupExtendedForm({ groupDataArr }) {
 									name="g_micr"
 									handleChange={formik.handleChange}
 									handleBlur={formik.handleBlur}
-									formControlName={formik.values.g_micr}
+									formControlName={formik.values.g_micr == '0' ? '' : formik.values.g_micr}
 									mode={1}
 								/>
 								{formik.errors.g_micr && formik.touched.g_micr ? (
@@ -946,7 +947,7 @@ function GroupExtendedForm({ groupDataArr }) {
 									name="g_acc1"
 									handleChange={formik.handleChange}
 									handleBlur={formik.handleBlur}
-									formControlName={formik.values.g_acc1}
+									formControlName={formik.values.g_acc1 == '0' ? '' : formik.values.g_acc1}
 									mode={1}
 								/>
 								{formik.errors.g_acc1 && formik.touched.g_acc1 ? (
@@ -962,7 +963,7 @@ function GroupExtendedForm({ groupDataArr }) {
 									name="g_acc2"
 									handleChange={formik.handleChange}
 									handleBlur={formik.handleBlur}
-									formControlName={formik.values.g_acc2}
+									formControlName={formik.values.g_acc2 == '0' ? '' : formik.values.g_acc2}
 									mode={1}
 								/>
 								{formik.errors.g_acc2 && formik.touched.g_acc2 ? (
