@@ -35,7 +35,7 @@ function CreateUserForm() {
   const [visible, setVisible] = useState(() => false);
 
   // const formattedDob = formatDateToYYYYMMDD(memberDetails?.dob)
-  const [selectedBranches, setSelectedBranches] = useState(null);
+  const [selectedBranches, setSelectedBranches] = useState([]);
   const cities = [
     { name: "New York", code: "NY" },
     { name: "Rome", code: "RM" },

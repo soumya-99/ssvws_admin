@@ -97,7 +97,7 @@ function Sidebar({ mode = 0 }) {
 					  // hidden: data?.add_group == "Y" ? false : true,
 					},
 					{
-					  key: "sub3-3",
+					  key: "sub3-4",
 					  icon: <SendOutlined />,
 					  label: <Link to={"/homebm/trancefercofrom/0"}>Transfer Group</Link>,
 					  // hidden: data?.transfer_group == "Y" ? false : true,
@@ -113,7 +113,7 @@ function Sidebar({ mode = 0 }) {
 					  // hidden: data?.approve_group_transfer == "Y" ? false : true,
 					},
 					{
-					  key: "sub3-4",
+					  key: "sub3-6",
 					  icon: <EyeOutlined />,
 					  label: <Link to={"/homebm/tranceferco"}>View Group Transfer</Link>,
 					  // hidden: data?.view_group_transfer == "Y" ? false : true,
@@ -133,7 +133,7 @@ function Sidebar({ mode = 0 }) {
 				  // hidden: data?.attendance == "Y" ? false : true,
 				  children: [
 					{
-					  key: "sub4-attr",
+					  key: "sub_att-1",
 					  icon: <UserAddOutlined />,
 					  label: <Link to={"/homebm/attendancebm"}>Attendance Dashboard</Link>,
 					  // hidden: data?.attendance_dashboard == "Y" ? false : true,
@@ -199,7 +199,7 @@ function Sidebar({ mode = 0 }) {
 					  // hidden: data?.employees == "Y" ? false : true,
 					},
 					{
-					  key: "sub5-2",
+					  key: "sub5-3",
 					  icon: <DatabaseOutlined />,
 					  label: <Link to={"/homeadmin/masterdesignations"}>Designations</Link>,
 					  // hidden: data?.designation == "Y" ? false : true,

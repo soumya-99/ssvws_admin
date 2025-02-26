@@ -152,6 +152,20 @@ const DialogBox = ({
 					</div>
 				</p>
 			)}
+			{flag == 5 && (
+				<p className="m-0">
+				Group with code:{data} is created!
+				<div className="flex justify-center">
+				<button
+							type="button"
+							onClick={onPressYes}
+							className="inline-flex bg-[#DA4167] items-center px-5 py-2.5 mt-4 sm:mt-6 text-sm font-medium text-center text-white rounded-full focus:ring-4 focus:ring-primary-200 dark:focus:ring-primary-900 hover:bg-primary-800"
+						>
+							OK
+						</button>
+				</div>
+				</p>
+			)}
 			
 		</Dialog>
 	)

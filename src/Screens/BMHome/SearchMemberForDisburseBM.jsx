@@ -70,8 +70,10 @@ function SearchMemberForDisburseBM() {
 			// .post(`${url}/admin/fetch_loan_application_dtls`, creds)
 			.post(`${url}/admin/fetch_appl_dtls_via_grp`, creds)
 			.then((res) => {
+
 				console.log("KKKKKKKKkkkkkKKKKKkkkkKKKK", res?.data)
 				setLoanApplications(res?.data?.msg)
+				
 			})
 			.catch((err) => {
 				Message("error", "Some error occurred while searching...")

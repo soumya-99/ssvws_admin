@@ -45,7 +45,7 @@ function MasterBanks() {
 		// }
 
 		await axios
-			.get(`${url}/get_bank`)
+			.post(`${url}/admin/show_bank_dtls`)
 			.then((res) => {
 				console.log("PPPPPPPPPPPPPPPPPPPP", res?.data)
 				if (res?.data?.suc === 1) {

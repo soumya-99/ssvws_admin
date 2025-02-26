@@ -32,7 +32,7 @@ function SigninMis() {
         setBranches(
           res.data.msg.map((item) => ({
             code: item.branch_code,
-            name: item.branch_name,
+            name: item.branch_name +' ('+ item.branch_code+')',
           }))
         );
         setLoading(false);
@@ -227,7 +227,12 @@ function SigninMis() {
                           console.log(resbrn);
 						  if(resbrn?.data?.suc==1){
 
-						  setBranches(resbrn?.data?.msg)
+						  setBranches(
+                resbrn?.data?.msg.map((item) => ({
+                  code: item.code,
+                  name: item.name +' ('+ item.code+')',
+                }))
+              )
               
               
 						  }

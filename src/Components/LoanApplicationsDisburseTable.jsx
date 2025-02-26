@@ -13,6 +13,7 @@ import {
 } from "@ant-design/icons"
 import { useNavigate } from "react-router-dom"
 import { Tag } from "antd"
+import { Message } from "../Components/Message"
 
 function LoanApplicationsDisburseTable({
 	loanAppData,
@@ -189,10 +190,15 @@ function LoanApplicationsDisburseTable({
 											<button
 												// to={routePaths.BM_EDIT_GRT + item?.form_no}
 												onClick={() => {
+												if(item.loan_exist==0){
 													console.log("LLSKSIODFUISFH", item)
 													navigate(`/homebm/disburseloan/0`, {
 														state: [item, approvalStat],
 													})
+												}
+												else{
+													Message("error", item.loan_exist_msg)
+												}
 												}}
 											>
 												<EditOutlined

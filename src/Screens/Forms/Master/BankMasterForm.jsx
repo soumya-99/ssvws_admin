@@ -23,7 +23,7 @@ function BankMasterForm() {
 	const [loading, setLoading] = useState(false)
 	const location = useLocation()
 	const bankMasterDetails = location.state || {}
-
+    const [districts,setDistricts] = useState([])
 	const navigate = useNavigate()
 	const userDetails = JSON.parse(localStorage.getItem("user_details"))
 
@@ -40,6 +40,7 @@ function BankMasterForm() {
 		branch_name: "",
 		ifsc: "",
 		branch_addr: "",
+		dist_code:"",
 		sol_id: "",
 		phone_no: "",
 	})
@@ -51,13 +52,27 @@ function BankMasterForm() {
 			[name]: value,
 		}))
 	}
-
+    useEffect(()=>{
+		axios
+			.get(`${url}/admin/fetch_district`)
+			.then((res) => {
+				console.log(res?.data)
+				// Message("success", "Bank details saved.")
+				// navigate(-1)
+				setDistricts(res?.data.msg?.map(item=>({name:item.dist_name+' ('+item.dist_id+')',code:item.dist_id})))
+			})
+			.catch((err) => {
+				Message("error", "Some error occurred.")
+				console.log("ERR", err)
+			})
+	},[])
 	useEffect(() => {
 		setMasterBankData({
 			bank_name: bankMasterDetails?.bank_name || "",
 			branch_name: bankMasterDetails?.branch_name || "",
 			ifsc: bankMasterDetails?.ifsc || "",
 			branch_addr: bankMasterDetails?.branch_addr || "",
+			dist_code: bankMasterDetails?.dist_code || "",
 			sol_id: bankMasterDetails?.sol_id || "",
 			phone_no: bankMasterDetails?.phone_no || "",
 		})
@@ -71,6 +86,7 @@ function BankMasterForm() {
 			ifsc: masterBankData?.ifsc,
 			branch_addr: masterBankData?.branch_addr,
 			sol_id: masterBankData?.sol_id,
+			dist_code: masterBankData?.dist_code,
 			phone_no: masterBankData?.phone_no,
 			modified_by: userDetails?.emp_id,
 			bank_code: params?.id,
@@ -151,7 +167,7 @@ function BankMasterForm() {
 										mode={1}
 									/>
 								</div>
-								<div className="sm:col-span-2">
+								<div className="sm:col-span-1">
 									<TDInputTemplateBr
 										placeholder="Type SOL ID..."
 										type="text"
@@ -160,6 +176,18 @@ function BankMasterForm() {
 										formControlName={masterBankData.sol_id}
 										handleChange={handleChangeMasterBank}
 										mode={1}
+									/>
+								</div>
+								<div className="sm:col-span-1">
+									<TDInputTemplateBr
+										placeholder="District"
+										type="text"
+										label="District"
+										name="dist_code"
+										formControlName={masterBankData.dist_code}
+										handleChange={handleChangeMasterBank}
+										mode={2}
+										data={districts}
 									/>
 								</div>
 								<div>

@@ -438,7 +438,8 @@ function OccupationDetailsForm({ memberDetails }) {
 							memberDetails?.approval_status
 						) && (
 							<div className="mt-10">
-								<BtnComp mode="A" onReset={formik.resetForm} />
+								{/* <BtnComp mode="A" onReset={formik.resetForm} /> */}
+								{userDetails.id==10 ?<BtnComp mode="A" onReset={formik.resetForm} />:null}
 							</div>
 						)}
 

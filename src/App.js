@@ -33,9 +33,9 @@ function App() {
 							// colorPrimary: "#22543d",
 						},
 						Select: {
-							colorPrimary: "#22543d",
-							colorPrimaryHover: "#22543d",
-							optionActiveBg: "#22543d",
+							colorPrimary: "#F43F5E",
+							colorPrimaryHover: "#F43F5E",
+							optionActiveBg: "#F43F5E",
 							optionSelectedColor: "#000000",
 							optionSelectedFontWeight: "700",
 						},
@@ -44,6 +44,7 @@ function App() {
 							hoverBorderColor: "#22543d",
 							colorPrimary: "#22543d",
 						},
+						Input: {activeBorderColor: "gray"	},
 						Breadcrumb: {
 							separatorColor: "#052d27",
 							itemColor: "#052d27",

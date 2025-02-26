@@ -80,9 +80,9 @@ function GroupExtendedForm({ groupDataArr }) {
 	const toast = useRef(null)
 	const isMounted = useRef(false)
 
+    const [flag,setFlag] = useState(4)
 
-
-
+    const [group_code,setGroupCode] = useState(0)
 
 	const [blocks, setBlocks] = useState(() => [])
 	const [block, setBlock] = useState(() => "")
@@ -363,16 +363,16 @@ function GroupExtendedForm({ groupDataArr }) {
 		if(params?.id < 1 && COMemList_s.length){
 			
 			if(COMemList_Store.length < 1){
-				Message("error", "Please Asigne Group Member")
+				Message("error", "Please Assign Group Member")
 			}
 
 			if(COMemList_Store.length > groupMemberRequirList){
-				Message("error", "Please Asigne Group Member Maxmimum 4")
+				Message("error", "Please Assign Group Member Maxmimum 4")
 			}
 			
 			if(COMemList_Store.length > 0){
 				setLoading(true)
-	
+	            setFlag(4)
 				setVisible(true)
 	
 				setLoading(false)
@@ -381,7 +381,7 @@ function GroupExtendedForm({ groupDataArr }) {
 
 		if(params?.id < 1 && COMemList_s.length === 0){
 			setLoading(true)
-	
+	        setFlag(4)
 			setVisible(true)
 	
 			setLoading(false)
@@ -390,16 +390,16 @@ function GroupExtendedForm({ groupDataArr }) {
 		if(params?.id > 0 && COMemList_s.length){
 	
 		if(COMemList_Store.length < 1){
-			Message("error", "Please Asigne Group Member")
+			Message("error", "Please Assign Group Member")
 		}
 
 		if(COMemList_Store.length > 4){
-			Message("error", "Please Asigne Group Member Maxmimum 4")
+			Message("error", "Please Assign Group Member Maxmimum 4")
 		}
 
 		if(COMemList_Store.length > 0 && COMemList_Store.length <= groupMemberRequirList - groupData[0]?.memb_dt.length){
 			setLoading(true)
-
+            setFlag(4)
 			setVisible(true)
 
 			setLoading(false)
@@ -413,7 +413,7 @@ function GroupExtendedForm({ groupDataArr }) {
 	
 	if(params?.id > 0 && COMemList_s.length === 0){
 		setLoading(true)
-
+        setFlag(4)
 		setVisible(true)
 
 		setLoading(false)
@@ -455,7 +455,7 @@ function GroupExtendedForm({ groupDataArr }) {
 			.catch((err) => {
 			setLoading(false)
 
-				Message("error", "Please Asigne Group Member Maxmimum 4")
+				Message("error", "Please Assign Group Member Maxmimum 4")
 				console.log("LLLLLLLLLLLLLLLLLLLLLLLL", err)
 			})
 
@@ -524,14 +524,16 @@ function GroupExtendedForm({ groupDataArr }) {
 
 		Message("success", "Updated successfully.")
 		console.log("IIIIIIIIIIIIIIIIIIIIIII", res?.data)
-		
-		if(params?.id < 1){
-		navigate(`/homebm/searchgroup/`)
-		}
+		setFlag(5)
+		setGroupCode(res?.data?.group_code)
+		setVisible(true)
+		// if(params?.id < 1){
+		// navigate(`/homebm/searchgroup/`)
+		// }
 
-		if(params?.id > 0){
-			navigate(`/homebm/searchgroup/`)
-			}
+		// if(params?.id > 0){
+		// 	navigate(`/homebm/searchgroup/`)
+		// 	}
 		
 		})
 		.catch((err) => {
@@ -1012,7 +1014,7 @@ function GroupExtendedForm({ groupDataArr }) {
 							<div className="sm:col-span-2 mt-5">
 								<div>
 									<Tag color="#DA4167" className="text-white mb-2 font-bold">
-									Asigne Group Member
+									Assign Group Member
 									</Tag>
 
 									{/* {console.log("+++++++++++++++++++++++++++++", memberDetails)} */}
@@ -1165,7 +1167,7 @@ function GroupExtendedForm({ groupDataArr }) {
 							<div className="sm:col-span-2 mt-5">
 							<div>
 							<label class="block mb-2 text-sm capitalize font-bold text-slate-800
-							dark:text-gray-100"> Asigne Group Member  
+							dark:text-gray-100"> Assign Group Member  
 							<span style={{color:'red'}} class="ant-tag ml-2 ant-tag-error ant-tag-borderless text-[12.6px] my-2">
 							(You can Select Maxmimum 4 Member)</span>
 							</label>
@@ -1225,7 +1227,7 @@ function GroupExtendedForm({ groupDataArr }) {
 					<div className="sm:col-span-2 mt-5">
 					<div>
 					<label class="block mb-2 text-sm capitalize font-bold text-slate-800
-					dark:text-gray-100"> Asigne Group Member  
+					dark:text-gray-100"> Assign Group Member  
 					<span style={{color:'red'}} class="ant-tag ml-2 ant-tag-error ant-tag-borderless text-[12.6px] my-2">
 					(You can Select Maxmimum 4 Member)</span>
 					</label>
@@ -1315,11 +1317,22 @@ function GroupExtendedForm({ groupDataArr }) {
 
 	
 			<DialogBox
-				flag={4}
+				flag={flag}
+				data={flag==5 ? group_code : ''}
 				onPress={() => setVisible(!visible)}
 				visible={visible}
 				onPressYes={() => {
+					if(flag==4)
 					editGroup()
+				    else{
+						if(params?.id < 1){
+		navigate(`/homebm/searchgroup/`)
+		}
+
+		if(params?.id > 0){
+			navigate(`/homebm/searchgroup/`)
+			}
+					}
 					setVisible(!visible)
 				}}
 				onPressNo={() => setVisible(!visible)}

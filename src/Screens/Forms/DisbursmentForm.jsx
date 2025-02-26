@@ -9,7 +9,7 @@ import * as Yup from "yup";
 import axios from "axios";
 import { Message } from "../../Components/Message";
 import { url } from "../../Address/BaseUrl";
-import { Badge, Spin, Card, Tag } from "antd";
+import { Badge, Spin, Card, Tag, Select } from "antd";
 import { CheckCircleOutlined, EyeInvisibleOutlined, EyeOutlined, LoadingOutlined } from "@ant-design/icons";
 import { useLocation } from "react-router";
 import TDInputTemplateBr from "../../Components/TDInputTemplateBr";
@@ -131,7 +131,7 @@ function DisbursmentForm() {
   });
 
   const handleChangeTnxDetailsDetails = (e) => {
-    const { name, value } = e.target;
+    const { name, value } = e.target || e;
     setTransactionDetailsData((prevData) => ({
       ...prevData,
       [name]: value,
@@ -190,9 +190,11 @@ function DisbursmentForm() {
     },
   ];
 
-  const getBanks = async () => {
+  const getBanks = async (input) => {
+    console.log(input)
+    // if(input){
     await axios
-      .get(`${url}/get_bank`)
+      .post(`${url}/get_bank`, { dist_code:userDetails.dist_code, bank:input })
       .then((res) => {
         setBanks(res?.data?.msg);
       })
@@ -200,11 +202,13 @@ function DisbursmentForm() {
         Message("error", "Some error while fetching banks.");
         console.log("******", err);
       });
+    // }
   };
 
   useEffect(() => {
     // handleChangePersonalDetails()
-    getBanks();
+    // debugger;
+    getBanks("");
   }, []);
 
   useEffect(() => {
@@ -423,8 +427,8 @@ function DisbursmentForm() {
         membersForDisb.length = 0;
         var count= 0 
         for (let i of res?.data?.msg[0]?.mem_dt_grp) {
-          count+=i.prn_disb_amt
-          // setTotDisb(prev=>prev+i.applied_amt)
+          count+=i.applied_amt
+          setTotDisb(prev=>prev+i.applied_amt)
           membersForDisb.push({
             applied_amt:i.applied_amt,
             grt_form_no: i.form_no,
@@ -992,7 +996,7 @@ function DisbursmentForm() {
               </div>
             </div>
             <div>
-              <div className="grid gap-4 sm:grid-cols- sm:gap-6 my-3">
+              <div className="grid gap-4 sm:grid-cols-2 sm:gap-6 my-3">
                 <div className="text-xl mb-2 text-[#DA4167] font-semibold underline items-center">
                   2. Member Details 
             <button type="button"
@@ -1189,8 +1193,8 @@ function DisbursmentForm() {
                   3. Transaction Details
                 </div>
               </div>
-              <div className="grid gap-4 grid-cols-6 sm:gap-6">
-                <div className="sm:col-span-1">
+              <div className="grid gap-4 grid-cols-12 sm:gap-6">
+                <div className="sm:col-span-4">
                   <TDInputTemplateBr
                     placeholder="Select Purpose"
                     type="text"
@@ -1207,7 +1211,7 @@ function DisbursmentForm() {
                   />
                 </div>
 
-                {/* <div className="sm:col-span-1">
+                {/* <div>
                   <TDInputTemplateBr
                     placeholder="Select Sub Purpose"
                     type="text"
@@ -1223,7 +1227,7 @@ function DisbursmentForm() {
                     // disabled={disburseOrNot}
                   />
                 </div> */}
-                <div className="sm:col-span-1">
+                <div className="sm:col-span-4">
                   <TDInputTemplateBr
                     placeholder="Transaction date..."
                     type="date"
@@ -1237,7 +1241,7 @@ function DisbursmentForm() {
                     // disabled={disburseOrNot}
                   />
                 </div>
-                <div className="sm:col-span-1">
+                <div className="sm:col-span-4">
                   <TDInputTemplateBr
                     placeholder="Select Scheme..."
                     type="text"
@@ -1258,7 +1262,7 @@ function DisbursmentForm() {
                     // disabled={disburseOrNot}
                   />
                 </div>
-                <div className="sm:col-span-1">
+                <div className="sm:col-span-4">
                   <TDInputTemplateBr
                     placeholder="R.O.I..."
                     type="text"
@@ -1271,8 +1275,8 @@ function DisbursmentForm() {
                   />
                   
                 </div>
-                <div className="sm:col-span-1" style={{position: "relative"}}>
-                {Period_mode_valid ==  'Weekly' || Period_mode_valid ==  'Monthly' ? "" : <span style={{color: "red"}} className="right-0 ant-tag ant-tag-error ant-tag-borderless text-[12.6px] my-0 css-dev-only-do-not-override-1tse2sn absolute">Field is Requir</span>}
+                <div className="sm:col-span-4" style={{position: "relative"}}>
+                {Period_mode_valid ==  'Weekly' || Period_mode_valid ==  'Monthly' ? "" : <span style={{color: "red"}} className="right-0 ant-tag ant-tag-error ant-tag-borderless text-[12.6px] my-0 css-dev-only-do-not-override-1tse2sn absolute">Required!</span>}
 
                   <TDInputTemplateBr
                     placeholder="Select Mode"
@@ -1300,7 +1304,7 @@ function DisbursmentForm() {
                   
                 </div>
 
-                <div className="sm:col-span-1">
+                <div className="sm:col-span-4">
                   <TDInputTemplateBr
                     placeholder="Period..."
                     type="text"
@@ -1313,7 +1317,7 @@ function DisbursmentForm() {
                   />
                 </div>
 
-                <div className="sm:col-span-1">
+                <div className="sm:col-span-6">
                   <TDInputTemplateBr
                     placeholder="Select Fund..."
                     type="text"
@@ -1332,7 +1336,7 @@ function DisbursmentForm() {
                   />
                 </div>
                 {disbursementDetailsData.b_mode === "Monthly" ? (
-                  <div>
+                  <div className="sm:col-span-6">
                     <TDInputTemplateBr
                       placeholder="Day of Recovery..."
                       type="number"
@@ -1357,7 +1361,7 @@ function DisbursmentForm() {
                     )}
                   </div>
                 ) : (
-                  <div>
+                  <div className="sm:col-span-6">
                     <TDInputTemplateBr
                       placeholder="Select Weekday"
                       type="text"
@@ -1387,7 +1391,7 @@ function DisbursmentForm() {
                     // }
                   />
                 </div> */}
-                <div>
+                <div className="sm:col-span-6">
                   <TDInputTemplateBr
                     placeholder="Processing charges..."
                     type="number"
@@ -1395,6 +1399,22 @@ function DisbursmentForm() {
                     name="b_processingCharges"
                     formControlName={
                       disbursementDetailsData.b_processingCharges
+                    }
+                    handleChange={handleChangeDisburseDetails}
+                    mode={1}
+                    // disabled={
+                    // 	!disbursementDetailsData?.b_scheme || disburseOrNot
+                    // }
+                  />
+                </div>
+                <div className="sm:col-span-6">
+                  <TDInputTemplateBr
+                    placeholder="Bank charges..."
+                    type="number"
+                    label="Bank Charges"
+                    name="b_bankCharges"
+                    formControlName={
+                      disbursementDetailsData.b_bankCharges
                     }
                     handleChange={handleChangeDisburseDetails}
                     mode={1}
@@ -1610,8 +1630,8 @@ function DisbursmentForm() {
 										disabled={disburseOrNot}
 									/>
 								</div> */}
-                <div>
-                  <TDInputTemplateBr
+                <div className="sm:col-span-12">
+                  {/* <TDInputTemplateBr
                     placeholder="Select Bank..."
                     type="text"
                     label="Bank"
@@ -1624,7 +1644,40 @@ function DisbursmentForm() {
                     }))}
                     mode={2}
                     disabled={disburseOrNot}
-                  />
+                  /> */}
+
+<>
+												<label for="frm_co" class="block mb-2 text-sm capitalize font-bold text-slate-800
+				 dark:text-gray-100">Bank</label>
+												<Select
+													showSearch
+													placeholder={"Banks"}
+													label="Banks"
+													name="banks"
+													filterOption={false} // Disable default filtering to use API search
+													onSearch={(e)=>getBanks(e)} // Call API on typing
+													notFoundContent={loading ? <Spin size="small" /> : "No results found"}
+													formControlName={transactionDetailsData.b_bankName}
+													// formControlName={formValues.Grp_wit_Co ? formValues.Grp_wit_Co : COPickup}
+													//   handleChange={(e) => {
+													// 	// setCOPickup(e.target.value)
+													// 	// formik.handleChange(e)
+													// 	console.log(e.target.value,'valuevaluevaluevaluevalue')
+													// }}
+													// value={formValues.Grp_wit_Co ? formValues.Grp_wit_Co : COPickup} // Controlled value
+													onChange={(value) => {
+														handleChangeTnxDetailsDetails(value)
+														// formik.setFieldValue("Grp_wit_Co", value);
+													}}
+													options={banks?.map((item, _) => ({
+                            value: item?.bank_code,
+                            label: `${item?.bank_name} - ${item?.branch_name} - ${item?.ifsc}`,
+                          }))}
+													//   style={{ width: 250 }}
+													mode={2}
+												// disabled={location?.state.approval_status == "A" ? true : false} //location?.state.approval_status == null ? '': location?.state.approval_status
+												/>
+											</>
                 </div>
 
                 {transactionDetailsData.b_tnxMode === "B" && (
@@ -1694,7 +1747,7 @@ function DisbursmentForm() {
 									/>
 								</div> */}
 
-                <div className="sm:col-span-6">
+                <div className="sm:col-span-12">
                   <TDInputTemplateBr
                     placeholder="Type Remarks..."
                     type="text"
