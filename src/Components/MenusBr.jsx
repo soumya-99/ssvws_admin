@@ -24,14 +24,10 @@ import {
 } from "@ant-design/icons";
 import { Menu } from "antd";
 import { Link } from "react-router-dom";
-import { routePaths } from "../Assets/Data/Routes";
-import { CheckOutlined, UploadFileOutlined } from "@mui/icons-material";
 import IMG from "../Assets/Images/ssvws_crop-round.jpg";
 import Tooltip from "@mui/material/Tooltip";
 import { useNavigate } from "react-router-dom";
 import DialogBox from "./DialogBox";
-import axios from "axios";
-import { url } from "../Address/BaseUrl";
 
 function MenusBr({ theme, data }) {
   console.log(data, '-------');
@@ -40,32 +36,31 @@ function MenusBr({ theme, data }) {
   const [visibleModal, setVisibleModal] = useState(() => false);
   const [visibleModal2, setVisibleModal2] = useState(() => false);
   const [menuItems, setMenuItems] = useState([]);
-  const [items_all_user, setItems] = useState([]);
   const navigate = useNavigate();
 
   const onClick = (e) => {
     console.log("click ", e);
     setCurrent(e.key);
   };
-  const menuIcons = {
-    LineChartOutlined: <LineChartOutlined />,
-    ImportOutlined: <ImportOutlined />,
-    UserAddOutlined: <UserAddOutlined />,
-    SettingOutlined: <SettingOutlined />,
-    FastForwardOutlined: <FastForwardOutlined />,
-    ContainerOutlined: <ContainerOutlined />,
-    SearchOutlined: <SearchOutlined />,
-    FileSearchOutlined: <FileSearchOutlined />,
-    DeploymentUnitOutlined: <DeploymentUnitOutlined />,
-    PlusCircleOutlined: <PlusCircleOutlined />,
-    ThunderboltOutlined: <ThunderboltOutlined />,
-    DatabaseOutlined: <DatabaseOutlined />,
-    BarsOutlined: <BarsOutlined />,
-    CheckCircleOutlined: <CheckCircleOutlined />,
-    EyeOutlined: <EyeOutlined />,
-    SubnodeOutlined: <SubnodeOutlined />,
-    BarChartOutlined: <BarChartOutlined />,
-  };
+  // const menuIcons = {
+  //   LineChartOutlined: <LineChartOutlined />,
+  //   ImportOutlined: <ImportOutlined />,
+  //   UserAddOutlined: <UserAddOutlined />,
+  //   SettingOutlined: <SettingOutlined />,
+  //   FastForwardOutlined: <FastForwardOutlined />,
+  //   ContainerOutlined: <ContainerOutlined />,
+  //   SearchOutlined: <SearchOutlined />,
+  //   FileSearchOutlined: <FileSearchOutlined />,
+  //   DeploymentUnitOutlined: <DeploymentUnitOutlined />,
+  //   PlusCircleOutlined: <PlusCircleOutlined />,
+  //   ThunderboltOutlined: <ThunderboltOutlined />,
+  //   DatabaseOutlined: <DatabaseOutlined />,
+  //   BarsOutlined: <BarsOutlined />,
+  //   CheckCircleOutlined: <CheckCircleOutlined />,
+  //   EyeOutlined: <EyeOutlined />,
+  //   SubnodeOutlined: <SubnodeOutlined />,
+  //   BarChartOutlined: <BarChartOutlined />,
+  // };
 
   var items_all_user1 = [
     {
