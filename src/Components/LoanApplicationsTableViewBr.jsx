@@ -166,7 +166,8 @@ function LoanApplicationsTableViewBr({
 		setExpandedRows(null);
 		console.log(loanAppData, 'fffffffffffffffffffffffffffffffff');
 		
-	}, [fetchLoanApplicationsDate,])
+	// }, [fetchLoanApplicationsDate])
+}, [])
 
 	const onPageChange = (event) => {
 		setFirst(event.first)

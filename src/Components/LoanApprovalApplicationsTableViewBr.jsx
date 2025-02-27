@@ -82,6 +82,7 @@ function LoanApprovalApplicationsTableViewBr({
 
 
 	const fetchLoanGroupMember = async (group_code, loanType) => {
+	if(group_code!=0){
 		console.log(group_code, "res?.data?.msg", {
 			branch_code : userDetails?.brn_code,
 			approval_status : loanType,
@@ -111,7 +112,7 @@ function LoanApprovalApplicationsTableViewBr({
 	}
 
 
-
+	}
 
 
 	useEffect(() => {
@@ -162,7 +163,7 @@ function LoanApprovalApplicationsTableViewBr({
 	}
 
 	useEffect(() => {
-		fetchLoanGroupMember([])
+		fetchLoanGroupMember(0,0)
 		setExpandedRows(null);
 		console.log(loanAppData, 'fffffffffffffffffffffffffffffffff');
 		

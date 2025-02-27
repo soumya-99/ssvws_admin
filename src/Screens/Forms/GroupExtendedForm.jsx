@@ -524,9 +524,11 @@ function GroupExtendedForm({ groupDataArr }) {
 
 		Message("success", "Updated successfully.")
 		console.log("IIIIIIIIIIIIIIIIIIIIIII", res?.data)
+		if(params.id==0){
 		setFlag(5)
 		setGroupCode(res?.data?.group_code)
 		setVisible(true)
+		}
 		// if(params?.id < 1){
 		// navigate(`/homebm/searchgroup/`)
 		// }
