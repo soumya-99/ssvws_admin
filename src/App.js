@@ -33,11 +33,13 @@ function App() {
 							// colorPrimary: "#22543d",
 						},
 						Select: {
-							colorPrimary: "#F43F5E",
-							colorPrimaryHover: "#F43F5E",
-							optionActiveBg: "#F43F5E",
+							colorPrimary: "#9CA3AF",
+							colorPrimaryHover: "#9CA3AF",
+							optionActiveBg: "#9CA3AF",
 							optionSelectedColor: "#000000",
 							optionSelectedFontWeight: "700",
+							colorBorder:"#9CA3AF",
+							colorTextPlaceholder:"#4B5563"
 						},
 						DatePicker: {
 							activeBorderColor: "#22543d",

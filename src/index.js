@@ -43,6 +43,11 @@ import TranceferCO from "./Screens/BMHome/TranceferCO"
 import TransferCOScreen from "./Screens/BMHome/TransferCOScreen"
 import TranceferCOApproveForm from "./Screens/BMHome/TranceferCOApproveForm"
 import TransferCOApprovalUnic from "./Screens/BMHome/TransferCOApprovalUnic"
+import MemberTransfer from "./Screens/BMHome/MemberTransfer"
+import EditMemberTransfer from "./Screens/Admin/Master/Employees/EditMemberTransfer"
+import ApproveMemberTransfer from "./Screens/BMHome/ApproveMemberTransfer"
+import ApproveMemberTransferForm from "./Screens/Forms/Master/ApproveMemberTransferForm"
+import ApproveEditMemberTrans from "./Screens/Admin/Master/Employees/ApproveEditMemberTrans"
 // import A_LoanStatementMain from "./Screens/Admin/Reports/LoanStatements/A_LoanStatementMain"
 // import A_LoanTransactionsMain from "./Screens/Admin/Reports/LoanTransactions/A_LoanTransactionsMain"
 // import A_DemandReportsMain from "./Screens/Admin/Reports/DemandReports/A_DemandReportsMain"
@@ -240,6 +245,22 @@ const router = createBrowserRouter([
 							{
 								path: "disburseloan/:id",
 								element: <EditDisburseFormBM />,
+							},
+							{
+								path: "transfermember",
+								element: <MemberTransfer />,
+							},
+							{
+								path: "transfermember/:id",
+								element: <EditMemberTransfer />,
+							},
+							{
+								path: "approvemembertransfer",
+								element: <ApproveMemberTransfer />,
+							},
+							{
+								path: "approvemembertransfer/:id",
+								element: <ApproveEditMemberTrans />,
 							},
 							// {
 							// 	path: "masterbanks",

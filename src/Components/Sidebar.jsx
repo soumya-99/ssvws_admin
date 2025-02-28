@@ -28,7 +28,9 @@ import {
 	FastForwardOutlined,
 	SubnodeOutlined,
 	SendOutlined,
+	EyeFilled,
   } from "@ant-design/icons";
+import { SwapCallsRounded } from "@mui/icons-material"
 function Sidebar({ mode = 0 }) {
 	const location = useLocation()
 	const [current, setCurrent] = React.useState("mail")
@@ -118,6 +120,24 @@ function Sidebar({ mode = 0 }) {
 					  label: <Link to={"/homebm/tranceferco"}>View Group Transfer</Link>,
 					  // hidden: data?.view_group_transfer == "Y" ? false : true,
 					},
+					// {
+					// 	key: "sub3-7",
+					// 	icon: <EyeFilled />,
+					// 	label: <Link to={"/homebm/transfermember/0"}>View Member Transfer</Link>,
+					// 	// hidden: data?.view_group_transfer == "Y" ? false : true,
+					//   },
+					  {
+						key: "sub3-7",
+						icon: <SwapCallsRounded />,
+						label: <Link to={"/homebm/transfermember/0"}>Member Transfer</Link>,
+						// hidden: data?.view_group_transfer == "Y" ? false : true,
+					  },
+					  {
+						key: "sub3-8",
+						icon: <CheckCircleOutlined />,
+						label: <Link to={"/homebm/approvemembertransfer"}>Approve Member Transfer</Link>,
+						// hidden: data?.view_group_transfer == "Y" ? false : true,
+					  },
 			
 					//    {
 					//      key: "sub3-3",
