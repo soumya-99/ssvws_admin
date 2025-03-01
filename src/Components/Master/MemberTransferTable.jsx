@@ -17,6 +17,7 @@ import { useNavigate } from "react-router-dom"
 import { Tag } from "antd"
 
 function MemberTransferTable({
+    approveFlag,
 	loanAppData,
 	setSearch,
 	title,
@@ -192,12 +193,22 @@ function MemberTransferTable({
                                                 // to={routePaths.BM_EDIT_GRT + item?.form_no}
                                                 onClick={() => {
                                                     console.log("LLSKSIODFUISFH", item)
+                                                    if(approveFlag!='A'){
                                                     navigate(
                                                         `/homebm/approvemembertransfer/${item?.member_code || 0}`,
                                                         {
                                                             state: item,
                                                         }
                                                     )
+                                                }
+                                                else{
+                                                    navigate(
+                                                        `/homebm/viewmembertransfer/${item?.member_code || 0}`,
+                                                        {
+                                                            state: item,
+                                                        }
+                                                    )
+                                                }
                                                 }}
                                             >
                                                 <EditOutlined

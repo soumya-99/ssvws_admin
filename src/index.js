@@ -48,6 +48,8 @@ import EditMemberTransfer from "./Screens/Admin/Master/Employees/EditMemberTrans
 import ApproveMemberTransfer from "./Screens/BMHome/ApproveMemberTransfer"
 import ApproveMemberTransferForm from "./Screens/Forms/Master/ApproveMemberTransferForm"
 import ApproveEditMemberTrans from "./Screens/Admin/Master/Employees/ApproveEditMemberTrans"
+import ViewMemberTransfer from "./Screens/BMHome/ViewMemberTransfer"
+import TransferMemberViewScreen from "./Screens/BMHome/TransferMemberViewScreen"
 // import A_LoanStatementMain from "./Screens/Admin/Reports/LoanStatements/A_LoanStatementMain"
 // import A_LoanTransactionsMain from "./Screens/Admin/Reports/LoanTransactions/A_LoanTransactionsMain"
 // import A_DemandReportsMain from "./Screens/Admin/Reports/DemandReports/A_DemandReportsMain"
@@ -377,7 +379,15 @@ const router = createBrowserRouter([
 							{
 								path: "trancefercofromapprove-unic",
 								element: <TransferCOApprovalUnic />,
-							}
+							},
+							{
+								path:"viewmembertransfer",
+								element:<ViewMemberTransfer/>
+							},
+							{
+								path:"viewmembertransfer/:id",
+								element:<TransferMemberViewScreen/>
+							},
 
 							// {
 							// 	path: "summaryreports",

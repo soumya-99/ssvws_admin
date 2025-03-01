@@ -120,12 +120,12 @@ function Sidebar({ mode = 0 }) {
 					  label: <Link to={"/homebm/tranceferco"}>View Group Transfer</Link>,
 					  // hidden: data?.view_group_transfer == "Y" ? false : true,
 					},
-					// {
-					// 	key: "sub3-7",
-					// 	icon: <EyeFilled />,
-					// 	label: <Link to={"/homebm/transfermember/0"}>View Member Transfer</Link>,
-					// 	// hidden: data?.view_group_transfer == "Y" ? false : true,
-					//   },
+					{
+						key: "sub3-9",
+						icon: <EyeFilled />,
+						label: <Link to={"/homebm/viewmembertransfer"}>View Member Transfer</Link>,
+						// hidden: data?.view_group_transfer == "Y" ? false : true,
+					  },
 					  {
 						key: "sub3-7",
 						icon: <SwapCallsRounded />,

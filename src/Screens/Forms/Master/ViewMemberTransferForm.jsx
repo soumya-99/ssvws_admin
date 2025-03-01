@@ -20,8 +20,7 @@ import { disableCondition } from "../disableCondition";
 import { calculateRetirementDate } from "../../../Utils/calculateRetirementDate";
 import moment from "moment/moment";
 
-
-function ApproveMemberTransferForm({state}) {
+function ViewMemberTransferForm({state}) {
     const params = useParams();
     const [loading, setLoading] = useState(false);
     const [visible, setVisible] = useState(false);
@@ -88,7 +87,7 @@ function ApproveMemberTransferForm({state}) {
         .post(`${url}/transfer_member_view_all_details`, {
           member_code: state.member_code,
           from_group: state.from_group_code,
-          flag: 'P',
+          flag: 'A',
         })
         .then((res) => {
           console.log(res?.data?.msg);
@@ -207,6 +206,7 @@ function ApproveMemberTransferForm({state}) {
                 type="date"
                 label="Date"
                 name="todayDate"
+                disabled
                 formControlName={todayDate}
                 handleChange={(e) => setTodayDate(e.target.value)}
                 min={"1900-12-31"}
@@ -281,36 +281,19 @@ function ApproveMemberTransferForm({state}) {
             </div>
            
                 <div className="col-span-2">
-                  <label
-                    for="frm_co"
-                    class="block mb-2 text-sm capitalize font-bold text-slate-800
-                   dark:text-gray-100"
-                  >
-                    Transfer To
-                  </label>
+                  
   
-                  <Select
-                    showSearch
-                    placeholder={"Group"}
-                    label="Group"
-                    name="groups"
-                    defaultValue={state.to_group}
-                    filterOption={false}
-                    onSearch={(e) => getGroupsTo(e)}
-                    notFoundContent={
-                      loading ? <Spin size="small" /> : "No results found"
-                    }
-                    formControlName={group_to}
-                    onChange={(value) => {
-                      console.log(value);
-                      setGroup_to(value);
-                    }}
-                    options={groupsTo?.map((item, _) => ({
-                      value: item?.group_code,
-                      label: `${item?.group_name} - ${item?.group_code} `,
-                    }))}
-                    mode={2}
-                  />
+                  <TDInputTemplateBr
+                placeholder="Transfer To"
+                type="text"
+                label="Transfer To"
+                name="todayDate"
+                formControlName={state.to_group}
+                // handleChange={(e) => setTodayDate(e.target.value)}
+                min={"1900-12-31"}
+                disabled
+                mode={1}
+              />
                 </div>
              
   
@@ -340,13 +323,14 @@ function ApproveMemberTransferForm({state}) {
                       type="text"
                       label="Remarks"
                       name="remarks"
-                      formControlName={remarks}
+                      disabled
+                      formControlName={mem_dtls[0]?.remarks}
                       handleChange={(e) => setRemarks(e.target.value)}
                       mode={3}
                     />
                   </div>
   
-                  <div className="col-span-2 flex justify-center my-2">
+                  {/* <div className="col-span-2 flex justify-center my-2">
                     <button
                       type="submit"
                       className="inline-flex items-center px-5 py-2.5 mt-4 ml-2 sm:mt-6 text-sm font-medium text-center text-white border hover:border-green-600 border-teal-500 bg-teal-500 transition ease-in-out hover:bg-green-600 duration-300 rounded-full  dark:focus:ring-primary-900"
@@ -355,7 +339,7 @@ function ApproveMemberTransferForm({state}) {
                       <CheckOutlined className="mr-2" />
                       Approve
                     </button>
-                  </div>
+                  </div> */}
                 </>
              
           </div>
@@ -386,4 +370,5 @@ function ApproveMemberTransferForm({state}) {
       </>
     );
   }
-export default ApproveMemberTransferForm
+
+export default ViewMemberTransferForm
