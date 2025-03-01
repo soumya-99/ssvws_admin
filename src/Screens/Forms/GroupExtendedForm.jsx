@@ -356,6 +356,7 @@ function GroupExtendedForm({ groupDataArr }) {
 
 	const onSubmit = async (values) => {
 		console.log(COMemList_Store, 'COMemList_Store', COMemList_s.length);
+		console.log(COMemList_Store.length, groupMemberRequirList - groupData[0]?.memb_dt.length)
 		// var groupMemberExistList = groupData[0]?.memb_dt.length;
 		// var restOfList = groupMemberRequirList - groupData[0]?.memb_dt.length
 		// console.log(restOfList, "groupMember")
@@ -397,7 +398,7 @@ function GroupExtendedForm({ groupDataArr }) {
 			Message("error", "Please Assign Group Member Maxmimum 4")
 		}
 
-		if(COMemList_Store.length > 0 && COMemList_Store.length <= groupMemberRequirList - groupData[0]?.memb_dt.length){
+		if(COMemList_Store.length <= groupMemberRequirList - groupData[0]?.memb_dt.length){
 			setLoading(true)
             setFlag(4)
 			setVisible(true)
