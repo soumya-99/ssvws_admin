@@ -2008,45 +2008,20 @@ function DisbursmentForm() {
         onPress={() => setVisible(!visible)}
         visible={visible}
         onPressYes={() => {
-            if (
-          //     !personalDetailsData.b_clientName ||
-          //     !personalDetailsData.b_groupName ||
-          //     !personalDetails.acc_no1 ||
-          //     !+personalDetails.acc_no1 === 0 ||
-              !personalDetails.b_acc2 ||
-              !+personalDetails.b_acc2 === 0
-          //     !personalDetailsData.b_formNo ||
-          //     !personalDetailsData.b_grtApproveDate ||
-          //     !personalDetailsData.b_branch ||
-          //     !personalDetailsData.b_purpose ||
-          //     !personalDetailsData.b_subPurpose ||
-          //     !personalDetailsData.b_applicationDate ||
-          //     !disbursementDetailsData.b_scheme ||
-          //     !disbursementDetailsData.b_fund ||
-          //     !disbursementDetailsData.b_period ||
-          //     !disbursementDetailsData.b_roi ||
-          //     !disbursementDetailsData.b_mode ||
-          //     !disbursementDetailsData.b_disburseAmt ||
-          //     disbursementDetailsData.b_dayOfRecovery < 1 ||
-          //     disbursementDetailsData.b_dayOfRecovery > 31 ||
-          //     !transactionDetailsData.b_tnxDate ||
-          //     !transactionDetailsData.b_bankName ||
-          //     (transactionDetailsData.b_tnxMode === "B" &&
-          //       (!transactionDetailsData.b_chequeOrRefNo ||
-          //         !transactionDetailsData.b_chequeOrRefDate)) ||
-          //     !transactionDetailsData.b_tnxMode ||
-          //     !transactionDetailsData.b_remarks
-            ) {
+            if (+personalDetails.b_acc2==0) {
               Message(
                 "warning",
                 "Fill all the values properly OR Update the Account Numbers from Group!"
               );
+              console.log(personalDetails.acc_no2,+personalDetails.acc==0)
               setVisible(false);
               return;
             }
           // if(checkTot==1)
+          else{
           handleSubmitDisbursementForm();
           setVisible(!visible);
+          }
         }
       }
         onPressNo={() => setVisible(!visible)}
