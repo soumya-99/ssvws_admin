@@ -2,7 +2,6 @@ import React, { useEffect, useRef, useState } from "react"
 import { routePaths } from "../Assets/Data/Routes"
 import { Link } from "react-router-dom"
 import Tooltip from "@mui/material/Tooltip"
-import { Paginator } from "primereact/paginator"
 import { motion } from "framer-motion"
 import {
 	CheckCircleOutlined,
@@ -19,6 +18,7 @@ import { Toast } from "primereact/toast"
 import { Message } from "@mui/icons-material"
 import axios from "axios"
 import { url } from "../Address/BaseUrl"
+import { Paginator } from 'primereact/paginator';
 
 function LoanRecovApplicationsTableViewBr({
 	loanAppData,
@@ -80,7 +80,10 @@ function LoanRecovApplicationsTableViewBr({
 	// 	setLoading(false)
 	// }
 
-
+	// const onPageChange = (event) => {
+    //     setFirst(event.first);
+    //     setRows(event.rows);
+    // };
 	const fetchLoanGroupMember = async (group_code, loanType) => {
 	if(group_code!=0){
 		console.log(group_code, "res?.data?.msg", {
@@ -379,7 +382,7 @@ function LoanRecovApplicationsTableViewBr({
 				)} */}
 
 				{/* <>{JSON.stringify(getloanAppData, null, 2)}</> */}
-				<DataTable
+				{loanAppData && <DataTable
 					value={getloanAppData?.map((item, i) => [{ ...item, id: i }]).flat()}
 					expandedRows={expandedRows}
 					onRowToggle={(e) => setExpandedRows(e.data)}
@@ -392,11 +395,11 @@ function LoanRecovApplicationsTableViewBr({
 					tableStyle={{ minWidth: "50rem" }}
 					rowExpansionTemplate={rowExpansionTemplate}
 					dataKey="id"
-					// paginator
-					// rows={rowsPerPage}
-					// first={currentPage}
-					// onPage={onPageChange}
-					// rowsPerPageOptions={[5, 10, 20]} // Add options for number of rows per page
+					paginator
+					rows={rowsPerPage}
+					first={currentPage}
+					onPage={onPageChange}
+					rowsPerPageOptions={[5, 10, 20]} // Add options for number of rows per page
 					tableClassName="w-full text-sm text-left rtl:text-right shadow-lg text-green-900dark:text-gray-400 table_Custome table_Custome_1st" // Apply row classes
 				>
 					<Column
@@ -433,6 +436,7 @@ function LoanRecovApplicationsTableViewBr({
 
 
 				</DataTable>
+}
 
 			</motion.section>
 

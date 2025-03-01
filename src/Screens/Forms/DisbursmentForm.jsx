@@ -2008,13 +2008,13 @@ function DisbursmentForm() {
         onPress={() => setVisible(!visible)}
         visible={visible}
         onPressYes={() => {
-          //   if (
+            if (
           //     !personalDetailsData.b_clientName ||
           //     !personalDetailsData.b_groupName ||
           //     !personalDetails.acc_no1 ||
           //     !+personalDetails.acc_no1 === 0 ||
-          //     !personalDetails.acc_no2 ||
-          //     !+personalDetails.acc_no2 === 0 ||
+              !personalDetails.b_acc2 ||
+              !+personalDetails.b_acc2 === 0
           //     !personalDetailsData.b_formNo ||
           //     !personalDetailsData.b_grtApproveDate ||
           //     !personalDetailsData.b_branch ||
@@ -2036,14 +2036,14 @@ function DisbursmentForm() {
           //         !transactionDetailsData.b_chequeOrRefDate)) ||
           //     !transactionDetailsData.b_tnxMode ||
           //     !transactionDetailsData.b_remarks
-          //   ) {
-          //     Message(
-          //       "warning",
-          //       "Fill all the values properly OR Update the Account Numbers from Group!"
-          //     );
-          //     setVisible(false);
-          //     return;
-          //   }
+            ) {
+              Message(
+                "warning",
+                "Fill all the values properly OR Update the Account Numbers from Group!"
+              );
+              setVisible(false);
+              return;
+            }
           // if(checkTot==1)
           handleSubmitDisbursementForm();
           setVisible(!visible);

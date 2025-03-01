@@ -162,7 +162,7 @@ function LoanApplicationsTableViewBr({
 	}
 
 	useEffect(() => {
-		fetchLoanGroupMember([])
+		// fetchLoanGroupMember([])
 		setExpandedRows(null);
 		console.log(loanAppData, 'fffffffffffffffffffffffffffffffff');
 		
@@ -391,11 +391,11 @@ function LoanApplicationsTableViewBr({
 					tableStyle={{ minWidth: "50rem" }}
 					rowExpansionTemplate={rowExpansionTemplate}
 					dataKey="id"
-					// paginator
-					// rows={rowsPerPage}
-					// first={currentPage}
-					// onPage={onPageChange}
-					// rowsPerPageOptions={[5, 10, 20]} // Add options for number of rows per page
+					paginator
+					rows={rowsPerPage}
+					first={currentPage}
+					onPage={onPageChange}
+					rowsPerPageOptions={[5, 10, 20]} // Add options for number of rows per page
 					tableClassName="w-full text-sm text-left rtl:text-right shadow-lg text-green-900dark:text-gray-400 table_Custome table_Custome_1st" // Apply row classes
 				>
 					<Column

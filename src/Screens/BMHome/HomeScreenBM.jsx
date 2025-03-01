@@ -11,11 +11,26 @@ import TDInputTemplateBr from "../../Components/TDInputTemplateBr"
 import LoanRecovApplicationsTableViewBr from "../../Components/LoanRecovApplicationsTableViewBr"
 import LoanApprovalApplicationsTableViewBr from "../../Components/LoanApprovalApplicationsTableViewBr"
 
-const options = [
-	// {
-	// 	label: "Pending",
-	// 	value: "U",
-	// },
+const options1 = [
+	{
+		label: "Pending",
+		value: "U",
+	},
+	{
+		label: "Sent to MIS",
+		value: "S",
+	},
+	{
+		label: "Approved",
+		value: "A",
+	},
+	{
+		label: "Rejected",
+		value: "R",
+	},
+]
+const options2 = [
+
 	{
 		label: "Sent to MIS",
 		value: "S",
@@ -35,8 +50,9 @@ function HomeScreenMis() {
 	const [loading, setLoading] = useState(false)
 	const [loanApplications, setLoanApplications] = useState(() => [])
 	const [copyLoanApplications, setCopyLoanApplications] = useState(() => [])
+	const options = userDetails.id==10?options2:options1
 
-	const [loanType, setLoanType] = useState("S")
+	const [loanType, setLoanType] = useState(userDetails.id!=10?"U":"S")
 
 
 	const [coListData, setCoListData] = useState(() => [])
@@ -135,7 +151,8 @@ function HomeScreenMis() {
 		// 	// branch_code: userDetails?.brn_code,
 		// 	approval_status: loanType,
 		// }
-
+		setLoanApplications([])
+		setCopyLoanApplications([])
 		await axios
 			// .get(
 			// 	`${url}/admin/fetch_form_fwd_bm_web?approval_status=${loanType}&branch_code=${userDetails?.brn_code}`
@@ -145,6 +162,8 @@ function HomeScreenMis() {
 						approval_status: loanType
 						})
 			.then((res) => {
+		setLoading(false)
+
 				if (res?.data?.suc === 1) {
 					setLoanApplications(res?.data?.msg)
 					setCopyLoanApplications(res?.data?.msg)
@@ -155,12 +174,13 @@ function HomeScreenMis() {
 				}
 			})
 			.catch((err) => {
+		setLoading(false)
+
 				Message("error", "Some error occurred while fetching loans!")
 				setLoanApplications([])
 				setCopyLoanApplications([])
 				console.log("ERRR", err)
 			})
-		setLoading(false)
 	}
 
 
@@ -253,9 +273,19 @@ function HomeScreenMis() {
 				
 			} else if (loanType === "R") {
 				fetchLoanApplications_GroupWise('R')
+				setSelectedEmployeeId(() => [])
+
 				console.log('fff', 'RRRRRRRRRRRRRRR');
 			} else if (loanType === "A") {
 				fetchLoanApplications_GroupWise('A')
+				setSelectedEmployeeId(() => [])
+
+				console.log('fff', 'AAAAAAAAAAAAAAAAA');
+			}
+			else{
+				fetchLoanApplications_GroupWise('U')
+				setSelectedEmployeeId(() => [])
+
 				console.log('fff', 'AAAAAAAAAAAAAAAAA');
 			}
 
@@ -316,7 +346,7 @@ function HomeScreenMis() {
 								</div>
 							</div>
 
-					<LoanRecovApplicationsTableViewBr
+					{loanApplications.length>0 && <LoanRecovApplicationsTableViewBr
 						flag="MIS"
 						loanAppData={loanApplications}
 						loanType={loanType}
@@ -325,7 +355,7 @@ function HomeScreenMis() {
 						fetchLoanApplicationsDate={{
 							selectedEmployeeId
 						}}
-					/>
+					/>}
 					</>
 					) : loanType === "R" ? (
 						<>
@@ -358,7 +388,7 @@ function HomeScreenMis() {
 								</div>
 							</div>
 
-					<LoanApplicationsTableViewBr
+							{loanApplications.length>0 &&<LoanApplicationsTableViewBr
 						flag="MIS"
 						loanAppData={loanApplications}
 						loanType={loanType}
@@ -367,7 +397,7 @@ function HomeScreenMis() {
 						fetchLoanApplicationsDate={{
 							selectedEmployeeId
 						}}
-					/>
+					/>}
 
 						{/* <LoanApplicationsTableViewBr
 						flag="MIS"
@@ -408,7 +438,7 @@ function HomeScreenMis() {
 								</div>
 							</div>
 
-					<LoanApprovalApplicationsTableViewBr
+							{loanApplications.length>0 &&<LoanApprovalApplicationsTableViewBr
 						flag="MIS"
 						loanAppData={loanApplications}
 						loanType={loanType}
@@ -417,7 +447,7 @@ function HomeScreenMis() {
 						fetchLoanApplicationsDate={{
 							selectedEmployeeId
 						}}
-					/>
+					/>}
 
 						{/* <LoanApplicationsTableViewBr
 						flag="MIS"
@@ -427,7 +457,55 @@ function HomeScreenMis() {
 						/> */}
 
 						</>
-					) : null}
+					) : <>
+							
+					<div className="grid grid-cols-3 gap-5 mt-5">
+								
+
+								<div>
+									<TDInputTemplateBr
+										placeholder="Select Collector Name..."
+										type="text"
+										label="Collectorwise"
+										name="b_clientGender"
+										// handleChange={(e) => console.log("Selected Employee:", e.target.value)}
+										handleChange={handleEmployeeChange}
+										// data={[
+										// { code: "M", name: "Male" },
+										// { code: "F", name: "Female" },
+										// { code: "O", name: "Others" },
+										// ]}
+										data={coListData.map((emp) => ({
+											code: emp.emp_id,
+											name: `${emp.emp_name}`,
+										}))}
+										mode={2}
+										disabled={false} // Static value to make it always disabled
+									/>
+
+									{/* {JSON.stringify(selectedEmployeeId, 2)} */}
+								</div>
+							</div>
+
+							{loanApplications.length>0 &&<LoanApplicationsTableViewBr
+						flag="MIS"
+						loanAppData={loanApplications}
+						loanType={loanType}
+						title="GRT Forms"
+						setSearch={(data) => setSearch(data)}
+						fetchLoanApplicationsDate={{
+							selectedEmployeeId
+						}}
+					/>}
+
+						{/* <LoanApplicationsTableViewBr
+						flag="MIS"
+						loanAppData={loanApplications}
+						title="GRT Forms"
+						setSearch={(data) => setSearch(data)}
+						/> */}
+
+						</>}
 
 
 

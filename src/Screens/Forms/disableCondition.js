@@ -1,5 +1,5 @@
 export const disableCondition = (userType, approvalStatus) => {
-	const disableInputArray = ["S", "A", "R"]
+	const disableInputArray = ["S", "A", "R","U"]
 	// const approvalStatus = memberDetails?.approval_status
 	// const userType = formik.values.userType // Assuming userType is stored in formik
 
@@ -12,6 +12,9 @@ export const disableCondition = (userType, approvalStatus) => {
 	}
 
 	if (userType == 10 && approvalStatus === "R") {
+		return true
+	}
+	if (userType == 2 && approvalStatus === "U") {
 		return true
 	}
 	// if (userType == 10) {
@@ -34,7 +37,7 @@ export const disableCondition = (userType, approvalStatus) => {
 
 	if (userType === 2 && approvalStatus === "R") {
 		// Disable for user type 2 when approval status is "S"
-		return false
+		return true
 	}
 
 	if (userType === 2 && approvalStatus === "S") {

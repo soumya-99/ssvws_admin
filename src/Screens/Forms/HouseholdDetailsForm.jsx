@@ -201,7 +201,8 @@ function HouseholdDetailsForm({ memberDetails }) {
 			.post(`${url}/admin/delete_member_mis`, creds)
 			.then((res) => {
 				Message("success", "Application rejected!")
-				navigate(routePaths.MIS_ASSISTANT_HOME)
+				// navigate(routePaths.MIS_ASSISTANT_HOME)
+				navigate(-1)
 			})
 			.catch((err) => {
 				Message("error", "Some error occurred while rejecting application.")
@@ -224,7 +225,8 @@ function HouseholdDetailsForm({ memberDetails }) {
 			.post(`${url}/admin/forward_mis_asst`, creds)
 			.then((res) => {
 				Message("success", "Application forwarded!")
-				navigate(routePaths.MIS_ASSISTANT_HOME)
+				// navigate(routePaths.MIS_ASSISTANT_HOME)
+				navigate(-1)
 			})
 			.catch((err) => {
 				Message("error", "Some error occurred while forwarding application.")
@@ -247,7 +249,8 @@ function HouseholdDetailsForm({ memberDetails }) {
 			.post(`${url}/final_submit`, creds)
 			.then((res) => {
 				Message("success", "Application forwarded!")
-				navigate(routePaths.BM_HOME)
+				// navigate(routePaths.BM_HOME)
+				navigate(-1)
 			})
 			.catch((err) => {
 				Message("error", "Some error occurred while forwarding application.")
@@ -269,7 +272,8 @@ function HouseholdDetailsForm({ memberDetails }) {
 			.then((res) => {
 				Message("success", "Sending back to BM successsfully.")
 				console.log("Sending back to BM", res?.data)
-				navigate(routePaths.MIS_ASSISTANT_HOME)
+				// navigate(routePaths.MIS_ASSISTANT_HOME)
+				navigate(-1)
 			})
 			.catch((err) => {
 				Message("error", "Error while sending back to bm")
@@ -596,12 +600,12 @@ function HouseholdDetailsForm({ memberDetails }) {
 									onRejectApplication={() => setVisible2(true)}
 									showForward={true}
 									onForwardApplication={() => setVisible3(true)}
-									showSendToBM={true}
+									showSendToBM={false}
 									onSendBackToBM={() => setVisible4(true)}
 								/>
 							</div>
 						)}
-						{userDetails?.id == 2 && memberDetails?.approval_status === "R" && (
+						{/* {userDetails?.id == 2 && memberDetails?.approval_status === "R" && (
 							<div className="mt-10">
 								<BtnComp
 									mode="B"
@@ -612,8 +616,8 @@ function HouseholdDetailsForm({ memberDetails }) {
 									onForwardApplication={() => setVisible3(true)}
 								/>
 							</div>
-						)}
-						{userDetails?.id == 2  && memberDetails?.approval_status === "U" && (
+						)} */}
+						{/* {userDetails?.id == 2  && memberDetails?.approval_status === "U" && (
 							<div className="mt-10">
 								<BtnComp
 									mode="B"
@@ -624,7 +628,7 @@ function HouseholdDetailsForm({ memberDetails }) {
 									onForwardApplication={() => setVisible3(true)}
 								/>
 							</div>
-						)}
+						)} */}
 
 						{/* {!disableCondition(
 							userDetails?.id,
