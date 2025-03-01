@@ -99,7 +99,7 @@ function ViewMemberTransfer() {
                         approveFlag = 'A'
 						flag="BM"
 						loanAppData={copyLoanApplications}
-						title="Approve Member Transfer"
+						title="View Member Transfer"
 						setSearch={(data) => setSearch(data)}
 					/>
 					{/* <DialogBox

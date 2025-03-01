@@ -174,9 +174,11 @@ function MemberTransferForm() {
       });
   };
   useEffect(() => {
+  if(group!="")
     fetchGroupDtls();
   }, [group]);
   useEffect(() => {
+    if(group_to!="")
     fetchTransGroupDtls();
   }, [group_to]);
 
