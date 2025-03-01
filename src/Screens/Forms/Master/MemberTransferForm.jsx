@@ -86,6 +86,7 @@ function MemberTransferForm() {
         group_code: group,
       })
       .then((res) => {
+        setMemDtls([])
         console.log(res?.data?.msg);
         setCoBranch(res?.data?.msg[0]?.branch_name);
         setCoName(res?.data?.msg[0]?.co_name);

@@ -93,6 +93,7 @@ function ApproveMemberTransferForm({state}) {
         .then((res) => {
           console.log(res?.data?.msg);
           setMemDtls(res?.data?.msg)
+          setRemarks(res?.data?.msg[0]?.remarks)
         
         //   setCoBranch(res?.data?.msg[0]?.branch_name);
         //   setCoName(res?.data?.msg[0]?.co_name);
