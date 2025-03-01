@@ -387,29 +387,29 @@ function GroupExtendedForm({ groupDataArr }) {
 			setLoading(false)
 		}
 
-		if(params?.id > 0 && COMemList_s.length){
+	// 	if(params?.id > 0 && COMemList_s.length){
 	
-		if(COMemList_Store.length < 1){
-			Message("error", "Please Assign Group Member")
-		}
+	// 	if(COMemList_Store.length < 1){
+	// 		Message("error", "Please Assign Group Member")
+	// 	}
 
-		if(COMemList_Store.length > 4){
-			Message("error", "Please Assign Group Member Maxmimum 4")
-		}
+	// 	if(COMemList_Store.length > 4){
+	// 		Message("error", "Please Assign Group Member Maxmimum 4")
+	// 	}
 
-		if(COMemList_Store.length > 0 && COMemList_Store.length <= groupMemberRequirList - groupData[0]?.memb_dt.length){
-			setLoading(true)
-            setFlag(4)
-			setVisible(true)
+	// 	if(COMemList_Store.length > 0 && COMemList_Store.length <= groupMemberRequirList - groupData[0]?.memb_dt.length){
+	// 		setLoading(true)
+    //         setFlag(4)
+	// 		setVisible(true)
 
-			setLoading(false)
-		}
+	// 		setLoading(false)
+	// 	}
 
-		// console.log(values, "VVVVVVVVVVVVVVVVVVVVVVVV", 'hhhh')
-		// setLoading(true)
-		// setVisible(true)
-		// setLoading(false)
-	} 
+	// 	// console.log(values, "VVVVVVVVVVVVVVVVVVVVVVVV", 'hhhh')
+	// 	// setLoading(true)
+	// 	// setVisible(true)
+	// 	// setLoading(false)
+	// } 
 	
 	if(params?.id > 0 && COMemList_s.length === 0){
 		setLoading(true)
