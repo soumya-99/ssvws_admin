@@ -52,6 +52,8 @@ function SigninMis() {
     const creds = {
       emp_id: values?.user_id,
       password: values?.password,
+      app_version:'0',
+      flag:'W'
       // brnch:values?.brnch
     };
     if ((user_type_id == 4 || user_type_id==10 || user_type_id==11) && branch != "") {
