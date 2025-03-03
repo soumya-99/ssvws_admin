@@ -131,6 +131,7 @@ function DisbursmentForm() {
   });
 
   const handleChangeTnxDetailsDetails = (e) => {
+    // console.log(e.target.value)
     const { name, value } = e.target || e;
     setTransactionDetailsData((prevData) => ({
       ...prevData,
@@ -505,10 +506,10 @@ function DisbursmentForm() {
         });
 
         setTransactionDetailsData({
-          // b_tnxDate: res?.data?.loan_dt?.last_trn_dt
-          //   ? formatDateToYYYYMMDD(new Date(res?.data?.loan_dt?.last_trn_dt))
-          //   : formatDateToYYYYMMDD(new Date()),
-          b_tnxDate: formatDateToYYYYMMDD(new Date()),
+          b_tnxDate: res?.data?.loan_dt?.last_trn_dt
+            ? formatDateToYYYYMMDD(new Date(res?.data?.loan_dt?.last_trn_dt))
+            : formatDateToYYYYMMDD(new Date()),
+          // b_tnxDate: formatDateToYYYYMMDD(new Date()),
           b_bankName: res?.data?.loan_trans?.bank_name || "",
           b_chequeOrRefNo: res?.data?.loan_trans?.cheque_id || "",
           b_chequeOrRefDate: res?.data?.loan_trans?.chq_dt
@@ -639,6 +640,8 @@ function DisbursmentForm() {
 
   const handleSubmitDisbursementForm = async () => {
     setLoading(true);
+    console.log(personalDetails)
+    debugger
     const creds = {
       group_code: personalDetails?.group_code,
       branch_code: personalDetails?.branch_code || "",
@@ -2008,7 +2011,8 @@ function DisbursmentForm() {
         onPress={() => setVisible(!visible)}
         visible={visible}
         onPressYes={() => {
-            if (+personalDetails.b_acc2==0) {
+          console.log(+personalDetails.b_acc2==0 || !personalDetails.b_acc2)
+            if (+personalDetails.b_acc2==0 || !personalDetails.b_acc2 ) {
               Message(
                 "warning",
                 "Fill all the values properly OR Update the Account Numbers from Group!"
@@ -2019,7 +2023,8 @@ function DisbursmentForm() {
             }
           // if(checkTot==1)
           else{
-          handleSubmitDisbursementForm();
+           
+          // handleSubmitDisbursementForm();
           setVisible(!visible);
           }
         }
