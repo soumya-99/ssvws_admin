@@ -745,7 +745,7 @@ function DisbursmentForm() {
       });
     setLoading(false);
   };
-
+useEffect(()=>{console.log(personalDetails)},[])
   return (
     <>
       {disburseOrNot && (
@@ -768,6 +768,8 @@ function DisbursmentForm() {
         className="text-blue-800 dark:text-gray-400"
         spinning={loading}
       >
+                 account_no: {personalDetails.b_acc2}
+
         <form onSubmit={onSubmit}>
           <div>
             <div>
@@ -1765,6 +1767,8 @@ function DisbursmentForm() {
               </div>
             </div>
             <div>
+            account_no: {personalDetails.b_acc2}
+
               <div className="grid gap-4 sm:grid-cols-2 sm:gap-6 my-3">
                 <div className="text-xl mb-2 mt-5 text-[#DA4167] font-semibold underline">
                   4. Disbursement Details
@@ -2011,20 +2015,17 @@ function DisbursmentForm() {
         onPress={() => setVisible(!visible)}
         visible={visible}
         onPressYes={() => {
-          console.log(+personalDetails.b_acc2==0 || !personalDetails.b_acc2)
-            if (+personalDetails.b_acc2==0 || !personalDetails.b_acc2 ) {
+            if (personalDetails.acc_no2>0) {
               Message(
                 "warning",
                 "Fill all the values properly OR Update the Account Numbers from Group!"
               );
-              console.log(personalDetails.acc_no2,+personalDetails.acc==0)
               setVisible(false);
-              return;
             }
           // if(checkTot==1)
           else{
            
-          // handleSubmitDisbursementForm();
+          handleSubmitDisbursementForm();
           setVisible(!visible);
           }
         }
