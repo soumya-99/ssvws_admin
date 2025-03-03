@@ -969,7 +969,7 @@ function GroupExtendedForm({ groupDataArr }) {
 									name="g_acc1"
 									handleChange={formik.handleChange}
 									handleBlur={formik.handleBlur}
-									formControlName={formik.values.g_acc1 == '0' ? '' : formik.values.g_acc1}
+									formControlName={formik.values.g_acc1}
 									mode={1}
 								/>
 								{formik.errors.g_acc1 && formik.touched.g_acc1 ? (
@@ -985,7 +985,7 @@ function GroupExtendedForm({ groupDataArr }) {
 									name="g_acc2"
 									handleChange={formik.handleChange}
 									handleBlur={formik.handleBlur}
-									formControlName={formik.values.g_acc2 == '0' ? '' : formik.values.g_acc2}
+									formControlName={formik.values.g_acc2}
 									mode={1}
 								/>
 								{formik.errors.g_acc2 && formik.touched.g_acc2 ? (
