@@ -768,7 +768,6 @@ useEffect(()=>{console.log(personalDetails)},[])
         className="text-blue-800 dark:text-gray-400"
         spinning={loading}
       >
-                 account_no: {personalDetails.b_acc2}
 
         <form onSubmit={onSubmit}>
           <div>
@@ -1767,7 +1766,6 @@ useEffect(()=>{console.log(personalDetails)},[])
               </div>
             </div>
             <div>
-            account_no: {personalDetails.b_acc2}
 
               <div className="grid gap-4 sm:grid-cols-2 sm:gap-6 my-3">
                 <div className="text-xl mb-2 mt-5 text-[#DA4167] font-semibold underline">
@@ -2015,19 +2013,19 @@ useEffect(()=>{console.log(personalDetails)},[])
         onPress={() => setVisible(!visible)}
         visible={visible}
         onPressYes={() => {
-            if (personalDetails.acc_no2>0) {
-              Message(
-                "warning",
-                "Fill all the values properly OR Update the Account Numbers from Group!"
-              );
-              setVisible(false);
-            }
-          // if(checkTot==1)
-          else{
+          //   if (personalDetails.acc_no2>0) {
+          //     Message(
+          //       "warning",
+          //       "Fill all the values properly OR Update the Account Numbers from Group!"
+          //     );
+          //     setVisible(false);
+          //   }
+          // // if(checkTot==1)
+          // else{
            
           handleSubmitDisbursementForm();
           setVisible(!visible);
-          }
+          // }
         }
       }
         onPressNo={() => setVisible(!visible)}
