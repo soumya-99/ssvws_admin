@@ -626,6 +626,12 @@ function MemberLoanDetailsForm() {
 												<th scope="col" className="px-6 py-3 font-semibold">
 													Balance
 												</th>
+												<th scope="col" className="px-6 py-3 font-semibold">
+													Interest Balance
+												</th>
+												<th scope="col" className="px-6 py-3 font-semibold">
+													Outstanding
+												</th>
 
 												{/* <th scope="col" className="px-6 py-3 font-semibold">
 													Chq. ID.
@@ -696,7 +702,11 @@ function MemberLoanDetailsForm() {
 														</td>
 														<td className="px-6 py-4">{item?.debit}/-</td>
 														<td className="px-6 py-4">{item?.credit}/-</td>
-														<td className="px-6 py-4">{item?.balance}/-</td>
+														<td className="px-6 py-4">{item?.prn_bal}/-</td>
+														<td className="px-6 py-4">
+															{item?.intt_balance}/-
+														</td>
+														<td className="px-6 py-4">{item?.outstanding}/-</td>
 
 														{/* <td className="px-6 py-4">
 														{new Date(item?.payment_date).toLocaleDateString(
