@@ -65,7 +65,7 @@ function MemberLoanDetailsForm() {
 		purposeId: "",
 		purpose: "",
 		subPurposeId: "",
-		subPurpose: "",
+		// subPurpose: "",
 		disbursementDate: "",
 		disburseAmount: "",
 		schemeName: "",
@@ -89,10 +89,23 @@ function MemberLoanDetailsForm() {
 		}))
 	}
 
+	const [memberTxnDetailsData, setMemberTxnDetailsData] = useState({
+		txnDate: "",
+	})
+
+	const handleChangeTxnDetails = (e) => {
+		const { name, value } = e.target
+		setMemberTxnDetailsData((prevData) => ({
+			...prevData,
+			[name]: value,
+		}))
+	}
+
 	const handleFetchMemberLoanDetails = async () => {
 		setLoading(true)
 		const creds = {
 			loan_id: params?.id,
+			branch_code: userDetails?.brn_code,
 		}
 
 		await axios
@@ -108,7 +121,7 @@ function MemberLoanDetailsForm() {
 					purposeId: res?.data?.msg[0]?.purpose || "",
 					purpose: res?.data?.msg[0]?.purpose_id || "",
 					subPurposeId: res?.data?.msg[0]?.sub_purpose || "",
-					subPurpose: res?.data?.msg[0]?.sub_purp_name || "",
+					// subPurpose: res?.data?.msg[0]?.sub_purp_name || "",
 					disbursementDate: res?.data?.msg[0]?.disb_dt || "",
 					disburseAmount: res?.data?.msg[0]?.prn_disb_amt || "",
 					schemeName: res?.data?.msg[0]?.scheme_name || "",
@@ -153,23 +166,23 @@ function MemberLoanDetailsForm() {
 		getPurposeOfLoan()
 	}, [])
 
-	const getSubPurposeOfLoan = async (purpId) => {
-		setLoading(true)
-		await axios
-			.get(`${url}/get_sub_purpose?purp_id=${purpId}`)
-			.then((res) => {
-				console.log("------------", res?.data)
-				setSubPurposeOfLoan(res?.data?.msg)
-			})
-			.catch((err) => {
-				console.log("+==========+", err)
-			})
-		setLoading(false)
-	}
+	// const getSubPurposeOfLoan = async (purpId) => {
+	// 	setLoading(true)
+	// 	await axios
+	// 		.get(`${url}/get_sub_purpose?purp_id=${purpId}`)
+	// 		.then((res) => {
+	// 			console.log("------------", res?.data)
+	// 			setSubPurposeOfLoan(res?.data?.msg)
+	// 		})
+	// 		.catch((err) => {
+	// 			console.log("+==========+", err)
+	// 		})
+	// 	setLoading(false)
+	// }
 
-	useEffect(() => {
-		getSubPurposeOfLoan(memberLoanDetailsData?.purposeId)
-	}, [memberLoanDetailsData?.purposeId])
+	// useEffect(() => {
+	// 	getSubPurposeOfLoan(memberLoanDetailsData?.purposeId)
+	// }, [memberLoanDetailsData?.purposeId])
 
 	const getFunds = async () => {
 		setLoading(true)
@@ -192,9 +205,11 @@ function MemberLoanDetailsForm() {
 	const saveLoanDetails = async () => {
 		const creds = {
 			purpose: memberLoanDetailsData?.purposeId,
-			sub_purpose: memberLoanDetailsData?.subPurposeId,
-			fund_id: memberLoanDetailsData?.fundId,
-			tot_emi: memberLoanDetailsData?.totalEMI,
+			// sub_purpose: memberLoanDetailsData?.subPurposeId,
+			// sub_purpose: 0,
+			// fund_id: memberLoanDetailsData?.fundId,
+			// tot_emi: memberLoanDetailsData?.totalEMI,
+			disb_dt: formatDateToYYYYMMDD(memberLoanDetailsData?.disbursementDate),
 			modified_by: userDetails?.emp_id,
 			loan_id: params?.id,
 		}
@@ -203,6 +218,29 @@ function MemberLoanDetailsForm() {
 			.post(`${url}/admin/save_loan_details`, creds)
 			.then((res) => {
 				console.log("SAVE LOAN DTLSSSS", res?.data)
+				Message("success", res?.data?.msg)
+			})
+			.catch((err) => {
+				console.log("ERRR:S:S:S", err)
+			})
+	}
+
+	const saveTxnDetails = async () => {
+		const creds = {
+			purpose: memberLoanDetailsData?.purposeId,
+			// sub_purpose: memberLoanDetailsData?.subPurposeId,
+			// sub_purpose: 0,
+			// fund_id: memberLoanDetailsData?.fundId,
+			// tot_emi: memberLoanDetailsData?.totalEMI,
+			disb_dt: formatDateToYYYYMMDD(memberLoanDetailsData?.disbursementDate),
+			modified_by: userDetails?.emp_id,
+			loan_id: params?.id,
+		}
+		console.log("DSDS", creds)
+		await axios
+			.post(`${url}/admin/save_txn_details`, creds)
+			.then((res) => {
+				console.log("SAVE TXN DTLSSSS", res?.data)
 				Message("success", res?.data?.msg)
 			})
 			.catch((err) => {
@@ -221,6 +259,10 @@ function MemberLoanDetailsForm() {
 
 	let totalCredit = 0
 	let totalDebit = 0
+
+	const disableCondition = () => {
+		return userDetails?.id !== 4
+	}
 
 	return (
 		<>
@@ -327,7 +369,7 @@ function MemberLoanDetailsForm() {
 										disabled
 									/>
 								</div> */}
-								<div>
+								<div className="sm:col-span-2">
 									<TDInputTemplateBr
 										placeholder="Select Purpose"
 										type="text"
@@ -340,6 +382,7 @@ function MemberLoanDetailsForm() {
 											name: item?.purpose_id,
 										}))}
 										mode={2}
+										disabled={disableCondition()}
 									/>
 								</div>
 								{/* <div>
@@ -354,7 +397,7 @@ function MemberLoanDetailsForm() {
 										disabled
 									/>
 								</div> */}
-								<div>
+								{/* <div>
 									<TDInputTemplateBr
 										placeholder="Select Sub Purpose"
 										type="text"
@@ -368,21 +411,19 @@ function MemberLoanDetailsForm() {
 										}))}
 										mode={2}
 									/>
-								</div>
+								</div> */}
 								<div>
 									<TDInputTemplateBr
 										placeholder="Disbursement Date..."
-										type="text"
+										type="date"
 										label="Disbursement Date"
 										name="disbursementDate"
-										formControlName={
-											new Date(
-												memberLoanDetailsData.disbursementDate
-											).toLocaleDateString("en-GB") || ""
-										}
+										formControlName={formatDateToYYYYMMDD(
+											new Date(memberLoanDetailsData.disbursementDate)
+										)}
 										handleChange={handleChangeMemberLoanDetails}
 										mode={1}
-										disabled
+										disabled={disableCondition()}
 									/>
 								</div>
 								<div>
@@ -434,6 +475,7 @@ function MemberLoanDetailsForm() {
 											name: item?.fund_name,
 										}))}
 										mode={2}
+										disabled
 									/>
 								</div>
 								<div>
@@ -529,18 +571,21 @@ function MemberLoanDetailsForm() {
 										formControlName={memberLoanDetailsData.totalEMI}
 										handleChange={handleChangeMemberLoanDetails}
 										mode={1}
+										disabled
 									/>
 								</div>
 							</div>
-							<div className="text-center mt-6">
-								<button
-									className="p-2 px-6 bg-teal-500 text-slate-50 rounded-xl hover:bg-green-500 active:ring-2 active:ring-slate-500"
-									type="button"
-									onClick={() => setVisible(true)}
-								>
-									UPDATE
-								</button>
-							</div>
+							{!disableCondition() && (
+								<div className="text-center mt-6">
+									<button
+										className="p-2 px-6 bg-teal-500 text-slate-50 rounded-xl hover:bg-green-500 active:ring-2 active:ring-slate-500"
+										type="button"
+										onClick={() => setVisible(true)}
+									>
+										UPDATE
+									</button>
+								</div>
+							)}
 						</div>
 
 						{/* ///////////////////////// */}
@@ -618,9 +663,26 @@ function MemberLoanDetailsForm() {
 															{i + 1}
 														</th>
 														<td className="px-6 py-4">
-															{new Date(item?.payment_date).toLocaleDateString(
+															{/* {new Date(item?.payment_date).toLocaleDateString(
 																"en-GB"
-															) || ""}
+															) || ""} */}
+
+															<div>
+																<TDInputTemplateBr
+																	placeholder="Payment Date..."
+																	type="date"
+																	// label="Payment Date"
+																	name="disbursementDate"
+																	formControlName={formatDateToYYYYMMDD(
+																		new Date(item?.payment_date)
+																	)}
+																	handleChange={handleChangeTxnDetails}
+																	mode={1}
+																	disabled={
+																		disableCondition() || item?.tr_type === "D"
+																	}
+																/>
+															</div>
 														</td>
 														<td className="px-6 py-4">{item?.payment_id}</td>
 														<td className="px-6 py-4">
@@ -718,6 +780,18 @@ function MemberLoanDetailsForm() {
 							</Spin>
 						</div>
 
+						{/* {!disableCondition() && (
+							<div className="text-center mt-6">
+								<button
+									className="p-2 px-6 bg-teal-500 text-slate-50 rounded-xl hover:bg-green-500 active:ring-2 active:ring-slate-500"
+									type="button"
+									onClick={() => setVisible2(true)}
+								>
+									SAVE TRANSACTION DETAILS
+								</button>
+							</div>
+						)} */}
+
 						{/* ////////////////////////////////////////////////////// */}
 					</div>
 				</form>
@@ -737,7 +811,7 @@ function MemberLoanDetailsForm() {
 			/>
 
 			{/* For Reject */}
-			{/* <DialogBox
+			<DialogBox
 				flag={4}
 				onPress={() => setVisible2(!visible2)}
 				visible={visible2}
@@ -747,7 +821,7 @@ function MemberLoanDetailsForm() {
 					setVisible2(!visible2)
 				}}
 				onPressNo={() => setVisible2(!visible2)}
-			/> */}
+			/>
 
 			{/* <DialogBox
 				flag={4}

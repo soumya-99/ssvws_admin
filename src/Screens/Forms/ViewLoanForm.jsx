@@ -74,12 +74,17 @@ function ViewLoanForm({ groupDataArr }) {
 	console.log(params, "paramsssssssssssssss")
 	console.log(location, "location")
 
+	{
+		/* purpose,scheme name,interest rate,period,period mode,fund name,total applied amount,total disbursement amount,disbursement date,current outstanding */
+	}
+
 	const initialValues = {
+		g_co_name: "",
 		g_group_name: "",
 		g_group_type: "",
 		g_address: "",
 		g_pin: "",
-		// g_group_block: "",
+		g_group_block: "",
 		g_phone1: "",
 		g_phone2: "",
 		g_email: "",
@@ -91,6 +96,18 @@ function ViewLoanForm({ groupDataArr }) {
 		g_acc2: "",
 		g_branch_name: "",
 		g_total_outstanding: "",
+
+		// disbursement details
+		g_purpose: "",
+		g_scheme_name: "",
+		g_interest_rate: "",
+		g_period: "",
+		g_period_mode: "",
+		g_fund_name: "",
+		g_total_applied_amt: "",
+		g_total_disbursement_amt: "",
+		g_disbursement_date: "",
+		g_current_outstanding: "",
 	}
 	const [formValues, setValues] = useState(initialValues)
 
@@ -115,22 +132,21 @@ function ViewLoanForm({ groupDataArr }) {
 		setLoading(true)
 		const creds = {
 			group_code: params?.id,
+			branch_code: userDetails?.brn_code,
 		}
 		await axios
 			.post(`${url}/admin/fetch_search_grp_view`, creds)
 			.then((res) => {
 				console.log("........>>>>>>>>>>", res?.data)
 				setValues({
+					g_co_name: res?.data?.msg[0]?.emp_name,
 					g_group_name: res?.data?.msg[0]?.group_name,
 					g_group_type: res?.data?.msg[0]?.group_type,
 					g_address:
-						res?.data?.msg[0]?.grp_addr +
-						", " +
-						res?.data?.msg[0]?.block_name +
-						", " +
-						res?.data?.msg[0]?.pin_no,
+						res?.data?.msg[0]?.grp_addr + ", " + res?.data?.msg[0]?.pin_no,
 					g_pin: res?.data?.msg[0]?.pin_no,
-					g_group_block: res?.data?.msg[0]?.block,
+					// g_group_block: res?.data?.msg[0]?.block,
+					g_group_block: res?.data?.msg[0]?.block_name,
 					g_phone1: res?.data?.msg[0]?.phone1,
 					g_phone2: res?.data?.msg[0]?.phone2,
 					g_email: res?.data?.msg[0]?.email_id,
@@ -140,8 +156,26 @@ function ViewLoanForm({ groupDataArr }) {
 					g_micr: res?.data?.msg[0]?.micr,
 					g_acc1: res?.data?.msg[0]?.acc_no1,
 					g_acc2: res?.data?.msg[0]?.acc_no2,
-					g_branch_name: res?.data?.msg[0]?.branch_name,
+					g_branch_name: res?.data?.msg[0]?.brn_name,
 					g_total_outstanding: res?.data?.msg[0]?.total_outstanding,
+
+					// disb dtls
+					g_purpose: res?.data?.msg[0]?.disb_details[0]?.purpose_id,
+					g_scheme_name: res?.data?.msg[0]?.disb_details[0]?.scheme_name,
+					g_interest_rate: res?.data?.msg[0]?.disb_details[0]?.curr_roi,
+					g_period: res?.data?.msg[0]?.disb_details[0]?.period,
+					g_period_mode: res?.data?.msg[0]?.disb_details[0]?.period_mode,
+					g_fund_name: res?.data?.msg[0]?.disb_details[0]?.fund_name,
+					g_total_applied_amt: res?.data?.msg[0]?.disb_details[0]?.applied_amt,
+					g_total_disbursement_amt:
+						res?.data?.msg[0]?.disb_details[0]?.disburse_amt,
+					g_disbursement_date: res?.data?.msg[0]?.disb_details[0]?.disb_dt
+						? new Date(
+								res?.data?.msg[0]?.disb_details[0]?.disb_dt
+						  ).toLocaleDateString("en-GB")
+						: "",
+					g_current_outstanding:
+						res?.data?.msg[0]?.disb_details[0]?.curr_outstanding,
 				})
 				setGroupData(res?.data?.msg)
 				setBranch(
@@ -321,6 +355,23 @@ function ViewLoanForm({ groupDataArr }) {
 									/>
 								</div>
 							)} */}
+							<div className="sm:col-span-2">
+								<TDInputTemplateBr
+									placeholder="CO Name"
+									type="text"
+									label="CO Name"
+									name="g_co_name"
+									handleChange={formik.handleChange}
+									handleBlur={formik.handleBlur}
+									formControlName={formik.values.g_co_name}
+									mode={1}
+									disabled
+								/>
+								{/* {formik.errors.g_group_name && formik.touched.g_group_name ? (
+									<VError title={formik.errors.g_group_name} />
+								) : null} */}
+							</div>
+
 							<div>
 								<TDInputTemplateBr
 									placeholder="Group Name"
@@ -367,7 +418,7 @@ function ViewLoanForm({ groupDataArr }) {
 
 							{/* {userDetails?.id === 3 && ( */}
 							<>
-								<div className="sm:col-span-2">
+								<div>
 									{/* <TDInputTemplateBr
 										placeholder="Choose Branch"
 										type="text"
@@ -415,11 +466,28 @@ function ViewLoanForm({ groupDataArr }) {
 							</>
 							{/* )} */}
 
+							<div>
+								<TDInputTemplateBr
+									placeholder="Type Block..."
+									type="text"
+									label={`Block`}
+									name="g_group_block"
+									formControlName={formik.values.g_group_block}
+									handleChange={formik.handleChange}
+									handleBlur={formik.handleBlur}
+									mode={1}
+									disabled
+								/>
+								{/* {formik.errors.g_address && formik.touched.g_address ? (
+									<VError title={formik.errors.g_address} />
+								) : null} */}
+							</div>
+
 							<div className="sm:col-span-2">
 								<TDInputTemplateBr
 									placeholder="Type Address..."
 									type="text"
-									label={`Address, Block and PIN`}
+									label={`Address and PIN`}
 									name="g_address"
 									formControlName={formik.values.g_address}
 									handleChange={formik.handleChange}
@@ -598,12 +666,151 @@ function ViewLoanForm({ groupDataArr }) {
 								) : null} */}
 							</div>
 						</div>
-						{/* <Divider
-							type="vertical"
+						<Divider
+							type="horizontal"
 							style={{
-								height: 650,
+								height: 5,
 							}}
-						/> */}
+						/>
+
+						{/* purpose,scheme name,interest rate,period,period mode,fund name,total applied amount,total disbursement amount,disbursement date,current outstanding */}
+						<div className="text-[#DA4167] text-lg mb-2 font-bold">
+							Disbursement Details
+						</div>
+
+						<div className="grid gap-4 sm:grid-cols-2 sm:gap-6">
+							<div>
+								<TDInputTemplateBr
+									placeholder="Purpose"
+									type="text"
+									label="Purpose"
+									name="g_purpose"
+									handleChange={formik.handleChange}
+									handleBlur={formik.handleBlur}
+									formControlName={formik.values.g_purpose}
+									mode={1}
+									disabled
+								/>
+							</div>
+							<div>
+								<TDInputTemplateBr
+									placeholder="Scheme Name"
+									type="text"
+									label="Scheme Name"
+									name="g_scheme_name"
+									handleChange={formik.handleChange}
+									handleBlur={formik.handleBlur}
+									formControlName={formik.values.g_scheme_name}
+									mode={1}
+									disabled
+								/>
+							</div>
+							<div>
+								<TDInputTemplateBr
+									placeholder="Interest Rate"
+									type="number"
+									label="Interest Rate"
+									name="g_interest_rate"
+									handleChange={formik.handleChange}
+									handleBlur={formik.handleBlur}
+									formControlName={formik.values.g_interest_rate}
+									mode={1}
+									disabled
+								/>
+							</div>
+							<div>
+								<TDInputTemplateBr
+									placeholder="Period"
+									type="number"
+									label="Period"
+									name="g_period"
+									handleChange={formik.handleChange}
+									handleBlur={formik.handleBlur}
+									formControlName={formik.values.g_period}
+									mode={1}
+									disabled
+								/>
+							</div>
+							<div>
+								<TDInputTemplateBr
+									placeholder="Period Mode"
+									type="text"
+									label="Period Mode"
+									name="g_period_mode"
+									handleChange={formik.handleChange}
+									handleBlur={formik.handleBlur}
+									formControlName={formik.values.g_period_mode}
+									mode={1}
+									disabled
+								/>
+							</div>
+							<div>
+								<TDInputTemplateBr
+									placeholder="Fund Name"
+									type="text"
+									label="Fund Name"
+									name="g_fund_name"
+									handleChange={formik.handleChange}
+									handleBlur={formik.handleBlur}
+									formControlName={formik.values.g_fund_name}
+									mode={1}
+									disabled
+								/>
+							</div>
+							<div>
+								<TDInputTemplateBr
+									placeholder="Total Applied Amount"
+									type="number"
+									label="Total Applied Amount"
+									name="g_total_applied_amt"
+									handleChange={formik.handleChange}
+									handleBlur={formik.handleBlur}
+									formControlName={formik.values.g_total_applied_amt}
+									mode={1}
+									disabled
+								/>
+							</div>
+							<div>
+								<TDInputTemplateBr
+									placeholder="Total Disbursement Amount"
+									type="number"
+									label="Total Disbursement Amount"
+									name="g_total_disbursement_amt"
+									handleChange={formik.handleChange}
+									handleBlur={formik.handleBlur}
+									formControlName={formik.values.g_total_disbursement_amt}
+									mode={1}
+									disabled
+								/>
+							</div>
+							<div>
+								<TDInputTemplateBr
+									placeholder="Disbursement Date"
+									type="text"
+									label="Disbursement Date"
+									name="g_disbursement_date"
+									handleChange={formik.handleChange}
+									handleBlur={formik.handleBlur}
+									formControlName={formik.values.g_disbursement_date}
+									mode={1}
+									disabled
+								/>
+							</div>
+							<div>
+								<TDInputTemplateBr
+									placeholder="Current Outstanding"
+									type="number"
+									label="Current Outstanding"
+									name="g_current_outstanding"
+									handleChange={formik.handleChange}
+									handleBlur={formik.handleBlur}
+									formControlName={formik.values.g_current_outstanding}
+									mode={1}
+									disabled
+								/>
+							</div>
+						</div>
+
 						{params?.id > 0 && (
 							<div className="gap-3">
 								<div className="w-full my-10 border-t-4 border-gray-400 border-dashed"></div>
@@ -696,7 +903,7 @@ function ViewLoanForm({ groupDataArr }) {
 																	}}
 																	className="font-medium text-teal-500 dark:text-blue-500 hover:underline"
 																>
-																	<EyeFilled/>
+																	<EyeFilled />
 																</button>
 															</td>
 														</tr>
