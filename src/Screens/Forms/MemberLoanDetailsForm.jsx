@@ -49,6 +49,7 @@ function MemberLoanDetailsForm() {
 	const [fetchedLoanData, setFetchedLoanData] = useState(() => Object)
 	const [fetchedTnxData, setFetchedTnxData] = useState(() => Object)
 	const [tnxDetails, setTnxDetails] = useState([])
+	const [changedPayment, setChangedPayment] = useState(null)
 
 	// const formattedDob = formatDateToYYYYMMDD(memberDetails?.dob)
 
@@ -103,6 +104,15 @@ function MemberLoanDetailsForm() {
 			updatedData[index][name] = value
 			return updatedData
 		})
+
+		// If the changed field is "payment_date", capture the new date and the payment_id.
+		if (name === "payment_date") {
+			// Note: payment_id is assumed to be already present in tnxDetails.
+			setChangedPayment({
+				payment_date: value,
+				payment_id: tnxDetails[index]?.payment_id,
+			})
+		}
 	}
 
 	const handleFetchMemberLoanDetails = async () => {
@@ -235,28 +245,57 @@ function MemberLoanDetailsForm() {
 			})
 	}
 
-	const saveTxnDetails = async () => {
-		const creds = {
-			modified_by: userDetails?.emp_id,
-			loan_id: params?.id,
+	// const saveTxnDetails = async () => {
+	// 	const creds = {
+	// 		modified_by: userDetails?.emp_id,
+	// 		loan_id: params?.id,
 
-			trans_dt: tnxDetails?.map((item, i) => ({
-				payment_date: formatDateToYYYYMMDD(item?.payment_date),
-				payment_id: item?.payment_id,
-			})),
+	// 		trans_dt: tnxDetails?.map((item, i) => ({
+	// 			payment_date: formatDateToYYYYMMDD(item?.payment_date),
+	// 			payment_id: item?.payment_id,
+	// 		})),
+	// 	}
+
+	// 	console.log("DSDS", creds)
+	// 	await axios
+	// 		.post(`${url}/admin/change_loan_trans_date`, creds)
+	// 		.then((res) => {
+	// 			console.log("SAVE TXN DTLSSSS", res?.data)
+	// 			Message("success", res?.data?.msg)
+	// 		})
+	// 		.catch((err) => {
+	// 			console.log("ERRR:S:S:S", err)
+	// 		})
+	// }
+
+	// Save the transaction details by calling the API.
+	const saveTxnDetails = async (payment_date, payment_id) => {
+		setLoading(true)
+		const creds = {
+			payment_date,
+			payment_id,
+			loan_id: params?.id,
+			modified_by: userDetails?.emp_id,
 		}
 
-		console.log("DSDS", creds)
-		await axios
-			.post(`${url}/admin/change_loan_trans_date`, creds)
-			.then((res) => {
-				console.log("SAVE TXN DTLSSSS", res?.data)
-				Message("success", res?.data?.msg)
-			})
-			.catch((err) => {
-				console.log("ERRR:S:S:S", err)
-			})
+		console.log("Saving transaction details:", creds)
+		try {
+			const res = await axios.post(`${url}/admin/change_loan_trans_date`, creds)
+			console.log("Transaction details saved:", res?.data)
+			Message("success", res?.data?.msg)
+		} catch (err) {
+			console.log("Error saving transaction details:", err)
+		}
+		setLoading(false)
 	}
+
+	useEffect(() => {
+		if (changedPayment) {
+			saveTxnDetails(changedPayment.payment_date, changedPayment.payment_id)
+
+			setChangedPayment(null)
+		}
+	}, [changedPayment])
 
 	//////////////////////////////////////////////////
 	//////////////////////////////////////////////////
@@ -667,62 +706,83 @@ function MemberLoanDetailsForm() {
 											{tnxDetails?.map((item, i) => {
 												totalCredit += item?.credit
 												totalDebit += item?.debit
+
+												if (item?.tr_type === "I" && userDetails?.id !== 4) {
+													return null
+												}
+
 												return (
-													<tr
-														key={i}
-														className={`bg-slate-50 border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-slate-50 dark:hover:bg-gray-600`}
-													>
-														<th
-															scope="row"
-															className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white"
+													<>
+														<tr
+															key={i}
+															className={`bg-slate-50 border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-slate-50 dark:hover:bg-gray-600`}
 														>
-															{i + 1}
-														</th>
-														<td className="px-6 py-4">
-															{/* {new Date(item?.payment_date).toLocaleDateString(
+															<th
+																scope="row"
+																className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white"
+															>
+																{i + 1}
+															</th>
+															<td className="px-6 py-4">
+																{/* {new Date(item?.payment_date).toLocaleDateString(
 																"en-GB"
 															) || ""} */}
 
-															<div>
-																<TDInputTemplateBr
-																	placeholder="Payment Date..."
-																	type="date"
-																	name="payment_date"
-																	formControlName={formatDateToYYYYMMDD(
-																		new Date(item?.payment_date)
-																	)}
-																	handleChange={(e) =>
-																		handleChangeTxnDetails(i, e)
-																	}
-																	mode={1}
-																	disabled={item?.tr_type === "D"}
-																/>
-															</div>
-														</td>
-														<td className="px-6 py-4">{item?.payment_id}</td>
-														<td className="px-6 py-4">
-															{item?.tr_type === "D"
-																? "Disbursement"
-																: item?.tr_type === "I"
-																? "Interest"
-																: item?.tr_type === "R"
-																? "Recovery"
-																: "Error"}
-														</td>
-														<td className="px-6 py-4">{item?.debit}/-</td>
-														<td className="px-6 py-4">{item?.credit}/-</td>
-														<td className="px-6 py-4">{item?.prn_bal}/-</td>
-														<td className="px-6 py-4">
-															{item?.intt_balance}/-
-														</td>
-														<td className="px-6 py-4">{item?.outstanding}/-</td>
+																<div>
+																	<TDInputTemplateBr
+																		placeholder="Payment Date..."
+																		type="date"
+																		name="payment_date"
+																		formControlName={formatDateToYYYYMMDD(
+																			new Date(item?.payment_date)
+																		)}
+																		handleChange={(e) =>
+																			handleChangeTxnDetails(i, e)
+																		}
+																		mode={1}
+																		disabled={
+																			!(
+																				item?.tr_type === "I" ||
+																				item?.tr_type === "R"
+																			) || userDetails?.id !== 4
+																		}
+																	/>
+																</div>
+															</td>
+															<td className="px-6 py-4">{item?.payment_id}</td>
+															<td className="px-6 py-4">
+																{item?.tr_type === "D"
+																	? "Disbursement"
+																	: item?.tr_type === "I"
+																	? "Interest"
+																	: item?.tr_type === "R"
+																	? "Recovery"
+																	: item?.tr_type === "O"
+																	? "Overdue"
+																	: "Error"}
+															</td>
+															<td className="px-6 py-4">
+																{item?.debit || 0}/-
+															</td>
+															<td className="px-6 py-4">
+																{item?.credit || 0}/-
+															</td>
+															<td className="px-6 py-4">
+																{item?.prn_bal || 0}/-
+															</td>
+															<td className="px-6 py-4">
+																{item?.intt_balance || 0}/-
+															</td>
+															<td className="px-6 py-4">
+																{item?.outstanding || 0}/-
+															</td>
 
-														{/* <td className="px-6 py-4">
+															{/* <td className="px-6 py-4">
 														{new Date(item?.payment_date).toLocaleDateString(
 															"en-GB"
 														) || ""}
 													</td> */}
-														{/* <td className="px-6 py-4">
+															{/* <td className="px-6 py-4">
 															{item?.cheque_id || 0}
 														</td>
 														<td className="px-6 py-4">
@@ -730,30 +790,30 @@ function MemberLoanDetailsForm() {
 																"en-GB"
 															) || ""}
 														</td> */}
-														<td className="px-6 py-4">
-															{item?.tr_mode === "B"
-																? "Bank"
-																: item?.tr_mode === "C"
-																? "Cash"
-																: "Error"}
-														</td>
-														<td className="px-6 py-4">{item?.particulars}</td>
-														<td
-															className={`px-6 py-4 ${
-																item?.status === "A"
-																	? "text-green-600"
+															<td className="px-6 py-4">
+																{item?.tr_mode === "B"
+																	? "Bank"
+																	: item?.tr_mode === "C"
+																	? "Cash"
+																	: "Error"}
+															</td>
+															<td className="px-6 py-4">{item?.particulars}</td>
+															<td
+																className={`px-6 py-4 ${
+																	item?.status === "A"
+																		? "text-green-600"
+																		: item?.status === "U"
+																		? "text-red-600"
+																		: ""
+																}`}
+															>
+																{item?.status === "A"
+																	? "Approved"
 																	: item?.status === "U"
-																	? "text-red-600"
-																	: ""
-															}`}
-														>
-															{item?.status === "A"
-																? "Approved"
-																: item?.status === "U"
-																? "Unapproved"
-																: "Error"}
-														</td>
-														{/* <td className="px-6 py-4 text-right">
+																	? "Unapproved"
+																	: "Error"}
+															</td>
+															{/* <td className="px-6 py-4 text-right">
 														<button
 															onClick={() => {
 																navigate(
@@ -765,7 +825,8 @@ function MemberLoanDetailsForm() {
 															Edit
 														</button>
 													</td> */}
-													</tr>
+														</tr>
+													</>
 												)
 											})}
 											{/* <tr className="bg-white border-b dark:bg-gray-800 dark:border-gray-700">
@@ -799,7 +860,7 @@ function MemberLoanDetailsForm() {
 							</Spin>
 						</div>
 
-						{!disableCondition() && (
+						{/* {!disableCondition() && (
 							<div className="text-center mt-6">
 								<button
 									className="p-2 px-6 bg-teal-500 text-slate-50 rounded-xl hover:bg-green-500 active:ring-2 active:ring-slate-500"
@@ -809,7 +870,7 @@ function MemberLoanDetailsForm() {
 									SAVE TRANSACTION DETAILS
 								</button>
 							</div>
-						)}
+						)} */}
 
 						{/* ////////////////////////////////////////////////////// */}
 					</div>
