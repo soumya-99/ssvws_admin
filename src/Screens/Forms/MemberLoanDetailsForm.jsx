@@ -310,7 +310,7 @@ function MemberLoanDetailsForm() {
 	let totalDebit = 0
 
 	const disableCondition = () => {
-		return userDetails?.id !== 4
+		return userDetails?.id === 4
 	}
 
 	return (
@@ -472,7 +472,7 @@ function MemberLoanDetailsForm() {
 										)}
 										handleChange={handleChangeMemberLoanDetails}
 										mode={1}
-										disabled
+										disabled={!disableCondition()}
 									/>
 								</div>
 								<div>
@@ -624,7 +624,7 @@ function MemberLoanDetailsForm() {
 									/>
 								</div>
 							</div>
-							{/* {!disableCondition() && (
+							{disableCondition() && (
 								<div className="text-center mt-6">
 									<button
 										className="p-2 px-6 bg-teal-500 text-slate-50 rounded-xl hover:bg-green-500 active:ring-2 active:ring-slate-500"
@@ -634,7 +634,7 @@ function MemberLoanDetailsForm() {
 										UPDATE
 									</button>
 								</div>
-							)} */}
+							)}
 						</div>
 
 						{/* ///////////////////////// */}

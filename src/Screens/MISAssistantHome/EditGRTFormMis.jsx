@@ -71,7 +71,10 @@ function EditGRTFormMis() {
 			<Sidebar mode={1} />
 			<section className=" dark:bg-[#001529] flex justify-center align-middle p-5">
 				<div className=" p-5 w-4/5 min-h-screen rounded-3xl">
-					{userDetails?.id === 3 &&
+					{(userDetails?.id === 2 ||
+						userDetails?.id === 4 ||
+						userDetails?.id === 10 ||
+						userDetails?.id === 11) &&
 						memberDetailsData?.approval_status === "S" && (
 							<div className="flex justify-between">
 								{metadataArray?.map((item, i) => (
@@ -111,7 +114,10 @@ function EditGRTFormMis() {
 							</div>
 						)}
 
-					{userDetails?.id === 3 &&
+					{(userDetails?.id === 2 ||
+						userDetails?.id === 4 ||
+						userDetails?.id === 10 ||
+						userDetails?.id === 11) &&
 						memberDetailsData?.approval_status === "A" && (
 							<div className="flex justify-between">
 								{metadataArray?.map((item, i) => (
@@ -157,7 +163,10 @@ function EditGRTFormMis() {
 							</div>
 						)}
 
-					{userDetails?.id === 3 &&
+					{(userDetails?.id === 2 ||
+						userDetails?.id === 4 ||
+						userDetails?.id === 10 ||
+						userDetails?.id === 11) &&
 						memberDetailsData?.approval_status === "R" && (
 							<div className="flex justify-between">
 								{metadataArray?.map((item, i) => (

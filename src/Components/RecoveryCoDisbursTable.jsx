@@ -162,7 +162,6 @@ function RecoveryCoDisbursTable({
 				}
 			})
 
-
 			setCachedPaymentId(group_Data)
 			// setRejectCachedPaymentId(reject_group_Data);
 			setShowApprov(true)
@@ -188,8 +187,8 @@ function RecoveryCoDisbursTable({
 			})
 			.then((res) => {
 				if (res?.data?.suc === 1) {
-					console.log(res?.data?.msg, 'oyoyoyoyoy');
-					
+					console.log(res?.data?.msg, "oyoyoyoyoy")
+
 					setLoanCoMember(res?.data?.msg)
 					setLoading(false)
 				} else {
@@ -318,10 +317,7 @@ function RecoveryCoDisbursTable({
 						}
 					></Column>
 					{/* <Column field="tot_emi" header="Total EMI"></Column> */}
-					<Column
-						header="Amount"
-						body={(rowData) => `${rowData.amt}`}
-					></Column>
+					<Column header="Amount" body={(rowData) => `${rowData.amt}`}></Column>
 					{/* <Column field="outstanding" header="Outstanding"></Column> */}
 					<Column field="created_by" header="Created By"></Column>
 					{/* <Column headerStyle={{ width: '4rem'}}></Column> */}
@@ -433,10 +429,10 @@ function RecoveryCoDisbursTable({
 					tableClassName="w-full text-sm text-left rtl:text-right shadow-lg text-green-900dark:text-gray-400 table_Custome table_Custome_1st" // Apply row classes
 				>
 					<Column
-					header="Sl No."
-					body={(rowData) => (
-					<span style={{ fontWeight: "bold" }}>{rowData?.id + 1}</span>
-					)}
+						header="Sl No."
+						body={(rowData) => (
+							<span style={{ fontWeight: "bold" }}>{rowData?.id + 1}</span>
+						)}
 					></Column>
 
 					<Column expander={allowExpansion} style={{ width: "3em" }} />
@@ -445,58 +441,43 @@ function RecoveryCoDisbursTable({
 						headerStyle={{ width: "3rem" }}
 					></Column>
 					<Column
-					field="transaction_date"
-					header="Payment Date "
-					body={(rowData) =>
-					new Date(rowData?.transaction_date).toLocaleDateString("en-GB")
-					}
+						field="transaction_date"
+						header="Payment Date "
+						body={(rowData) =>
+							new Date(rowData?.transaction_date).toLocaleDateString("en-GB")
+						}
 					></Column>
 
 					<Column
-					field="group_name"
-					header="Group Name"
-					footer={<span style={{ fontWeight: "bold" }}>Total Amount:</span>}
+						field="group_name"
+						header="Group Name"
+						footer={<span style={{ fontWeight: "bold" }}>Total Amount:</span>}
+					></Column>
+
+					<Column field="period" header="Period"></Column>
+					<Column field="period_mode" header="Period Mode"></Column>
+
+					<Column field="curr_roi" header="Current Interest Rate"></Column>
+
+					<Column field="purpose_id" header="Purpose ID"></Column>
+
+					<Column field="scheme_name" header="Scheme Name"></Column>
+
+					<Column
+						field="debit_amt"
+						header="Debit Amount"
+						footer={
+							<span style={{ fontWeight: "bold", color: "#0694A2" }}>
+								{DebitAmount}
+							</span>
+						}
 					></Column>
 
 					<Column
-					field="period"
-					header="Period"
-					></Column>
-					<Column
-					field="period_mode"
-					header="Period Mode"
-					></Column>
-
-					<Column
-					field="curr_roi"
-					header="Current Interest Rate"
-					></Column>
-
-					<Column
-					field="purpose_id"
-					header="Purpose ID"
-					></Column>
-
-					<Column
-					field="scheme_name"
-					header="Scheme Name"
-					></Column>
-
-					<Column
-					field="debit_amt"
-					header="Debit Amount"
-					footer={
-					<span style={{ fontWeight: "bold", color: "#0694A2" }}>
-					{DebitAmount}
-					</span>
-					}
-					></Column>
-
-					<Column
-					header="Collected By"
-					body={(rowData) =>
-					`${rowData?.created_by == null ? "--" : rowData?.created_by}`
-					}
+						header="Collected By"
+						body={(rowData) =>
+							`${rowData?.created_by == null ? "--" : rowData?.created_by}`
+						}
 					></Column>
 
 					{/* <Column field="created_code" header="Created Code"></Column> */}
@@ -524,7 +505,7 @@ function RecoveryCoDisbursTable({
 									<CheckCircleOutlined /> <span class={`ml-2`}>Approve</span>
 								</button>
 
-								<Popconfirm
+								{/* <Popconfirm
 									title={`Delete Member`}
 									description={
 										<>
@@ -556,7 +537,7 @@ function RecoveryCoDisbursTable({
 									>
 										<CheckCircleOutlined /> <span class={`ml-2`}>Reject</span>
 									</button>
-								</Popconfirm>
+								</Popconfirm> */}
 							</motion.section>
 						</>
 					)}

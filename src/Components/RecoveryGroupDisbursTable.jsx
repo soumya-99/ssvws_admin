@@ -74,8 +74,7 @@ function RecoveryGroupDisbursTable({
 		if (loanAppData.length > 0) {
 			setLoanAppData(loanAppData)
 		}
-		console.log(loanAppData, 'fffffffffffffffffffffffffffffffff');
-		
+		console.log(loanAppData, "fffffffffffffffffffffffffffffffff")
 	}, [loanAppData])
 
 	useEffect(() => {
@@ -134,7 +133,6 @@ function RecoveryGroupDisbursTable({
 					.toFixed(2)
 			)
 
-
 			const group_Data = selectedRows.map((item) => {
 				return {
 					payment_date: item?.transaction_date,
@@ -142,7 +140,6 @@ function RecoveryGroupDisbursTable({
 					group_code: item?.group_code,
 				}
 			})
-
 
 			setCachedDateGcode(group_Data)
 			// setRejectCachedPaymentId(reject_group_Data);
@@ -182,8 +179,6 @@ function RecoveryGroupDisbursTable({
 			})
 	}
 
-	
-
 	const fetchLoanApplicationsGroup = async () => {
 		setLoading(true)
 		await axios
@@ -193,8 +188,8 @@ function RecoveryGroupDisbursTable({
 			.then((res) => {
 				if (res?.data?.suc === 1) {
 					setLoanAppData(res?.data?.msg)
-					console.log(res?.data?.msg, 'fffffffffffffffffffffffffffffffff');
-					
+					console.log(res?.data?.msg, "fffffffffffffffffffffffffffffffff")
+
 					setSelectedProducts([])
 					// setTotalEMI(0)
 					// setCreditAmount(0)
@@ -211,8 +206,6 @@ function RecoveryGroupDisbursTable({
 		setLoading(false)
 	}
 
-
-
 	const approveRecoveryTransaction = async (cachedDateGcode) => {
 		setLoading(true)
 		// removeCachedIds(cachedDateGcode, getloanAppData)
@@ -223,7 +216,6 @@ function RecoveryGroupDisbursTable({
 		}
 
 		// console.log(creds, 'uhuhuhu');
-		
 
 		await axios
 			.post(`${url}/approve_grpwise_disb`, creds)
@@ -247,7 +239,7 @@ function RecoveryGroupDisbursTable({
 			reject_remarks: remarksForDelete,
 			reject_dt_disb: cachedDateGcode,
 		}
-		console.log(creds, 'uhuhuhu');
+		console.log(creds, "uhuhuhu")
 
 		await axios
 			.post(`${url}/reject_grp_co_wise_disb`, creds)
@@ -304,10 +296,7 @@ function RecoveryGroupDisbursTable({
 						}
 					></Column>
 					{/* <Column field="tot_emi" header="Total EMI"></Column> */}
-					<Column
-						header="Amount"
-						body={(rowData) => `${rowData.amt}`}
-					></Column>
+					<Column header="Amount" body={(rowData) => `${rowData.amt}`}></Column>
 					{/* <Column field="outstanding" header="Outstanding"></Column> */}
 					<Column field="created_by" header="Created By"></Column>
 					{/* <Column headerStyle={{ width: '4rem'}}></Column> */}
@@ -460,36 +449,21 @@ function RecoveryGroupDisbursTable({
 							new Date(rowData?.transaction_date).toLocaleDateString("en-GB")
 						}
 					></Column>
-					
+
 					<Column
 						field="group_name"
 						header="Group Name"
 						footer={<span style={{ fontWeight: "bold" }}>Total Amount:</span>}
 					></Column>
 
-					<Column
-						field="period"
-						header="Period"
-					></Column>
-					<Column
-						field="period_mode"
-						header="Period Mode"
-					></Column>
+					<Column field="period" header="Period"></Column>
+					<Column field="period_mode" header="Period Mode"></Column>
 
-					<Column
-						field="curr_roi"
-						header="Current Interest Rate"
-					></Column>
+					<Column field="curr_roi" header="Current Interest Rate"></Column>
 
-					<Column
-						field="purpose_id"
-						header="Purpose ID"
-					></Column>
+					<Column field="purpose_id" header="Purpose ID"></Column>
 
-					<Column
-						field="scheme_name"
-						header="Scheme Name"
-					></Column>
+					<Column field="scheme_name" header="Scheme Name"></Column>
 
 					<Column
 						field="debit_amt"
@@ -507,7 +481,6 @@ function RecoveryGroupDisbursTable({
 							`${rowData?.created_by == null ? "--" : rowData?.created_by}`
 						}
 					></Column>
-
 
 					{/* <Column field="group_code" header="Group Code"></Column>
 					
@@ -536,7 +509,6 @@ function RecoveryGroupDisbursTable({
 							`${rowData?.created_by == null ? "--" : rowData?.created_by}`
 						}
 					></Column> */}
-
 				</DataTable>
 				{/* <>{JSON.stringify(cachedPaymentId, null, 2)}</> */}
 
@@ -559,7 +531,7 @@ function RecoveryGroupDisbursTable({
 									<CheckCircleOutlined /> <spann class={`ml-2`}>Approve</spann>
 								</button>
 
-								<Popconfirm
+								{/* <Popconfirm
 									title={`Delete Member`}
 									description={
 										<>
@@ -591,7 +563,7 @@ function RecoveryGroupDisbursTable({
 									>
 										<CheckCircleOutlined /> <span class={`ml-2`}>Reject</span>
 									</button>
-								</Popconfirm>
+								</Popconfirm> */}
 							</motion.section>
 						</>
 					)}

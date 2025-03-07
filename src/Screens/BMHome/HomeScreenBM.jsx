@@ -30,7 +30,6 @@ const options1 = [
 	},
 ]
 const options2 = [
-
 	{
 		label: "Sent to MIS",
 		value: "S",
@@ -50,10 +49,9 @@ function HomeScreenMis() {
 	const [loading, setLoading] = useState(false)
 	const [loanApplications, setLoanApplications] = useState(() => [])
 	const [copyLoanApplications, setCopyLoanApplications] = useState(() => [])
-	const options = userDetails.id==10?options2:options1
+	const options = userDetails.id == 10 ? options2 : options1
 
-	const [loanType, setLoanType] = useState(userDetails.id!=10?"U":"S")
-
+	const [loanType, setLoanType] = useState(userDetails.id != 10 ? "U" : "S")
 
 	const [coListData, setCoListData] = useState(() => [])
 	const [selectedEmployeeId, setSelectedEmployeeId] = useState(() => null)
@@ -99,8 +97,6 @@ function HomeScreenMis() {
 					// console.log("fetchCoList", res?.data?.msg[0].emp_id)
 					// fetchCoList_COList(res?.data?.msg[0].emp_id, loanType)
 					setCoListData(res?.data?.msg)
-					
-					
 				} else {
 					Message("error", "No incoming loan applications found.")
 				}
@@ -113,12 +109,17 @@ function HomeScreenMis() {
 	}
 
 	const fetchCoList_CO_Shorting = async (co_Id) => {
-		console.log({
-			branch_code: userDetails?.brn_code,
-			approval_status: loanType,
-			co_id: co_Id,
-		}, 'fetchCoList____', co_Id, loanType);
-		
+		console.log(
+			{
+				branch_code: userDetails?.brn_code,
+				approval_status: loanType,
+				co_id: co_Id,
+			},
+			"fetchCoList____",
+			co_Id,
+			loanType
+		)
+
 		setLoading(true)
 		await axios
 			.post(`${url}/admin/mis_fetch_dtls_cowise`, {
@@ -158,11 +159,11 @@ function HomeScreenMis() {
 			// 	`${url}/admin/fetch_form_fwd_bm_web?approval_status=${loanType}&branch_code=${userDetails?.brn_code}`
 			// )
 			.post(`${url}/admin/fetch_form_fwd_bm_to_mis_web`, {
-						branch_code: userDetails?.brn_code,
-						approval_status: loanType
-						})
+				branch_code: userDetails?.brn_code,
+				approval_status: loanType,
+			})
 			.then((res) => {
-		setLoading(false)
+				setLoading(false)
 
 				if (res?.data?.suc === 1) {
 					setLoanApplications(res?.data?.msg)
@@ -174,7 +175,7 @@ function HomeScreenMis() {
 				}
 			})
 			.catch((err) => {
-		setLoading(false)
+				setLoading(false)
 
 				Message("error", "Some error occurred while fetching loans!")
 				setLoanApplications([])
@@ -182,7 +183,6 @@ function HomeScreenMis() {
 				console.log("ERRR", err)
 			})
 	}
-
 
 	const onChange = (e) => {
 		console.log("radio1 checked", e)
@@ -199,13 +199,10 @@ function HomeScreenMis() {
 	// 	// fetchCoList_CO_Short()
 	// }, [coListData])
 
-
-	
-
 	const handleEmployeeChange = (e) => {
 		// Save the emp_id of the selected employee
-		
-		console.log(e.target.value, 'oooooooooooooooo');
+
+		console.log(e.target.value, "oooooooooooooooo")
 		const selectedId = e.target.value
 		setSelectedEmployeeId(selectedId) // Save to state
 		fetchCoList_CO_Shorting(selectedId)
@@ -236,26 +233,25 @@ function HomeScreenMis() {
 		)
 		// }
 
-	// if (loanType === "R") {
-	// 	setLoanApplications(
-	// 		copyLoanApplications?.filter(
-	// 			(e) =>
-	// 				e?.form_no
-	// 					?.toString()
-	// 					?.toLowerCase()
-	// 					.includes(word?.toLowerCase()) ||
-	// 				e?.branch_name
-	// 					?.toString()
-	// 					?.toLowerCase()
-	// 					?.includes(word?.toLowerCase()) ||
-	// 				e?.member_code
-	// 					?.toString()
-	// 					?.toLowerCase()
-	// 					?.includes(word?.toLowerCase())
-	// 		)
-	// 	)
-	// 	}
-
+		// if (loanType === "R") {
+		// 	setLoanApplications(
+		// 		copyLoanApplications?.filter(
+		// 			(e) =>
+		// 				e?.form_no
+		// 					?.toString()
+		// 					?.toLowerCase()
+		// 					.includes(word?.toLowerCase()) ||
+		// 				e?.branch_name
+		// 					?.toString()
+		// 					?.toLowerCase()
+		// 					?.includes(word?.toLowerCase()) ||
+		// 				e?.member_code
+		// 					?.toString()
+		// 					?.toLowerCase()
+		// 					?.includes(word?.toLowerCase())
+		// 		)
+		// 	)
+		// 	}
 	}
 
 	useEffect(() => {
@@ -263,33 +259,28 @@ function HomeScreenMis() {
 		fetchCoList_ID()
 	}, [loanType])
 
-	
-		useEffect(() => {
-	
-			if (loanType === "S") {
-				fetchLoanApplications_GroupWise('S')
-				setSelectedEmployeeId(() => [])
-				console.log('fff', 'SSSSSSSSSSSSSSS');
-				
-			} else if (loanType === "R") {
-				fetchLoanApplications_GroupWise('R')
-				setSelectedEmployeeId(() => [])
+	useEffect(() => {
+		if (loanType === "S") {
+			fetchLoanApplications_GroupWise("S")
+			setSelectedEmployeeId(() => [])
+			console.log("fff", "SSSSSSSSSSSSSSS")
+		} else if (loanType === "R") {
+			fetchLoanApplications_GroupWise("R")
+			setSelectedEmployeeId(() => [])
 
-				console.log('fff', 'RRRRRRRRRRRRRRR');
-			} else if (loanType === "A") {
-				fetchLoanApplications_GroupWise('A')
-				setSelectedEmployeeId(() => [])
+			console.log("fff", "RRRRRRRRRRRRRRR")
+		} else if (loanType === "A") {
+			fetchLoanApplications_GroupWise("A")
+			setSelectedEmployeeId(() => [])
 
-				console.log('fff', 'AAAAAAAAAAAAAAAAA');
-			}
-			else{
-				fetchLoanApplications_GroupWise('U')
-				setSelectedEmployeeId(() => [])
+			console.log("fff", "AAAAAAAAAAAAAAAAA")
+		} else {
+			fetchLoanApplications_GroupWise("U")
+			setSelectedEmployeeId(() => [])
 
-				console.log('fff', 'AAAAAAAAAAAAAAAAA');
-			}
-
-		}, [loanType])
+			console.log("fff", "AAAAAAAAAAAAAAAAA")
+		}
+	}, [loanType])
 
 	return (
 		<div>
@@ -316,11 +307,8 @@ function HomeScreenMis() {
 					/> */}
 
 					{loanType === "S" ? (
-					<>
-							
-					<div className="grid grid-cols-3 gap-5 mt-5">
-								
-
+						<>
+							<div className="grid grid-cols-3 gap-5 mt-5">
 								<div>
 									<TDInputTemplateBr
 										placeholder="Select Collector Name..."
@@ -346,23 +334,22 @@ function HomeScreenMis() {
 								</div>
 							</div>
 
-					{loanApplications.length>0 && <LoanRecovApplicationsTableViewBr
-						flag="MIS"
-						loanAppData={loanApplications}
-						loanType={loanType}
-						title="GRT Forms"
-						setSearch={(data) => setSearch(data)}
-						fetchLoanApplicationsDate={{
-							selectedEmployeeId
-						}}
-					/>}
-					</>
+							{loanApplications.length > 0 && (
+								<LoanRecovApplicationsTableViewBr
+									flag="MIS"
+									loanAppData={loanApplications}
+									loanType={loanType}
+									title="GRT Forms"
+									setSearch={(data) => setSearch(data)}
+									fetchLoanApplicationsDate={{
+										selectedEmployeeId,
+									}}
+								/>
+							)}
+						</>
 					) : loanType === "R" ? (
 						<>
-							
-					<div className="grid grid-cols-3 gap-5 mt-5">
-								
-
+							<div className="grid grid-cols-3 gap-5 mt-5">
 								<div>
 									<TDInputTemplateBr
 										placeholder="Select Collector Name..."
@@ -388,31 +375,29 @@ function HomeScreenMis() {
 								</div>
 							</div>
 
-							{loanApplications.length>0 &&<LoanApplicationsTableViewBr
-						flag="MIS"
-						loanAppData={loanApplications}
-						loanType={loanType}
-						title="GRT Forms"
-						setSearch={(data) => setSearch(data)}
-						fetchLoanApplicationsDate={{
-							selectedEmployeeId
-						}}
-					/>}
+							{loanApplications.length > 0 && (
+								<LoanApplicationsTableViewBr
+									flag="MIS"
+									loanAppData={loanApplications}
+									loanType={loanType}
+									title="GRT Forms"
+									setSearch={(data) => setSearch(data)}
+									fetchLoanApplicationsDate={{
+										selectedEmployeeId,
+									}}
+								/>
+							)}
 
-						{/* <LoanApplicationsTableViewBr
+							{/* <LoanApplicationsTableViewBr
 						flag="MIS"
 						loanAppData={loanApplications}
 						title="GRT Forms"
 						setSearch={(data) => setSearch(data)}
 						/> */}
-
 						</>
 					) : loanType === "A" ? (
 						<>
-							
-					<div className="grid grid-cols-3 gap-5 mt-5">
-								
-
+							<div className="grid grid-cols-3 gap-5 mt-5">
 								<div>
 									<TDInputTemplateBr
 										placeholder="Select Collector Name..."
@@ -438,30 +423,29 @@ function HomeScreenMis() {
 								</div>
 							</div>
 
-							{loanApplications.length>0 &&<LoanApprovalApplicationsTableViewBr
-						flag="MIS"
-						loanAppData={loanApplications}
-						loanType={loanType}
-						title="GRT Forms"
-						setSearch={(data) => setSearch(data)}
-						fetchLoanApplicationsDate={{
-							selectedEmployeeId
-						}}
-					/>}
+							{loanApplications.length > 0 && (
+								<LoanApprovalApplicationsTableViewBr
+									flag="MIS"
+									loanAppData={loanApplications}
+									loanType={loanType}
+									title="GRT Forms"
+									setSearch={(data) => setSearch(data)}
+									fetchLoanApplicationsDate={{
+										selectedEmployeeId,
+									}}
+								/>
+							)}
 
-						{/* <LoanApplicationsTableViewBr
+							{/* <LoanApplicationsTableViewBr
 						flag="MIS"
 						loanAppData={loanApplications}
 						title="GRT Forms"
 						setSearch={(data) => setSearch(data)}
 						/> */}
-
 						</>
-					) : <>
-							
-					<div className="grid grid-cols-3 gap-5 mt-5">
-								
-
+					) : (
+						<>
+							<div className="grid grid-cols-3 gap-5 mt-5">
 								<div>
 									<TDInputTemplateBr
 										placeholder="Select Collector Name..."
@@ -487,29 +471,27 @@ function HomeScreenMis() {
 								</div>
 							</div>
 
-							{loanApplications.length>0 &&<LoanApplicationsTableViewBr
-						flag="MIS"
-						loanAppData={loanApplications}
-						loanType={loanType}
-						title="GRT Forms"
-						setSearch={(data) => setSearch(data)}
-						fetchLoanApplicationsDate={{
-							selectedEmployeeId
-						}}
-					/>}
+							{loanApplications.length > 0 && (
+								<LoanApplicationsTableViewBr
+									flag="MIS"
+									loanAppData={loanApplications}
+									loanType={loanType}
+									title="GRT Forms"
+									setSearch={(data) => setSearch(data)}
+									fetchLoanApplicationsDate={{
+										selectedEmployeeId,
+									}}
+								/>
+							)}
 
-						{/* <LoanApplicationsTableViewBr
+							{/* <LoanApplicationsTableViewBr
 						flag="MIS"
 						loanAppData={loanApplications}
 						title="GRT Forms"
 						setSearch={(data) => setSearch(data)}
 						/> */}
-
-						</>}
-
-
-
-
+						</>
+					)}
 
 					{/* <DialogBox
 					visible={visible}
