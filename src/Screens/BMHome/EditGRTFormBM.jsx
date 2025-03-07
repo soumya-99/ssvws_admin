@@ -50,6 +50,7 @@ function EditGRTFormBM() {
 			// member_code: memberDetails?.member_code,
 			user_type: userDetails?.id,
 			approval_status: memberDetailsData?.approval_status,
+			branch_code: userDetails?.brn_code,
 		}
 		await axios
 			.post(`${url}/admin/approved_dtls`, creds)

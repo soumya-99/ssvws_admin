@@ -111,6 +111,7 @@ function MemberLoanDetailsForm() {
 			setChangedPayment({
 				payment_date: value,
 				payment_id: tnxDetails[index]?.payment_id,
+				tr_type: tnxDetails[index]?.tr_type,
 			})
 		}
 	}
@@ -269,13 +270,14 @@ function MemberLoanDetailsForm() {
 	// }
 
 	// Save the transaction details by calling the API.
-	const saveTxnDetails = async (payment_date, payment_id) => {
+	const saveTxnDetails = async (payment_date, payment_id, tr_type) => {
 		setLoading(true)
 		const creds = {
 			payment_date,
 			payment_id,
 			loan_id: params?.id,
 			modified_by: userDetails?.emp_id,
+			tr_type,
 		}
 
 		console.log("Saving transaction details:", creds)
@@ -291,7 +293,11 @@ function MemberLoanDetailsForm() {
 
 	useEffect(() => {
 		if (changedPayment) {
-			saveTxnDetails(changedPayment.payment_date, changedPayment.payment_id)
+			saveTxnDetails(
+				changedPayment.payment_date,
+				changedPayment.payment_id,
+				changedPayment.tr_type
+			)
 
 			setChangedPayment(null)
 		}
@@ -472,7 +478,7 @@ function MemberLoanDetailsForm() {
 										)}
 										handleChange={handleChangeMemberLoanDetails}
 										mode={1}
-										disabled={!disableCondition()}
+										disabled
 									/>
 								</div>
 								<div>
@@ -624,7 +630,7 @@ function MemberLoanDetailsForm() {
 									/>
 								</div>
 							</div>
-							{disableCondition() && (
+							{/* {disableCondition() && (
 								<div className="text-center mt-6">
 									<button
 										className="p-2 px-6 bg-teal-500 text-slate-50 rounded-xl hover:bg-green-500 active:ring-2 active:ring-slate-500"
@@ -634,7 +640,7 @@ function MemberLoanDetailsForm() {
 										UPDATE
 									</button>
 								</div>
-							)}
+							)} */}
 						</div>
 
 						{/* ///////////////////////// */}
@@ -743,7 +749,8 @@ function MemberLoanDetailsForm() {
 																		disabled={
 																			!(
 																				item?.tr_type === "I" ||
-																				item?.tr_type === "R"
+																				item?.tr_type === "R" ||
+																				item?.tr_type === "D"
 																			) || userDetails?.id !== 4
 																		}
 																	/>
