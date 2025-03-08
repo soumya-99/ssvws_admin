@@ -689,9 +689,15 @@ function DisbursmentForm() {
 			await axios
 				.post(`${url}/admin/save_loan_transaction`, creds)
 				.then((res) => {
-					console.log("Disbursement initiated successfully", res?.data)
-					Message("success", "Submitted successfully.")
-					navigate(-1)
+					if (res?.data?.suc === 1) {
+						console.log("Disbursement initiated successfully", res?.data)
+						Message("success", "Submitted successfully.")
+						navigate(-1)
+					} else {
+						console.log("Disbursement disrupted!", res?.data)
+						Message("warning", "Change txn date.")
+						// navigate(-1)
+					}
 				})
 				.catch((err) => {
 					Message(
