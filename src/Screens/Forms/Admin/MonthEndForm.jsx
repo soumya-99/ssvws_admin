@@ -235,7 +235,7 @@ function MonthEndForm() {
 						<div className="mt-10 justify-center items-center align-middle text-center">
 							<button
 								type="submit"
-								className="inline-flex items-center px-5 py-2.5 text-sm font-medium text-center text-white border hover:border-green-600 border-teal-500 bg-teal-500 transition ease-in-out hover:bg-green-600 duration-300 rounded-full disabled:bg-slate-300 disabled:text-slate-950"
+								className="inline-flex items-center px-5 py-2.5 text-sm font-medium text-center text-white border hover:border-green-600 border-teal-500 disabled:border-slate-300 bg-teal-500 transition ease-in-out hover:bg-green-600 duration-300 rounded-full disabled:bg-slate-300 disabled:text-slate-950"
 								disabled={!selectedData?.length}
 							>
 								<SaveOutlined className="mr-2" />
