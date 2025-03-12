@@ -378,7 +378,7 @@ function AttendanceBM() {
 					</div>
 
 					{employee != "A" && employee && reportData.length > 0 && (
-						<div className="grid grid-cols-3 gap-5 mt-5">
+						<div className="grid grid-cols-3 mt-5 place-items-center">
 							<div class="max-w-sm p-6  col-span-1  bg-white border border-teal-200 rounded-lg shadow-lg dark:bg-gray-800 dark:border-gray-700">
 								<a href="#">
 									<p class="mb-3 text-5xl font-light flex justify-center items-center my-2 text-teal-500 dark:text-gray-400">
@@ -571,7 +571,6 @@ function AttendanceBM() {
 												</tr>
 												{activeDescriptionId === i && (
 													<tr
-														// className={`transition-all duration-300 ease-in-out transform ${
 														className={`transition-all duration-300 ease-in-out transform ${
 															activeDescriptionId === i
 																? "max-h-screen opacity-100"
@@ -582,7 +581,7 @@ function AttendanceBM() {
 															opacity: activeDescriptionId === i ? "1" : "0",
 														}}
 													>
-														<td colSpan={7} className="p-0">
+														<td colSpan={7} className="p-0 px-5">
 															<div className="m-4 mx-auto w-full p-6 bg-white rounded-2xl shadow-md">
 																<div className="grid grid-cols-1 w-full sm:grid-cols-2 lg:grid-cols-5 gap-6">
 																	<div>

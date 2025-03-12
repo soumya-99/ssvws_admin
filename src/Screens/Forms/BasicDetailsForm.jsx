@@ -44,7 +44,11 @@ function BasicDetailsForm({ memberDetails }) {
 
 	console.log(params, "params")
 	console.log(location, "location")
-	console.log(memberDetails?.branch_name, "memberDetails_______________", memberDetails)
+	console.log(
+		memberDetails?.branch_name,
+		"memberDetails_______________",
+		memberDetails
+	)
 
 	const initialValues = {
 		b_clientName: "",
@@ -80,6 +84,7 @@ function BasicDetailsForm({ memberDetails }) {
 		b_clientPin: "",
 		b_aadhaarNumber: "",
 		b_panNumber: "",
+		b_voterNumber: "",
 		b_religion: "",
 		b_caste: "",
 		b_education: "",
@@ -120,9 +125,9 @@ function BasicDetailsForm({ memberDetails }) {
 		b_religion: Yup.string().required("Religion is required"),
 		b_caste: Yup.string().required("Caste is required"),
 		b_education: Yup.string().required("Education is required"),
-		b_otherReligion: Yup.string(),
-		b_otherCaste: Yup.string(),
-		b_otherEducation: Yup.string(),
+		// b_otherReligion: Yup.string().optional(),
+		// b_otherCaste: Yup.string().optional(),
+		// b_otherEducation: Yup.string().optional(),
 		b_groupCode: Yup.string().required("Group code is required"),
 		b_dob: Yup.string().required("DOB is required"),
 		b_grtDate: Yup.string().required("GRT Date is required"),
@@ -193,6 +198,7 @@ function BasicDetailsForm({ memberDetails }) {
 					b_clientPin: res?.data?.msg[0]?.pin_no,
 					b_aadhaarNumber: res?.data?.msg[0]?.aadhar_no,
 					b_panNumber: res?.data?.msg[0]?.pan_no,
+					b_voterNumber: res?.data?.msg[0]?.voter_id,
 					b_religion: res?.data?.msg[0]?.religion,
 					b_caste: res?.data?.msg[0]?.caste,
 					b_education: res?.data?.msg[0]?.education,
@@ -205,30 +211,35 @@ function BasicDetailsForm({ memberDetails }) {
 					b_grtDate: formatDateToYYYYMMDD(res?.data?.msg[0]?.grt_date),
 				})
 
-				console.log({
-					b_clientName: res?.data?.msg[0]?.client_name,
-					b_branch_name: res?.data?.msg[0]?.branch_name,
-					b_clientGender: res?.data?.msg[0]?.gender,
-					b_clientMobile: res?.data?.msg[0]?.client_mobile,
-					b_clientEmail: res?.data?.msg[0]?.email_id,
-					b_guardianName: res?.data?.msg[0]?.gurd_name,
-					b_husbandName: res?.data?.msg[0]?.husband_name,
-					b_guardianMobile: res?.data?.msg[0]?.gurd_mobile,
-					b_clientAddress: res?.data?.msg[0]?.client_addr,
-					b_clientPin: res?.data?.msg[0]?.pin_no,
-					b_aadhaarNumber: res?.data?.msg[0]?.aadhar_no,
-					b_panNumber: res?.data?.msg[0]?.pan_no,
-					b_religion: res?.data?.msg[0]?.religion,
-					b_caste: res?.data?.msg[0]?.caste,
-					b_education: res?.data?.msg[0]?.education,
-					b_otherReligion: res?.data?.msg[0]?.other_religion,
-					b_otherCaste: res?.data?.msg[0]?.other_caste,
-					b_otherEducation: res?.data?.msg[0]?.other_education,
-					b_groupCode: res?.data?.msg[0]?.prov_grp_code,
-					b_groupCodeName: "",
-					b_dob: formatDateToYYYYMMDD(res?.data?.msg[0]?.dob),
-					b_grtDate: formatDateToYYYYMMDD(res?.data?.msg[0]?.grt_date),
-				}, "memberDetails_______________", res?.data.msg)
+				console.log(
+					{
+						b_clientName: res?.data?.msg[0]?.client_name,
+						b_branch_name: res?.data?.msg[0]?.branch_name,
+						b_clientGender: res?.data?.msg[0]?.gender,
+						b_clientMobile: res?.data?.msg[0]?.client_mobile,
+						b_clientEmail: res?.data?.msg[0]?.email_id,
+						b_guardianName: res?.data?.msg[0]?.gurd_name,
+						b_husbandName: res?.data?.msg[0]?.husband_name,
+						b_guardianMobile: res?.data?.msg[0]?.gurd_mobile,
+						b_clientAddress: res?.data?.msg[0]?.client_addr,
+						b_clientPin: res?.data?.msg[0]?.pin_no,
+						b_aadhaarNumber: res?.data?.msg[0]?.aadhar_no,
+						b_panNumber: res?.data?.msg[0]?.pan_no,
+						b_voterNumber: res?.data?.msg[0]?.voter_id,
+						b_religion: res?.data?.msg[0]?.religion,
+						b_caste: res?.data?.msg[0]?.caste,
+						b_education: res?.data?.msg[0]?.education,
+						b_otherReligion: res?.data?.msg[0]?.other_religion,
+						b_otherCaste: res?.data?.msg[0]?.other_caste,
+						b_otherEducation: res?.data?.msg[0]?.other_education,
+						b_groupCode: res?.data?.msg[0]?.prov_grp_code,
+						b_groupCodeName: "",
+						b_dob: formatDateToYYYYMMDD(res?.data?.msg[0]?.dob),
+						b_grtDate: formatDateToYYYYMMDD(res?.data?.msg[0]?.grt_date),
+					},
+					"memberDetails_______________",
+					res?.data.msg
+				)
 			})
 			.catch((err) => {
 				console.log("--------------", err)
@@ -256,6 +267,7 @@ function BasicDetailsForm({ memberDetails }) {
 			pin_no: formik.values.b_clientPin,
 			aadhar_no: formik.values.b_aadhaarNumber,
 			pan_no: formik.values.b_panNumber,
+			voter_id: formik.values.b_voterNumber,
 			religion: formik.values.b_religion,
 			caste: formik.values.b_caste,
 			education: formik.values.b_education,
@@ -272,7 +284,7 @@ function BasicDetailsForm({ memberDetails }) {
 			grt_date: formik.values.b_grtDate,
 		}
 		// console.log(creds, 'credscredscredscredscredscredscreds');
-		
+
 		await axios
 			.post(`${url}/admin/edit_basic_dtls_web`, creds)
 			.then((res) => {
@@ -453,7 +465,11 @@ function BasicDetailsForm({ memberDetails }) {
 									type="text"
 									label="Branch Name"
 									name="branch_name"
-									formControlName={memberDetails?.branch_name == undefined ? formValues.b_branch_name : memberDetails?.branch_name}
+									formControlName={
+										memberDetails?.branch_name == undefined
+											? formValues.b_branch_name
+											: memberDetails?.branch_name
+									}
 									mode={1}
 									disabled
 								/>
@@ -618,9 +634,10 @@ function BasicDetailsForm({ memberDetails }) {
 									formControlName={formik.values.b_clientPin}
 									// handleChange={formik.handleChange}
 									handleChange={(e) => {
-										const value = e.target.value;
-										if (value.length <= 6) { // Ensuring max length of 6 digits
-											formik.setFieldValue("b_clientPin", value);
+										const value = e.target.value
+										if (value.length <= 6) {
+											// Ensuring max length of 6 digits
+											formik.setFieldValue("b_clientPin", value)
 										}
 									}}
 									handleBlur={formik.handleBlur}
@@ -644,9 +661,10 @@ function BasicDetailsForm({ memberDetails }) {
 									formControlName={formik.values.b_clientMobile}
 									// handleChange={formik.handleChange}
 									handleChange={(e) => {
-										const value = e.target.value;
-										if (value.length <= 10) { // Ensuring max length of 6 digits
-											formik.setFieldValue("b_clientMobile", value);
+										const value = e.target.value
+										if (value.length <= 10) {
+											// Ensuring max length of 6 digits
+											formik.setFieldValue("b_clientMobile", value)
 										}
 									}}
 									handleBlur={formik.handleBlur}
@@ -702,8 +720,6 @@ function BasicDetailsForm({ memberDetails }) {
 								) : null}
 							</div>
 
-							
-
 							<div>
 								<TDInputTemplateBr
 									placeholder="Type Father's/Husband Mobile Number..."
@@ -713,9 +729,10 @@ function BasicDetailsForm({ memberDetails }) {
 									formControlName={formik.values.b_guardianMobile}
 									// handleChange={formik.handleChange}
 									handleChange={(e) => {
-										const value = e.target.value;
-										if (value.length <= 10) { // Ensuring max length of 6 digits
-											formik.setFieldValue("b_guardianMobile", value);
+										const value = e.target.value
+										if (value.length <= 10) {
+											// Ensuring max length of 6 digits
+											formik.setFieldValue("b_guardianMobile", value)
 										}
 									}}
 									handleBlur={formik.handleBlur}
@@ -789,6 +806,25 @@ function BasicDetailsForm({ memberDetails }) {
 								/>
 								{formik.errors.b_panNumber && formik.touched.b_panNumber ? (
 									<VError title={formik.errors.b_panNumber} />
+								) : null}
+							</div>
+							<div>
+								<TDInputTemplateBr
+									placeholder="Type Voter No..."
+									type="text"
+									label="Voter ID"
+									name="b_voterNumber"
+									formControlName={formik.values.b_voterNumber}
+									handleChange={formik.handleChange}
+									handleBlur={formik.handleBlur}
+									mode={1}
+									disabled={disableCondition(
+										userDetails?.id,
+										memberDetails?.approval_status
+									)}
+								/>
+								{formik.errors.b_voterNumber && formik.touched.b_voterNumber ? (
+									<VError title={formik.errors.b_voterNumber} />
 								) : null}
 							</div>
 
@@ -985,7 +1021,9 @@ function BasicDetailsForm({ memberDetails }) {
 							memberDetails?.approval_status
 						) && (
 							<div className="mt-10">
-								{userDetails.id==10 ?<BtnComp mode="A" onReset={formik.resetForm} />:null}
+								{userDetails.id == 10 ? (
+									<BtnComp mode="A" onReset={formik.resetForm} />
+								) : null}
 							</div>
 						)}
 						{/* ) : loanApproveStatus === "A" ? (

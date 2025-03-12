@@ -23,6 +23,7 @@ function MonthEndForm() {
 	const navigate = useNavigate()
 	const userDetails = JSON.parse(localStorage.getItem("user_details"))
 	const [visible, setVisible] = useState(false)
+	const [topAlertMessage, setTopAlertMessage] = useState(() => "")
 
 	console.log(params, "params")
 	console.log(location, "location")
@@ -108,6 +109,54 @@ function MonthEndForm() {
 		setLoading(false)
 	}
 
+	const handleFetchUnapprovedLoanBranches = async () => {
+		setLoading(true)
+		try {
+			const payload = {
+				month_end_dtls: selectedData.map((item) => ({
+					branch_code: item?.branch_code,
+					payment_date: formatDateToYYYYMMDD(item?.closed_upto),
+				})),
+			}
+
+			const res = await axios.post(
+				`${url}/admin/fetch_unapproved_dtls_before_monthend`,
+				payload
+			)
+
+			if (res?.data?.details?.length > 0) {
+				// const unapprovedLoans = res?.data?.details.map((item) => item.loan_id)
+				// const branchName = selectedData.find(
+				// 	(item, idx) => item.branch_code === res?.data?.details[idx]
+				// )?.branch_name
+
+				Message(
+					"warning",
+					`The following loans are not approved for the month end for : ${res?.data?.details?.join(
+						", "
+					)}`
+				)
+				setTopAlertMessage(
+					`Following branches have unapproved transactions. Please approve them before proceeding : ${res?.data?.details?.join(
+						", "
+					)}`
+				)
+				setLoading(false)
+				return
+			} else {
+				await handleUpdateForm()
+			}
+
+			console.log("API response handleFetchUnapprovedLoanBranches:", res?.data)
+
+			setSelectedData(() => [])
+		} catch (err) {
+			console.error(err)
+			Message("error", "Some error occurred while updating Month End Details")
+		}
+		setLoading(false)
+	}
+
 	const onSubmit = (e) => {
 		e.preventDefault()
 		setVisible(true)
@@ -127,6 +176,13 @@ function MonthEndForm() {
 					<div>
 						{/* Search Input */}
 						<div className="pb-4 bg-white dark:bg-gray-900">
+							<div>
+								{topAlertMessage && (
+									<div className="text-red-500 dark:text-red-400 text-lg py-2">
+										● {topAlertMessage}
+									</div>
+								)}
+							</div>
 							<label htmlFor="table-search" className="sr-only">
 								Search
 							</label>
@@ -250,9 +306,10 @@ function MonthEndForm() {
 				flag={4}
 				onPress={() => setVisible(!visible)}
 				visible={visible}
-				onPressYes={() => {
-					handleUpdateForm()
+				onPressYes={async () => {
+					// handleUpdateForm()
 					setVisible(!visible)
+					await handleFetchUnapprovedLoanBranches()
 				}}
 				onPressNo={() => setVisible(!visible)}
 			/>
