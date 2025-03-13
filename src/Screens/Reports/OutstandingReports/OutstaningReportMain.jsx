@@ -31,25 +31,25 @@ import { printTableOutstandingReport } from "../../../Utils/printTableOutstandin
 
 const options = [
 	{
-		label: "Memberwise",
-		value: "M",
-	},
-	{
 		label: "Groupwise",
 		value: "G",
+	},
+	{
+		label: "Memberwise",
+		value: "M",
 	},
 ]
 
 function OutstaningReportMain() {
 	const userDetails = JSON.parse(localStorage.getItem("user_details")) || ""
 	const [loading, setLoading] = useState(false)
-	const [searchType, setSearchType] = useState("M")
+	const [searchType, setSearchType] = useState("G")
 	const [fromDate, setFromDate] = useState()
 	const [toDate, setToDate] = useState()
 	const [reportData, setReportData] = useState([])
 	const [progress, setProgress] = useState(0)
 	const [metadataDtls, setMetadataDtls] = useState(null)
-	const [breakFromLoop, setBreakFromLoop] = useState(false)
+	const [fetchedReportDate, setFetchedReportDate] = useState(() => "")
 
 	// Pagination state for groupwise view
 	const [currentPage, setCurrentPage] = useState(1)
@@ -94,24 +94,41 @@ function OutstaningReportMain() {
 		setLoading(false)
 	}
 
+	// const [totalPrnDisbAmt, setTotalPrnDisbAmt] = useState(0)
+	const [totalPrnOut, setTotalPrnOut] = useState(0)
+	const [totalInttOut, setTotalInttOut] = useState(0)
+	const [totalOutstanding, setTotalOutstanding] = useState(0)
+
 	const handleFetchReportOutstandingGroupwise = async () => {
 		setLoading(true)
 
 		const creds = {
+			branch_code: userDetails?.brn_code,
 			supply_date: formatDateToYYYYMMDD(fromDate),
 		}
 
 		await axios
 			.post(`${url}/loan_outstanding_report_groupwise`, creds)
 			.then((res) => {
-				const data = res?.data?.msg || []
+				const data = res?.data?.outstanding_data?.msg || []
 				if (data.length === 0) {
 					console.log(
 						"--------------- LOOP BREAKS ---------------",
 						data?.length
 					)
 				}
+
+				for (let i of data) {
+					// setTotalPrnDisbAmt((prev) => prev + parseFloat(i.prn_disb_amt))
+					setTotalPrnOut((prev) => prev + parseFloat(i.prn_outstanding))
+					setTotalInttOut((prev) => prev + parseFloat(i.intt_outstanding))
+					setTotalOutstanding((prev) => prev + parseFloat(i.outstanding))
+				}
+
 				console.log("---------- DATA GROUPWISE -----------", res?.data)
+				setFetchedReportDate(
+					new Date(res?.data?.balance_date).toLocaleDateString("en-GB")
+				)
 				setReportData(data)
 			})
 			.catch((err) => {
@@ -172,7 +189,7 @@ function OutstaningReportMain() {
 					</div>
 
 					<div className="text-slate-800 italic">
-						Branch: {userDetails?.branch_name}
+						Branch: {userDetails?.branch_name} as on {fetchedReportDate}
 					</div>
 
 					<div className="mb-2 flex justify-between items-center">
@@ -361,58 +378,82 @@ function OutstaningReportMain() {
 													(currentPage - 1) * pageSize,
 													currentPage * pageSize
 												)
-												.map((item, i) => (
-													<tr
-														key={i}
-														className={
-															i % 2 === 0 ? "bg-slate-200 text-slate-900" : ""
-														}
-													>
-														<td className="px-6 py-3">
-															{i + 1 + (currentPage - 1) * pageSize}
-														</td>
-														<td className="px-6 py-3">
-															{item?.group_code || "---"}
-														</td>
-														<td className="px-6 py-3">
-															{item?.group_name || "---"}
-														</td>
-														<td className="px-6 py-3">
-															{item?.co_id || "---"}
-														</td>
-														<td className="px-6 py-3">
-															{item?.co_name || "---"}
-														</td>
-														<td className="px-6 py-3">
-															{item?.bank_name || "---"}
-														</td>
-														<td className="px-6 py-3">
-															{item?.acc_no1 || "---"}
-														</td>
-														<td className="px-6 py-3">
-															{item?.acc_no2 || "---"}
-														</td>
-														<td className="px-6 py-3">
-															{item?.recovery_day || "---"}
-														</td>
-														<td className="px-6 py-3">
-															{parseFloat(item?.prn_disb_amt)?.toFixed(2) ||
-																"---"}
-														</td>
-														<td className="px-6 py-3">
-															{parseFloat(item?.prn_outstanding)?.toFixed(2) ||
-																"---"}
-														</td>
-														<td className="px-6 py-3">
-															{parseFloat(item?.intt_outstanding)?.toFixed(2) ||
-																"---"}
-														</td>
-														<td className="px-6 py-3">
-															{parseFloat(item?.outstanding)?.toFixed(2) ||
-																"---"}
-														</td>
-													</tr>
-												))}
+												.map((item, i) => {
+													return (
+														<tr
+															key={i}
+															className={
+																i % 2 === 0 ? "bg-slate-200 text-slate-900" : ""
+															}
+														>
+															<td className="px-6 py-3">
+																{i + 1 + (currentPage - 1) * pageSize}
+															</td>
+															<td className="px-6 py-3">
+																{item?.group_code || "---"}
+															</td>
+															<td className="px-6 py-3">
+																{item?.group_name || "---"}
+															</td>
+															<td className="px-6 py-3">
+																{item?.co_id || "---"}
+															</td>
+															<td className="px-6 py-3">
+																{item?.co_name || "---"}
+															</td>
+															<td className="px-6 py-3">
+																{item?.bank_name || "---"}
+															</td>
+															<td className="px-6 py-3">
+																{item?.acc_no1 || "---"}
+															</td>
+															<td className="px-6 py-3">
+																{item?.acc_no2 || "---"}
+															</td>
+															<td className="px-6 py-3">
+																{item?.recovery_day || "---"}
+															</td>
+															<td className="px-6 py-3">
+																{parseFloat(item?.prn_disb_amt)?.toFixed(2) ||
+																	"---"}
+															</td>
+															<td className="px-6 py-3">
+																{parseFloat(item?.prn_outstanding)?.toFixed(
+																	2
+																) || "---"}
+															</td>
+															<td className="px-6 py-3">
+																{parseFloat(item?.intt_outstanding)?.toFixed(
+																	2
+																) || "---"}
+															</td>
+															<td className="px-6 py-3">
+																{parseFloat(item?.outstanding)?.toFixed(2) ||
+																	"---"}
+															</td>
+														</tr>
+													)
+												})}
+
+											<tr
+												className={"text-slate-50 bg-slate-700 sticky bottom-0"}
+											>
+												<td className="px-6 py-3" colSpan={10}>
+													Total:
+												</td>
+												{/* <td className="px-6 py-3" colSpan={1}>
+													{parseFloat(totalPrnDisbAmt)?.toFixed(2)}
+												</td> */}
+												<td className="px-6 py-3" colSpan={1}>
+													{parseFloat(totalPrnOut)?.toFixed(2)}
+												</td>
+												<td className="px-6 py-3" colSpan={1}>
+													{parseFloat(totalInttOut)?.toFixed(2)}
+												</td>
+												<td className="px-6 py-3" colSpan={1}>
+													{parseFloat(+totalOutstanding)?.toFixed(2)}
+												</td>
+											</tr>
 										</tbody>
 									</table>
 								</div>

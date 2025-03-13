@@ -6,17 +6,29 @@ export const printTableOutstandingReport = (
 	fromDate,
 	toDate
 ) => {
+	if (!dataArray || dataArray.length === 0) {
+		alert("No data available to print.")
+		return
+	}
+
+	const formattedFromDate = fromDate
+		? new Date(fromDate).toLocaleDateString("en-GB")
+		: "N/A"
+
 	const tableHTML = `
     <html>
       <head>
         <title>${title}</title>
         <style>
             table, td, th {
-              border: 1px solid;
+            border: 1px solid;
+            padding: 8px;
+            text-align: left;
             }
             table {
-              width: 100%;
-              border-collapse: collapse;
+            width: 100%;
+            border-collapse: collapse;
+            overflow: auto;
             }
             .center-div {
               display: flex;
@@ -28,11 +40,17 @@ export const printTableOutstandingReport = (
             .italic {
               font-style: italic;
             }
+            @media print {
+              body {
+                visibility: visible;
+              }
+            }
         </style>
       </head>
       <body>
-        <h2 style="text-align: center">SSVWS</h2>
-        <h3 style="text-align: center">${title}</h3>
+      <h2 style="text-align: center">SSVWS</h2>
+      <h3 style="text-align: center">${title}</h3>
+      
         <div class="italic center-div">
           ${
 						searchType === "M"
@@ -44,10 +62,9 @@ export const printTableOutstandingReport = (
         </div>
         <div class="italic center-div">${metadata || ""}</div>
         <div class="italic center-div">
-          Showing results from ${new Date(fromDate)?.toLocaleDateString(
-						"en-GB"
-					)}
+          Showing results from ${formattedFromDate}
         </div>
+
         <table>
           <thead>
             <tr>
@@ -74,15 +91,17 @@ export const printTableOutstandingReport = (
     </html>
   `
 
-	const printWindow = window.open("", "_blank", "width=800,height=600")
+	const printWindow = window.open("", "_blank")
 	if (printWindow) {
-		printWindow.document.open()
 		printWindow.document.write(tableHTML)
 		printWindow.document.close()
-		printWindow.focus()
+
+		// Let the page load before printing
 		setTimeout(() => {
 			printWindow.print()
-			printWindow.close()
+			printWindow.onafterprint = () => {
+				printWindow.close()
+			}
 		}, 500)
 	} else {
 		alert("Popup blocked. Please allow popups for this website.")

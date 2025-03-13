@@ -1211,6 +1211,14 @@ function DisbursmentForm() {
 							</div>
 							<div className="grid gap-4 grid-cols-12 sm:gap-6">
 								<div className="sm:col-span-4">
+									{!personalDetailsData.b_purpose && (
+										<span
+											style={{ color: "red" }}
+											className="left-20 ant-tag ant-tag-error ant-tag-borderless text-[12.6px] my-0 css-dev-only-do-not-override-1tse2sn absolute"
+										>
+											Required!
+										</span>
+									)}
 									<TDInputTemplateBr
 										placeholder="Select Purpose"
 										type="text"
@@ -1244,6 +1252,14 @@ function DisbursmentForm() {
                   />
                 </div> */}
 								<div className="sm:col-span-4">
+									{!transactionDetailsData.b_tnxDate && (
+										<span
+											style={{ color: "red" }}
+											className="left-20 ant-tag ant-tag-error ant-tag-borderless text-[12.6px] my-0 css-dev-only-do-not-override-1tse2sn absolute"
+										>
+											Required!
+										</span>
+									)}
 									<TDInputTemplateBr
 										placeholder="Transaction date..."
 										type="date"
@@ -1258,6 +1274,14 @@ function DisbursmentForm() {
 									/>
 								</div>
 								<div className="sm:col-span-4">
+									{!disbursementDetailsData.b_scheme && (
+										<span
+											style={{ color: "red" }}
+											className="right-0 ant-tag ant-tag-error ant-tag-borderless text-[12.6px] my-0 css-dev-only-do-not-override-1tse2sn absolute"
+										>
+											Required!
+										</span>
+									)}
 									<TDInputTemplateBr
 										placeholder="Select Scheme..."
 										type="text"
@@ -1329,6 +1353,14 @@ function DisbursmentForm() {
 								</div>
 
 								<div className="sm:col-span-4">
+									{!disbursementDetailsData.b_period && (
+										<span
+											style={{ color: "red" }}
+											className="right-0 ant-tag ant-tag-error ant-tag-borderless text-[12.6px] my-0 css-dev-only-do-not-override-1tse2sn absolute"
+										>
+											Required!
+										</span>
+									)}
 									<TDInputTemplateBr
 										placeholder="Period..."
 										type="text"
@@ -1342,6 +1374,14 @@ function DisbursmentForm() {
 								</div>
 
 								<div className="sm:col-span-6">
+									{!disbursementDetailsData?.b_fund && (
+										<span
+											style={{ color: "red" }}
+											className="left-20 ant-tag ant-tag-error ant-tag-borderless text-[12.6px] my-0 css-dev-only-do-not-override-1tse2sn absolute"
+										>
+											Required!
+										</span>
+									)}
 									<TDInputTemplateBr
 										placeholder="Select Fund..."
 										type="text"
@@ -1360,46 +1400,70 @@ function DisbursmentForm() {
 									/>
 								</div>
 								{disbursementDetailsData.b_mode === "Monthly" ? (
-									<div className="sm:col-span-6">
-										<TDInputTemplateBr
-											placeholder="Day of Recovery..."
-											type="number"
-											label={`Day of Recovery ${
-												disbursementDetailsData.b_dayOfRecovery
-													? `(${getOrdinalSuffix(
-															disbursementDetailsData.b_dayOfRecovery
-													  )} of every month)`
-													: ""
-											}`}
-											name="b_dayOfRecovery"
-											formControlName={disbursementDetailsData.b_dayOfRecovery}
-											handleChange={handleChangeDisburseDetails}
-											mode={1}
-											// disabled={
-											// 	!disbursementDetailsData?.b_scheme || disburseOrNot
-											// }
-										/>
-										{(disbursementDetailsData.b_dayOfRecovery < 1 ||
-											disbursementDetailsData.b_dayOfRecovery > 31) && (
-											<VError title={`Day should be between 1 to 31`} />
-										)}
-									</div>
+									<>
+										<div className="sm:col-span-6">
+											{!disbursementDetailsData?.b_dayOfRecovery && (
+												<span
+													style={{ color: "red" }}
+													className="right-0 ant-tag ant-tag-error ant-tag-borderless text-[12.6px] my-0 css-dev-only-do-not-override-1tse2sn absolute"
+												>
+													Required!
+												</span>
+											)}
+											<TDInputTemplateBr
+												placeholder="Day of Recovery..."
+												type="number"
+												label={`Day of Recovery ${
+													disbursementDetailsData.b_dayOfRecovery
+														? `(${getOrdinalSuffix(
+																disbursementDetailsData.b_dayOfRecovery
+														  )} of every month)`
+														: ""
+												}`}
+												name="b_dayOfRecovery"
+												formControlName={
+													disbursementDetailsData.b_dayOfRecovery
+												}
+												handleChange={handleChangeDisburseDetails}
+												mode={1}
+												// disabled={
+												// 	!disbursementDetailsData?.b_scheme || disburseOrNot
+												// }
+											/>
+											{(disbursementDetailsData.b_dayOfRecovery < 1 ||
+												disbursementDetailsData.b_dayOfRecovery > 31) && (
+												<VError title={`Day should be between 1 to 31`} />
+											)}
+										</div>
+									</>
 								) : (
-									<div className="sm:col-span-6">
-										<TDInputTemplateBr
-											placeholder="Select Weekday"
-											type="text"
-											label="Day of Recovery"
-											name="b_dayOfRecovery"
-											formControlName={disbursementDetailsData?.b_dayOfRecovery}
-											handleChange={handleChangeDisburseDetails}
-											data={WEEKS}
-											mode={2}
-											// disabled={
-											// 	!disbursementDetailsData.b_scheme || disburseOrNot
-											// }
-										/>
-									</div>
+									<>
+										<div className="sm:col-span-6">
+											{!disbursementDetailsData?.b_dayOfRecovery && (
+												<span
+													style={{ color: "red" }}
+													className="right-0 ant-tag ant-tag-error ant-tag-borderless text-[12.6px] my-0 css-dev-only-do-not-override-1tse2sn absolute"
+												>
+													Required!
+												</span>
+											)}
+											<TDInputTemplateBr
+												placeholder="Select Weekday"
+												type="text"
+												label="Day of Recovery"
+												name="b_dayOfRecovery"
+												formControlName={
+													disbursementDetailsData?.b_dayOfRecovery
+												}
+												handleChange={handleChangeDisburseDetails}
+												data={WEEKS}
+												mode={2}
+												// disabled={
+												// 	!disbursementDetailsData.b_scheme || disburseOrNot
+												// }
+											/>
+										</div>
+									</>
 								)}
 								{/* <div>
                   <TDInputTemplateBr
@@ -1669,6 +1733,14 @@ function DisbursmentForm() {
                   /> */}
 
 									<>
+										{!transactionDetailsData.b_bankName && (
+											<span
+												style={{ color: "red" }}
+												className="right-0 ant-tag ant-tag-error ant-tag-borderless text-[12.6px] my-0 css-dev-only-do-not-override-1tse2sn absolute"
+											>
+												Required!
+											</span>
+										)}
 										<label
 											for="frm_co"
 											class="block mb-2 text-sm capitalize font-bold text-slate-800
@@ -1777,6 +1849,14 @@ function DisbursmentForm() {
 								</div> */}
 
 								<div className="sm:col-span-12">
+									{!transactionDetailsData.b_remarks && (
+										<span
+											style={{ color: "red" }}
+											className="right-0 ant-tag ant-tag-error ant-tag-borderless text-[12.6px] my-0 css-dev-only-do-not-override-1tse2sn absolute"
+										>
+											Required!
+										</span>
+									)}
 									<TDInputTemplateBr
 										placeholder="Type Remarks..."
 										type="text"
@@ -1876,7 +1956,17 @@ function DisbursmentForm() {
 									<div className="mt-10">
 										{/* {Period_mode_valid ==  'Weekly' || Period_mode_valid ==  'Monthly' ? "" : ""}  */}
 										{Period_mode_valid === "Weekly" ||
-										Period_mode_valid === "Monthly" ? (
+										Period_mode_valid === "Monthly" ||
+										!disbursementDetailsData.b_fund ||
+										!disbursementDetailsData.b_mode ||
+										!disbursementDetailsData.b_period ||
+										!disbursementDetailsData.b_dayOfRecovery ||
+										!transactionDetailsData.b_bankName ||
+										!transactionDetailsData.b_remarks ||
+										!personalDetailsData.b_purpose ||
+										!transactionDetailsData.b_tnxDate ||
+										!disbursementDetailsData.b_period ||
+										!disbursementDetailsData.b_scheme ? (
 											<BtnComp mode="A" onReset={onReset} />
 										) : (
 											<BtnComp mode="B" onReset={onReset} disabled />
