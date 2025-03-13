@@ -12,12 +12,11 @@ export const printTableOutstandingReport = (
         <title>${title}</title>
         <style>
             table, td, th {
-            border: 1px solid;
+              border: 1px solid;
             }
-
             table {
-            width: 100%;
-            border-collapse: collapse;
+              width: 100%;
+              border-collapse: collapse;
             }
             .center-div {
               display: flex;
@@ -32,9 +31,8 @@ export const printTableOutstandingReport = (
         </style>
       </head>
       <body>
-      <h2 style="text-align: center">SSVWS</h2>
-      <h3 style="text-align: center">${title}</h3>
-      
+        <h2 style="text-align: center">SSVWS</h2>
+        <h3 style="text-align: center">${title}</h3>
         <div class="italic center-div">
           ${
 						searchType === "M"
@@ -50,8 +48,6 @@ export const printTableOutstandingReport = (
 						"en-GB"
 					)}
         </div>
-      </div>
-
         <table>
           <thead>
             <tr>
@@ -78,15 +74,16 @@ export const printTableOutstandingReport = (
     </html>
   `
 
-	const printWindow = window.open("", "_blank")
+	const printWindow = window.open("", "_blank", "width=800,height=600")
 	if (printWindow) {
+		printWindow.document.open()
 		printWindow.document.write(tableHTML)
 		printWindow.document.close()
-
-		printWindow.print()
-		printWindow.onafterprint = () => {
+		printWindow.focus()
+		setTimeout(() => {
+			printWindow.print()
 			printWindow.close()
-		}
+		}, 500)
 	} else {
 		alert("Popup blocked. Please allow popups for this website.")
 	}
