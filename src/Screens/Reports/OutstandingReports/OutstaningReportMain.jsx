@@ -343,6 +343,7 @@ function OutstaningReportMain() {
 								/>
 							</div>
 						)}
+
 						<div>
 							<TDInputTemplateBr
 								placeholder="From Date"
@@ -382,7 +383,7 @@ function OutstaningReportMain() {
 							<DynamicTailwindTable
 								data={reportData}
 								pageSize={50}
-								columnTotal={[9, 10]}
+								columnTotal={[8, 9, 10]}
 								headersMap={groupwiseOutstandingHeader}
 							/>
 						</>
