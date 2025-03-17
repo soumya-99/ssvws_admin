@@ -25,14 +25,26 @@ import { formatDateToYYYYMMDD } from "../../../Utils/formateDate"
 
 import { saveAs } from "file-saver"
 import * as XLSX from "xlsx"
-import { printTableLoanStatement } from "../../../Utils/printTableLoanStatement"
-import { printTableLoanTransactions } from "../../../Utils/printTableLoanTransactions"
 import { printTableOutstandingReport } from "../../../Utils/printTableOutstandingReport"
+import DynamicTailwindTable from "../../../Components/Reports/DynamicTailwindTable"
+import {
+	cowiseOutstandingHeader,
+	fundwiseOutstandingHeader,
+	groupwiseOutstandingHeader,
+} from "../../../Utils/Reports/headerMap"
 
 const options = [
 	{
 		label: "Groupwise",
 		value: "G",
+	},
+	{
+		label: "Fundwise",
+		value: "F",
+	},
+	{
+		label: "CO-wise",
+		value: "C",
 	},
 	{
 		label: "Memberwise",
@@ -47,13 +59,12 @@ function OutstaningReportMain() {
 	const [fromDate, setFromDate] = useState()
 	const [toDate, setToDate] = useState()
 	const [reportData, setReportData] = useState([])
-	const [progress, setProgress] = useState(0)
 	const [metadataDtls, setMetadataDtls] = useState(null)
 	const [fetchedReportDate, setFetchedReportDate] = useState(() => "")
-
-	// Pagination state for groupwise view
-	const [currentPage, setCurrentPage] = useState(1)
-	const pageSize = 100 // Adjust the page size as needed
+	const [funds, setFunds] = useState([])
+	const [selectedFund, setSelectedFund] = useState("")
+	const [cos, setCOs] = useState([])
+	const [selectedCO, setSelectedCO] = useState("")
 
 	const onChange = (e) => {
 		console.log("radio1 checked", e)
@@ -61,30 +72,25 @@ function OutstaningReportMain() {
 	}
 
 	const handleFetchReportOutstandingMemberwise = async () => {
-		let min = 0
-		const maxBatchSize = 50
-		const increment = 5
 		setLoading(true)
 
 		const creds = {
-			os_dt: formatDateToYYYYMMDD(fromDate),
 			branch_code: userDetails?.brn_code,
-			min: min,
-			max: min + maxBatchSize,
+			supply_date: formatDateToYYYYMMDD(fromDate),
 		}
 
 		await axios
 			.post(`${url}/loan_outstanding_report_memberwise`, creds)
 			.then((res) => {
-				const data = res?.data?.msg || []
-				if (data?.length === 0) {
-					console.log(
-						"--------------- LOOP BREAKS ---------------",
-						data?.length
-					)
-					setProgress(100)
+				const data = res?.data?.outstanding_member_data?.msg || []
+				if (data.length === 0) {
+					console.log("--------------- NO DATA ---------------", data?.length)
 				}
-				console.log("---------- DATA MEMWISE -----------", data)
+
+				console.log("---------- DATA MEMBERWISE -----------", res?.data)
+				setFetchedReportDate(
+					new Date(res?.data?.balance_date).toLocaleDateString("en-GB")
+				)
 				setReportData(data)
 			})
 			.catch((err) => {
@@ -93,11 +99,6 @@ function OutstaningReportMain() {
 
 		setLoading(false)
 	}
-
-	// const [totalPrnDisbAmt, setTotalPrnDisbAmt] = useState(0)
-	const [totalPrnOut, setTotalPrnOut] = useState(0)
-	const [totalInttOut, setTotalInttOut] = useState(0)
-	const [totalOutstanding, setTotalOutstanding] = useState(0)
 
 	const handleFetchReportOutstandingGroupwise = async () => {
 		setLoading(true)
@@ -118,14 +119,110 @@ function OutstaningReportMain() {
 					)
 				}
 
-				for (let i of data) {
-					// setTotalPrnDisbAmt((prev) => prev + parseFloat(i.prn_disb_amt))
-					setTotalPrnOut((prev) => prev + parseFloat(i.prn_outstanding))
-					setTotalInttOut((prev) => prev + parseFloat(i.intt_outstanding))
-					setTotalOutstanding((prev) => prev + parseFloat(i.outstanding))
+				console.log("---------- DATA GROUPWISE -----------", res?.data)
+				setFetchedReportDate(
+					new Date(res?.data?.balance_date).toLocaleDateString("en-GB")
+				)
+				setReportData(data)
+			})
+			.catch((err) => {
+				console.log("ERRRR>>>", err)
+			})
+
+		setLoading(false)
+	}
+
+	const getFunds = () => {
+		setLoading(true)
+		axios
+			.get(`${url}/get_fund`)
+			.then((res) => {
+				console.log("FUNDSSSS ======>", res?.data)
+				setFunds(res?.data?.msg)
+			})
+			.catch((err) => {
+				console.log("ERRRR>>>", err)
+				setLoading(false)
+			})
+		setLoading(false)
+	}
+
+	const handleFundChange = (e) => {
+		const selectedId = e.target.value
+		setSelectedFund(selectedId)
+	}
+
+	const handleFetchReportOutstandingFundwise = async () => {
+		setLoading(true)
+
+		const creds = {
+			supply_date: formatDateToYYYYMMDD(fromDate),
+			branch_code: userDetails?.brn_code,
+			fund_id: selectedFund,
+		}
+
+		await axios
+			.post(`${url}/loan_outstanding_report_fundwise`, creds)
+			.then((res) => {
+				const data = res?.data?.outstanding_fund_data?.msg || []
+				if (data.length === 0) {
+					console.log("--------------- NO DATA ---------------", data?.length)
 				}
 
-				console.log("---------- DATA GROUPWISE -----------", res?.data)
+				console.log("---------- DATA FUNDWISE -----------", res?.data)
+				setFetchedReportDate(
+					new Date(res?.data?.balance_date).toLocaleDateString("en-GB")
+				)
+				setReportData(data)
+			})
+			.catch((err) => {
+				console.log("ERRRR>>>", err)
+			})
+
+		setLoading(false)
+	}
+
+	const getCOs = () => {
+		setLoading(true)
+		const creds = {
+			branch_code: userDetails?.brn_code,
+		}
+		axios
+			.post(`${url}/fetch_brn_co`, creds)
+			.then((res) => {
+				console.log("COs ======>", res?.data)
+				setCOs(res?.data?.msg)
+			})
+			.catch((err) => {
+				console.log("ERRRR>>>", err)
+				setLoading(false)
+			})
+		setLoading(false)
+	}
+
+	const handleCOChange = (e) => {
+		const selectedId = e.target.value
+		setSelectedCO(selectedId)
+	}
+
+	const handleFetchReportOutstandingCOwise = async () => {
+		setLoading(true)
+
+		const creds = {
+			supply_date: formatDateToYYYYMMDD(fromDate),
+			branch_code: userDetails?.brn_code,
+			co_id: selectedCO,
+		}
+
+		await axios
+			.post(`${url}/loan_outstanding_report_cowise`, creds)
+			.then((res) => {
+				const data = res?.data?.outstanding_co_data?.msg || []
+				if (data.length === 0) {
+					console.log("--------------- NO DATA ---------------", data?.length)
+				}
+
+				console.log("---------- DATA CO-wise -----------", res?.data)
 				setFetchedReportDate(
 					new Date(res?.data?.balance_date).toLocaleDateString("en-GB")
 				)
@@ -143,6 +240,10 @@ function OutstaningReportMain() {
 			handleFetchReportOutstandingMemberwise()
 		} else if (searchType === "G" && fromDate) {
 			handleFetchReportOutstandingGroupwise()
+		} else if (searchType === "F" && fromDate) {
+			handleFetchReportOutstandingFundwise()
+		} else if (searchType === "C" && fromDate) {
+			handleFetchReportOutstandingCOwise()
 		}
 	}
 
@@ -150,8 +251,12 @@ function OutstaningReportMain() {
 	useEffect(() => {
 		setReportData([])
 		setMetadataDtls(null)
-		setCurrentPage(1)
-		setProgress(0)
+		if (searchType === "F") {
+			getFunds()
+		}
+		if (searchType === "C") {
+			getCOs()
+		}
 	}, [searchType])
 
 	const exportToExcel = (data) => {
@@ -203,6 +308,41 @@ function OutstaningReportMain() {
 					</div>
 
 					<div className="grid grid-cols-3 gap-5 mt-5 items-end">
+						{searchType === "F" && (
+							<div>
+								<TDInputTemplateBr
+									placeholder="Select Fund..."
+									type="text"
+									label="Fundwise"
+									name="fund_id"
+									handleChange={handleFundChange}
+									data={funds.map((dat) => ({
+										code: dat.fund_id,
+										name: `${dat.fund_name}`,
+									}))}
+									mode={2}
+									disabled={false}
+								/>
+							</div>
+						)}
+
+						{searchType === "C" && (
+							<div>
+								<TDInputTemplateBr
+									placeholder="Select CO..."
+									type="text"
+									label="CO-wise"
+									name="co_id"
+									handleChange={handleCOChange}
+									data={cos.map((dat) => ({
+										code: dat.emp_id,
+										name: `${dat.emp_name}`,
+									}))}
+									mode={2}
+									disabled={false}
+								/>
+							</div>
+						)}
 						<div>
 							<TDInputTemplateBr
 								placeholder="From Date"
@@ -227,247 +367,48 @@ function OutstaningReportMain() {
 
 					{/* Memberwise Results */}
 					{searchType === "M" && reportData.length > 0 && (
-						<div
-							className="relative overflow-x-auto shadow-md sm:rounded-lg mt-5 max-h-[500px]
-                [&::-webkit-scrollbar]:w-1
-                [&::-webkit-scrollbar-track]:rounded-full
-                [&::-webkit-scrollbar-track]:bg-transparent
-                [&::-webkit-scrollbar-thumb]:rounded-full
-                [&::-webkit-scrollbar-thumb]:bg-gray-300
-                dark:[&::-webkit-scrollbar-track]:bg-transparent
-                dark:[&::-webkit-scrollbar-thumb]:bg-neutral-500"
-						>
-							<div className="w-full text-xs dark:bg-gray-700 dark:text-gray-400">
-								<table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
-									<thead className="w-full text-xs uppercase text-slate-50 bg-slate-800 dark:bg-gray-700 dark:text-gray-400 sticky top-0">
-										<tr>
-											<th className="px-6 py-3 font-semibold">Sl. No.</th>
-											<th className="px-6 py-3 font-semibold">Member Code</th>
-											<th className="px-6 py-3 font-semibold">Member Name</th>
-											<th className="px-6 py-3 font-semibold">Group Code</th>
-											<th className="px-6 py-3 font-semibold">Group Name</th>
-											<th className="px-6 py-3 font-semibold">Loan ID</th>
-											<th className="px-6 py-3 font-semibold">
-												Disbursement Date
-											</th>
-											<th className="px-6 py-3 font-semibold">Current R.O.I</th>
-											<th className="px-6 py-3 font-semibold">Period Mode</th>
-											<th className="px-6 py-3 font-semibold">Total EMI</th>
-											<th className="px-6 py-3 font-semibold">Period</th>
-											<th className="px-6 py-3 font-semibold">
-												Installment End Date
-											</th>
-											<th className="px-6 py-3 font-semibold">Balance</th>
-											<th className="px-6 py-3 font-semibold">OD Balance</th>
-											<th className="px-6 py-3 font-semibold">
-												Interest Balance
-											</th>
-											<th className="px-6 py-3 font-semibold">
-												Total Outstanding
-											</th>
-										</tr>
-									</thead>
-									<tbody>
-										{reportData.map((item, i) => (
-											<tr
-												key={i}
-												className={
-													i % 2 === 0 ? "bg-slate-200 text-slate-900" : ""
-												}
-											>
-												<td className="px-6 py-3">{i + 1}</td>
-												<td className="px-6 py-3">
-													{item?.member_code || "---"}
-												</td>
-												<td className="px-6 py-3">
-													{item?.client_name || "---"}
-												</td>
-												<td className="px-6 py-3">
-													{item?.group_code || "---"}
-												</td>
-												<td className="px-6 py-3">
-													{item?.group_name || "---"}
-												</td>
-												<td className="px-6 py-3">{item?.loan_id || "---"}</td>
-												<td className="px-6 py-3">
-													{item?.disb_dt
-														? new Date(item?.disb_dt).toLocaleDateString(
-																"en-GB"
-														  )
-														: "---"}
-												</td>
-												<td className="px-6 py-3">
-													{parseFloat(item?.curr_roi)?.toFixed(2) || "---"}
-												</td>
-												<td className="px-6 py-3">
-													{item?.period_mode || "---"}
-												</td>
-												<td className="px-6 py-3">
-													{parseFloat(item?.tot_emi)?.toFixed(2) || "---"}
-												</td>
-												<td className="px-6 py-3">{item?.period || "---"}</td>
-												<td className="px-6 py-3">
-													{item?.instl_end_dt
-														? new Date(item?.instl_end_dt).toLocaleDateString(
-																"en-GB"
-														  )
-														: "---"}
-												</td>
-												<td className="px-6 py-3">{item?.balance || "0"}</td>
-												<td className="px-6 py-3">
-													{parseFloat(item?.od_balance)?.toFixed(2) || "0"}
-												</td>
-												<td className="px-6 py-3">
-													{parseFloat(item?.intt_balance)?.toFixed(2) || "0"}
-												</td>
-												<td className="px-6 py-3">
-													{parseFloat(+item?.total_outstanding)?.toFixed(2) ||
-														"---"}
-												</td>
-											</tr>
-										))}
-									</tbody>
-								</table>
-							</div>
-						</div>
+						<>
+							<DynamicTailwindTable
+								data={reportData}
+								pageSize={50}
+								columnTotal={[33, 34, 35]}
+							/>
+						</>
 					)}
 
 					{/* Groupwise Results with Pagination */}
 					{searchType === "G" && reportData.length > 0 && (
 						<>
-							<div
-								className="relative overflow-x-auto shadow-md sm:rounded-lg mt-5 max-h-[500px]
-                  [&::-webkit-scrollbar]:w-1
-                  [&::-webkit-scrollbar-track]:rounded-full
-                  [&::-webkit-scrollbar-track]:bg-transparent
-                  [&::-webkit-scrollbar-thumb]:rounded-full
-                  [&::-webkit-scrollbar-thumb]:bg-gray-300
-                  dark:[&::-webkit-scrollbar-track]:bg-transparent
-                  dark:[&::-webkit-scrollbar-thumb]:bg-neutral-500"
-							>
-								<div className="w-full text-xs dark:bg-gray-700 dark:text-gray-400">
-									<table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
-										<thead className="w-full text-xs uppercase text-slate-50 bg-slate-800 dark:bg-gray-700 dark:text-gray-400 sticky top-0">
-											<tr>
-												<th className="px-6 py-3 font-semibold">Sl. No.</th>
-												<th className="px-6 py-3 font-semibold">Group Code</th>
-												<th className="px-6 py-3 font-semibold">Group Name</th>
-												<th className="px-6 py-3 font-semibold">CO ID</th>
-												<th className="px-6 py-3 font-semibold">CO Name</th>
-												<th className="px-6 py-3 font-semibold">Bank</th>
-												<th className="px-6 py-3 font-semibold">Acc No. 1</th>
-												<th className="px-6 py-3 font-semibold">Acc No. 2</th>
-												<th className="px-6 py-3 font-semibold">
-													Recovery Day
-												</th>
-												<th className="px-6 py-3 font-semibold">
-													Principal Disbursement Amount
-												</th>
-												<th className="px-6 py-3 font-semibold">
-													Principal Outstanding
-												</th>
-												<th className="px-6 py-3 font-semibold">
-													Interest Outstanding
-												</th>
-												<th className="px-6 py-3 font-semibold">Outstanding</th>
-											</tr>
-										</thead>
-										<tbody>
-											{reportData
-												.slice(
-													(currentPage - 1) * pageSize,
-													currentPage * pageSize
-												)
-												.map((item, i) => {
-													return (
-														<tr
-															key={i}
-															className={
-																i % 2 === 0 ? "bg-slate-200 text-slate-900" : ""
-															}
-														>
-															<td className="px-6 py-3">
-																{i + 1 + (currentPage - 1) * pageSize}
-															</td>
-															<td className="px-6 py-3">
-																{item?.group_code || "---"}
-															</td>
-															<td className="px-6 py-3">
-																{item?.group_name || "---"}
-															</td>
-															<td className="px-6 py-3">
-																{item?.co_id || "---"}
-															</td>
-															<td className="px-6 py-3">
-																{item?.co_name || "---"}
-															</td>
-															<td className="px-6 py-3">
-																{item?.bank_name || "---"}
-															</td>
-															<td className="px-6 py-3">
-																{item?.acc_no1 || "---"}
-															</td>
-															<td className="px-6 py-3">
-																{item?.acc_no2 || "---"}
-															</td>
-															<td className="px-6 py-3">
-																{item?.recovery_day || "---"}
-															</td>
-															<td className="px-6 py-3">
-																{parseFloat(item?.prn_disb_amt)?.toFixed(2) ||
-																	"---"}
-															</td>
-															<td className="px-6 py-3">
-																{parseFloat(item?.prn_outstanding)?.toFixed(
-																	2
-																) || "---"}
-															</td>
-															<td className="px-6 py-3">
-																{parseFloat(item?.intt_outstanding)?.toFixed(
-																	2
-																) || "---"}
-															</td>
-															<td className="px-6 py-3">
-																{parseFloat(item?.outstanding)?.toFixed(2) ||
-																	"---"}
-															</td>
-														</tr>
-													)
-												})}
+							<DynamicTailwindTable
+								data={reportData}
+								pageSize={50}
+								columnTotal={[9, 10]}
+								headersMap={groupwiseOutstandingHeader}
+							/>
+						</>
+					)}
 
-											<tr
-												className={"text-slate-50 bg-slate-700 sticky bottom-0"}
-											>
-												<td className="px-6 py-3" colSpan={10}>
-													Total:
-												</td>
-												{/* <td className="px-6 py-3" colSpan={1}>
-													{parseFloat(totalPrnDisbAmt)?.toFixed(2)}
-												</td> */}
-												<td className="px-6 py-3" colSpan={1}>
-													{parseFloat(totalPrnOut)?.toFixed(2)}
-												</td>
-												<td className="px-6 py-3" colSpan={1}>
-													{parseFloat(totalInttOut)?.toFixed(2)}
-												</td>
-												<td className="px-6 py-3" colSpan={1}>
-													{parseFloat(+totalOutstanding)?.toFixed(2)}
-												</td>
-											</tr>
-										</tbody>
-									</table>
-								</div>
-							</div>
-							{/* Pagination Component */}
-							<div className="flex justify-end my-4">
-								<Pagination
-									current={currentPage}
-									pageSize={pageSize}
-									total={reportData.length}
-									onChange={(page) => setCurrentPage(page)}
-									showSizeChanger={false}
-								/>
-							</div>
+					{/* Fundwise Results with Pagination */}
+					{searchType === "F" && reportData.length > 0 && (
+						<>
+							<DynamicTailwindTable
+								data={reportData}
+								pageSize={50}
+								columnTotal={[5, 6, 7]}
+								headersMap={fundwiseOutstandingHeader}
+							/>
+						</>
+					)}
+
+					{/* COwise Results with Pagination */}
+					{searchType === "C" && reportData.length > 0 && (
+						<>
+							<DynamicTailwindTable
+								data={reportData}
+								pageSize={50}
+								columnTotal={[4, 5, 6]}
+								headersMap={cowiseOutstandingHeader}
+							/>
 						</>
 					)}
 
