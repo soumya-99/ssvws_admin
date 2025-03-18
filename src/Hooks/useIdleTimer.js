@@ -14,7 +14,6 @@ const useIdleTimer = (timeout = 5 * 60 * 1000) => {
 		navigate("/", { replace: true })
 	}, [navigate])
 
-	// Reset the inactivity timer
 	const resetTimer = useCallback(() => {
 		if (timerRef.current) {
 			clearTimeout(timerRef.current)
@@ -23,16 +22,12 @@ const useIdleTimer = (timeout = 5 * 60 * 1000) => {
 	}, [logout, timeout])
 
 	useEffect(() => {
-		// List of events to consider as user activity
 		const events = ["mousemove", "keydown", "scroll", "click"]
 
-		// Attach event listeners to reset the timer on activity
 		events.forEach((event) => window.addEventListener(event, resetTimer))
 
-		// Start the initial timer
 		resetTimer()
 
-		// Clean up event listeners and timer on unmount
 		return () => {
 			events.forEach((event) => window.removeEventListener(event, resetTimer))
 			if (timerRef.current) {
