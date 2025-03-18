@@ -6,9 +6,12 @@ import { ConfigProvider } from "antd"
 import { useEffect } from "react"
 import { useNavigate } from "react-router-dom"
 import { routePaths } from "./Assets/Data/Routes"
+import useIdleTimer from "./Hooks/useIdleTimer"
 
 function App() {
 	const navigate = useNavigate()
+
+	useIdleTimer()
 
 	useEffect(() => {
 		if (localStorage.length === 0) navigate(routePaths.LANDING)
@@ -38,15 +41,15 @@ function App() {
 							optionActiveBg: "#9CA3AF",
 							optionSelectedColor: "#000000",
 							optionSelectedFontWeight: "700",
-							colorBorder:"#9CA3AF",
-							colorTextPlaceholder:"#4B5563"
+							colorBorder: "#9CA3AF",
+							colorTextPlaceholder: "#4B5563",
 						},
 						DatePicker: {
 							activeBorderColor: "#22543d",
 							hoverBorderColor: "#22543d",
 							colorPrimary: "#22543d",
 						},
-						Input: {activeBorderColor: "gray"	},
+						Input: { activeBorderColor: "gray" },
 						Breadcrumb: {
 							separatorColor: "#052d27",
 							itemColor: "#052d27",

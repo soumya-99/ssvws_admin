@@ -2,9 +2,7 @@ import React, { useEffect, useState } from "react"
 import Sidebar from "../../../Components/Sidebar"
 import axios from "axios"
 import { url } from "../../../Address/BaseUrl"
-import { Message } from "../../../Components/Message"
-import { Spin, Button, Modal, Tooltip, DatePicker } from "antd"
-import dayjs from "dayjs"
+import { Spin, Tooltip } from "antd"
 import {
 	LoadingOutlined,
 	SearchOutlined,
@@ -14,26 +12,21 @@ import {
 import Radiobtn from "../../../Components/Radiobtn"
 import TDInputTemplateBr from "../../../Components/TDInputTemplateBr"
 import { formatDateToYYYYMMDD } from "../../../Utils/formateDate"
-
 import { saveAs } from "file-saver"
 import * as XLSX from "xlsx"
-import { printTableLoanStatement } from "../../../Utils/printTableLoanStatement"
 import { printTableLoanTransactions } from "../../../Utils/printTableLoanTransactions"
 import DynamicTailwindTable from "../../../Components/Reports/DynamicTailwindTable"
 
-// const { RangePicker } = DatePicker
-// const dateFormat = "YYYY/MM/DD"
-
-// const options = [
-// 	{
-// 		label: "Disbursement",
-// 		value: "D",
-// 	},
-// 	{
-// 		label: "Collection",
-// 		value: "R",
-// 	},
-// ]
+const options = [
+	{
+		label: "Disbursement",
+		value: "D",
+	},
+	{
+		label: "Recovery",
+		value: "R",
+	},
+]
 
 const options2 = [
 	{
@@ -58,7 +51,7 @@ function LoanTransactionsMain() {
 	const userDetails = JSON.parse(localStorage.getItem("user_details")) || ""
 	const [loading, setLoading] = useState(false)
 
-	// const [searchType, setSearchType] = useState(() => "D")
+	const [searchType, setSearchType] = useState(() => "D")
 	const [searchType2, setSearchType2] = useState(() => "G")
 
 	const [fromDate, setFromDate] = useState()
@@ -73,10 +66,10 @@ function LoanTransactionsMain() {
 	const [cos, setCOs] = useState([])
 	const [selectedCO, setSelectedCO] = useState("")
 
-	// const onChange = (e) => {
-	// 	console.log("radio1 checked", e)
-	// 	setSearchType(e)
-	// }
+	const onChange = (e) => {
+		console.log("radio1 checked", e)
+		setSearchType(e)
+	}
 
 	const onChange2 = (e) => {
 		console.log("radio1 checked", e)
@@ -89,6 +82,7 @@ function LoanTransactionsMain() {
 			from_dt: formatDateToYYYYMMDD(fromDate),
 			to_dt: formatDateToYYYYMMDD(toDate),
 			branch_code: userDetails?.brn_code,
+			tr_type: searchType,
 		}
 
 		await axios
@@ -131,6 +125,7 @@ function LoanTransactionsMain() {
 			to_dt: formatDateToYYYYMMDD(toDate),
 			branch_code: userDetails?.brn_code,
 			fund_id: selectedFund,
+			tr_type: searchType,
 		}
 
 		await axios
@@ -176,6 +171,7 @@ function LoanTransactionsMain() {
 			to_dt: formatDateToYYYYMMDD(toDate),
 			branch_code: userDetails?.brn_code,
 			co_id: selectedCO,
+			tr_type: searchType,
 		}
 
 		await axios
@@ -197,6 +193,7 @@ function LoanTransactionsMain() {
 			from_dt: formatDateToYYYYMMDD(fromDate),
 			to_dt: formatDateToYYYYMMDD(toDate),
 			branch_code: userDetails?.brn_code,
+			tr_type: searchType,
 		}
 
 		await axios
@@ -233,7 +230,7 @@ function LoanTransactionsMain() {
 		if (searchType2 === "C") {
 			getCOs()
 		}
-	}, [searchType2])
+	}, [searchType, searchType2])
 
 	const exportToExcel = (data) => {
 		const wb = XLSX.utils.book_new()
@@ -276,6 +273,15 @@ function LoanTransactionsMain() {
 								val={searchType2}
 								onChangeVal={(value) => {
 									onChange2(value)
+								}}
+							/>
+						</div>
+						<div>
+							<Radiobtn
+								data={options}
+								val={searchType}
+								onChangeVal={(value) => {
+									onChange(value)
 								}}
 							/>
 						</div>
@@ -359,7 +365,7 @@ function LoanTransactionsMain() {
 							<DynamicTailwindTable
 								data={reportData}
 								pageSize={50}
-								columnTotal={[15, 16, 17]}
+								columnTotal={[15, 16]}
 								colRemove={[5, 10, 18, 22]}
 							/>
 						</>
@@ -371,7 +377,7 @@ function LoanTransactionsMain() {
 							<DynamicTailwindTable
 								data={reportData}
 								pageSize={50}
-								columnTotal={[7, 8]}
+								columnTotal={[7]}
 								// headersMap={groupwiseOutstandingHeader}
 							/>
 						</>
@@ -383,7 +389,7 @@ function LoanTransactionsMain() {
 							<DynamicTailwindTable
 								data={reportData}
 								pageSize={50}
-								columnTotal={[9, 10]}
+								columnTotal={[9]}
 								// headersMap={fundwiseOutstandingHeader}
 							/>
 						</>
@@ -395,7 +401,7 @@ function LoanTransactionsMain() {
 							<DynamicTailwindTable
 								data={reportData}
 								pageSize={50}
-								columnTotal={[6, 7]}
+								columnTotal={[6]}
 								// headersMap={cowiseOutstandingHeader}
 							/>
 						</>
