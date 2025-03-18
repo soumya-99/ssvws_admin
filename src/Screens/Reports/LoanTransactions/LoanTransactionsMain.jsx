@@ -333,7 +333,7 @@ function LoanTransactionsMain() {
 									name="co_id"
 									handleChange={handleCOChange}
 									data={cos.map((dat) => ({
-										code: dat.emp_id,
+										code: dat.co_id,
 										name: `${dat.emp_name}`,
 									}))}
 									mode={2}

@@ -313,14 +313,6 @@ function Sidebar({ mode = 0 }) {
 							//  label: <Link to={"/homebm/demandreport"}>Demand</Link>,
 							// },
 							{
-								key: "sub6-4",
-								icon: <BarChartOutlined />,
-								label: (
-									<Link to={"/homebm/loanstatements"}>Loan Statements</Link>
-								),
-								// hidden: data?.loan_statement == "Y" ? false : true,
-							},
-							{
 								key: "sub6-5",
 								icon: <BarChartOutlined />,
 								label: <Link to={"/homebm/loantxns"}>Loan Transactions</Link>,
@@ -342,6 +334,15 @@ function Sidebar({ mode = 0 }) {
 								),
 								// hidden: data?.outstanding_report == "Y" ? false : true,
 							},
+							{
+								key: "sub6-4",
+								icon: <BarChartOutlined />,
+								label: (
+									<Link to={"/homebm/loanstatements"}>Loan Statements</Link>
+								),
+								// hidden: data?.loan_statement == "Y" ? false : true,
+							},
+
 							// {
 							//  key: "sub6-8",
 							//  icon: <BarChartOutlined />,
@@ -367,24 +368,22 @@ function Sidebar({ mode = 0 }) {
 							//    },
 							//  ],
 							// },
-							{
-								key: "sub6-8",
-								icon: <BarChartOutlined />,
-								label: (
-									<Link to={"/homebm/fundwisesummary"}>Fundwise Report</Link>
-								),
-								// hidden: data?.fundwise_report == "Y" ? false : true,
-							},
-							{
-								key: "sub6-9",
-								icon: <BarChartOutlined />,
-								label: (
-									<Link to={"/homebm/schemewisesummary"}>
-										Schemewise Report
-									</Link>
-								),
-								// hidden: data?.schemewise_report == "Y" ? false : true,
-							},
+							// {
+							// 	key: "sub6-8",
+							// 	icon: <BarChartOutlined />,
+							// 	label: (
+							// 		<Link to={"/homebm/fundwisesummary"}>Fundwise Report</Link>
+							// 	),
+							// },
+							// {
+							// 	key: "sub6-9",
+							// 	icon: <BarChartOutlined />,
+							// 	label: (
+							// 		<Link to={"/homebm/schemewisesummary"}>
+							// 			Schemewise Report
+							// 		</Link>
+							// 	),
+							// },
 							{
 								key: "sub6-10",
 								icon: <BarChartOutlined />,
