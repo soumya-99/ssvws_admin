@@ -35,8 +35,36 @@ const groupwiseOutstandingHeader = {
 	co_name: "CO Name",
 }
 
+const memberwiseOutstandingHeader = {
+	group_code: "Group Code",
+	group_name: "Group Name",
+	acc_no1: "Savings Account",
+	acc_no2: "Loan Account",
+	grp_addr: "Group Address",
+	co_id: "CO ID",
+	emp_name: "Employee Name",
+	loan_id: "Loan ID",
+	member_code: "Member Code",
+	client_name: "Member Name",
+	scheme_id: "Scheme ID",
+	scheme_name: "Scheme Name",
+	transaction_id: "Txn ID",
+	transaction_date: "Txn Date",
+	particulars: "Particulars",
+	debit: "Debit",
+	debit: "Debit",
+	curr_balance: "Current Balance",
+	created_code: "Created Code",
+	created_at: "Created At",
+	created_by: "Created By",
+	approved_at: "Approved At",
+	approved_code: "Approved Code",
+	approved_by: "Approved By",
+}
+
 export {
 	fundwiseOutstandingHeader,
 	cowiseOutstandingHeader,
 	groupwiseOutstandingHeader,
+	memberwiseOutstandingHeader,
 }

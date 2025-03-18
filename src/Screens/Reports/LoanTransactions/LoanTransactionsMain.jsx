@@ -16,6 +16,7 @@ import { saveAs } from "file-saver"
 import * as XLSX from "xlsx"
 import { printTableLoanTransactions } from "../../../Utils/printTableLoanTransactions"
 import DynamicTailwindTable from "../../../Components/Reports/DynamicTailwindTable"
+import { memberwiseOutstandingHeader } from "../../../Utils/Reports/headerMap"
 
 const options = [
 	{
@@ -366,7 +367,9 @@ function LoanTransactionsMain() {
 								data={reportData}
 								pageSize={50}
 								columnTotal={[15, 16]}
-								colRemove={[5, 10, 18, 22]}
+								colRemove={[5, 10, 17, 21]}
+								headersMap={memberwiseOutstandingHeader}
+								dateTimeExceptionCols={[13]}
 							/>
 						</>
 					)}

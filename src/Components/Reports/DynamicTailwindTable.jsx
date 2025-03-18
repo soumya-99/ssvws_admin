@@ -8,6 +8,7 @@ const DynamicTailwindTable = ({
 	columnTotal = [],
 	colRemove = [],
 	headersMap = null,
+	dateTimeExceptionCols = [],
 }) => {
 	const [currentPage, setCurrentPage] = useState(1)
 
@@ -41,9 +42,12 @@ const DynamicTailwindTable = ({
 		setCurrentPage(page)
 	}
 
-	const formatCellValue = (value) => {
+	const formatCellValue = (value, colIndex) => {
 		const isoRegex = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z$/
 		if (typeof value === "string" && isoRegex.test(value)) {
+			if (dateTimeExceptionCols.includes(colIndex)) {
+				return new Date(value).toLocaleDateString("en-GB")
+			}
 			return new Date(value).toLocaleString("en-GB")
 		}
 		return value
@@ -86,7 +90,7 @@ const DynamicTailwindTable = ({
 								{filteredHeadersWithIndex.map((item, colIndex) => (
 									<td key={colIndex} className="px-6 py-3">
 										{row[item.header] !== undefined
-											? formatCellValue(row[item.header])
+											? formatCellValue(row[item.header], item.index)
 											: "---"}
 									</td>
 								))}
