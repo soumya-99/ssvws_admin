@@ -1,7 +1,9 @@
-import { useEffect, useRef, useCallback } from "react"
+import { useEffect, useRef, useCallback, useContext } from "react"
 import { useNavigate } from "react-router-dom"
+import { loadingContext } from "../Context/Democontext"
 
-const useIdleTimer = (timeout = 5 * 60 * 1000) => {
+const useIdleTimer = (timeout = 10 * 60 * 1000) => {
+	const { handleLogOut } = useContext(loadingContext)
 	const navigate = useNavigate()
 	const timerRef = useRef(null)
 
@@ -9,7 +11,7 @@ const useIdleTimer = (timeout = 5 * 60 * 1000) => {
 		localStorage.clear()
 
 		// Optionally, you can add more logout logic here (e.g., API calls)
-
+		handleLogOut()
 		// Redirect to the login page
 		navigate("/", { replace: true })
 	}, [navigate])

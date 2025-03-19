@@ -1,21 +1,12 @@
-import React, { useEffect, useState } from "react"
+import React, { useContext, useEffect, useState } from "react"
 import { Dialog } from "primereact/dialog"
 import { useNavigate } from "react-router-dom"
 import { Tabs, Button } from "antd"
-import ProfileInfo from "./ProfileInfo"
 import PasswordComp from "./PasswordComp"
-import { routePaths } from "../Assets/Data/Routes"
 import "../Styles/styles.css"
-import ClientInfo from "./ClientInfo"
-import PocInfo from "./PocInfo"
-import ProjectInfo from "./ProjectInfo"
-import VendorInfo from "./VendorInfo"
-import ProdInfo from "./ProdInfo"
-import PoPreview from "./Steps/PoPreview"
-import TDInputTemplate from "./TDInputTemplate"
-import AmendPreview from "./AmendPreview"
-import { EditOutlined } from "@ant-design/icons"
 import UserProfileUpdateForm from "../Screens/Forms/UserProfileUpdateForm"
+import { Democontext, loadingContext } from "../Context/Democontext"
+import { routePaths } from "../Assets/Data/Routes"
 
 const DialogBox = ({
 	visible,
@@ -26,6 +17,7 @@ const DialogBox = ({
 	onPressYes,
 	onEditPress,
 }) => {
+	const { handleLogOut } = useContext(loadingContext)
 	const navigate = useNavigate()
 	const [po_no, setPoNo] = useState("")
 	useEffect(() => {
@@ -109,9 +101,10 @@ const DialogBox = ({
 						</button>
 						<button
 							type="submit"
-							onClick={() => {
-								localStorage.clear()
-								navigate(routePaths.LANDING)
+							onClick={async () => {
+								await handleLogOut().then(() => {
+									navigate(routePaths.LANDING)
+								})
 							}}
 							className="inline-flex bg-[#DA4167] items-center px-5 py-2.5 mt-4 sm:mt-6 text-sm font-medium text-center text-white rounded-full focus:ring-4 focus:ring-primary-200 dark:focus:ring-primary-900 hover:bg-primary-800"
 						>
@@ -154,19 +147,18 @@ const DialogBox = ({
 			)}
 			{flag == 5 && (
 				<p className="m-0">
-				Group with code:{data} is created!
-				<div className="flex justify-center">
-				<button
+					Group with code:{data} is created!
+					<div className="flex justify-center">
+						<button
 							type="button"
 							onClick={onPressYes}
 							className="inline-flex bg-[#DA4167] items-center px-5 py-2.5 mt-4 sm:mt-6 text-sm font-medium text-center text-white rounded-full focus:ring-4 focus:ring-primary-200 dark:focus:ring-primary-900 hover:bg-primary-800"
 						>
 							OK
 						</button>
-				</div>
+					</div>
 				</p>
 			)}
-			
 		</Dialog>
 	)
 }

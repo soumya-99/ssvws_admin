@@ -373,6 +373,7 @@ function OutstaningReportMain() {
 								data={reportData}
 								pageSize={50}
 								columnTotal={[33, 34, 35]}
+								dateTimeExceptionCols={[6]}
 							/>
 						</>
 					)}

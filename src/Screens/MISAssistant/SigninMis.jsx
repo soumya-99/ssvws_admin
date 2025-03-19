@@ -1,20 +1,18 @@
 import React, { useEffect, useState } from "react"
 import * as Yup from "yup"
-import { Link } from "react-router-dom"
 import { useFormik } from "formik"
 import { useNavigate } from "react-router-dom"
-import IMG from "../../Assets/Images/sign_in.png"
 import LOGO from "../../Assets/Images/ssvws_logo.jpg"
 import { routePaths } from "../../Assets/Data/Routes"
 import VError from "../../Components/VError"
-import TDInputTemplate from "../../Components/TDInputTemplate"
 import axios from "axios"
-import { message, Spin } from "antd"
+import { Spin } from "antd"
 import { LoadingOutlined } from "@ant-design/icons"
 import { url } from "../../Address/BaseUrl"
 import { Message } from "../../Components/Message"
 import { motion } from "framer-motion"
 import TDInputTemplateBr from "../../Components/TDInputTemplateBr"
+import { generateRandomAlphanumeric } from "../../Utils/generateRandomAlphanumeric"
 
 function SigninMis() {
 	const navigate = useNavigate()
@@ -22,8 +20,22 @@ function SigninMis() {
 	const [user_type_id, setUserTypeId] = useState(0)
 	const [branches, setBranches] = useState([])
 	const [branch, setBranch] = useState("")
+	const [sessionId, setSessionId] = useState(() => "")
 
-	const [loginUserDetails, setLoginUserDetails] = useState(() => "")
+	useEffect(() => {
+		if (localStorage.length > 0) {
+			navigate(routePaths.BM_HOME)
+		} else {
+			navigate(routePaths.LANDING)
+		}
+	}, [navigate])
+
+	// useEffect(() => {
+	// 	if (localStorage.getItem("user_details")) {
+	// 		navigate(routePaths.BM_HOME)
+	// 	}
+	// }, [])
+
 	useEffect(() => {
 		if (user_type_id != 0) {
 			setLoading(true)
@@ -39,11 +51,18 @@ function SigninMis() {
 			})
 		}
 	}, [user_type_id])
+
 	const initialValues = {
 		user_id: "",
 		password: "",
 		// brnch:""
 	}
+
+	useEffect(() => {
+		const sessionCode = generateRandomAlphanumeric(15)
+		setSessionId(sessionCode)
+		console.log(">>>>>>>", sessionCode)
+	}, [])
 
 	const onSubmit = async (values) => {
 		setLoading(true)
@@ -55,6 +74,7 @@ function SigninMis() {
 			app_version: "0",
 			flag: "W",
 			// brnch:values?.brnch
+			session_id: sessionId,
 		}
 		if (
 			(user_type_id == 4 || user_type_id == 10 || user_type_id == 11) &&
@@ -75,6 +95,8 @@ function SigninMis() {
 					if (res?.data?.suc === 1) {
 						// Message("success", res?.data?.msg)
 						// setLoginUserDetails(res?.data?.user_dtls)
+						localStorage.setItem("session_id", sessionId)
+						localStorage.setItem("server_token", res?.data?.token)
 
 						localStorage.setItem(
 							"user_details",
@@ -131,6 +153,9 @@ function SigninMis() {
 						// Message("success", res?.data?.msg)
 						// setLoginUserDetails(res?.data?.user_dtls)
 
+						localStorage.setItem("session_id", sessionId)
+						localStorage.setItem("server_token", res?.data?.token)
+
 						localStorage.setItem(
 							"user_details",
 							// JSON.stringify(res?.data?.user_dtls)
@@ -183,7 +208,7 @@ function SigninMis() {
 
 	return (
 		<div className="bg-slate-800 p-16 flex justify-center min-h-screen min-w-screen">
-			<div className="bg-white px-20 rounded-3xl flex flex-col gap-8 justify-center items-center">
+			<div className="bg-white px-20 h-[700px] rounded-3xl flex flex-col gap-8 justify-center items-center">
 				<div className="absolute top-32">
 					<motion.img
 						initial={{ opacity: 0 }}
@@ -194,9 +219,9 @@ function SigninMis() {
 						alt="Flowbite Logo"
 					/>
 				</div>
-				<div className="text-4xl text-center font-bold text-slate-800">
+				{/* <div className="text-4xl text-center font-bold text-slate-800">
 					LOGIN
-				</div>
+				</div> */}
 
 				<form
 					onSubmit={formik.handleSubmit}

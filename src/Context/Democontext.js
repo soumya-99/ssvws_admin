@@ -1,15 +1,51 @@
-import React from "react"
-import { createContext, useState } from "react"
+import React, { useEffect, useState, createContext } from "react"
+import axios from "axios"
+import { url } from "../Address/BaseUrl"
+import { routePaths } from "../Assets/Data/Routes"
+import { useNavigate } from "react-router-dom"
+
 export const loadingContext = createContext()
 
 const loaderProvider = {}
 
 function Democontext({ children }) {
+	// const navigate = useNavigate()
 	const [loading, setLoading] = useState(false)
 	loaderProvider.loading = loading
 	loaderProvider.setLoading = setLoading
+
+	// useEffect(() => {
+	// 	if (localStorage.getItem("user_details")) {
+	// 		navigate(routePaths.BM_HOME)
+	// 	}
+	// }, [navigate])
+
+	const handleLogOut = async () => {
+		const userDetails = JSON.parse(localStorage.getItem("user_details")) || ""
+		setLoading(true)
+		const creds = {
+			emp_id: userDetails?.emp_id,
+			session_id: localStorage.getItem("session_id"),
+			modified_by: userDetails?.emp_id,
+		}
+
+		await axios
+			.post(`${url}/logout`, creds)
+			.then((res) => {
+				if (res.data.suc === 1) {
+					localStorage.clear()
+				} else {
+					console.error("Logout failed:", res.data.msg)
+				}
+			})
+			.catch((err) => {
+				console.error(err)
+			})
+		setLoading(false)
+	}
+
 	return (
-		<loadingContext.Provider value={{ loading }}>
+		<loadingContext.Provider value={{ loading, handleLogOut }}>
 			{children}
 		</loadingContext.Provider>
 	)
