@@ -13,6 +13,7 @@ import { Message } from "../../Components/Message"
 import { motion } from "framer-motion"
 import TDInputTemplateBr from "../../Components/TDInputTemplateBr"
 import { generateRandomAlphanumeric } from "../../Utils/generateRandomAlphanumeric"
+import DialogBox from "../../Components/DialogBox"
 
 function SigninMis() {
 	const navigate = useNavigate()
@@ -21,14 +22,15 @@ function SigninMis() {
 	const [branches, setBranches] = useState([])
 	const [branch, setBranch] = useState("")
 	const [sessionId, setSessionId] = useState(() => "")
+	const [visible, setVisible] = useState(() => false)
 
-	useEffect(() => {
-		if (localStorage.length > 0) {
-			navigate(routePaths.BM_HOME)
-		} else {
-			navigate(routePaths.LANDING)
-		}
-	}, [navigate])
+	// useEffect(() => {
+	// 	if (localStorage.length > 0) {
+	// 		navigate(routePaths.BM_HOME)
+	// 	} else {
+	// 		navigate(routePaths.LANDING)
+	// 	}
+	// }, [navigate])
 
 	// useEffect(() => {
 	// 	if (localStorage.getItem("user_details")) {
@@ -64,6 +66,29 @@ function SigninMis() {
 		console.log(">>>>>>>", sessionCode)
 	}, [])
 
+	const forceClearSession = async (userId, password) => {
+		const creds = {
+			emp_id: userId,
+			modified_by: password,
+		}
+		await axios
+			.post(`${url}/clear_session`, creds)
+			.then((res) => {
+				if (res.data.suc === 1) {
+					Message("success", "Active sessions cleared successfully!")
+				} else {
+					console.error("Session clearing failed:", res.data.msg)
+				}
+			})
+			.then(() => {
+				// Click the sign in button after clearing the session
+				formik.handleSubmit()
+			})
+			.catch((err) => {
+				console.error(err)
+			})
+	}
+
 	const onSubmit = async (values) => {
 		setLoading(true)
 		console.log(values)
@@ -83,6 +108,12 @@ function SigninMis() {
 			await axios
 				.post(`${url}/login_app`, creds)
 				.then((res) => {
+					if (res?.data?.suc === 0) {
+						Message("error", res?.data?.msg)
+						setVisible(true)
+
+						return
+					}
 					var userDtls = res?.data?.user_dtls
 					userDtls["brn_code"] =
 						user_type_id == 4 || user_type_id == 11 || user_type_id == 10
@@ -126,8 +157,6 @@ function SigninMis() {
 						) {
 							navigate(routePaths.ADMIN_HOME)
 						}
-					} else if (res?.data?.suc === 0) {
-						Message("error", res?.data?.msg)
 					} else {
 						Message("error", "No user found!")
 					}
@@ -140,6 +169,13 @@ function SigninMis() {
 			await axios
 				.post(`${url}/login_app`, creds)
 				.then((res) => {
+					if (res?.data?.suc === 0) {
+						Message("error", res?.data?.msg)
+						setVisible(true)
+
+						return
+					}
+
 					var userDtls = res?.data?.user_dtls
 					userDtls["brn_code"] =
 						user_type_id == 4 || user_type_id == 11 || user_type_id == 10
@@ -181,8 +217,6 @@ function SigninMis() {
 						) {
 							navigate(routePaths.ADMIN_HOME)
 						}
-					} else if (res?.data?.suc === 0) {
-						Message("error", res?.data?.msg)
 					} else {
 						Message("error", "No user found!")
 					}
@@ -372,6 +406,20 @@ function SigninMis() {
 					</Spin>
 				</form>
 			</div>
+
+			<DialogBox
+				flag={6}
+				onPress={() => setVisible(!visible)}
+				visible={visible}
+				onPressYes={async () => {
+					// call api to force login
+					forceClearSession(formik.values.user_id, formik.values.password)
+					setVisible(!visible)
+				}}
+				onPressNo={() => {
+					setVisible(!visible)
+				}}
+			/>
 		</div>
 	)
 }

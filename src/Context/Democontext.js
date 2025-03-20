@@ -3,6 +3,7 @@ import axios from "axios"
 import { url } from "../Address/BaseUrl"
 import { routePaths } from "../Assets/Data/Routes"
 import { useNavigate } from "react-router-dom"
+import { Message } from "../Components/Message"
 
 export const loadingContext = createContext()
 
@@ -14,6 +15,8 @@ function Democontext({ children }) {
 	loaderProvider.loading = loading
 	loaderProvider.setLoading = setLoading
 
+	const userDetails = JSON.parse(localStorage.getItem("user_details")) || ""
+
 	// useEffect(() => {
 	// 	if (localStorage.getItem("user_details")) {
 	// 		navigate(routePaths.BM_HOME)
@@ -21,7 +24,6 @@ function Democontext({ children }) {
 	// }, [navigate])
 
 	const handleLogOut = async () => {
-		const userDetails = JSON.parse(localStorage.getItem("user_details")) || ""
 		setLoading(true)
 		const creds = {
 			emp_id: userDetails?.emp_id,
@@ -43,6 +45,8 @@ function Democontext({ children }) {
 			})
 		setLoading(false)
 	}
+
+
 
 	return (
 		<loadingContext.Provider value={{ loading, handleLogOut }}>

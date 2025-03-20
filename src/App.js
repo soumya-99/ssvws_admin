@@ -3,19 +3,59 @@ import { Outlet } from "react-router-dom"
 import { PrimeReactProvider } from "primereact/api"
 import "primereact/resources/themes/lara-light-cyan/theme.css"
 import { ConfigProvider } from "antd"
-import { useEffect } from "react"
-import { useNavigate } from "react-router-dom"
+import { useContext, useEffect } from "react"
+import { useNavigate, useLocation } from "react-router-dom"
 import { routePaths } from "./Assets/Data/Routes"
 import useIdleTimer from "./Hooks/useIdleTimer"
+import { loadingContext } from "./Context/Democontext"
+import { url } from "./Address/BaseUrl"
+import { Message } from "./Components/Message"
+import axios from "axios"
 
 function App() {
 	const navigate = useNavigate()
+	const location = useLocation()
+	const userDetails = JSON.parse(localStorage.getItem("user_details")) || ""
 
 	useIdleTimer()
 
+	// useEffect(() => {
+	// 	if (localStorage.length === 0) navigate(routePaths.LANDING)
+	// }, [])
+
+	const checkSessionId = async () => {
+		const creds = {
+			emp_id: userDetails?.emp_id,
+			session_id: localStorage.getItem("session_id"),
+		}
+		await axios
+			.post(`${url}/check_session_id`, creds)
+			.then(async (res) => {
+				console.log("Session ID STATUS:", res?.data)
+				if (!res?.data?.match) {
+					Message("error", "Session expired. Please login again.")
+					navigate(routePaths.LANDING)
+					localStorage.clear()
+				} else {
+					console.log("Session ID is valid", res?.data)
+				}
+			})
+			.catch((err) => {
+				console.log("ERRRR STAT CHECK SESSION ID", err)
+			})
+	}
+
 	useEffect(() => {
-		if (localStorage.length === 0) navigate(routePaths.LANDING)
-	}, [])
+		checkSessionId()
+	}, [location.pathname])
+
+	useEffect(() => {
+		if (localStorage.length > 0) {
+			navigate(routePaths.BM_HOME)
+		} else {
+			navigate(routePaths.LANDING)
+		}
+	}, [navigate])
 
 	console.log("app")
 	return (

@@ -159,6 +159,28 @@ const DialogBox = ({
 					</div>
 				</p>
 			)}
+			{flag == 6 && (
+				<p className="m-0">
+					An active session detected! This action will log you out from the
+					active session. Do you want to log in anyways?
+					<div className="flex justify-center">
+						<button
+							type="button"
+							onClick={onPressNo}
+							className="inline-flex mr-3 bg-slate-800 items-center px-5 py-2.5 mt-4 sm:mt-6 text-sm font-medium text-center text-white border border-slate-800 bg-primary-700 rounded-full focus:ring-4 focus:ring-primary-200 dark:focus:ring-primary-900 hover:bg-primary-800"
+						>
+							No
+						</button>
+						<button
+							type="button"
+							onClick={onPressYes}
+							className="inline-flex bg-[#DA4167] items-center px-5 py-2.5 mt-4 sm:mt-6 text-sm font-medium text-center text-white rounded-full focus:ring-4 focus:ring-primary-200 dark:focus:ring-primary-900 hover:bg-primary-800"
+						>
+							Yes
+						</button>
+					</div>
+				</p>
+			)}
 		</Dialog>
 	)
 }
