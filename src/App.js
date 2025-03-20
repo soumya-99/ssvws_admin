@@ -45,9 +45,10 @@ function App() {
 	}, [location.pathname])
 
 	useEffect(() => {
-		if (localStorage.length > 0) {
+		if (localStorage.length > 0 && localStorage.getItem("session_id")) {
 			navigate(routePaths.BM_HOME)
 		} else {
+			localStorage.clear()
 			navigate(routePaths.LANDING)
 		}
 	}, [navigate])

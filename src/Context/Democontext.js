@@ -1,27 +1,17 @@
-import React, { useEffect, useState, createContext } from "react"
+import React, { useState, createContext } from "react"
 import axios from "axios"
 import { url } from "../Address/BaseUrl"
-import { routePaths } from "../Assets/Data/Routes"
-import { useNavigate } from "react-router-dom"
-import { Message } from "../Components/Message"
 
 export const loadingContext = createContext()
 
 const loaderProvider = {}
 
 function Democontext({ children }) {
-	// const navigate = useNavigate()
 	const [loading, setLoading] = useState(false)
 	loaderProvider.loading = loading
 	loaderProvider.setLoading = setLoading
 
 	const userDetails = JSON.parse(localStorage.getItem("user_details")) || ""
-
-	// useEffect(() => {
-	// 	if (localStorage.getItem("user_details")) {
-	// 		navigate(routePaths.BM_HOME)
-	// 	}
-	// }, [navigate])
 
 	const handleLogOut = async () => {
 		setLoading(true)
@@ -45,8 +35,6 @@ function Democontext({ children }) {
 			})
 		setLoading(false)
 	}
-
-
 
 	return (
 		<loadingContext.Provider value={{ loading, handleLogOut }}>
