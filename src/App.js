@@ -3,11 +3,10 @@ import { Outlet } from "react-router-dom"
 import { PrimeReactProvider } from "primereact/api"
 import "primereact/resources/themes/lara-light-cyan/theme.css"
 import { ConfigProvider } from "antd"
-import { useContext, useEffect } from "react"
+import { useEffect } from "react"
 import { useNavigate, useLocation } from "react-router-dom"
 import { routePaths } from "./Assets/Data/Routes"
 import useIdleTimer from "./Hooks/useIdleTimer"
-import { loadingContext } from "./Context/Democontext"
 import { url } from "./Address/BaseUrl"
 import { Message } from "./Components/Message"
 import axios from "axios"
@@ -18,10 +17,6 @@ function App() {
 	const userDetails = JSON.parse(localStorage.getItem("user_details")) || ""
 
 	useIdleTimer()
-
-	// useEffect(() => {
-	// 	if (localStorage.length === 0) navigate(routePaths.LANDING)
-	// }, [])
 
 	const checkSessionId = async () => {
 		const creds = {
