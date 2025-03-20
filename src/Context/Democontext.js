@@ -11,9 +11,8 @@ function Democontext({ children }) {
 	loaderProvider.loading = loading
 	loaderProvider.setLoading = setLoading
 
-	const userDetails = JSON.parse(localStorage.getItem("user_details")) || ""
-
 	const handleLogOut = async () => {
+		const userDetails = JSON.parse(localStorage.getItem("user_details")) || ""
 		setLoading(true)
 		const creds = {
 			emp_id: userDetails?.emp_id,

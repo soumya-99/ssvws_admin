@@ -106,7 +106,7 @@ function SigninMis() {
 			branch != ""
 		) {
 			await axios
-				.post(`${url}/login_app`, creds)
+				.post(`${url}/login_web`, creds)
 				.then((res) => {
 					if (res?.data?.suc === 0) {
 						Message("error", res?.data?.msg)
@@ -128,6 +128,7 @@ function SigninMis() {
 						// setLoginUserDetails(res?.data?.user_dtls)
 						localStorage.setItem("session_id", sessionId)
 						localStorage.setItem("server_token", res?.data?.token)
+						localStorage.setItem("refresh_token", res?.data?.refresh_token)
 
 						localStorage.setItem(
 							"user_details",
@@ -167,7 +168,7 @@ function SigninMis() {
 				})
 		} else if (user_type_id != 4 && user_type_id != 10 && user_type_id != 11) {
 			await axios
-				.post(`${url}/login_app`, creds)
+				.post(`${url}/login_web`, creds)
 				.then((res) => {
 					if (res?.data?.suc === 0) {
 						Message("error", res?.data?.msg)
@@ -191,6 +192,7 @@ function SigninMis() {
 
 						localStorage.setItem("session_id", sessionId)
 						localStorage.setItem("server_token", res?.data?.token)
+						localStorage.setItem("refresh_token", res?.data?.refresh_token)
 
 						localStorage.setItem(
 							"user_details",
