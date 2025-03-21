@@ -210,15 +210,18 @@ function LoanTransactionsMain() {
 		setLoading(false)
 	}
 
-	const searchData = () => {
+	const searchData = async () => {
 		if (searchType2 === "G" && fromDate && toDate) {
-			handleFetchTxnReportGroupwise()
+			// jwt verify goes here...
+			// call function here...
+			// await refreshToken()
+			await handleFetchTxnReportGroupwise()
 		} else if (searchType2 === "F" && fromDate && toDate) {
-			handleFetchTxnReportFundwise()
+			await handleFetchTxnReportFundwise()
 		} else if (searchType2 === "C" && fromDate && toDate) {
-			handleFetchTxnReportCOwise()
+			await handleFetchTxnReportCOwise()
 		} else if (searchType2 === "M" && fromDate && toDate) {
-			handleFetchTxnReportMemberwise()
+			await handleFetchTxnReportMemberwise()
 		}
 	}
 

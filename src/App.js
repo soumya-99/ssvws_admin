@@ -53,25 +53,6 @@ function App() {
 		}
 	}, [navigate])
 
-	const dummyRefreshToken = async () => {
-		await axios
-			.get(`${url}/refresh`, {
-				headers: {
-					authorization: `Bearer ${localStorage.getItem("server_token")}`,
-				},
-			})
-			.then((res) => {
-				console.log("REFRESH TOKEN RES === Called", res)
-			})
-			.catch((err) => {
-				console.log("REFRESH TOKEN ERR === Called", err)
-			})
-	}
-
-	setInterval(async () => {
-		await dummyRefreshToken()
-	}, 60 * 1000)
-
 	console.log("app")
 	return (
 		<PrimeReactProvider>
