@@ -678,12 +678,12 @@ function MemberLoanDetailsForm() {
 												<th scope="col" className="px-6 py-3 font-semibold">
 													Credit
 												</th>
-												<th scope="col" className="px-6 py-3 font-semibold">
+												{/* <th scope="col" className="px-6 py-3 font-semibold">
 													Balance
 												</th>
 												<th scope="col" className="px-6 py-3 font-semibold">
 													Interest Balance
-												</th>
+												</th> */}
 												<th scope="col" className="px-6 py-3 font-semibold">
 													Outstanding
 												</th>
@@ -774,12 +774,12 @@ function MemberLoanDetailsForm() {
 															<td className="px-6 py-4">
 																{item?.credit || 0}/-
 															</td>
-															<td className="px-6 py-4">
+															{/* <td className="px-6 py-4">
 																{item?.prn_bal || 0}/-
 															</td>
 															<td className="px-6 py-4">
 																{item?.intt_balance || 0}/-
-															</td>
+															</td> */}
 															<td className="px-6 py-4">
 																{item?.outstanding || 0}/-
 															</td>
@@ -855,7 +855,7 @@ function MemberLoanDetailsForm() {
 													{totalDebit?.toFixed(2)}/-
 												</td>
 												<td
-													colSpan={6}
+													colSpan={5}
 													className="px-6 py-4 text-left font-semibold"
 												>
 													{totalCredit?.toFixed(2)}/-

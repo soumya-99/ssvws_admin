@@ -62,9 +62,29 @@ const memberwiseOutstandingHeader = {
 	approved_by: "Approved By",
 }
 
+const disbursementDetailsHeader = {
+	loan_id: "Loan ID",
+	member_code: "Member Code",
+	client_name: "Client Name",
+	purpose: "Purpose",
+	purpose_id: "Purpose",
+	scheme_id: "Scheme ID",
+	scheme_name: "Scheme Name",
+	curr_roi: "Current ROI",
+	period: "Period",
+	period_mode: "Period Mode",
+	fund_id: "Fund ID",
+	fund_name: "Fund Name",
+	applied_amt: "Applied Amt",
+	disburse_amt: "Disburse Amt",
+	disb_dt: "Disburse Date",
+	curr_outstanding: "Current Outstanding",
+}
+
 export {
 	fundwiseOutstandingHeader,
 	cowiseOutstandingHeader,
 	groupwiseOutstandingHeader,
 	memberwiseOutstandingHeader,
+	disbursementDetailsHeader,
 }

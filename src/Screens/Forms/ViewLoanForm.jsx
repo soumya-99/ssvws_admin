@@ -31,6 +31,8 @@ import Sidebar from "../../Components/Sidebar"
 import DialogBox from "../../Components/DialogBox"
 import TDInputTemplateBr from "../../Components/TDInputTemplateBr"
 import TimelineComp from "../../Components/TimelineComp"
+import DynamicTailwindTable from "../../Components/Reports/DynamicTailwindTable"
+import { disbursementDetailsHeader } from "../../Utils/Reports/headerMap"
 
 function ViewLoanForm({ groupDataArr }) {
 	const params = useParams()
@@ -674,11 +676,21 @@ function ViewLoanForm({ groupDataArr }) {
 						/>
 
 						{/* purpose,scheme name,interest rate,period,period mode,fund name,total applied amount,total disbursement amount,disbursement date,current outstanding */}
-						<div className="text-[#DA4167] text-lg mb-2 font-bold">
+						<div className="text-[#DA4167] text-lg font-bold">
 							Disbursement Details
 						</div>
 
-						<div className="grid gap-4 sm:grid-cols-2 sm:gap-6">
+						<div>
+							<DynamicTailwindTable
+								data={groupData[0]?.disb_details}
+								pageSize={50}
+								columnTotal={[12, 13, 15]}
+								headersMap={disbursementDetailsHeader}
+								dateTimeExceptionCols={[14]}
+							/>
+						</div>
+
+						{/* <div className="grid gap-4 sm:grid-cols-2 sm:gap-6">
 							<div>
 								<TDInputTemplateBr
 									placeholder="Purpose"
@@ -809,7 +821,7 @@ function ViewLoanForm({ groupDataArr }) {
 									disabled
 								/>
 							</div>
-						</div>
+						</div> */}
 
 						{params?.id > 0 && (
 							<div className="gap-3">
