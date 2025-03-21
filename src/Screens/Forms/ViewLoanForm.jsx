@@ -687,6 +687,7 @@ function ViewLoanForm({ groupDataArr }) {
 								columnTotal={[12, 13, 15]}
 								headersMap={disbursementDetailsHeader}
 								dateTimeExceptionCols={[14]}
+								colRemove={[3, 5, 10]}
 							/>
 						</div>
 

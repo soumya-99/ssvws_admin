@@ -67,7 +67,7 @@ const disbursementDetailsHeader = {
 	member_code: "Member Code",
 	client_name: "Client Name",
 	purpose: "Purpose",
-	purpose_id: "Purpose",
+	purpose_id: "Purpose Name",
 	scheme_id: "Scheme ID",
 	scheme_name: "Scheme Name",
 	curr_roi: "Current ROI",

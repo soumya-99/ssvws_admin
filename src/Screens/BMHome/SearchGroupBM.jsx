@@ -96,7 +96,7 @@ function SearchGroupBM() {
 								type="search"
 								id="default-search"
 								class="block mt-10 w-full p-4 ps-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-slate-500 focus:border-slate-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-slate-500 dark:focus:border-slate-500"
-								placeholder="Search by GRT Form No./Member Name/Member Code/Mobile No./Group Code"
+								placeholder="Search by Group Code/Group Name"
 								onChange={(e) => setSearchKeywords(e.target.value)}
 							/>
 							<button
