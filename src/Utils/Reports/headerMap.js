@@ -81,10 +81,48 @@ const disbursementDetailsHeader = {
 	curr_outstanding: "Current Outstanding",
 }
 
+const loanStatementHeaderMemberwise = {
+	trans_date: "Txn Date",
+	trans_no: "Txn ID",
+	Particulars: "Particulars",
+	credit: "Credit",
+	debit: "Debit",
+	bank_charge: "Bank Charge",
+	proc_charge: "Processing Charge",
+	prn_recov: "Principal Recovery",
+	intt_recov: "Interest Recovery",
+	prn_bal: "Principal Balance",
+	intt_bal: "Interest Balance",
+	total_outstanding: "Total Outstanding",
+	tr_type: "Transaction Type",
+	tr_mode: "Transaction Mode",
+	curr_roi: "Current ROI",
+	period: "Period",
+	period_mode: "Period Mode",
+	tot_emi: "Total EMI",
+}
+
+const loanStatementHeaderGroupwise = {
+	trans_date: "Txn Date",
+	particulars: "Particulars",
+	tr_type: "Transaction Type",
+	debit: "Debit",
+	credit: "Credit",
+	bank_charge: "Bank Charge",
+	proc_charge: "Processing Charge",
+	balance: "Balance",
+	curr_roi: "Current ROI",
+	period: "Period",
+	period_mode: "Period Mode",
+	tot_emi: "Total EMI",
+}
+
 export {
 	fundwiseOutstandingHeader,
 	cowiseOutstandingHeader,
 	groupwiseOutstandingHeader,
 	memberwiseOutstandingHeader,
 	disbursementDetailsHeader,
+	loanStatementHeaderMemberwise,
+	loanStatementHeaderGroupwise
 }

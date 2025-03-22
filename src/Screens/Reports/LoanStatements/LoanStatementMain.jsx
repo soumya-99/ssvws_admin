@@ -18,6 +18,13 @@ import { formatDateToYYYYMMDD } from "../../../Utils/formateDate"
 import { saveAs } from "file-saver"
 import * as XLSX from "xlsx"
 import { printTableLoanStatement } from "../../../Utils/printTableLoanStatement"
+import DynamicTailwindTable from "../../../Components/Reports/DynamicTailwindTable"
+import {
+	loanStatementHeader,
+	loanStatementHeaderGroupwise,
+	loanStatementHeaderMemberwise,
+	memberwiseOutstandingHeader,
+} from "../../../Utils/Reports/headerMap"
 
 // const { RangePicker } = DatePicker
 // const dateFormat = "YYYY/MM/DD"
@@ -103,7 +110,7 @@ function LoanStatementMain() {
 			from_dt: formatDateToYYYYMMDD(fromDate),
 			to_dt: formatDateToYYYYMMDD(toDate),
 			loan_id: loanId || "",
-			branch_id:userDetails.brn_code
+			branch_id: userDetails.brn_code,
 		}
 
 		await axios
@@ -126,7 +133,7 @@ function LoanStatementMain() {
 			from_dt: formatDateToYYYYMMDD(fromDate),
 			to_dt: formatDateToYYYYMMDD(toDate),
 			group_code: grpCode || "",
-			branch_code:userDetails.brn_code
+			branch_code: userDetails.brn_code,
 		}
 
 		await axios
@@ -500,324 +507,31 @@ function LoanStatementMain() {
 						{/* For memberwise */}
 
 						{searchType === "M" && reportTxnData.length > 0 && (
-							<div
-								className={`relative overflow-x-auto shadow-md sm:rounded-lg mt-5 max-h-96
-                                    [&::-webkit-scrollbar]:w-1
-                                    [&::-webkit-scrollbar-track]:rounded-full
-                                    [&::-webkit-scrollbar-track]:bg-transparent
-                                    [&::-webkit-scrollbar-thumb]:rounded-full
-                                    [&::-webkit-scrollbar-thumb]:bg-gray-300
-                                    dark:[&::-webkit-scrollbar-track]:bg-transparent
-                                    dark:[&::-webkit-scrollbar-thumb]:bg-neutral-500
-                                `}
-							>
-								<div
-									className={`w-full text-xs dark:bg-gray-700 dark:text-gray-400`}
-								>
-									<table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
-										<thead className="w-full text-xs uppercase text-slate-50 bg-slate-800 dark:bg-gray-700 dark:text-gray-400 sticky top-0">
-											<tr>
-												<th scope="col" className="px-6 py-3 font-semibold ">
-													Txn. Date
-												</th>
-												<th scope="col" className="px-6 py-3 font-semibold ">
-													Txn. No.
-												</th>
-												<th scope="col" className="px-6 py-3 font-semibold ">
-													Txn. Type
-												</th>
-												<th scope="col" className="px-6 py-3 font-semibold ">
-													Debit
-												</th>
-												<th scope="col" className="px-6 py-3 font-semibold ">
-													Principal Credit
-												</th>
-												<th scope="col" className="px-6 py-3 font-semibold ">
-													Interest Credit
-												</th>
-												<th scope="col" className="px-6 py-3 font-semibold ">
-													Total Credit
-												</th>
-												<th scope="col" className="px-6 py-3 font-semibold ">
-													Bank Charge
-												</th>
-												<th scope="col" className="px-6 py-3 font-semibold ">
-													Processing Charge
-												</th>
-												{/* <th scope="col" className="px-6 py-3 font-semibold ">
-													Balance
-												</th> */}
-												<th scope="col" className="px-6 py-3 font-semibold ">
-													Principal Balance
-												</th>
-												<th scope="col" className="px-6 py-3 font-semibold ">
-													Interest Balance
-												</th>
-												<th scope="col" className="px-6 py-3 font-semibold ">
-													Total Balance
-												</th>
-												<th scope="col" className="px-6 py-3 font-semibold ">
-													Txn. Mode
-												</th>
-												<th scope="col" className="px-6 py-3 font-semibold ">
-													Current R.O.I
-												</th>
-												<th scope="col" className="px-6 py-3 font-semibold ">
-													Period
-												</th>
-												<th scope="col" className="px-6 py-3 font-semibold ">
-													Period Mode
-												</th>
-												<th scope="col" className="px-6 py-3 font-semibold ">
-													Total EMI
-												</th>
-											</tr>
-										</thead>
-										<tbody>
-											{reportTxnData?.map((item, i) => {
-												totalCredit += +item?.credit
-												totalDebit += +item?.debit
-
-												return (
-													<tr
-														key={i}
-														className={
-															i % 2 === 0 ? "bg-slate-200 text-slate-900" : ""
-														}
-													>
-														<td className="px-6 py-3">
-															{new Date(item?.trans_date)?.toLocaleDateString(
-																"en-GB"
-															)}
-														</td>
-														<td className="px-6 py-3">{item?.trans_no}</td>
-														<td className="px-6 py-3">
-															{item?.tr_type === "D"
-																? "Disbursement"
-																: item?.tr_type === "R"
-																? "Recovery"
-																: item?.tr_type === "I"
-																? "Interest"
-																: "Error"}
-														</td>
-														<td className="px-6 py-3">{item?.debit}</td>
-														<td className="px-6 py-3">{item?.prn_recov}</td>
-														<td className="px-6 py-3">{item?.intt_recov}</td>
-														<td className="px-6 py-3">{item?.credit}</td>
-														<td className="px-6 py-3">{item?.bank_charge}</td>
-														<td className="px-6 py-3">{item?.proc_charge}</td>
-														{/* <td className="px-6 py-3">{item?.balance}</td> */}
-														<td className="px-6 py-3">{item?.prn_bal}</td>
-														<td className="px-6 py-3">{item?.intt_bal}</td>
-														<td className="px-6 py-3">{item?.total}</td>
-														<td className="px-6 py-3">
-															{/* {item?.tr_mode === "C"
-																? "Cash"
-																: item?.tr_mode === "U"
-																? "Bank"
-																: "Error"} */}
-															{item?.tr_type === "D"
-																? "---"
-																: item?.tr_mode === "C"
-																? "Cash"
-																: item?.tr_mode === "U"
-																? "Bank"
-																: "Error"}
-														</td>
-														<td className="px-6 py-3">
-															{item?.curr_roi || "---"}
-														</td>
-														<td className="px-6 py-3">
-															{item?.period || "---"}
-														</td>
-														<td className="px-6 py-3">
-															{item?.period_mode || "---"}
-														</td>
-														<td className="px-6 py-3">
-															{item?.tot_emi || "---"}
-														</td>
-													</tr>
-												)
-											})}
-											<tr
-												className={"text-slate-50 bg-slate-700 sticky bottom-0"}
-											>
-												<td className="px-6 py-3" colSpan={3}>
-													Total:
-												</td>
-												<td className="px-6 py-3" colSpan={1}>
-													{totalDebit?.toFixed(2)}
-												</td>
-												<td className="px-6 py-3" colSpan={2}></td>
-												<td className="px-6 py-3" colSpan={1}>
-													{totalCredit?.toFixed(2)}
-												</td>
-												<td className="px-6 py-3" colSpan={10}>
-													Total Recovery:{" "}
-													{
-														reportTxnData?.filter(
-															(item, i) => item?.tr_type === "R"
-														)?.length
-													}
-												</td>
-											</tr>
-										</tbody>
-									</table>
-								</div>
-							</div>
+							<>
+								<DynamicTailwindTable
+									data={reportTxnData}
+									pageSize={50}
+									columnTotal={[3, 4, 9, 10, 11]}
+									colRemove={[2, 7, 8, 12, 13, 14, 15, 16, 17]}
+									headersMap={loanStatementHeaderMemberwise}
+									dateTimeExceptionCols={[0]}
+								/>
+							</>
 						)}
 
 						{/* For Groupwise */}
 
 						{searchType === "G" && reportTxnData.length > 0 && (
-							<div
-								className={`relative overflow-x-auto shadow-md sm:rounded-lg mt-5 max-h-96
-                                    [&::-webkit-scrollbar]:w-1
-                                    [&::-webkit-scrollbar-track]:rounded-full
-                                    [&::-webkit-scrollbar-track]:bg-transparent
-                                    [&::-webkit-scrollbar-thumb]:rounded-full
-                                    [&::-webkit-scrollbar-thumb]:bg-gray-300
-                                    dark:[&::-webkit-scrollbar-track]:bg-transparent
-                                    dark:[&::-webkit-scrollbar-thumb]:bg-neutral-500
-                                `}
-							>
-								<div
-									className={`w-full text-xs dark:bg-gray-700 dark:text-gray-400`}
-								>
-									<table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
-										<thead className="w-full text-xs uppercase text-slate-50 bg-slate-800 dark:bg-gray-700 dark:text-gray-400 sticky top-0">
-											<tr>
-												<th scope="col" className="px-6 py-3 font-semibold ">
-													Txn. Date
-												</th>
-												{/* <th scope="col" className="px-6 py-3 font-semibold ">
-													Txn. No.
-												</th> */}
-												<th scope="col" className="px-6 py-3 font-semibold ">
-													Txn. Type
-												</th>
-												<th scope="col" className="px-6 py-3 font-semibold ">
-													Debit
-												</th>
-												<th scope="col" className="px-6 py-3 font-semibold ">
-													Credit
-												</th>
-												<th scope="col" className="px-6 py-3 font-semibold ">
-													Bank Charge
-												</th>
-												<th scope="col" className="px-6 py-3 font-semibold ">
-													Processing Charge
-												</th>
-												<th scope="col" className="px-6 py-3 font-semibold ">
-													Balance
-												</th>
-												<th scope="col" className="px-6 py-3 font-semibold ">
-													Particulars
-												</th>
-												<th scope="col" className="px-6 py-3 font-semibold ">
-													Current R.O.I
-												</th>
-												<th scope="col" className="px-6 py-3 font-semibold ">
-													Period
-												</th>
-												<th scope="col" className="px-6 py-3 font-semibold ">
-													Period Mode
-												</th>
-												<th scope="col" className="px-6 py-3 font-semibold ">
-													Total EMI
-												</th>
-
-												{/* "curr_roi": 13.6,
-												"period": 24,
-												"period_mode": "Monthly",
-												"tot_emi": 2650 */}
-											</tr>
-										</thead>
-										<tbody>
-											{reportTxnData?.map((item, i) => {
-												totalCredit += +item?.credit
-												totalDebit += +item?.debit
-
-												return (
-													<tr
-														key={i}
-														className={
-															i % 2 === 0 ? "bg-slate-200 text-slate-900" : ""
-														}
-													>
-														<td className="px-6 py-3">
-															{new Date(item?.trans_date)?.toLocaleDateString(
-																"en-GB"
-															)}
-														</td>
-														{/* <td className="px-6 py-3">{item?.trans_id}</td> */}
-														<td className="px-6 py-3">
-															{item?.tr_type === "D"
-																? "Disbursement"
-																: item?.tr_type === "R"
-																? "Recovery"
-																: item?.tr_type === "I"
-																? "Interest"
-																: "Err"}
-														</td>
-														<td className="px-6 py-3">
-															{item?.debit || "---"}
-														</td>
-														<td className="px-6 py-3">
-															{item?.credit || "---"}
-														</td>
-														<td className="px-6 py-3">
-															{item?.bank_charge || "---"}
-														</td>
-														<td className="px-6 py-3">
-															{item?.proc_charge || "---"}
-														</td>
-														<td className="px-6 py-3">
-															{item?.balance || "---"}
-														</td>
-														<td className="px-6 py-3">
-															{item?.particulars || "---"}
-														</td>
-														<td className="px-6 py-3">
-															{item?.curr_roi || "---"}
-														</td>
-														<td className="px-6 py-3">
-															{item?.period || "---"}
-														</td>
-														<td className="px-6 py-3">
-															{item?.period_mode || "---"}
-														</td>
-														<td className="px-6 py-3">
-															{item?.tot_emi || "---"}
-														</td>
-													</tr>
-												)
-											})}
-											<tr
-												className={"text-slate-50 bg-slate-700 sticky bottom-0"}
-											>
-												<td className="px-6 py-3" colSpan={2}>
-													Total:
-												</td>
-												<td className="px-6 py-3" colSpan={1}>
-													{totalDebit?.toFixed(2)}
-												</td>
-												<td className="px-6 py-3" colSpan={4}>
-													{totalCredit?.toFixed(2)}
-												</td>
-												<td className="px-6 py-3" colSpan={5}>
-													Total Recovery:{" "}
-													{
-														reportTxnData?.filter(
-															(item, i) => item?.tr_type === "R"
-														)?.length
-													}
-												</td>
-											</tr>
-										</tbody>
-									</table>
-								</div>
-							</div>
+							<>
+								<DynamicTailwindTable
+									data={reportTxnData}
+									pageSize={50}
+									columnTotal={[3, 4, 7]}
+									colRemove={[1, 2, 8, 9, 10, 11]}
+									headersMap={loanStatementHeaderGroupwise}
+									dateTimeExceptionCols={[0]}
+								/>
+							</>
 						)}
 						{reportTxnData.length !== 0 && (
 							<div className="flex gap-4">
