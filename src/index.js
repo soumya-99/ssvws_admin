@@ -51,6 +51,10 @@ import ApproveEditMemberTrans from "./Screens/Admin/Master/Employees/ApproveEdit
 import ViewMemberTransfer from "./Screens/BMHome/ViewMemberTransfer"
 import TransferMemberViewScreen from "./Screens/BMHome/TransferMemberViewScreen"
 import MonthEnd from "./Screens/Admin/UserManagement/MonthEnd"
+import MasterDistricts from "./Screens/Admin/Master/Districts/MasterDistricts"
+import EditMasterDistricts from "./Screens/Admin/Master/Districts/EditMasterDistricts"
+import MasterBlocks from "./Screens/Admin/Master/Blocks/MasterBlocks"
+import EditMasterBlocks from "./Screens/Admin/Master/Blocks/EditMasterBlocks"
 // import A_LoanStatementMain from "./Screens/Admin/Reports/LoanStatements/A_LoanStatementMain"
 // import A_LoanTransactionsMain from "./Screens/Admin/Reports/LoanTransactions/A_LoanTransactionsMain"
 // import A_DemandReportsMain from "./Screens/Admin/Reports/DemandReports/A_DemandReportsMain"
@@ -436,6 +440,22 @@ const router = createBrowserRouter([
 							{
 								path: "masterdesignations/:id",
 								element: <EditMasterDesignations />,
+							},
+							{
+								path: "masterdistricts",
+								element: <MasterDistricts />,
+							},
+							{
+								path: "masterdistricts/:id",
+								element: <EditMasterDistricts />,
+							},
+							{
+								path: "masterblocks",
+								element: <MasterBlocks />,
+							},
+							{
+								path: "masterblocks/:id",
+								element: <EditMasterBlocks />,
 							},
 							{
 								path: "createuser/:id",

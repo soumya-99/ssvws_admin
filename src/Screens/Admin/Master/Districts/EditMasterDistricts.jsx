@@ -10,8 +10,9 @@ import { useLocation } from "react-router"
 import Sidebar from "../../../../Components/Sidebar"
 import BankMasterForm from "../../../Forms/Master/BankMasterForm"
 import DesignationMasterForm from "../../../Forms/Master/DesignationMasterForm"
+import DistrictMasterForm from "../../../Forms/Master/DistrictMasterForm"
 
-function EditMasterDesignations() {
+function EditMasterDistricts() {
 	const params = useParams()
 	const [loading, setLoading] = useState(false)
 	const location = useLocation()
@@ -32,7 +33,7 @@ function EditMasterDesignations() {
 				{/* {JSON.stringify(loanAppData)} */}
 				<div className="px-1 py-5 w-4/5 min-h-screen rounded-3xl">
 					<div className="w-auto mx-14 my-4">
-						<FormHeader text="Add/Edit Bank Master" mode={2} />
+						<FormHeader text="Add/Edit District" mode={2} />
 					</div>
 					<Spin
 						indicator={<LoadingOutlined spin />}
@@ -41,7 +42,7 @@ function EditMasterDesignations() {
 						spinning={loading}
 					>
 						<div className="card shadow-lg bg-white border-2 p-5 mx-16  rounded-3xl surface-border border-round surface-ground flex-auto font-medium">
-							<DesignationMasterForm />
+							<DistrictMasterForm />
 						</div>
 					</Spin>
 				</div>
@@ -99,4 +100,4 @@ function EditMasterDesignations() {
 	)
 }
 
-export default EditMasterDesignations
+export default EditMasterDistricts

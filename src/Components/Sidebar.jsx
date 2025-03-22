@@ -247,6 +247,18 @@ function Sidebar({ mode = 0 }) {
 								),
 								// hidden: data?.designation == "Y" ? false : true,
 							},
+							{
+								key: "sub5-4",
+								icon: <DatabaseOutlined />,
+								label: <Link to={"/homeadmin/masterdistricts"}>Districts</Link>,
+								// hidden: data?.designation == "Y" ? false : true,
+							},
+							{
+								key: "sub5-5",
+								icon: <DatabaseOutlined />,
+								label: <Link to={"/homeadmin/masterblocks"}>Blocks</Link>,
+								// hidden: data?.designation == "Y" ? false : true,
+							},
 						],
 					},
 					{
