@@ -16,7 +16,10 @@ import { saveAs } from "file-saver"
 import * as XLSX from "xlsx"
 import { printTableLoanTransactions } from "../../../Utils/printTableLoanTransactions"
 import DynamicTailwindTable from "../../../Components/Reports/DynamicTailwindTable"
-import { memberwiseOutstandingHeader } from "../../../Utils/Reports/headerMap"
+import {
+	branchwiseTxnReportHeader,
+	memberwiseOutstandingHeader,
+} from "../../../Utils/Reports/headerMap"
 
 const options = [
 	{
@@ -45,6 +48,10 @@ const options2 = [
 	{
 		label: "Memberwise",
 		value: "M",
+	},
+	{
+		label: "Branchwise",
+		value: "B",
 	},
 ]
 
@@ -188,6 +195,28 @@ function LoanTransactionsMain() {
 		setLoading(false)
 	}
 
+	const handleFetchTxnReportBranchwise = async () => {
+		setLoading(true)
+		const creds = {
+			from_dt: formatDateToYYYYMMDD(fromDate),
+			to_dt: formatDateToYYYYMMDD(toDate),
+			branch_code: userDetails?.brn_code,
+			tr_type: searchType,
+		}
+
+		await axios
+			.post(`${url}/transaction_report_branchwise`, creds)
+			.then((res) => {
+				console.log("RESSSSS======>>>>", res?.data)
+				setReportData(res?.data?.transaction_branch_data?.msg)
+			})
+			.catch((err) => {
+				console.log("ERRRR>>>", err)
+			})
+
+		setLoading(false)
+	}
+
 	const handleFetchTxnReportMemberwise = async () => {
 		setLoading(true)
 		const creds = {
@@ -222,6 +251,8 @@ function LoanTransactionsMain() {
 			await handleFetchTxnReportCOwise()
 		} else if (searchType2 === "M" && fromDate && toDate) {
 			await handleFetchTxnReportMemberwise()
+		} else if (searchType2 === "B" && fromDate && toDate) {
+			await handleFetchTxnReportBranchwise()
 		}
 	}
 
@@ -409,6 +440,18 @@ function LoanTransactionsMain() {
 								pageSize={50}
 								columnTotal={[6]}
 								// headersMap={cowiseOutstandingHeader}
+							/>
+						</>
+					)}
+
+					{/* Branchwise Results with Pagination */}
+					{searchType2 === "B" && reportData.length > 0 && (
+						<>
+							<DynamicTailwindTable
+								data={reportData}
+								pageSize={50}
+								// columnTotal={[6]}
+								headersMap={branchwiseTxnReportHeader}
 							/>
 						</>
 					)}

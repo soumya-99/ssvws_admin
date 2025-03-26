@@ -90,6 +90,13 @@ const branchwiseOutstandingHeader = {
 	outstanding: "Outstanding",
 }
 
+const branchwiseTxnReportHeader = {
+	branch_id: "Branch ID",
+	branch_name: "Branch Name",
+	debit: "Debit",
+	curr_balance: "Current Balance",
+}
+
 export {
 	fundwiseOutstandingHeader,
 	cowiseOutstandingHeader,
@@ -97,4 +104,5 @@ export {
 	memberwiseOutstandingHeader,
 	disbursementDetailsHeader,
 	branchwiseOutstandingHeader,
+	branchwiseTxnReportHeader
 }
