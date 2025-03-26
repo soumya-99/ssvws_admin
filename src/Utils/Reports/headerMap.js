@@ -81,10 +81,20 @@ const disbursementDetailsHeader = {
 	curr_outstanding: "Current Outstanding",
 }
 
+const branchwiseOutstandingHeader = {
+	branch_code: "Branch Code",
+	branch_name: "Branch Name",
+	prn_disb_amt: "Disbursement Amt",
+	prn_outstanding: "Outstanding Principal",
+	intt_outstanding: "Outstanding Interest",
+	outstanding: "Outstanding",
+}
+
 export {
 	fundwiseOutstandingHeader,
 	cowiseOutstandingHeader,
 	groupwiseOutstandingHeader,
 	memberwiseOutstandingHeader,
 	disbursementDetailsHeader,
+	branchwiseOutstandingHeader,
 }

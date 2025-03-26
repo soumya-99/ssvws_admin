@@ -28,6 +28,7 @@ import * as XLSX from "xlsx"
 import { printTableOutstandingReport } from "../../../Utils/printTableOutstandingReport"
 import DynamicTailwindTable from "../../../Components/Reports/DynamicTailwindTable"
 import {
+	branchwiseOutstandingHeader,
 	cowiseOutstandingHeader,
 	fundwiseOutstandingHeader,
 	groupwiseOutstandingHeader,
@@ -49,6 +50,10 @@ const options = [
 	{
 		label: "Memberwise",
 		value: "M",
+	},
+	{
+		label: "Branchwise",
+		value: "B",
 	},
 ]
 
@@ -88,6 +93,35 @@ function OutstaningReportMain() {
 				}
 
 				console.log("---------- DATA MEMBERWISE -----------", res?.data)
+				setFetchedReportDate(
+					new Date(res?.data?.balance_date).toLocaleDateString("en-GB")
+				)
+				setReportData(data)
+			})
+			.catch((err) => {
+				console.log("ERRRR>>>", err)
+			})
+
+		setLoading(false)
+	}
+
+	const handleFetchReportOutstandingBranchwise = async () => {
+		setLoading(true)
+
+		const creds = {
+			branch_code: userDetails?.brn_code,
+			supply_date: formatDateToYYYYMMDD(fromDate),
+		}
+
+		await axios
+			.post(`${url}/loan_outstanding_report_branchwise`, creds)
+			.then((res) => {
+				const data = res?.data?.outstanding_branch_data?.msg || []
+				if (data.length === 0) {
+					console.log("--------------- NO DATA ---------------", data?.length)
+				}
+
+				console.log("---------- DATA BRN WISE -----------", res?.data)
 				setFetchedReportDate(
 					new Date(res?.data?.balance_date).toLocaleDateString("en-GB")
 				)
@@ -244,6 +278,8 @@ function OutstaningReportMain() {
 			handleFetchReportOutstandingFundwise()
 		} else if (searchType === "C" && fromDate) {
 			handleFetchReportOutstandingCOwise()
+		} else if (searchType === "B" && fromDate) {
+			handleFetchReportOutstandingBranchwise()
 		}
 	}
 
@@ -410,6 +446,18 @@ function OutstaningReportMain() {
 								pageSize={50}
 								columnTotal={[4, 5, 6]}
 								headersMap={cowiseOutstandingHeader}
+							/>
+						</>
+					)}
+
+					{/* Branchwise Results with Pagination */}
+					{searchType === "B" && reportData.length > 0 && (
+						<>
+							<DynamicTailwindTable
+								data={reportData}
+								pageSize={50}
+								// columnTotal={[4, 5, 6]}
+								headersMap={branchwiseOutstandingHeader}
 							/>
 						</>
 					)}
