@@ -57,6 +57,12 @@ export const printTableOutstandingReport = (
 							? "Memberwise Outstanding Report"
 							: searchType === "G"
 							? "Groupwise Outstanding Report"
+							: searchType === "F"
+							? "Fundwise Outstanding Report"
+							: searchType === "C"
+							? "CO-wise Outstanding Report"
+							: searchType === "B"
+							? "Branch-wise Outstanding Report"
 							: "Err"
 					}
         </div>

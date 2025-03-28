@@ -2,17 +2,7 @@ import React, { useEffect, useState } from "react"
 import Sidebar from "../../../Components/Sidebar"
 import axios from "axios"
 import { url } from "../../../Address/BaseUrl"
-import { Message } from "../../../Components/Message"
-import {
-	Spin,
-	Button,
-	Modal,
-	Tooltip,
-	DatePicker,
-	Progress,
-	Pagination,
-} from "antd" // <-- Added Pagination here
-import dayjs from "dayjs"
+import { Spin, Tooltip } from "antd"
 import {
 	LoadingOutlined,
 	SearchOutlined,
@@ -295,13 +285,32 @@ function OutstaningReportMain() {
 		}
 	}, [searchType])
 
+	const fetchSearchTypeName = (searchType) => {
+		if (searchType === "M") {
+			return "Memberwise"
+		} else if (searchType === "G") {
+			return "Groupwise"
+		} else if (searchType === "F") {
+			return "Fundwise"
+		} else if (searchType === "C") {
+			return "CO-wise"
+		} else if (searchType === "B") {
+			return "Branchwise"
+		}
+	}
+
 	const exportToExcel = (data) => {
 		const wb = XLSX.utils.book_new()
 		const ws = XLSX.utils.json_to_sheet(data)
 		XLSX.utils.book_append_sheet(wb, ws, "Sheet1")
 		const wbout = XLSX.write(wb, { bookType: "xlsx", type: "binary" })
 		const blob = new Blob([s2ab(wbout)], { type: "application/octet-stream" })
-		saveAs(blob, "outstanding_report.xlsx")
+		saveAs(
+			blob,
+			`Outstanding_Report_${fetchSearchTypeName(searchType)}_${
+				userDetails?.branch_name
+			}_${fetchedReportDate}.xlsx`
+		)
 	}
 
 	const s2ab = (s) => {

@@ -2,6 +2,7 @@ export const printTableLoanTransactions = (
 	dataArray,
 	title,
 	searchType,
+	searchType2,
 	metadata,
 	fromDate,
 	toDate
@@ -35,6 +36,21 @@ export const printTableLoanTransactions = (
       <h2 style="text-align: center">SSVWS</h2>
       <h3 style="text-align: center">${title}</h3>
       
+        <div class="italic center-div">
+          ${
+						searchType2 === "M"
+							? "Memberwise Transaction Report"
+							: searchType2 === "G"
+							? "Groupwise Transaction Report"
+							: searchType2 === "F"
+							? "Fundwise Transaction Report"
+							: searchType2 === "C"
+							? "CO-wise Transaction Report"
+							: searchType2 === "B"
+							? "Branch-wise Transaction Report"
+							: "Err"
+					}
+        </div>
         <div class="italic center-div">
           ${
 						searchType === "D"

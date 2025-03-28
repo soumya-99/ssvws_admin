@@ -103,7 +103,7 @@ function LoanStatementMain() {
 			from_dt: formatDateToYYYYMMDD(fromDate),
 			to_dt: formatDateToYYYYMMDD(toDate),
 			loan_id: loanId || "",
-			branch_id:userDetails.brn_code
+			branch_id: userDetails.brn_code,
 		}
 
 		await axios
@@ -126,7 +126,7 @@ function LoanStatementMain() {
 			from_dt: formatDateToYYYYMMDD(fromDate),
 			to_dt: formatDateToYYYYMMDD(toDate),
 			group_code: grpCode || "",
-			branch_code:userDetails.brn_code
+			branch_code: userDetails.brn_code,
 		}
 
 		await axios
@@ -165,13 +165,40 @@ function LoanStatementMain() {
 		setMetadataDtls(() => null)
 	}, [searchType])
 
+	const fetchSearchTypeName = (searchType) => {
+		if (searchType === "M") {
+			return "Memberwise"
+		} else if (searchType === "G") {
+			return "Groupwise"
+		} else if (searchType === "F") {
+			return "Fundwise"
+		} else if (searchType === "C") {
+			return "CO-wise"
+		} else if (searchType === "B") {
+			return "Branchwise"
+		} else if (searchType === "D") {
+			return "Disbursement"
+		} else if (searchType === "R") {
+			return "Recovery"
+		}
+	}
+
+	const dateFormatInGB = (date) => {
+		return new Date(date).toLocaleDateString("en-GB")
+	}
+
 	const exportToExcel = (data) => {
 		const wb = XLSX.utils.book_new()
 		const ws = XLSX.utils.json_to_sheet(data)
 		XLSX.utils.book_append_sheet(wb, ws, "Sheet1")
 		const wbout = XLSX.write(wb, { bookType: "xlsx", type: "binary" })
 		const blob = new Blob([s2ab(wbout)], { type: "application/octet-stream" })
-		saveAs(blob, "loan_statement_report.xlsx")
+		saveAs(
+			blob,
+			`Loan_Statement_${metadataDtls?.branch_name}_${fetchSearchTypeName(
+				searchType
+			)}_From_${dateFormatInGB(fromDate)}_To_${dateFormatInGB(toDate)}.xlsx`
+		)
 	}
 
 	const s2ab = (s) => {

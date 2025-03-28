@@ -241,9 +241,6 @@ function LoanTransactionsMain() {
 
 	const searchData = async () => {
 		if (searchType2 === "G" && fromDate && toDate) {
-			// jwt verify goes here...
-			// call function here...
-			// await refreshToken()
 			await handleFetchTxnReportGroupwise()
 		} else if (searchType2 === "F" && fromDate && toDate) {
 			await handleFetchTxnReportFundwise()
@@ -258,7 +255,7 @@ function LoanTransactionsMain() {
 
 	useEffect(() => {
 		setReportData([])
-		setMetadataDtls(null)
+		// setMetadataDtls(null)
 		if (searchType2 === "F") {
 			getFunds()
 		}
@@ -267,13 +264,44 @@ function LoanTransactionsMain() {
 		}
 	}, [searchType, searchType2])
 
+	const fetchSearchTypeName = (searchType) => {
+		if (searchType === "M") {
+			return "Memberwise"
+		} else if (searchType === "G") {
+			return "Groupwise"
+		} else if (searchType === "F") {
+			return "Fundwise"
+		} else if (searchType === "C") {
+			return "CO-wise"
+		} else if (searchType === "B") {
+			return "Branchwise"
+		} else if (searchType === "D") {
+			return "Disbursement"
+		} else if (searchType === "R") {
+			return "Recovery"
+		}
+	}
+
+	const dateFormatInGB = (date) => {
+		return new Date(date).toLocaleDateString("en-GB")
+	}
+
 	const exportToExcel = (data) => {
 		const wb = XLSX.utils.book_new()
 		const ws = XLSX.utils.json_to_sheet(data)
 		XLSX.utils.book_append_sheet(wb, ws, "Sheet1")
 		const wbout = XLSX.write(wb, { bookType: "xlsx", type: "binary" })
 		const blob = new Blob([s2ab(wbout)], { type: "application/octet-stream" })
-		saveAs(blob, `loan_txn_report_${metadataDtls}.xlsx`)
+		saveAs(
+			blob,
+			`Loan_Txn_Report_${fetchSearchTypeName(
+				searchType2
+			)}_${fetchSearchTypeName(
+				searchType
+			)}_${metadataDtls}_From_${dateFormatInGB(fromDate)}_To_${dateFormatInGB(
+				toDate
+			)}.xlsx`
+		)
 	}
 
 	const s2ab = (s) => {
@@ -478,6 +506,7 @@ function LoanTransactionsMain() {
 										printTableLoanTransactions(
 											reportData,
 											"Loan Transaction",
+											searchType,
 											searchType2,
 											metadataDtls,
 											fromDate,
