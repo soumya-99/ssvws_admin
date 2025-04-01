@@ -381,7 +381,7 @@ function OutstaningReportMain() {
 	// Example options for the dropdown
 	const dropdownOptions = branches?.map((branch) => ({
 		value: branch.branch_assign_id,
-		label: branch.branch_name,
+		label: `${branch.branch_name} - ${branch.branch_assign_id}`,
 	}))
 
 	// Handle change for multi-select
@@ -397,7 +397,7 @@ function OutstaningReportMain() {
 	// Example options for the dropdown
 	const dropdownCOs = cos?.map((branch) => ({
 		value: branch.co_id,
-		label: branch.emp_name,
+		label: `${branch.emp_name} - ${branch.co_id}`,
 	}))
 
 	// Handle change for multi-select
