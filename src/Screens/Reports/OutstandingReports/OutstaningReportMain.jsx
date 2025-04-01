@@ -23,6 +23,7 @@ import {
 	fundwiseOutstandingHeader,
 	groupwiseOutstandingHeader,
 } from "../../../Utils/Reports/headerMap"
+import Select from "react-select"
 
 const options = [
 	{
@@ -59,7 +60,10 @@ function OutstaningReportMain() {
 	const [funds, setFunds] = useState([])
 	const [selectedFund, setSelectedFund] = useState("")
 	const [cos, setCOs] = useState([])
+	const [branches, setBranches] = useState([])
 	const [selectedCO, setSelectedCO] = useState("")
+	const [selectedOptions, setSelectedOptions] = useState([])
+	const [selectedCOs, setSelectedCOs] = useState([])
 
 	const onChange = (e) => {
 		console.log("radio1 checked", e)
@@ -69,8 +73,11 @@ function OutstaningReportMain() {
 	const handleFetchReportOutstandingMemberwise = async () => {
 		setLoading(true)
 
+		const branchCodes = selectedOptions?.map((item, i) => item?.value)
+
 		const creds = {
-			branch_code: userDetails?.brn_code,
+			branch_code:
+				branchCodes?.length === 0 ? userDetails?.brn_code : branchCodes,
 			supply_date: formatDateToYYYYMMDD(fromDate),
 		}
 
@@ -98,8 +105,11 @@ function OutstaningReportMain() {
 	const handleFetchReportOutstandingBranchwise = async () => {
 		setLoading(true)
 
+		const branchCodes = selectedOptions?.map((item, i) => item?.value)
+
 		const creds = {
-			branch_code: userDetails?.brn_code,
+			branch_code:
+				branchCodes?.length === 0 ? userDetails?.brn_code : branchCodes,
 			supply_date: formatDateToYYYYMMDD(fromDate),
 		}
 
@@ -127,8 +137,12 @@ function OutstaningReportMain() {
 	const handleFetchReportOutstandingGroupwise = async () => {
 		setLoading(true)
 
+		const branchCodes = selectedOptions?.map((item, i) => item?.value)
+		console.log("BRNADHIKUDUSTYSTUDGF", branchCodes)
+
 		const creds = {
-			branch_code: userDetails?.brn_code,
+			branch_code:
+				branchCodes?.length === 0 ? userDetails?.brn_code : branchCodes,
 			supply_date: formatDateToYYYYMMDD(fromDate),
 		}
 
@@ -179,9 +193,12 @@ function OutstaningReportMain() {
 	const handleFetchReportOutstandingFundwise = async () => {
 		setLoading(true)
 
+		const branchCodes = selectedOptions?.map((item, i) => item?.value)
+
 		const creds = {
 			supply_date: formatDateToYYYYMMDD(fromDate),
-			branch_code: userDetails?.brn_code,
+			branch_code:
+				branchCodes?.length === 0 ? userDetails?.brn_code : branchCodes,
 			fund_id: selectedFund,
 		}
 
@@ -208,8 +225,12 @@ function OutstaningReportMain() {
 
 	const getCOs = () => {
 		setLoading(true)
+
+		const branchCodes = selectedOptions?.map((item, i) => item?.value)
+
 		const creds = {
-			branch_code: userDetails?.brn_code,
+			branch_code:
+				branchCodes?.length === 0 ? userDetails?.brn_code : branchCodes,
 		}
 		axios
 			.post(`${url}/fetch_brn_co`, creds)
@@ -232,10 +253,14 @@ function OutstaningReportMain() {
 	const handleFetchReportOutstandingCOwise = async () => {
 		setLoading(true)
 
+		const branchCodes = selectedOptions?.map((item, i) => item?.value)
+		const coCodes = selectedCOs?.map((item, i) => item?.value)
+
 		const creds = {
 			supply_date: formatDateToYYYYMMDD(fromDate),
-			branch_code: userDetails?.brn_code,
-			co_id: selectedCO,
+			branch_code:
+				branchCodes?.length === 0 ? userDetails?.brn_code : branchCodes,
+			co_id: coCodes?.length === 0 ? userDetails?.emp_id : coCodes,
 		}
 
 		await axios
@@ -259,6 +284,29 @@ function OutstaningReportMain() {
 		setLoading(false)
 	}
 
+	const getBranches = () => {
+		setLoading(true)
+		const creds = {
+			emp_id: userDetails?.emp_id,
+			user_type: userDetails?.id,
+		}
+		axios
+			.post(`${url}/fetch_branch_name_based_usertype`, creds)
+			.then((res) => {
+				console.log("Branches ======>", res?.data)
+				setBranches(res?.data?.msg)
+			})
+			.catch((err) => {
+				console.log("ERRRR>>>", err)
+				setLoading(false)
+			})
+		setLoading(false)
+	}
+
+	useEffect(() => {
+		getBranches()
+	}, [])
+
 	const handleSubmit = () => {
 		if (searchType === "M" && fromDate) {
 			handleFetchReportOutstandingMemberwise()
@@ -276,6 +324,8 @@ function OutstaningReportMain() {
 	// Reset states when searchType changes
 	useEffect(() => {
 		setReportData([])
+		setSelectedOptions([])
+		setSelectedCOs([])
 		setMetadataDtls(null)
 		if (searchType === "F") {
 			getFunds()
@@ -284,6 +334,12 @@ function OutstaningReportMain() {
 			getCOs()
 		}
 	}, [searchType])
+
+	useEffect(() => {
+		if (searchType === "C") {
+			getCOs()
+		}
+	}, [selectedOptions])
 
 	const fetchSearchTypeName = (searchType) => {
 		if (searchType === "M") {
@@ -322,6 +378,41 @@ function OutstaningReportMain() {
 		return buf
 	}
 
+	// Example options for the dropdown
+	const dropdownOptions = branches?.map((branch) => ({
+		value: branch.branch_assign_id,
+		label: branch.branch_name,
+	}))
+
+	// Handle change for multi-select
+	const handleMultiSelectChange = (selected) => {
+		if (selected.some((option) => option.value === "all")) {
+			// If "All" is selected, select all options
+			setSelectedOptions(dropdownOptions)
+		} else {
+			setSelectedOptions(selected)
+		}
+	}
+
+	// Example options for the dropdown
+	const dropdownCOs = cos?.map((branch) => ({
+		value: branch.co_id,
+		label: branch.emp_name,
+	}))
+
+	// Handle change for multi-select
+	const handleMultiSelectChangeCOs = (selected) => {
+		if (selected.some((option) => option.value === "all")) {
+			// If "All" is selected, select all options
+			setSelectedCOs(dropdownCOs)
+		} else {
+			setSelectedCOs(selected)
+		}
+	}
+
+	console.log("selectedOptions", selectedOptions)
+	console.log("selectedCOs", selectedCOs)
+
 	return (
 		<div>
 			<Sidebar mode={2} />
@@ -342,7 +433,7 @@ function OutstaningReportMain() {
 						Branch: {userDetails?.branch_name} as on {fetchedReportDate}
 					</div>
 
-					<div className="mb-2 flex justify-between items-center">
+					<div className="flex justify-between gap-3 items-center align-middle">
 						<div>
 							<Radiobtn
 								data={options}
@@ -351,6 +442,60 @@ function OutstaningReportMain() {
 							/>
 						</div>
 					</div>
+					{(userDetails?.id === 3 ||
+						userDetails?.id === 4 ||
+						userDetails?.id === 11) &&
+						userDetails?.brn_code == 100 && (
+							<div className="w-full">
+								<Select
+									options={[{ value: "all", label: "All" }, ...dropdownOptions]}
+									isMulti
+									value={selectedOptions}
+									onChange={handleMultiSelectChange}
+									placeholder="Select branches..."
+									className="basic-multi-select"
+									classNamePrefix="select"
+									styles={{
+										control: (provided) => ({
+											...provided,
+											borderRadius: "8px",
+										}),
+										valueContainer: (provided) => ({
+											...provided,
+											borderRadius: "8px",
+										}),
+										singleValue: (provided) => ({
+											...provided,
+											color: "black",
+										}),
+										multiValue: (provided) => ({
+											...provided,
+											padding: "0.1rem",
+											backgroundColor: "#da4167",
+											color: "white",
+											borderRadius: "8px",
+										}),
+										multiValueLabel: (provided) => ({
+											...provided,
+											color: "white",
+										}),
+										multiValueRemove: (provided) => ({
+											...provided,
+											color: "white",
+											"&:hover": {
+												backgroundColor: "red",
+												color: "white",
+												borderRadius: "8px",
+											},
+										}),
+										placeholder: (provided) => ({
+											...provided,
+											fontSize: "0.9rem",
+										}),
+									}}
+								/>
+							</div>
+						)}
 
 					<div className="grid grid-cols-3 gap-5 mt-5 items-end">
 						{searchType === "F" && (
@@ -372,19 +517,68 @@ function OutstaningReportMain() {
 						)}
 
 						{searchType === "C" && (
-							<div>
-								<TDInputTemplateBr
-									placeholder="Select CO..."
-									type="text"
-									label="CO-wise"
-									name="co_id"
-									handleChange={handleCOChange}
-									data={cos.map((dat) => ({
-										code: dat.co_id,
-										name: `${dat.emp_name}`,
-									}))}
-									mode={2}
-									disabled={false}
+							// <div>
+							// 	<TDInputTemplateBr
+							// 		placeholder="Select CO..."
+							// 		type="text"
+							// 		label="CO-wise"
+							// 		name="co_id"
+							// 		handleChange={handleCOChange}
+							// 		data={cos.map((dat) => ({
+							// 			code: dat.co_id,
+							// 			name: `${dat.emp_name}`,
+							// 		}))}
+							// 		mode={2}
+							// 		disabled={false}
+							// 	/>
+							// </div>
+							<div className="col-span-3 w-auto">
+								<Select
+									options={[{ value: "all", label: "All" }, ...dropdownCOs]}
+									isMulti
+									value={selectedCOs}
+									onChange={handleMultiSelectChangeCOs}
+									placeholder="Select COs'..."
+									className="basic-multi-select"
+									classNamePrefix="select"
+									styles={{
+										control: (provided) => ({
+											...provided,
+											borderRadius: "8px",
+										}),
+										valueContainer: (provided) => ({
+											...provided,
+											borderRadius: "8px",
+										}),
+										singleValue: (provided) => ({
+											...provided,
+											color: "black",
+										}),
+										multiValue: (provided) => ({
+											...provided,
+											padding: "0.1rem",
+											backgroundColor: "#da4167",
+											color: "white",
+											borderRadius: "8px",
+										}),
+										multiValueLabel: (provided) => ({
+											...provided,
+											color: "white",
+										}),
+										multiValueRemove: (provided) => ({
+											...provided,
+											color: "white",
+											"&:hover": {
+												backgroundColor: "red",
+												color: "white",
+												borderRadius: "8px",
+											},
+										}),
+										placeholder: (provided) => ({
+											...provided,
+											fontSize: "0.9rem",
+										}),
+									}}
 								/>
 							</div>
 						)}
@@ -417,8 +611,8 @@ function OutstaningReportMain() {
 							<DynamicTailwindTable
 								data={reportData}
 								pageSize={50}
-								columnTotal={[33, 34, 35]}
-								dateTimeExceptionCols={[6]}
+								columnTotal={[35, 36, 37]}
+								dateTimeExceptionCols={[8]}
 							/>
 						</>
 					)}
@@ -429,7 +623,7 @@ function OutstaningReportMain() {
 							<DynamicTailwindTable
 								data={reportData}
 								pageSize={50}
-								columnTotal={[8, 9, 10]}
+								columnTotal={[10, 11, 12]}
 								headersMap={groupwiseOutstandingHeader}
 							/>
 						</>
@@ -441,7 +635,7 @@ function OutstaningReportMain() {
 							<DynamicTailwindTable
 								data={reportData}
 								pageSize={50}
-								columnTotal={[5, 6, 7]}
+								columnTotal={[7, 8, 9]}
 								headersMap={fundwiseOutstandingHeader}
 							/>
 						</>
@@ -453,7 +647,7 @@ function OutstaningReportMain() {
 							<DynamicTailwindTable
 								data={reportData}
 								pageSize={50}
-								columnTotal={[4, 5, 6]}
+								columnTotal={[6, 7, 8]}
 								headersMap={cowiseOutstandingHeader}
 							/>
 						</>
@@ -465,7 +659,7 @@ function OutstaningReportMain() {
 							<DynamicTailwindTable
 								data={reportData}
 								pageSize={50}
-								// columnTotal={[4, 5, 6]}
+								columnTotal={[2, 3, 4, 5]}
 								headersMap={branchwiseOutstandingHeader}
 							/>
 						</>

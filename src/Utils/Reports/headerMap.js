@@ -1,4 +1,6 @@
 const fundwiseOutstandingHeader = {
+	branch_code: "Branch Code",
+	branch_name: "Branch Name",
 	group_code: "Group Code",
 	group_name: "Group Name",
 	fund_id: "Fund ID",
@@ -10,6 +12,8 @@ const fundwiseOutstandingHeader = {
 }
 
 const cowiseOutstandingHeader = {
+	branch_code: "Branch Code",
+	branch_name: "Branch Name",
 	group_code: "Group Code",
 	group_name: "Group Name",
 	co_id: "CO ID",
@@ -21,6 +25,8 @@ const cowiseOutstandingHeader = {
 }
 
 const groupwiseOutstandingHeader = {
+	branch_code: "Branch Code",
+	branch_name: "Branch Name",
 	group_code: "Group Code",
 	group_name: "Group Name",
 	co_id: "CO ID",
@@ -104,5 +110,5 @@ export {
 	memberwiseOutstandingHeader,
 	disbursementDetailsHeader,
 	branchwiseOutstandingHeader,
-	branchwiseTxnReportHeader
+	branchwiseTxnReportHeader,
 }
