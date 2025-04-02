@@ -20,6 +20,7 @@ import {
 	branchwiseTxnReportHeader,
 	memberwiseOutstandingHeader,
 } from "../../../Utils/Reports/headerMap"
+import Select from "react-select"
 
 const options = [
 	{
@@ -73,6 +74,9 @@ function LoanTransactionsMain() {
 	const [selectedFund, setSelectedFund] = useState("")
 	const [cos, setCOs] = useState([])
 	const [selectedCO, setSelectedCO] = useState("")
+	const [branches, setBranches] = useState([])
+	const [selectedOptions, setSelectedOptions] = useState([])
+	const [selectedCOs, setSelectedCOs] = useState([])
 
 	const onChange = (e) => {
 		console.log("radio1 checked", e)
@@ -86,10 +90,14 @@ function LoanTransactionsMain() {
 
 	const handleFetchTxnReportGroupwise = async () => {
 		setLoading(true)
+
+		const branchCodes = selectedOptions?.map((item, i) => item?.value)
+
 		const creds = {
 			from_dt: formatDateToYYYYMMDD(fromDate),
 			to_dt: formatDateToYYYYMMDD(toDate),
-			branch_code: userDetails?.brn_code,
+			branch_code:
+				branchCodes?.length === 0 ? [userDetails?.brn_code] : branchCodes,
 			tr_type: searchType,
 		}
 
@@ -128,10 +136,14 @@ function LoanTransactionsMain() {
 
 	const handleFetchTxnReportFundwise = async () => {
 		setLoading(true)
+
+		const branchCodes = selectedOptions?.map((item, i) => item?.value)
+
 		const creds = {
 			from_dt: formatDateToYYYYMMDD(fromDate),
 			to_dt: formatDateToYYYYMMDD(toDate),
-			branch_code: userDetails?.brn_code,
+			branch_code:
+				branchCodes?.length === 0 ? [userDetails?.brn_code] : branchCodes,
 			fund_id: selectedFund,
 			tr_type: searchType,
 		}
@@ -151,8 +163,12 @@ function LoanTransactionsMain() {
 
 	const getCOs = () => {
 		setLoading(true)
+
+		const branchCodes = selectedOptions?.map((item, i) => item?.value)
+
 		const creds = {
-			branch_code: userDetails?.brn_code,
+			branch_code:
+				branchCodes?.length === 0 ? [userDetails?.brn_code] : branchCodes,
 		}
 		axios
 			.post(`${url}/fetch_brn_co`, creds)
@@ -174,11 +190,16 @@ function LoanTransactionsMain() {
 
 	const handleFetchTxnReportCOwise = async () => {
 		setLoading(true)
+
+		const branchCodes = selectedOptions?.map((item, i) => item?.value)
+		const coCodes = selectedCOs?.map((item, i) => item?.value)
+
 		const creds = {
 			from_dt: formatDateToYYYYMMDD(fromDate),
 			to_dt: formatDateToYYYYMMDD(toDate),
-			branch_code: userDetails?.brn_code,
-			co_id: selectedCO,
+			branch_code:
+				branchCodes?.length === 0 ? [userDetails?.brn_code] : branchCodes,
+			co_id: coCodes?.length === 0 ? selectedCO : coCodes,
 			tr_type: searchType,
 		}
 
@@ -197,10 +218,14 @@ function LoanTransactionsMain() {
 
 	const handleFetchTxnReportBranchwise = async () => {
 		setLoading(true)
+
+		const branchCodes = selectedOptions?.map((item, i) => item?.value)
+
 		const creds = {
 			from_dt: formatDateToYYYYMMDD(fromDate),
 			to_dt: formatDateToYYYYMMDD(toDate),
-			branch_code: userDetails?.brn_code,
+			branch_code:
+				branchCodes?.length === 0 ? [userDetails?.brn_code] : branchCodes,
 			tr_type: searchType,
 		}
 
@@ -219,10 +244,14 @@ function LoanTransactionsMain() {
 
 	const handleFetchTxnReportMemberwise = async () => {
 		setLoading(true)
+
+		const branchCodes = selectedOptions?.map((item, i) => item?.value)
+
 		const creds = {
 			from_dt: formatDateToYYYYMMDD(fromDate),
 			to_dt: formatDateToYYYYMMDD(toDate),
-			branch_code: userDetails?.brn_code,
+			branch_code:
+				branchCodes?.length === 0 ? [userDetails?.brn_code] : branchCodes,
 			tr_type: searchType,
 		}
 
@@ -238,6 +267,29 @@ function LoanTransactionsMain() {
 
 		setLoading(false)
 	}
+
+	const getBranches = () => {
+		setLoading(true)
+		const creds = {
+			emp_id: userDetails?.emp_id,
+			user_type: userDetails?.id,
+		}
+		axios
+			.post(`${url}/fetch_brnname_based_usertype`, creds)
+			.then((res) => {
+				console.log("Branches ======>", res?.data)
+				setBranches(res?.data?.msg)
+			})
+			.catch((err) => {
+				console.log("ERRRR>>>", err)
+				setLoading(false)
+			})
+		setLoading(false)
+	}
+
+	useEffect(() => {
+		getBranches()
+	}, [])
 
 	const searchData = async () => {
 		if (searchType2 === "G" && fromDate && toDate) {
@@ -255,6 +307,7 @@ function LoanTransactionsMain() {
 
 	useEffect(() => {
 		setReportData([])
+		setSelectedOptions([])
 		// setMetadataDtls(null)
 		if (searchType2 === "F") {
 			getFunds()
@@ -263,6 +316,12 @@ function LoanTransactionsMain() {
 			getCOs()
 		}
 	}, [searchType, searchType2])
+
+	useEffect(() => {
+		if (searchType2 === "C") {
+			getCOs()
+		}
+	}, [selectedOptions])
 
 	const fetchSearchTypeName = (searchType) => {
 		if (searchType === "M") {
@@ -313,6 +372,33 @@ function LoanTransactionsMain() {
 		return buf
 	}
 
+	// Example options for the dropdown
+	const dropdownOptions = branches?.map((branch) => ({
+		value: branch.branch_assign_id,
+		label: `${branch.branch_name} - ${branch.branch_assign_id}`,
+	}))
+
+	const handleMultiSelectChange = (selected) => {
+		if (selected.some((option) => option.value === "all")) {
+			setSelectedOptions(dropdownOptions)
+		} else {
+			setSelectedOptions(selected)
+		}
+	}
+
+	const dropdownCOs = cos?.map((branch) => ({
+		value: branch.co_id,
+		label: `${branch.emp_name} - ${branch.co_id}`,
+	}))
+
+	const handleMultiSelectChangeCOs = (selected) => {
+		if (selected.some((option) => option.value === "all")) {
+			setSelectedCOs(dropdownCOs)
+		} else {
+			setSelectedCOs(selected)
+		}
+	}
+
 	return (
 		<div>
 			<Sidebar mode={2} />
@@ -350,7 +436,151 @@ function LoanTransactionsMain() {
 						</div>
 					</div>
 
-					<div className="grid grid-cols-3 gap-5 mt-5 items-end">
+					{(userDetails?.id === 3 ||
+						userDetails?.id === 4 ||
+						userDetails?.id === 11) &&
+						userDetails?.brn_code == 100 && (
+							<div className="w-[100%]">
+								<Select
+									options={[{ value: "all", label: "All" }, ...dropdownOptions]}
+									isMulti
+									value={selectedOptions}
+									onChange={handleMultiSelectChange}
+									placeholder="Select branches..."
+									className="basic-multi-select"
+									classNamePrefix="select"
+									styles={{
+										control: (provided) => ({
+											...provided,
+											borderRadius: "8px",
+										}),
+										valueContainer: (provided) => ({
+											...provided,
+											borderRadius: "8px",
+										}),
+										singleValue: (provided) => ({
+											...provided,
+											color: "black",
+										}),
+										multiValue: (provided) => ({
+											...provided,
+											padding: "0.1rem",
+											backgroundColor: "#da4167",
+											color: "white",
+											borderRadius: "8px",
+										}),
+										multiValueLabel: (provided) => ({
+											...provided,
+											color: "white",
+										}),
+										multiValueRemove: (provided) => ({
+											...provided,
+											color: "white",
+											"&:hover": {
+												backgroundColor: "red",
+												color: "white",
+												borderRadius: "8px",
+											},
+										}),
+										placeholder: (provided) => ({
+											...provided,
+											fontSize: "0.9rem",
+										}),
+									}}
+								/>
+							</div>
+						)}
+
+					{searchType2 === "C" &&
+					(userDetails?.id === 3 ||
+						userDetails?.id === 4 ||
+						userDetails?.id === 11) &&
+					userDetails?.brn_code == 100 ? (
+						// <div>
+						// 	<TDInputTemplateBr
+						// 		placeholder="Select CO..."
+						// 		type="text"
+						// 		label="CO-wise"
+						// 		name="co_id"
+						// 		handleChange={handleCOChange}
+						// 		data={cos.map((dat) => ({
+						// 			code: dat.co_id,
+						// 			name: `${dat.emp_name}`,
+						// 		}))}
+						// 		mode={2}
+						// 		disabled={false}
+						// 	/>
+						// </div>
+						<div className="col-span-3 mx-auto w-[100%] pt-5">
+							<Select
+								options={[{ value: "all", label: "All" }, ...dropdownCOs]}
+								isMulti
+								value={selectedCOs}
+								onChange={handleMultiSelectChangeCOs}
+								placeholder="Select COs'..."
+								className="basic-multi-select"
+								classNamePrefix="select"
+								styles={{
+									control: (provided) => ({
+										...provided,
+										borderRadius: "8px",
+									}),
+									valueContainer: (provided) => ({
+										...provided,
+										borderRadius: "8px",
+									}),
+									singleValue: (provided) => ({
+										...provided,
+										color: "black",
+									}),
+									multiValue: (provided) => ({
+										...provided,
+										padding: "0.1rem",
+										backgroundColor: "#da4167",
+										color: "white",
+										borderRadius: "8px",
+									}),
+									multiValueLabel: (provided) => ({
+										...provided,
+										color: "white",
+									}),
+									multiValueRemove: (provided) => ({
+										...provided,
+										color: "white",
+										"&:hover": {
+											backgroundColor: "red",
+											color: "white",
+											borderRadius: "8px",
+										},
+									}),
+									placeholder: (provided) => ({
+										...provided,
+										fontSize: "0.9rem",
+									}),
+								}}
+							/>
+						</div>
+					) : (
+						searchType2 === "C" && (
+							<div>
+								<TDInputTemplateBr
+									placeholder="Select CO..."
+									type="text"
+									label="CO-wise"
+									name="co_id"
+									handleChange={handleCOChange}
+									data={cos.map((dat) => ({
+										code: dat.co_id,
+										name: `${dat.emp_name}`,
+									}))}
+									mode={2}
+									disabled={false}
+								/>
+							</div>
+						)
+					)}
+
+					<div className="grid grid-cols-2 gap-5 mt-5 items-end">
 						<div>
 							<TDInputTemplateBr
 								placeholder="From Date"
@@ -393,23 +623,6 @@ function LoanTransactionsMain() {
 								/>
 							</div>
 						)}
-						{searchType2 === "C" && (
-							<div>
-								<TDInputTemplateBr
-									placeholder="Select CO..."
-									type="text"
-									label="CO-wise"
-									name="co_id"
-									handleChange={handleCOChange}
-									data={cos.map((dat) => ({
-										code: dat.co_id,
-										name: `${dat.emp_name}`,
-									}))}
-									mode={2}
-									disabled={false}
-								/>
-							</div>
-						)}
 
 						<div>
 							<button
@@ -418,7 +631,7 @@ function LoanTransactionsMain() {
 									searchData()
 								}}
 							>
-								<SearchOutlined /> <spann class={`ml-2`}>Search</spann>
+								<SearchOutlined /> <span class={`ml-2`}>Search</span>
 							</button>
 						</div>
 					</div>
@@ -428,10 +641,10 @@ function LoanTransactionsMain() {
 							<DynamicTailwindTable
 								data={reportData}
 								pageSize={50}
-								columnTotal={[15, 16]}
-								colRemove={[5, 10, 17, 21]}
+								columnTotal={[17, 18]}
+								colRemove={[7, 12, 19, 23]}
 								headersMap={memberwiseOutstandingHeader}
-								dateTimeExceptionCols={[13]}
+								dateTimeExceptionCols={[15]}
 							/>
 						</>
 					)}
@@ -442,7 +655,7 @@ function LoanTransactionsMain() {
 							<DynamicTailwindTable
 								data={reportData}
 								pageSize={50}
-								columnTotal={[7]}
+								columnTotal={[9]}
 								// headersMap={groupwiseOutstandingHeader}
 							/>
 						</>
@@ -454,7 +667,7 @@ function LoanTransactionsMain() {
 							<DynamicTailwindTable
 								data={reportData}
 								pageSize={50}
-								columnTotal={[9]}
+								columnTotal={[11]}
 								// headersMap={fundwiseOutstandingHeader}
 							/>
 						</>
@@ -466,7 +679,7 @@ function LoanTransactionsMain() {
 							<DynamicTailwindTable
 								data={reportData}
 								pageSize={50}
-								columnTotal={[6]}
+								columnTotal={[8]}
 								// headersMap={cowiseOutstandingHeader}
 							/>
 						</>
@@ -478,7 +691,7 @@ function LoanTransactionsMain() {
 							<DynamicTailwindTable
 								data={reportData}
 								pageSize={50}
-								// columnTotal={[6]}
+								columnTotal={[2, 3]}
 								headersMap={branchwiseTxnReportHeader}
 							/>
 						</>

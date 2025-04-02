@@ -109,7 +109,7 @@ function OutstaningReportMain() {
 
 		const creds = {
 			branch_code:
-				branchCodes?.length === 0 ? userDetails?.brn_code : branchCodes,
+				branchCodes?.length === 0 ? [userDetails?.brn_code] : branchCodes,
 			supply_date: formatDateToYYYYMMDD(fromDate),
 		}
 
@@ -142,7 +142,7 @@ function OutstaningReportMain() {
 
 		const creds = {
 			branch_code:
-				branchCodes?.length === 0 ? userDetails?.brn_code : branchCodes,
+				branchCodes?.length === 0 ? [userDetails?.brn_code] : branchCodes,
 			supply_date: formatDateToYYYYMMDD(fromDate),
 		}
 
@@ -198,7 +198,7 @@ function OutstaningReportMain() {
 		const creds = {
 			supply_date: formatDateToYYYYMMDD(fromDate),
 			branch_code:
-				branchCodes?.length === 0 ? userDetails?.brn_code : branchCodes,
+				branchCodes?.length === 0 ? [userDetails?.brn_code] : branchCodes,
 			fund_id: selectedFund,
 		}
 
@@ -230,7 +230,7 @@ function OutstaningReportMain() {
 
 		const creds = {
 			branch_code:
-				branchCodes?.length === 0 ? userDetails?.brn_code : branchCodes,
+				branchCodes?.length === 0 ? [userDetails?.brn_code] : branchCodes,
 		}
 		axios
 			.post(`${url}/fetch_brn_co`, creds)
@@ -259,8 +259,8 @@ function OutstaningReportMain() {
 		const creds = {
 			supply_date: formatDateToYYYYMMDD(fromDate),
 			branch_code:
-				branchCodes?.length === 0 ? userDetails?.brn_code : branchCodes,
-			co_id: coCodes?.length === 0 ? userDetails?.emp_id : coCodes,
+				branchCodes?.length === 0 ? [userDetails?.brn_code] : branchCodes,
+			co_id: coCodes?.length === 0 ? [selectedCO] : coCodes,
 		}
 
 		await axios
@@ -497,7 +497,7 @@ function OutstaningReportMain() {
 							</div>
 						)}
 
-					<div className="grid grid-cols-3 gap-5 mt-5 items-end">
+					<div className="grid grid-cols-2 gap-5 mt-5 items-end">
 						{searchType === "F" && (
 							<div>
 								<TDInputTemplateBr
@@ -516,7 +516,11 @@ function OutstaningReportMain() {
 							</div>
 						)}
 
-						{searchType === "C" && (
+						{searchType === "C" &&
+						(userDetails?.id === 3 ||
+							userDetails?.id === 4 ||
+							userDetails?.id === 11) &&
+						userDetails?.brn_code == 100 ? (
 							// <div>
 							// 	<TDInputTemplateBr
 							// 		placeholder="Select CO..."
@@ -581,6 +585,24 @@ function OutstaningReportMain() {
 									}}
 								/>
 							</div>
+						) : (
+							searchType === "C" && (
+								<div>
+									<TDInputTemplateBr
+										placeholder="Select CO..."
+										type="text"
+										label="CO-wise"
+										name="co_id"
+										handleChange={handleCOChange}
+										data={cos.map((dat) => ({
+											code: dat.co_id,
+											name: `${dat.emp_name}`,
+										}))}
+										mode={2}
+										disabled={false}
+									/>
+								</div>
+							)
 						)}
 
 						<div>
