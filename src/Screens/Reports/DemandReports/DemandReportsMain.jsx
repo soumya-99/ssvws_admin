@@ -20,6 +20,13 @@ import * as XLSX from "xlsx"
 import { printTableRegular } from "../../../Utils/printTableRegular"
 import DynamicTailwindTable from "../../../Components/Reports/DynamicTailwindTable"
 import Select from "react-select"
+import {
+	branchwiseDemandReportHeader,
+	cowiseDemandReportHeader,
+	fundwiseDemandReportHeader,
+	groupwiseDemandReportHeader,
+	memberwiseDemandReportHeader,
+} from "../../../Utils/Reports/headerMap"
 
 // const { RangePicker } = DatePicker
 // const dateFormat = "YYYY/MM/DD"
@@ -336,17 +343,7 @@ function DemandReportsMain() {
 	}, [selectedOptions])
 
 	const handleSubmit = () => {
-		if (
-			!searchType ||
-			!choosenMonth ||
-			!choosenYear ||
-			selectedOptions.length === 0
-		) {
-			Message("warning", "Please fill all details")
-			return
-		}
-
-		if (searchType === "C" && selectedCOs.length === 0) {
+		if (!searchType || !choosenMonth || !choosenYear) {
 			Message("warning", "Please fill all details")
 			return
 		}
@@ -367,7 +364,7 @@ function DemandReportsMain() {
 			handleFetchFundwiseReport()
 		}
 
-		if (searchType === "C" && choosenMonth && choosenYear && selectedCOs) {
+		if (searchType === "C" && choosenMonth && choosenYear) {
 			handleFetchCOwiseReport()
 		}
 	}
@@ -634,14 +631,14 @@ function DemandReportsMain() {
 												setCo(
 													e.target.value +
 														"," +
-														cos.filter((i) => i.emp_id == e.target.value)[0]
+														cos.filter((i) => i.co_id == e.target.value)[0]
 															?.emp_name
 												)
 											}}
 											mode={2}
 											data={cos?.map((item, i) => ({
-												code: item?.emp_id,
-												name: `${item?.emp_name} - (${item?.emp_id})`,
+												code: item?.co_id,
+												name: `${item?.emp_name} - (${item?.co_id})`,
 											}))}
 										/>
 									</div>
@@ -732,8 +729,9 @@ function DemandReportsMain() {
 							<DynamicTailwindTable
 								data={reportData}
 								pageSize={50}
-								// columnTotal={[35, 36, 37]}
+								columnTotal={[7, 13, 14, 15]}
 								dateTimeExceptionCols={[6, 11, 12]}
+								headersMap={groupwiseDemandReportHeader}
 							/>
 						</>
 					)}
@@ -745,8 +743,9 @@ function DemandReportsMain() {
 							<DynamicTailwindTable
 								data={reportData}
 								pageSize={50}
-								// columnTotal={[35, 36, 37]}
+								columnTotal={[8, 9]}
 								// dateTimeExceptionCols={[8]}
+								headersMap={fundwiseDemandReportHeader}
 							/>
 						</>
 					)}
@@ -758,8 +757,9 @@ function DemandReportsMain() {
 							<DynamicTailwindTable
 								data={reportData}
 								pageSize={50}
-								// columnTotal={[35, 36, 37]}
+								columnTotal={[6, 7]}
 								// dateTimeExceptionCols={[8]}
+								headersMap={cowiseDemandReportHeader}
 							/>
 						</>
 					)}
@@ -771,8 +771,9 @@ function DemandReportsMain() {
 							<DynamicTailwindTable
 								data={reportData}
 								pageSize={50}
-								// columnTotal={[35, 36, 37]}
+								columnTotal={[10, 16, 17, 18]}
 								dateTimeExceptionCols={[9, 14, 15]}
+								headersMap={memberwiseDemandReportHeader}
 							/>
 						</>
 					)}
@@ -784,8 +785,9 @@ function DemandReportsMain() {
 							<DynamicTailwindTable
 								data={reportData}
 								pageSize={50}
-								// columnTotal={[35, 36, 37]}
+								columnTotal={[2, 3]}
 								// dateTimeExceptionCols={[8]}
+								headersMap={branchwiseDemandReportHeader}
 							/>
 						</>
 					)}

@@ -103,6 +103,78 @@ const branchwiseTxnReportHeader = {
 	curr_balance: "Current Balance",
 }
 
+const groupwiseDemandReportHeader = {
+	branch_code: "Branch Code",
+	branch_name: "Branch Name",
+	group_code: "Group Code",
+	group_name: "Group Name",
+	co_id: "CO ID",
+	co_name: "CO Name",
+	disb_dt: "Disbursement Date",
+	disb_amt: "Disbursement Amount",
+	curr_roi: "Current ROI",
+	period: "Period",
+	period_mode: "Period Mode",
+	instl_start_dt: "Installment Start Date",
+	instl_end_dt: "Installment End Date",
+	tot_emi: "Total EMI",
+	demand_amt: "Demand Amount",
+	curr_outstanding: "Current Outstanding",
+}
+
+const fundwiseDemandReportHeader = {
+	branch_code: "Branch Code",
+	branch_name: "Branch Name",
+	group_code: "Group Code",
+	group_name: "Group Name",
+	co_id: "CO ID",
+	co_name: "CO Name",
+	fund_id: "Fund ID",
+	fund_name: "Fund Name",
+	demand_amt: "Demand Amount",
+	curr_outstanding: "Current Outstanding",
+}
+
+const cowiseDemandReportHeader = {
+	branch_code: "Branch Code",
+	branch_name: "Branch Name",
+	group_code: "Group Code",
+	group_name: "Group Name",
+	co_id: "CO ID",
+	co_name: "CO Name",
+	demand_amt: "Demand Amount",
+	curr_outstanding: "Current Outstanding",
+}
+
+const memberwiseDemandReportHeader = {
+	branch_code: "Branch Code",
+	branch_name: "Branch Name",
+	loan_id: "Loan ID",
+	member_code: "Member Code",
+	client_name: "Client Name",
+	group_code: "Group Code",
+	group_name: "Group Name",
+	co_id: "CO ID",
+	co_name: "CO Name",
+	disb_dt: "Disbursement Date",
+	disb_amt: "Disbursement Amount",
+	curr_roi: "Current ROI",
+	period: "Period",
+	period_mode: "Period Mode",
+	instl_start_dt: "Installment Start Date",
+	instl_end_dt: "Installment End Date",
+	tot_emi: "Total EMI",
+	demand_amt: "Demand Amount",
+	curr_outstanding: "Current Outstanding",
+}
+
+const branchwiseDemandReportHeader = {
+	branch_code: "Branch Code",
+	branch_name: "Branch Name",
+	demand_amt: "Demand Amount",
+	curr_outstanding: "Current Outstanding",
+}
+
 export {
 	fundwiseOutstandingHeader,
 	cowiseOutstandingHeader,
@@ -111,4 +183,9 @@ export {
 	disbursementDetailsHeader,
 	branchwiseOutstandingHeader,
 	branchwiseTxnReportHeader,
+	groupwiseDemandReportHeader,
+	fundwiseDemandReportHeader,
+	cowiseDemandReportHeader,
+	memberwiseDemandReportHeader,
+	branchwiseDemandReportHeader,
 }
