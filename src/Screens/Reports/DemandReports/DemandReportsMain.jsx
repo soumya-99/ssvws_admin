@@ -78,8 +78,13 @@ function DemandReportsMain() {
 	// const [search, setSearch] = useState("")
 	const [fetchedReportDate, setFetchedReportDate] = useState(() => "")
 
-	const [metadataDtls, setMetadataDtls] = useState(
-		() => userDetails?.branch_name
+	const [metadataDtls, setMetadataDtls] = useState(() =>
+		(userDetails?.id === 3 ||
+			userDetails?.id === 4 ||
+			userDetails?.id === 11) &&
+		userDetails?.brn_code == 100
+			? selectedOptions?.map((item, _) => `${item?.label}, `)
+			: userDetails?.branch_name
 	)
 
 	const onChange = (e) => {
@@ -385,6 +390,20 @@ function DemandReportsMain() {
 		}
 	}
 
+	const fetchSearchTypeName = (searchType) => {
+		if (searchType === "M") {
+			return "Memberwise"
+		} else if (searchType === "G") {
+			return "Groupwise"
+		} else if (searchType === "F") {
+			return "Fundwise"
+		} else if (searchType === "C") {
+			return "CO-wise"
+		} else if (searchType === "B") {
+			return "Branchwise"
+		}
+	}
+
 	const exportToExcel = (data) => {
 		const wb = XLSX.utils.book_new()
 		const ws = XLSX.utils.json_to_sheet(data)
@@ -393,9 +412,9 @@ function DemandReportsMain() {
 		const blob = new Blob([s2ab(wbout)], { type: "application/octet-stream" })
 		saveAs(
 			blob,
-			`Demand_Vs_Collection_${metadataDtls?.split(",")[0]}_${
-				metadataDtls?.split(",")[1]
-			}.xlsx`
+			`Demand_Report_${metadataDtls?.split(",")[0]}_${fetchSearchTypeName(
+				searchType
+			)}.xlsx`
 		)
 	}
 
@@ -445,9 +464,9 @@ function DemandReportsMain() {
 		name: new Date(0, i).toLocaleString("en", { month: "long" }),
 	}))
 
-	const years = Array.from({ length: 121 }, (_, i) => ({
-		code: 1960 + i,
-		name: (1960 + i).toString(),
+	const years = Array.from({ length: 61 }, (_, i) => ({
+		code: 2000 + i,
+		name: (2000 + i).toString(),
 	}))
 
 	return (
@@ -467,8 +486,14 @@ function DemandReportsMain() {
 					</div>
 
 					<div className="text-slate-800 italic">
-						Branch: {selectedOptions?.map((item, _) => `${item?.label}, `)} as
-						on {fetchedReportDate}
+						Branch:{" "}
+						{(userDetails?.id === 3 ||
+							userDetails?.id === 4 ||
+							userDetails?.id === 11) &&
+						userDetails?.brn_code == 100
+							? selectedOptions?.map((item, _) => `${item?.label}, `)
+							: userDetails?.branch_name}{" "}
+						as on {fetchedReportDate}
 					</div>
 
 					<div className="mb-2">

@@ -430,8 +430,14 @@ function OutstaningReportMain() {
 					</div>
 
 					<div className="text-slate-800 italic">
-						Branch: {selectedOptions?.map((item, _) => `${item?.label}, `)} as
-						on {fetchedReportDate}
+						Branch:{" "}
+						{(userDetails?.id === 3 ||
+							userDetails?.id === 4 ||
+							userDetails?.id === 11) &&
+						userDetails?.brn_code == 100
+							? selectedOptions?.map((item, _) => `${item?.label}, `)
+							: userDetails?.branch_name}{" "}
+						as on {fetchedReportDate}
 					</div>
 
 					<div className="flex justify-between gap-3 items-center align-middle">
@@ -705,7 +711,12 @@ function OutstaningReportMain() {
 											reportData,
 											"Outstanding Report",
 											searchType,
-											selectedOptions?.map((item, _) => `${item?.label}, `),
+											(userDetails?.id === 3 ||
+												userDetails?.id === 4 ||
+												userDetails?.id === 11) &&
+												userDetails?.brn_code == 100
+												? selectedOptions?.map((item, _) => `${item?.label}, `)
+												: userDetails?.branch_name,
 											fromDate,
 											toDate
 										)

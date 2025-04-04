@@ -67,9 +67,6 @@ function LoanTransactionsMain() {
 	const [toDate, setToDate] = useState()
 	const [reportData, setReportData] = useState(() => [])
 
-	const [metadataDtls, setMetadataDtls] = useState(
-		() => userDetails?.branch_name
-	)
 	const [funds, setFunds] = useState([])
 	const [selectedFund, setSelectedFund] = useState("")
 	const [cos, setCOs] = useState([])
@@ -77,6 +74,14 @@ function LoanTransactionsMain() {
 	const [branches, setBranches] = useState([])
 	const [selectedOptions, setSelectedOptions] = useState([])
 	const [selectedCOs, setSelectedCOs] = useState([])
+	const [metadataDtls, setMetadataDtls] = useState(() =>
+		(userDetails?.id === 3 ||
+			userDetails?.id === 4 ||
+			userDetails?.id === 11) &&
+		userDetails?.brn_code == 100
+			? selectedOptions?.map((item, _) => `${item?.label}, `)
+			: userDetails?.branch_name
+	)
 
 	const onChange = (e) => {
 		console.log("radio1 checked", e)
@@ -413,6 +418,17 @@ function LoanTransactionsMain() {
 						<div className="text-3xl text-slate-700 font-bold">
 							LOAN TRANSACTIONS
 						</div>
+					</div>
+
+					<div className="text-slate-800 italic">
+						Branch:{" "}
+						{(userDetails?.id === 3 ||
+							userDetails?.id === 4 ||
+							userDetails?.id === 11) &&
+						userDetails?.brn_code == 100
+							? selectedOptions?.map((item, _) => `${item?.label}, `)
+							: userDetails?.branch_name}{" "}
+						from {fromDate} to {toDate}
 					</div>
 
 					<div className="mb-2 flex justify-start gap-5 items-center">
