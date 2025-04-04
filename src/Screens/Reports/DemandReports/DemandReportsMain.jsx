@@ -338,6 +338,7 @@ function DemandReportsMain() {
 	}, [])
 
 	useEffect(() => {
+		setFetchedReportDate("")
 		setReportData([])
 		setSelectedOptions([])
 		setSelectedCOs([])
@@ -350,6 +351,7 @@ function DemandReportsMain() {
 	}, [searchType])
 
 	useEffect(() => {
+		setFetchedReportDate("")
 		setReportData([])
 		if (searchType === "C") {
 			getCOs()
@@ -443,9 +445,9 @@ function DemandReportsMain() {
 		name: new Date(0, i).toLocaleString("en", { month: "long" }),
 	}))
 
-	const years = Array.from({ length: 301 }, (_, i) => ({
-		code: 1900 + i,
-		name: (1900 + i).toString(),
+	const years = Array.from({ length: 121 }, (_, i) => ({
+		code: 1960 + i,
+		name: (1960 + i).toString(),
 	}))
 
 	return (
