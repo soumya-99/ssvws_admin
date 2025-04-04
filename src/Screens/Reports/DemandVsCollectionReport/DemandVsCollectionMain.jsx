@@ -18,22 +18,39 @@ import { formatDateToYYYYMMDD } from "../../../Utils/formateDate"
 import { saveAs } from "file-saver"
 import * as XLSX from "xlsx"
 import { printTableRegular } from "../../../Utils/printTableRegular"
+import DynamicTailwindTable from "../../../Components/Reports/DynamicTailwindTable"
+import Select from "react-select"
+import {
+	branchwiseDemandReportHeader,
+	cowiseDemandReportHeader,
+	fundwiseDemandReportHeader,
+	groupwiseDemandReportHeader,
+	memberwiseDemandReportHeader,
+} from "../../../Utils/Reports/headerMap"
 
 // const { RangePicker } = DatePicker
 // const dateFormat = "YYYY/MM/DD"
 
 const options = [
 	{
-		label: "Memberwise",
-		value: "M",
-	},
-	{
 		label: "Groupwise",
 		value: "G",
 	},
 	{
-		label: "COwise",
+		label: "Fundwise",
+		value: "F",
+	},
+	{
+		label: "CO-wise",
 		value: "C",
+	},
+	{
+		label: "Memberwise",
+		value: "M",
+	},
+	{
+		label: "Branchwise",
+		value: "B",
 	},
 ]
 
@@ -44,16 +61,30 @@ function DemandVsCollectionMain() {
 	const [fromDate, setFromDate] = useState()
 	const [toDate, setToDate] = useState()
 	const [reportData, setReportData] = useState(() => [])
-	const [searchType, setSearchType] = useState(() => "M")
-
-	const [cos, setCos] = useState(() => [])
+	const [searchType, setSearchType] = useState(() => "G")
+	const [choosenMonth, setChoosenMonth] = useState(() => "")
+	const [choosenYear, setChoosenYear] = useState(() => "")
+	const [funds, setFunds] = useState([])
+	const [selectedFund, setSelectedFund] = useState("")
 	const [co, setCo] = useState(() => "")
+
+	const [cos, setCos] = useState([])
+	const [branches, setBranches] = useState([])
+	const [selectedCO, setSelectedCO] = useState("")
+	const [selectedOptions, setSelectedOptions] = useState([])
+	const [selectedCOs, setSelectedCOs] = useState([])
 	// const [reportTxnData, setReportTxnData] = useState(() => [])
 	// const [tot_sum, setTotSum] = useState(0)
 	// const [search, setSearch] = useState("")
+	const [fetchedReportDate, setFetchedReportDate] = useState(() => "")
 
-	const [metadataDtls, setMetadataDtls] = useState(
-		() => userDetails?.branch_name
+	const [metadataDtls, setMetadataDtls] = useState(() =>
+		(userDetails?.id === 3 ||
+			userDetails?.id === 4 ||
+			userDetails?.id === 11) &&
+		userDetails?.brn_code == 100
+			? selectedOptions?.map((item, _) => `${item?.label}, `)
+			: userDetails?.branch_name
 	)
 
 	const onChange = (e) => {
@@ -61,47 +92,52 @@ function DemandVsCollectionMain() {
 		setSearchType(e)
 	}
 
-	const handleFetchCO = async () => {
-		setLoading(true)
-		const creds = {
-			branch_code: userDetails?.brn_code,
-		}
+	// const handleFetchCO = async () => {
+	// 	setLoading(true)
+	// 	const creds = {
+	// 		branch_code: userDetails?.brn_code,
+	// 	}
 
-		await axios
-			.post(`${url}/fetch_branch_co`, creds)
-			.then((res) => {
-				console.log("++++++++++++++", res?.data?.msg)
-				setCos(res?.data?.msg)
-			})
-			.catch((err) => {
-				console.log("Some err while fetching Cos...")
-			})
-		setLoading(false)
-	}
+	// 	await axios
+	// 		.post(`${url}/fetch_branch_co`, creds)
+	// 		.then((res) => {
+	// 			console.log("++++++++++++++", res?.data?.msg)
+	// 			setCos(res?.data?.msg)
+	// 		})
+	// 		.catch((err) => {
+	// 			console.log("Some err while fetching Cos...")
+	// 		})
+	// 	setLoading(false)
+	// }
 
-	useEffect(() => {
-		setReportData([])
-		if (searchType === "C") {
-			handleFetchCO()
-		}
-	}, [searchType])
+	// useEffect(() => {
+	// 	setReportData([])
+	// 	if (searchType === "C") {
+	// 		handleFetchCO()
+	// 	}
+	// }, [searchType])
 
 	// "Memberwise"
 	const handleFetchMemberwiseReport = async () => {
 		setLoading(true)
+
+		const branchCodes = selectedOptions?.map((item, i) => item?.value)
+
 		const creds = {
-			from_dt: formatDateToYYYYMMDD(fromDate),
-			to_dt: formatDateToYYYYMMDD(toDate),
-			branch_code: userDetails?.brn_code,
+			send_month: choosenMonth,
+			send_year: choosenYear,
+			branch_code:
+				branchCodes?.length === 0 ? [userDetails?.brn_code] : branchCodes,
 		}
 
 		await axios
 			.post(`${url}/dmd_vs_collec_report_memberwise`, creds)
 			.then((res) => {
 				console.log("RESSSSS======>>>>", res?.data)
-				setReportData(res?.data?.msg)
+				setReportData(res?.data?.member_demand_collec_data?.msg)
 				// setTotSum(res?.data?.msg.reduce((n, { credit }) => n + credit, 0))
 				setMetadataDtls(`${userDetails?.brn_code}, Memberwise`)
+				setFetchedReportDate(res?.data?.dateRange)
 			})
 			.catch((err) => {
 				console.log("ERRRR>>>", err)
@@ -113,19 +149,24 @@ function DemandVsCollectionMain() {
 	// "Groupwise"
 	const handleFetchGroupwiseReport = async () => {
 		setLoading(true)
+
+		const branchCodes = selectedOptions?.map((item, i) => item?.value)
+
 		const creds = {
-			from_dt: formatDateToYYYYMMDD(fromDate),
-			to_dt: formatDateToYYYYMMDD(toDate),
-			branch_code: userDetails?.brn_code,
+			send_month: choosenMonth,
+			send_year: choosenYear,
+			branch_code:
+				branchCodes?.length === 0 ? [userDetails?.brn_code] : branchCodes,
 		}
 
 		await axios
 			.post(`${url}/dmd_vs_collec_report_groupwise`, creds)
 			.then((res) => {
 				console.log("RESSSSS======>>>>", res?.data)
-				setReportData(res?.data?.msg)
+				setReportData(res?.data?.groupwise_demand_collec_data?.msg)
 				// setTotSum(res?.data?.msg.reduce((n, { credit }) => n + credit, 0))
 				setMetadataDtls(`${userDetails?.brn_code}, Groupwise`)
+				setFetchedReportDate(res?.data?.dateRange)
 			})
 			.catch((err) => {
 				console.log("ERRRR>>>", err)
@@ -134,23 +175,135 @@ function DemandVsCollectionMain() {
 		setLoading(false)
 	}
 
+	// "Branchwise"
+	const handleFetchBranchwiseReport = async () => {
+		setLoading(true)
+
+		const branchCodes = selectedOptions?.map((item, i) => item?.value)
+
+		const creds = {
+			send_month: choosenMonth,
+			send_year: choosenYear,
+			branch_code:
+				branchCodes?.length === 0 ? [userDetails?.brn_code] : branchCodes,
+		}
+
+		await axios
+			.post(`${url}/dmd_vs_collec_report_branchwise`, creds)
+			.then((res) => {
+				console.log("RESSSSS======>>>>", res?.data)
+				setReportData(res?.data?.branch_demand_collec_data?.msg)
+				// setTotSum(res?.data?.msg.reduce((n, { credit }) => n + credit, 0))
+				setMetadataDtls(`${userDetails?.brn_code}, Groupwise`)
+				setFetchedReportDate(res?.data?.dateRange)
+			})
+			.catch((err) => {
+				console.log("ERRRR>>>", err)
+			})
+
+		setLoading(false)
+	}
+
+	const getFunds = () => {
+		setLoading(true)
+		axios
+			.get(`${url}/get_fund`)
+			.then((res) => {
+				console.log("FUNDSSSS ======>", res?.data)
+				setFunds(res?.data?.msg)
+			})
+			.catch((err) => {
+				console.log("ERRRR>>>", err)
+				setLoading(false)
+			})
+		setLoading(false)
+	}
+
+	const handleFundChange = (e) => {
+		const selectedId = e.target.value
+		setSelectedFund(selectedId)
+	}
+
+	// "Fundwise"
+	const handleFetchFundwiseReport = async () => {
+		setLoading(true)
+
+		const branchCodes = selectedOptions?.map((item, i) => item?.value)
+
+		const creds = {
+			send_month: choosenMonth,
+			send_year: choosenYear,
+			branch_code:
+				branchCodes?.length === 0 ? [userDetails?.brn_code] : branchCodes,
+			fund_id: selectedFund,
+		}
+
+		await axios
+			.post(`${url}/dmd_vs_collec_report_fundwise`, creds)
+			.then((res) => {
+				console.log("RESSSSS======>>>>", res?.data)
+				setReportData(res?.data?.fund_demand_collec_data?.msg)
+				// setTotSum(res?.data?.msg.reduce((n, { credit }) => n + credit, 0))
+				setMetadataDtls(`${userDetails?.brn_code}, Groupwise`)
+				setFetchedReportDate(res?.data?.dateRange)
+			})
+			.catch((err) => {
+				console.log("ERRRR>>>", err)
+			})
+
+		setLoading(false)
+	}
+
+	const getCOs = () => {
+		setLoading(true)
+
+		const branchCodes = selectedOptions?.map((item, i) => item?.value)
+
+		const creds = {
+			branch_code:
+				branchCodes?.length === 0 ? [userDetails?.brn_code] : branchCodes,
+		}
+		axios
+			.post(`${url}/fetch_brn_co_demand`, creds)
+			.then((res) => {
+				console.log("COs ======>", res?.data)
+				setCos(res?.data?.msg)
+			})
+			.catch((err) => {
+				console.log("ERRRR>>>", err)
+				setLoading(false)
+			})
+		setLoading(false)
+	}
+
+	const handleCOChange = (e) => {
+		const selectedId = e.target.value
+		setSelectedCO(selectedId)
+	}
+
 	// "COwise"
 	const handleFetchCOwiseReport = async () => {
 		setLoading(true)
+
+		const branchCodes = selectedOptions?.map((item, i) => item?.value)
+		const coCodes = selectedCOs?.map((item, i) => item?.value)
+
 		const creds = {
-			from_dt: formatDateToYYYYMMDD(fromDate),
-			to_dt: formatDateToYYYYMMDD(toDate),
-			branch_code: userDetails?.brn_code,
-			co_id: co?.split(",")[0],
+			branch_code:
+				branchCodes?.length === 0 ? [userDetails?.brn_code] : branchCodes,
+			send_month: choosenMonth,
+			send_year: choosenYear,
+			co_id: coCodes?.length === 0 ? [co?.split(",")[0]] : coCodes,
 		}
 
 		await axios
 			.post(`${url}/dmd_vs_collec_report_cowise`, creds)
 			.then((res) => {
 				console.log("RESSSSS======>>>>", res?.data)
-				setReportData(res?.data?.msg)
+				setReportData(res?.data?.co_demand_collec_data?.msg)
 				// setTotSum(res?.data?.msg.reduce((n, { credit }) => n + credit, 0))
 				setMetadataDtls(`${userDetails?.brn_code}, COwise`)
+				setFetchedReportDate(res?.data?.dateRange)
 			})
 			.catch((err) => {
 				console.log("ERRRR>>>", err)
@@ -159,27 +312,88 @@ function DemandVsCollectionMain() {
 		setLoading(false)
 	}
 
+	const getBranches = () => {
+		setLoading(true)
+		const creds = {
+			emp_id: userDetails?.emp_id,
+			user_type: userDetails?.id,
+		}
+		axios
+			.post(`${url}/fetch_branch_name_based_usertype`, creds)
+			.then((res) => {
+				console.log("Branches ======>", res?.data)
+				setBranches(res?.data?.msg)
+			})
+			.catch((err) => {
+				console.log("ERRRR>>>", err)
+				setLoading(false)
+			})
+		setLoading(false)
+	}
+
+	useEffect(() => {
+		getBranches()
+	}, [])
+
+	useEffect(() => {
+		setFetchedReportDate("")
+		setReportData([])
+		setSelectedOptions([])
+		setSelectedCOs([])
+		if (searchType === "F") {
+			getFunds()
+		}
+		if (searchType === "C") {
+			getCOs()
+		}
+	}, [searchType])
+
+	useEffect(() => {
+		setFetchedReportDate("")
+		setReportData([])
+		if (searchType === "C") {
+			getCOs()
+		}
+	}, [selectedOptions])
+
 	const handleSubmit = () => {
-		if (!searchType || !fromDate || !toDate) {
+		if (!searchType || !choosenMonth || !choosenYear) {
 			Message("warning", "Please fill all details")
 			return
 		}
 
-		if (searchType === "C" && !co) {
-			Message("warning", "Please fill all details")
-			return
-		}
-
-		if (searchType === "M" && fromDate && toDate) {
+		if (searchType === "M" && choosenMonth && choosenYear) {
 			handleFetchMemberwiseReport()
 		}
 
-		if (searchType === "G" && fromDate && toDate) {
+		if (searchType === "B" && choosenMonth && choosenYear) {
+			handleFetchBranchwiseReport()
+		}
+
+		if (searchType === "G" && choosenMonth && choosenYear) {
 			handleFetchGroupwiseReport()
 		}
 
-		if (searchType === "C" && fromDate && toDate && co) {
+		if (searchType === "F" && choosenMonth && choosenYear && selectedFund) {
+			handleFetchFundwiseReport()
+		}
+
+		if (searchType === "C" && choosenMonth && choosenYear) {
 			handleFetchCOwiseReport()
+		}
+	}
+
+	const fetchSearchTypeName = (searchType) => {
+		if (searchType === "M") {
+			return "Memberwise"
+		} else if (searchType === "G") {
+			return "Groupwise"
+		} else if (searchType === "F") {
+			return "Fundwise"
+		} else if (searchType === "C") {
+			return "CO-wise"
+		} else if (searchType === "B") {
+			return "Branchwise"
 		}
 	}
 
@@ -191,9 +405,9 @@ function DemandVsCollectionMain() {
 		const blob = new Blob([s2ab(wbout)], { type: "application/octet-stream" })
 		saveAs(
 			blob,
-			`Demand_Vs_Collection_${metadataDtls?.split(",")[0]}_${
-				metadataDtls?.split(",")[1]
-			}.xlsx`
+			`Demand_Report_${metadataDtls?.split(",")[0]}_${fetchSearchTypeName(
+				searchType
+			)}.xlsx`
 		)
 	}
 
@@ -206,11 +420,47 @@ function DemandVsCollectionMain() {
 		return buf
 	}
 
-	let totEmi = 0
-	let totPrevDemand = 0
-	let totCurrDemand = 0
-	let totCollAmt = 0
-	let totOut = 0
+	// Example options for the dropdown
+	const dropdownOptions = branches?.map((branch) => ({
+		value: branch.branch_assign_id,
+		label: `${branch.branch_name} - ${branch.branch_assign_id}`,
+	}))
+
+	// Handle change for multi-select
+	const handleMultiSelectChange = (selected) => {
+		if (selected.some((option) => option.value === "all")) {
+			// If "All" is selected, select all options
+			setSelectedOptions(dropdownOptions)
+		} else {
+			setSelectedOptions(selected)
+		}
+	}
+
+	// Example options for the dropdown
+	const dropdownCOs = cos?.map((branch) => ({
+		value: branch.co_id,
+		label: `${branch.emp_name} - ${branch.co_id}`,
+	}))
+
+	// Handle change for multi-select
+	const handleMultiSelectChangeCOs = (selected) => {
+		if (selected.some((option) => option.value === "all")) {
+			// If "All" is selected, select all options
+			setSelectedCOs(dropdownCOs)
+		} else {
+			setSelectedCOs(selected)
+		}
+	}
+
+	const months = Array.from({ length: 12 }, (_, i) => ({
+		code: i + 1,
+		name: new Date(0, i).toLocaleString("en", { month: "long" }),
+	}))
+
+	const years = Array.from({ length: 61 }, (_, i) => ({
+		code: 2025 + i,
+		name: (2025 + i).toString(),
+	}))
 
 	return (
 		<div>
@@ -224,8 +474,19 @@ function DemandVsCollectionMain() {
 				<main className="px-4 pb-5 bg-slate-50 rounded-lg shadow-lg h-auto my-10 mx-32">
 					<div className="flex flex-row gap-3 mt-20  py-3 rounded-xl">
 						<div className="text-3xl text-slate-700 font-bold">
-							DEMAND VS. COLLECTION
+							DEMAND VS COLLECTION REPORT
 						</div>
+					</div>
+
+					<div className="text-slate-800 italic">
+						Branch:{" "}
+						{(userDetails?.id === 3 ||
+							userDetails?.id === 4 ||
+							userDetails?.id === 11) &&
+						userDetails?.brn_code == 100
+							? selectedOptions?.map((item, _) => `${item?.label}, `)
+							: userDetails?.branch_name}{" "}
+						as on {fetchedReportDate}
 					</div>
 
 					<div className="mb-2">
@@ -238,9 +499,87 @@ function DemandVsCollectionMain() {
 						/>
 					</div>
 
+					<div>
+						{(userDetails?.id === 3 ||
+							userDetails?.id === 4 ||
+							userDetails?.id === 11) &&
+							userDetails?.brn_code == 100 && (
+								<div className="w-full">
+									<Select
+										options={[
+											{ value: "all", label: "All" },
+											...dropdownOptions,
+										]}
+										isMulti
+										value={selectedOptions}
+										onChange={handleMultiSelectChange}
+										placeholder="Select branches..."
+										className="basic-multi-select"
+										classNamePrefix="select"
+										styles={{
+											control: (provided) => ({
+												...provided,
+												borderRadius: "8px",
+											}),
+											valueContainer: (provided) => ({
+												...provided,
+												borderRadius: "8px",
+											}),
+											singleValue: (provided) => ({
+												...provided,
+												color: "black",
+											}),
+											multiValue: (provided) => ({
+												...provided,
+												padding: "0.1rem",
+												backgroundColor: "#da4167",
+												color: "white",
+												borderRadius: "8px",
+											}),
+											multiValueLabel: (provided) => ({
+												...provided,
+												color: "white",
+											}),
+											multiValueRemove: (provided) => ({
+												...provided,
+												color: "white",
+												"&:hover": {
+													backgroundColor: "red",
+													color: "white",
+													borderRadius: "8px",
+												},
+											}),
+											placeholder: (provided) => ({
+												...provided,
+												fontSize: "0.9rem",
+											}),
+										}}
+									/>
+								</div>
+							)}
+
+						{searchType === "F" && (
+							<div className="pt-4">
+								<TDInputTemplateBr
+									placeholder="Select Fund..."
+									type="text"
+									label="Fundwise"
+									name="fund_id"
+									handleChange={handleFundChange}
+									data={funds.map((dat) => ({
+										code: dat.fund_id,
+										name: `${dat.fund_name}`,
+									}))}
+									mode={2}
+									disabled={false}
+								/>
+							</div>
+						)}
+					</div>
+
 					{searchType === "C" && (
-						<div className="mb-2 flex justify-start gap-5">
-							<div>
+						<div className="mb-2 w-full flex justify-center gap-5">
+							{/* <div className="w-full">
 								<TDInputTemplateBr
 									placeholder="Choose CO..."
 									type="text"
@@ -262,7 +601,88 @@ function DemandVsCollectionMain() {
 										name: `${item?.emp_name} - (${item?.emp_id})`,
 									}))}
 								/>
-							</div>
+							</div> */}
+							{searchType === "C" &&
+							(userDetails?.id === 3 ||
+								userDetails?.id === 4 ||
+								userDetails?.id === 11) &&
+							userDetails?.brn_code == 100 ? (
+								<div className="w-full pt-4">
+									<Select
+										options={[{ value: "all", label: "All" }, ...dropdownCOs]}
+										isMulti
+										value={selectedCOs}
+										onChange={handleMultiSelectChangeCOs}
+										placeholder="Select COs'..."
+										className="basic-multi-select"
+										classNamePrefix="select"
+										styles={{
+											control: (provided) => ({
+												...provided,
+												borderRadius: "8px",
+											}),
+											valueContainer: (provided) => ({
+												...provided,
+												borderRadius: "8px",
+											}),
+											singleValue: (provided) => ({
+												...provided,
+												color: "black",
+											}),
+											multiValue: (provided) => ({
+												...provided,
+												padding: "0.1rem",
+												backgroundColor: "#da4167",
+												color: "white",
+												borderRadius: "8px",
+											}),
+											multiValueLabel: (provided) => ({
+												...provided,
+												color: "white",
+											}),
+											multiValueRemove: (provided) => ({
+												...provided,
+												color: "white",
+												"&:hover": {
+													backgroundColor: "red",
+													color: "white",
+													borderRadius: "8px",
+												},
+											}),
+											placeholder: (provided) => ({
+												...provided,
+												fontSize: "0.9rem",
+											}),
+										}}
+									/>
+								</div>
+							) : (
+								searchType === "C" && (
+									<div className="w-full">
+										<TDInputTemplateBr
+											placeholder="Choose CO..."
+											type="text"
+											label="Credit Officers"
+											name="co"
+											formControlName={co.split(",")[0]}
+											handleChange={(e) => {
+												console.log("***********========", e)
+												setCo(
+													e.target.value +
+														"," +
+														cos.filter((i) => i.co_id == e.target.value)[0]
+															?.emp_name
+												)
+											}}
+											mode={2}
+											data={cos?.map((item, i) => ({
+												code: item?.co_id,
+												name: `${item?.emp_name} - (${item?.co_id})`,
+											}))}
+										/>
+									</div>
+								)
+							)}
 						</div>
 					)}
 
@@ -284,9 +704,9 @@ function DemandVsCollectionMain() {
 						</div> */}
 					</div>
 
-					<div className="grid grid-cols-3 gap-5 mt-5 items-end">
+					<div className="grid grid-cols-2 gap-5 mt-5 items-end">
 						<div>
-							<TDInputTemplateBr
+							{/* <TDInputTemplateBr
 								placeholder="From Date"
 								type="date"
 								label="From Date"
@@ -295,10 +715,20 @@ function DemandVsCollectionMain() {
 								handleChange={(e) => setFromDate(e.target.value)}
 								min={"1900-12-31"}
 								mode={1}
+							/> */}
+							<TDInputTemplateBr
+								placeholder="Month"
+								type="text"
+								label="Month"
+								name="month"
+								formControlName={choosenMonth}
+								handleChange={(e) => setChoosenMonth(e.target.value)}
+								mode={2}
+								data={months}
 							/>
 						</div>
 						<div>
-							<TDInputTemplateBr
+							{/* <TDInputTemplateBr
 								placeholder="To Date"
 								type="date"
 								label="To Date"
@@ -307,552 +737,98 @@ function DemandVsCollectionMain() {
 								handleChange={(e) => setToDate(e.target.value)}
 								min={"1900-12-31"}
 								mode={1}
+							/> */}
+							<TDInputTemplateBr
+								placeholder="Year"
+								type="text"
+								label="Year"
+								name="year"
+								formControlName={choosenYear}
+								handleChange={(e) => setChoosenYear(e.target.value)}
+								mode={2}
+								data={years}
 							/>
 						</div>
-
-						<div>
-							<button
-								className={`inline-flex items-center px-4 py-2 mt-0 ml-0 sm:mt-0 text-sm font-small text-center text-white border hover:border-green-600 border-teal-500 bg-teal-500 transition ease-in-out hover:bg-green-600 duration-300 rounded-full  dark:focus:ring-primary-900`}
-								onClick={() => {
-									handleSubmit()
-								}}
-							>
-								<SearchOutlined /> <spann class={`ml-2`}>Search</spann>
-							</button>
-						</div>
 					</div>
-
-					{/* "Memberwise" */}
-
-					{reportData.length > 0 && searchType === "M" && (
-						<div
-							className={`relative overflow-x-auto shadow-md sm:rounded-lg mt-5 max-h-[500px]
-                                [&::-webkit-scrollbar]:w-1
-                                [&::-webkit-scrollbar-track]:rounded-full
-                                [&::-webkit-scrollbar-track]:bg-transparent
-                                [&::-webkit-scrollbar-thumb]:rounded-full
-                                [&::-webkit-scrollbar-thumb]:bg-gray-300
-                                dark:[&::-webkit-scrollbar-track]:bg-transparent
-                                dark:[&::-webkit-scrollbar-thumb]:bg-neutral-500
-                            `}
+					<div className="flex justify-center my-3">
+						<button
+							className={`inline-flex items-center px-4 py-2 mt-0 ml-0 sm:mt-0 text-sm font-small text-center text-white border hover:border-green-600 border-teal-500 bg-teal-500 transition ease-in-out hover:bg-green-600 duration-300 rounded-full  dark:focus:ring-primary-900`}
+							onClick={() => {
+								handleSubmit()
+							}}
 						>
-							<div
-								className={`w-full text-xs dark:bg-gray-700 dark:text-gray-400`}
-							>
-								<table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
-									<thead className="w-full text-xs uppercase text-slate-50 bg-slate-800 dark:bg-gray-700 dark:text-gray-400 sticky top-0">
-										<tr className="text-center">
-											<th scope="col" className="px-6 py-3 font-semibold ">
-												Sl. No.
-											</th>
-											<th scope="col" className="px-6 py-3 font-semibold ">
-												Loan ID
-											</th>
-											<th scope="col" className="px-6 py-3 font-semibold ">
-												Member Code
-											</th>
-											<th scope="col" className="px-6 py-3 font-semibold ">
-												Member Name
-											</th>
-											<th scope="col" className="px-6 py-3 font-semibold ">
-												Group Code
-											</th>
-											<th scope="col" className="px-6 py-3 font-semibold ">
-												Group Name
-											</th>
-											<th scope="col" className="px-6 py-3 font-semibold ">
-												Disbursed Date
-											</th>
-											<th scope="col" className="px-6 py-3 font-semibold ">
-												Disbursed Amount
-											</th>
-											<th scope="col" className="px-6 py-3 font-semibold ">
-												ROI
-											</th>
-											<th scope="col" className="px-6 py-3 font-semibold ">
-												Period
-											</th>
-											<th scope="col" className="px-6 py-3 font-semibold ">
-												Period Mode
-											</th>
-											<th scope="col" className="px-6 py-3 font-semibold ">
-												Recovery Day
-											</th>
-											<th scope="col" className="px-6 py-3 font-semibold ">
-												Installment End Date
-											</th>
-											<th scope="col" className="px-6 py-3 font-semibold ">
-												Total EMI
-											</th>
-											<th scope="col" className="px-6 py-3 font-semibold ">
-												Previous Demand (Demand + Collection)
-											</th>
-											<th scope="col" className="px-6 py-3 font-semibold ">
-												Current Demand
-											</th>
-											<th scope="col" className="px-6 py-3 font-semibold ">
-												Collection Amount
-											</th>
-											<th scope="col" className="px-6 py-3 font-semibold ">
-												Outstanding
-											</th>
-											<th scope="col" className="px-6 py-3 font-semibold ">
-												CO Name
-											</th>
-										</tr>
-									</thead>
-									<tbody>
-										{reportData?.map((item, i) => {
-											totEmi += item?.total_emi
-											totPrevDemand += item?.previous_demand
-											totCurrDemand += item?.current_demand
-											totCollAmt += item?.coll_amt
-											totOut += item?.current_principal
-
-											return (
-												<tr
-													key={i}
-													className={
-														i % 2 === 0
-															? "bg-slate-200 text-slate-900 text-center"
-															: "text-center"
-													}
-												>
-													<td className="px-6 py-3">{i + 1}</td>
-													<td className="px-6 py-3">
-														{item?.loan_id || "---"}
-													</td>
-													<td className="px-6 py-3">
-														{item?.member_code || "---"}
-													</td>
-													<td className="px-6 py-3">
-														{item?.client_name || "---"}
-													</td>
-													<td className="px-6 py-3">
-														{item?.group_code || "---"}
-													</td>
-													<td className="px-6 py-3">
-														{item?.group_name || "---"}
-													</td>
-													<td className="px-6 py-3">
-														{item?.disbursed_date
-															? new Date(
-																	item?.disbursed_date
-															  )?.toLocaleDateString("en-GB")
-															: "Err" || "---"}
-													</td>
-													<td className="px-6 py-3">
-														{parseFloat(item?.disbursed_amount)?.toFixed(2) ||
-															"0"}
-													</td>
-													<td className="px-6 py-3">
-														{item?.current_roi || "---"}
-													</td>
-													<td className="px-6 py-3">{item?.period || "---"}</td>
-													<td className="px-6 py-3">
-														{item?.period_mode || "---"}
-													</td>
-													<td className="px-6 py-3">
-														{item?.recov_day || "---"}
-													</td>
-													<td className="px-6 py-3">
-														{item?.installment_end_date
-															? new Date(
-																	item?.installment_end_date
-															  )?.toLocaleDateString("en-GB")
-															: "Err" || "---"}
-													</td>
-													<td className="px-6 py-3">
-														{parseFloat(item?.total_emi)?.toFixed(2) || "0"}
-													</td>
-													<td className="px-6 py-3">
-														{parseFloat(item?.previous_demand)?.toFixed(2) ||
-															"0"}
-													</td>
-													<td className="px-6 py-3">
-														{parseFloat(item?.current_demand)?.toFixed(2) ||
-															"0"}
-													</td>
-													<td className="px-6 py-3">
-														{parseFloat(item?.coll_amt)?.toFixed(2) || "0"}
-													</td>
-													<td className="px-6 py-3">
-														{parseFloat(item?.current_principal)?.toFixed(2) ||
-															"0"}
-													</td>
-													<td className="px-6 py-3">
-														{item?.co_name || "---"}
-													</td>
-												</tr>
-											)
-										})}
-										<tr className="bg-slate-700 text-slate-50 text-center text-sm sticky bottom-0">
-											<td colSpan={1}>TOTAL:</td>
-											<td colSpan={12}></td>
-											<td colSpan={1}>{parseFloat(totEmi).toFixed(2)}/-</td>
-											<td colSpan={1}>
-												{parseFloat(totPrevDemand).toFixed(2)}/-
-											</td>
-											<td colSpan={1}>
-												{parseFloat(totCurrDemand).toFixed(2)}/-
-											</td>
-											<td colSpan={1}>{parseFloat(totCollAmt).toFixed(2)}/-</td>
-											<td colSpan={1}>{parseFloat(totOut).toFixed(2)}/-</td>
-											<td colSpan={1}></td>
-										</tr>
-									</tbody>
-								</table>
-							</div>
-						</div>
-					)}
+							<SearchOutlined /> <spann class={`ml-2`}>Search</spann>
+						</button>
+					</div>
 
 					{/* "Groupwise" */}
 
 					{reportData.length > 0 && searchType === "G" && (
-						<div
-							className={`relative overflow-x-auto shadow-md sm:rounded-lg mt-5 max-h-[500px]
-                                [&::-webkit-scrollbar]:w-1
-                                [&::-webkit-scrollbar-track]:rounded-full
-                                [&::-webkit-scrollbar-track]:bg-transparent
-                                [&::-webkit-scrollbar-thumb]:rounded-full
-                                [&::-webkit-scrollbar-thumb]:bg-gray-300
-                                dark:[&::-webkit-scrollbar-track]:bg-transparent
-                                dark:[&::-webkit-scrollbar-thumb]:bg-neutral-500
-                            `}
-						>
-							<div
-								className={`w-full text-xs dark:bg-gray-700 dark:text-gray-400`}
-							>
-								<table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
-									<thead className="w-full text-xs uppercase text-slate-50 bg-slate-800 dark:bg-gray-700 dark:text-gray-400 sticky top-0">
-										<tr className="text-center">
-											<th scope="col" className="px-6 py-3 font-semibold ">
-												Sl. No.
-											</th>
-											<th scope="col" className="px-6 py-3 font-semibold ">
-												Group Code
-											</th>
-											<th scope="col" className="px-6 py-3 font-semibold ">
-												Group Name
-											</th>
-											<th scope="col" className="px-6 py-3 font-semibold ">
-												Disbursed Date
-											</th>
-											<th scope="col" className="px-6 py-3 font-semibold ">
-												Disbursed Amount
-											</th>
-											<th scope="col" className="px-6 py-3 font-semibold ">
-												ROI
-											</th>
-											<th scope="col" className="px-6 py-3 font-semibold ">
-												Period
-											</th>
-											<th scope="col" className="px-6 py-3 font-semibold ">
-												Period Mode
-											</th>
-											<th scope="col" className="px-6 py-3 font-semibold ">
-												Installment End Date
-											</th>
-											<th scope="col" className="px-6 py-3 font-semibold ">
-												Total EMI
-											</th>
-											<th scope="col" className="px-6 py-3 font-semibold ">
-												Previous Demand (Demand + Collection)
-											</th>
-											<th scope="col" className="px-6 py-3 font-semibold ">
-												Current Demand
-											</th>
-											<th scope="col" className="px-6 py-3 font-semibold ">
-												Collection Amount
-											</th>
-											<th scope="col" className="px-6 py-3 font-semibold ">
-												Outstanding
-											</th>
-											<th scope="col" className="px-6 py-3 font-semibold ">
-												CO Name
-											</th>
-										</tr>
-									</thead>
-									<tbody>
-										{reportData?.map((item, i) => {
-											totEmi += item?.total_emi
-											totPrevDemand += item?.previous_demand
-											totCurrDemand += item?.current_demand
-											totCollAmt += item?.coll_amt
-											totOut += item?.outstanding
+						<>
+							<DynamicTailwindTable
+								data={reportData}
+								pageSize={50}
+								columnTotal={[7, 13, 14, 15, 16, 17]}
+								dateTimeExceptionCols={[6, 11, 12]}
+								headersMap={groupwiseDemandReportHeader}
+							/>
+						</>
+					)}
 
-											return (
-												<tr
-													key={i}
-													className={
-														i % 2 === 0
-															? "bg-slate-200 text-slate-900 text-center"
-															: "text-center"
-													}
-												>
-													<td className="px-6 py-3">{i + 1}</td>
-													<td className="px-6 py-3">
-														{item?.group_code || "---"}
-													</td>
-													<td className="px-6 py-3">
-														{item?.group_name || "---"}
-													</td>
-													<td className="px-6 py-3">
-														{item?.disbursed_date
-															? new Date(
-																	item?.disbursed_date
-															  )?.toLocaleDateString("en-GB")
-															: "Err" || "---"}
-													</td>
-													<td className="px-6 py-3">
-														{parseFloat(item?.disbursed_amount)?.toFixed(2) ||
-															"0"}
-													</td>
-													<td className="px-6 py-3">
-														{item?.current_roi || "---"}
-													</td>
-													<td className="px-6 py-3">{item?.period || "---"}</td>
-													<td className="px-6 py-3">
-														{item?.period_mode || "---"}
-													</td>
-													<td className="px-6 py-3">
-														{item?.installment_end_date
-															? new Date(
-																	item?.installment_end_date
-															  )?.toLocaleDateString("en-GB")
-															: "Err" || "---"}
-													</td>
-													<td className="px-6 py-3">
-														{parseFloat(item?.total_emi)?.toFixed(2) || "0"}
-													</td>
-													<td className="px-6 py-3">
-														{parseFloat(item?.previous_demand)?.toFixed(2) ||
-															"0"}
-													</td>
-													<td className="px-6 py-3">
-														{parseFloat(item?.current_demand)?.toFixed(2) ||
-															"0"}
-													</td>
-													<td className="px-6 py-3">
-														{parseFloat(item?.coll_amt)?.toFixed(2) || "0"}
-													</td>
-													<td className="px-6 py-3">
-														{parseFloat(item?.outstanding)?.toFixed(2) || "0"}
-													</td>
-													<td className="px-6 py-3">
-														{item?.co_name || "---"}
-													</td>
-												</tr>
-											)
-										})}
-										<tr className="bg-slate-700 text-slate-50 text-center text-sm sticky bottom-0">
-											<td colSpan={1}>TOTAL:</td>
-											<td colSpan={8}></td>
-											<td colSpan={1}>{parseFloat(totEmi).toFixed(2)}/-</td>
-											<td colSpan={1}>
-												{parseFloat(totPrevDemand).toFixed(2)}/-
-											</td>
-											<td colSpan={1}>
-												{parseFloat(totCurrDemand).toFixed(2)}/-
-											</td>
-											<td colSpan={1}>{parseFloat(totCollAmt).toFixed(2)}/-</td>
-											<td colSpan={1}>{parseFloat(totOut).toFixed(2)}/-</td>
-											<td colSpan={1}></td>
-										</tr>
-									</tbody>
-								</table>
-							</div>
-						</div>
+					{/* "Fundwise" */}
+
+					{reportData.length > 0 && searchType === "F" && (
+						<>
+							<DynamicTailwindTable
+								data={reportData}
+								pageSize={50}
+								columnTotal={[8, 9, 10, 11, 12]}
+								// dateTimeExceptionCols={[8]}
+								headersMap={fundwiseDemandReportHeader}
+							/>
+						</>
 					)}
 
 					{/* "COwise" */}
 
 					{reportData.length > 0 && searchType === "C" && (
-						<div
-							className={`relative overflow-x-auto shadow-md sm:rounded-lg mt-5 max-h-[500px]
-                                [&::-webkit-scrollbar]:w-1
-                                [&::-webkit-scrollbar-track]:rounded-full
-                                [&::-webkit-scrollbar-track]:bg-transparent
-                                [&::-webkit-scrollbar-thumb]:rounded-full
-                                [&::-webkit-scrollbar-thumb]:bg-gray-300
-                                dark:[&::-webkit-scrollbar-track]:bg-transparent
-                                dark:[&::-webkit-scrollbar-thumb]:bg-neutral-500
-                            `}
-						>
-							<div
-								className={`w-full text-xs dark:bg-gray-700 dark:text-gray-400`}
-							>
-								<table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
-									<thead className="w-full text-xs uppercase text-slate-50 bg-slate-800 dark:bg-gray-700 dark:text-gray-400 sticky top-0">
-										<tr className="text-center">
-											<th scope="col" className="px-6 py-3 font-semibold ">
-												Sl. No.
-											</th>
-											<th scope="col" className="px-6 py-3 font-semibold ">
-												Loan ID
-											</th>
-											<th scope="col" className="px-6 py-3 font-semibold ">
-												Member Code
-											</th>
-											<th scope="col" className="px-6 py-3 font-semibold ">
-												Member Name
-											</th>
-											<th scope="col" className="px-6 py-3 font-semibold ">
-												Group Code
-											</th>
-											<th scope="col" className="px-6 py-3 font-semibold ">
-												Group Name
-											</th>
-											<th scope="col" className="px-6 py-3 font-semibold ">
-												Disbursed Date
-											</th>
-											<th scope="col" className="px-6 py-3 font-semibold ">
-												Disbursed Amount
-											</th>
-											<th scope="col" className="px-6 py-3 font-semibold ">
-												ROI
-											</th>
-											<th scope="col" className="px-6 py-3 font-semibold ">
-												Period
-											</th>
-											<th scope="col" className="px-6 py-3 font-semibold ">
-												Period Mode
-											</th>
-											<th scope="col" className="px-6 py-3 font-semibold ">
-												Recovery Day
-											</th>
-											<th scope="col" className="px-6 py-3 font-semibold ">
-												Installment End Date
-											</th>
-											<th scope="col" className="px-6 py-3 font-semibold ">
-												Total EMI
-											</th>
-											<th scope="col" className="px-6 py-3 font-semibold ">
-												Previous Demand (Demand + Collection)
-											</th>
-											<th scope="col" className="px-6 py-3 font-semibold ">
-												Current Demand
-											</th>
-											<th scope="col" className="px-6 py-3 font-semibold ">
-												Collection Amount
-											</th>
-											<th scope="col" className="px-6 py-3 font-semibold ">
-												Outstanding
-											</th>
-											<th scope="col" className="px-6 py-3 font-semibold ">
-												CO Name
-											</th>
-											<th scope="col" className="px-6 py-3 font-semibold ">
-												Collector Code
-											</th>
-										</tr>
-									</thead>
-									<tbody>
-										{reportData?.map((item, i) => {
-											totEmi += item?.total_emi
-											totPrevDemand += item?.previous_demand
-											totCurrDemand += item?.current_demand
-											totCollAmt += item?.coll_amt
-											totOut += item?.current_principal
+						<>
+							<DynamicTailwindTable
+								data={reportData}
+								pageSize={50}
+								columnTotal={[6, 7, 8, 9, 10]}
+								// dateTimeExceptionCols={[8]}
+								headersMap={cowiseDemandReportHeader}
+							/>
+						</>
+					)}
 
-											return (
-												<tr
-													key={i}
-													className={
-														i % 2 === 0
-															? "bg-slate-200 text-slate-900 text-center"
-															: "text-center"
-													}
-												>
-													<td className="px-6 py-3">{i + 1}</td>
-													<td className="px-6 py-3">
-														{item?.loan_id || "---"}
-													</td>
-													<td className="px-6 py-3">
-														{item?.member_code || "---"}
-													</td>
-													<td className="px-6 py-3">
-														{item?.client_name || "---"}
-													</td>
-													<td className="px-6 py-3">
-														{item?.group_code || "---"}
-													</td>
-													<td className="px-6 py-3">
-														{item?.group_name || "---"}
-													</td>
-													<td className="px-6 py-3">
-														{item?.disbursed_date
-															? new Date(
-																	item?.disbursed_date
-															  )?.toLocaleDateString("en-GB")
-															: "Err" || "---"}
-													</td>
-													<td className="px-6 py-3">
-														{parseFloat(item?.disbursed_amount)?.toFixed(2) ||
-															"0"}
-													</td>
-													<td className="px-6 py-3">
-														{item?.current_roi || "---"}
-													</td>
-													<td className="px-6 py-3">{item?.period || "---"}</td>
-													<td className="px-6 py-3">
-														{item?.period_mode || "---"}
-													</td>
-													<td className="px-6 py-3">
-														{item?.recov_day || "---"}
-													</td>
-													<td className="px-6 py-3">
-														{item?.installment_end_date
-															? new Date(
-																	item?.installment_end_date
-															  )?.toLocaleDateString("en-GB")
-															: "Err" || "---"}
-													</td>
-													<td className="px-6 py-3">
-														{parseFloat(item?.total_emi)?.toFixed(2) || "0"}
-													</td>
-													<td className="px-6 py-3">
-														{parseFloat(item?.previous_demand)?.toFixed(2) ||
-															"0"}
-													</td>
-													<td className="px-6 py-3">
-														{parseFloat(item?.current_demand)?.toFixed(2) ||
-															"0"}
-													</td>
-													<td className="px-6 py-3">
-														{parseFloat(item?.coll_amt)?.toFixed(2) || "0"}
-													</td>
-													<td className="px-6 py-3">
-														{parseFloat(item?.current_principal)?.toFixed(2) ||
-															"0"}
-													</td>
-													<td className="px-6 py-3">
-														{item?.co_name || "---"}
-													</td>
-													<td className="px-6 py-3">
-														{item?.collec_code || "---"}
-													</td>
-												</tr>
-											)
-										})}
-										<tr className="bg-slate-700 text-slate-50 text-center text-sm sticky bottom-0">
-											<td colSpan={1}>TOTAL:</td>
-											<td colSpan={12}></td>
-											<td colSpan={1}>{parseFloat(totEmi).toFixed(2)}/-</td>
-											<td colSpan={1}>
-												{parseFloat(totPrevDemand).toFixed(2)}/-
-											</td>
-											<td colSpan={1}>
-												{parseFloat(totCurrDemand).toFixed(2)}/-
-											</td>
-											<td colSpan={1}>{parseFloat(totCollAmt).toFixed(2)}/-</td>
-											<td colSpan={1}>{parseFloat(totOut).toFixed(2)}/-</td>
-											<td colSpan={2}></td>
-										</tr>
-									</tbody>
-								</table>
-							</div>
-						</div>
+					{/* "Memberwise" */}
+
+					{reportData.length > 0 && searchType === "M" && (
+						<>
+							<DynamicTailwindTable
+								data={reportData}
+								pageSize={50}
+								columnTotal={[10, 16, 17, 18, 19, 20]}
+								dateTimeExceptionCols={[9, 14, 15]}
+								headersMap={memberwiseDemandReportHeader}
+							/>
+						</>
+					)}
+
+					{/* "Branchwise" */}
+
+					{reportData.length > 0 && searchType === "B" && (
+						<>
+							<DynamicTailwindTable
+								data={reportData}
+								pageSize={50}
+								// columnTotal={[2, 3]}
+								// dateTimeExceptionCols={[8]}
+								headersMap={branchwiseDemandReportHeader}
+							/>
+						</>
 					)}
 
 					{/* ///////////////////////////////////////////////////////////////// */}
@@ -876,7 +852,7 @@ function DemandVsCollectionMain() {
 									onClick={() =>
 										printTableRegular(
 											reportData,
-											"Demand vs. Collection Report",
+											"Demand Report",
 											metadataDtls,
 											fromDate,
 											toDate
