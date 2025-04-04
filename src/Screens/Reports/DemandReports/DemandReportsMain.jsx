@@ -76,6 +76,7 @@ function DemandReportsMain() {
 	// const [reportTxnData, setReportTxnData] = useState(() => [])
 	// const [tot_sum, setTotSum] = useState(0)
 	// const [search, setSearch] = useState("")
+	const [fetchedReportDate, setFetchedReportDate] = useState(() => "")
 
 	const [metadataDtls, setMetadataDtls] = useState(
 		() => userDetails?.branch_name
@@ -159,6 +160,9 @@ function DemandReportsMain() {
 				setReportData(res?.data?.groupwise_demand_data?.msg)
 				// setTotSum(res?.data?.msg.reduce((n, { credit }) => n + credit, 0))
 				setMetadataDtls(`${userDetails?.brn_code}, Groupwise`)
+				setFetchedReportDate(
+					new Date(res?.data?.demand_date).toLocaleDateString("en-GB")
+				)
 			})
 			.catch((err) => {
 				console.log("ERRRR>>>", err)
@@ -187,6 +191,9 @@ function DemandReportsMain() {
 				setReportData(res?.data?.branchwise_demand_data?.msg)
 				// setTotSum(res?.data?.msg.reduce((n, { credit }) => n + credit, 0))
 				setMetadataDtls(`${userDetails?.brn_code}, Groupwise`)
+				setFetchedReportDate(
+					new Date(res?.data?.demand_date).toLocaleDateString("en-GB")
+				)
 			})
 			.catch((err) => {
 				console.log("ERRRR>>>", err)
@@ -236,6 +243,9 @@ function DemandReportsMain() {
 				setReportData(res?.data?.fundwise_demand_data?.msg)
 				// setTotSum(res?.data?.msg.reduce((n, { credit }) => n + credit, 0))
 				setMetadataDtls(`${userDetails?.brn_code}, Groupwise`)
+				setFetchedReportDate(
+					new Date(res?.data?.demand_date).toLocaleDateString("en-GB")
+				)
 			})
 			.catch((err) => {
 				console.log("ERRRR>>>", err)
@@ -293,6 +303,9 @@ function DemandReportsMain() {
 				setReportData(res?.data?.cowise_demand_data?.msg)
 				// setTotSum(res?.data?.msg.reduce((n, { credit }) => n + credit, 0))
 				setMetadataDtls(`${userDetails?.brn_code}, COwise`)
+				setFetchedReportDate(
+					new Date(res?.data?.demand_date).toLocaleDateString("en-GB")
+				)
 			})
 			.catch((err) => {
 				console.log("ERRRR>>>", err)
@@ -337,6 +350,7 @@ function DemandReportsMain() {
 	}, [searchType])
 
 	useEffect(() => {
+		setReportData([])
 		if (searchType === "C") {
 			getCOs()
 		}
@@ -448,6 +462,11 @@ function DemandReportsMain() {
 						<div className="text-3xl text-slate-700 font-bold">
 							DEMAND REPORT
 						</div>
+					</div>
+
+					<div className="text-slate-800 italic">
+						Branch: {selectedOptions?.map((item, _) => `${item?.label}, `)} as
+						on {fetchedReportDate}
 					</div>
 
 					<div className="mb-2">

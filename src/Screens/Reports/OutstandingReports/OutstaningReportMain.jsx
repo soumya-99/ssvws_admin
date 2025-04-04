@@ -430,7 +430,8 @@ function OutstaningReportMain() {
 					</div>
 
 					<div className="text-slate-800 italic">
-						Branch: {userDetails?.branch_name} as on {fetchedReportDate}
+						Branch: {selectedOptions?.map((item, _) => `${item?.label}, `)} as
+						on {fetchedReportDate}
 					</div>
 
 					<div className="flex justify-between gap-3 items-center align-middle">
@@ -704,7 +705,7 @@ function OutstaningReportMain() {
 											reportData,
 											"Outstanding Report",
 											searchType,
-											userDetails?.branch_name,
+											selectedOptions?.map((item, _) => `${item?.label}, `),
 											fromDate,
 											toDate
 										)
