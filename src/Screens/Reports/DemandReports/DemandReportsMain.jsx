@@ -108,7 +108,7 @@ function DemandReportsMain() {
 		toDay !== "" &&
 		+fromDay >= 1 &&
 		+toDay <= maxDay &&
-		+fromDay < +toDay
+		+fromDay <= +toDay
 
 	const showError = (fromTouched || toTouched) && !isValidRange
 
@@ -171,7 +171,7 @@ function DemandReportsMain() {
 				setReportData(res?.data?.memberwise_demand_data?.msg)
 				// setTotSum(res?.data?.msg.reduce((n, { credit }) => n + credit, 0))
 				setMetadataDtls(`${userDetails?.brn_code}, Memberwise`)
-				setFetchedReportDate(res?.data?.demand_date)
+				setFetchedReportDate(res?.data?.create_date)
 			})
 			.catch((err) => {
 				console.log("ERRRR>>>", err)
@@ -200,7 +200,7 @@ function DemandReportsMain() {
 				setReportData(res?.data?.groupwise_demand_data?.msg)
 				// setTotSum(res?.data?.msg.reduce((n, { credit }) => n + credit, 0))
 				setMetadataDtls(`${userDetails?.brn_code}, Groupwise`)
-				setFetchedReportDate(res?.data?.demand_date)
+				setFetchedReportDate(res?.data?.create_date)
 				// setFetchedReportDate(
 				// 	new Date(res?.data?.demand_date).toLocaleDateString("en-GB")
 				// )
@@ -235,7 +235,7 @@ function DemandReportsMain() {
 				// setFetchedReportDate(
 				// 	new Date(res?.data?.demand_date).toLocaleDateString("en-GB")
 				// )
-				setFetchedReportDate(res?.data?.demand_date)
+				setFetchedReportDate(res?.data?.create_date)
 			})
 			.catch((err) => {
 				console.log("ERRRR>>>", err)
@@ -288,7 +288,7 @@ function DemandReportsMain() {
 				// setFetchedReportDate(
 				// 	new Date(res?.data?.demand_date).toLocaleDateString("en-GB")
 				// )
-				setFetchedReportDate(res?.data?.demand_date)
+				setFetchedReportDate(res?.data?.create_date)
 			})
 			.catch((err) => {
 				console.log("ERRRR>>>", err)
@@ -349,7 +349,7 @@ function DemandReportsMain() {
 				// setFetchedReportDate(
 				// 	new Date(res?.data?.demand_date).toLocaleDateString("en-GB")
 				// )
-				setFetchedReportDate(res?.data?.demand_date)
+				setFetchedReportDate(res?.data?.create_date)
 			})
 			.catch((err) => {
 				console.log("ERRRR>>>", err)
