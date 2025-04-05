@@ -165,9 +165,10 @@ function DemandReportsMain() {
 				setReportData(res?.data?.groupwise_demand_data?.msg)
 				// setTotSum(res?.data?.msg.reduce((n, { credit }) => n + credit, 0))
 				setMetadataDtls(`${userDetails?.brn_code}, Groupwise`)
-				setFetchedReportDate(
-					new Date(res?.data?.demand_date).toLocaleDateString("en-GB")
-				)
+				setFetchedReportDate(res?.data?.demand_date)
+				// setFetchedReportDate(
+				// 	new Date(res?.data?.demand_date).toLocaleDateString("en-GB")
+				// )
 			})
 			.catch((err) => {
 				console.log("ERRRR>>>", err)
@@ -196,9 +197,10 @@ function DemandReportsMain() {
 				setReportData(res?.data?.branchwise_demand_data?.msg)
 				// setTotSum(res?.data?.msg.reduce((n, { credit }) => n + credit, 0))
 				setMetadataDtls(`${userDetails?.brn_code}, Groupwise`)
-				setFetchedReportDate(
-					new Date(res?.data?.demand_date).toLocaleDateString("en-GB")
-				)
+				// setFetchedReportDate(
+				// 	new Date(res?.data?.demand_date).toLocaleDateString("en-GB")
+				// )
+				setFetchedReportDate(res?.data?.demand_date)
 			})
 			.catch((err) => {
 				console.log("ERRRR>>>", err)
@@ -248,9 +250,10 @@ function DemandReportsMain() {
 				setReportData(res?.data?.fundwise_demand_data?.msg)
 				// setTotSum(res?.data?.msg.reduce((n, { credit }) => n + credit, 0))
 				setMetadataDtls(`${userDetails?.brn_code}, Groupwise`)
-				setFetchedReportDate(
-					new Date(res?.data?.demand_date).toLocaleDateString("en-GB")
-				)
+				// setFetchedReportDate(
+				// 	new Date(res?.data?.demand_date).toLocaleDateString("en-GB")
+				// )
+				setFetchedReportDate(res?.data?.demand_date)
 			})
 			.catch((err) => {
 				console.log("ERRRR>>>", err)
@@ -308,9 +311,10 @@ function DemandReportsMain() {
 				setReportData(res?.data?.cowise_demand_data?.msg)
 				// setTotSum(res?.data?.msg.reduce((n, { credit }) => n + credit, 0))
 				setMetadataDtls(`${userDetails?.brn_code}, COwise`)
-				setFetchedReportDate(
-					new Date(res?.data?.demand_date).toLocaleDateString("en-GB")
-				)
+				// setFetchedReportDate(
+				// 	new Date(res?.data?.demand_date).toLocaleDateString("en-GB")
+				// )
+				setFetchedReportDate(res?.data?.demand_date)
 			})
 			.catch((err) => {
 				console.log("ERRRR>>>", err)
@@ -485,7 +489,7 @@ function DemandReportsMain() {
 						</div>
 					</div>
 
-					<div className="text-slate-800 italic">
+					{/* <div className="text-slate-800 italic">
 						Branch:{" "}
 						{(userDetails?.id === 3 ||
 							userDetails?.id === 4 ||
@@ -494,7 +498,7 @@ function DemandReportsMain() {
 							? selectedOptions?.map((item, _) => `${item?.label}, `)
 							: userDetails?.branch_name}{" "}
 						as on {fetchedReportDate}
-					</div>
+					</div> */}
 
 					<div className="mb-2">
 						<Radiobtn
@@ -503,6 +507,25 @@ function DemandReportsMain() {
 							onChangeVal={(value) => {
 								onChange(value)
 							}}
+						/>
+					</div>
+
+					{console.log(
+						"=================",
+						formatDateToYYYYMMDD(new Date(fetchedReportDate).toLocaleString())
+					)}
+
+					<div className="mb-4">
+						<TDInputTemplateBr
+							placeholder="Demand Date..."
+							type="date"
+							label="Demand Date"
+							name="demand_date"
+							formControlName={fetchedReportDate}
+							handleChange={(e) => setFetchedReportDate(e.target.value)}
+							min={"2000-12-31"}
+							mode={1}
+							disabled={true}
 						/>
 					</div>
 
@@ -775,8 +798,8 @@ function DemandReportsMain() {
 							<DynamicTailwindTable
 								data={reportData}
 								pageSize={50}
-								columnTotal={[7, 13, 14, 15]}
-								dateTimeExceptionCols={[6, 11, 12]}
+								columnTotal={[7, 14, 15, 16]}
+								dateTimeExceptionCols={[6, 12, 13]}
 								headersMap={groupwiseDemandReportHeader}
 							/>
 						</>
@@ -789,7 +812,7 @@ function DemandReportsMain() {
 							<DynamicTailwindTable
 								data={reportData}
 								pageSize={50}
-								columnTotal={[8, 9]}
+								columnTotal={[10, 11]}
 								// dateTimeExceptionCols={[8]}
 								headersMap={fundwiseDemandReportHeader}
 							/>
@@ -803,7 +826,7 @@ function DemandReportsMain() {
 							<DynamicTailwindTable
 								data={reportData}
 								pageSize={50}
-								columnTotal={[6, 7]}
+								columnTotal={[8, 9]}
 								// dateTimeExceptionCols={[8]}
 								headersMap={cowiseDemandReportHeader}
 							/>
@@ -817,8 +840,8 @@ function DemandReportsMain() {
 							<DynamicTailwindTable
 								data={reportData}
 								pageSize={50}
-								columnTotal={[10, 16, 17, 18]}
-								dateTimeExceptionCols={[9, 14, 15]}
+								columnTotal={[10, 17, 18, 19]}
+								dateTimeExceptionCols={[9, 15, 16]}
 								headersMap={memberwiseDemandReportHeader}
 							/>
 						</>
