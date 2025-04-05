@@ -3,8 +3,7 @@ import Sidebar from "../../../Components/Sidebar"
 import axios from "axios"
 import { url } from "../../../Address/BaseUrl"
 import { Message } from "../../../Components/Message"
-import { Spin, Button, Modal, Tooltip, DatePicker } from "antd"
-import dayjs from "dayjs"
+import { Spin, Tooltip } from "antd"
 import {
 	LoadingOutlined,
 	SearchOutlined,
@@ -13,7 +12,6 @@ import {
 } from "@ant-design/icons"
 import Radiobtn from "../../../Components/Radiobtn"
 import TDInputTemplateBr from "../../../Components/TDInputTemplateBr"
-import { formatDateToYYYYMMDD } from "../../../Utils/formateDate"
 
 import { saveAs } from "file-saver"
 import * as XLSX from "xlsx"
@@ -54,6 +52,17 @@ const options = [
 	},
 ]
 
+const options2 = [
+	{
+		label: "Monthly",
+		value: "Monthly",
+	},
+	{
+		label: "Weekly",
+		value: "Weekly",
+	},
+]
+
 function DemandReportsMain() {
 	const userDetails = JSON.parse(localStorage.getItem("user_details")) || ""
 	const [loading, setLoading] = useState(false)
@@ -62,6 +71,7 @@ function DemandReportsMain() {
 	const [toDate, setToDate] = useState()
 	const [reportData, setReportData] = useState(() => [])
 	const [searchType, setSearchType] = useState(() => "G")
+	const [searchType2, setSearchType2] = useState(() => "Monthly")
 	const [choosenMonth, setChoosenMonth] = useState(() => "")
 	const [choosenYear, setChoosenYear] = useState(() => "")
 	const [funds, setFunds] = useState([])
@@ -86,10 +96,34 @@ function DemandReportsMain() {
 			? selectedOptions?.map((item, _) => `${item?.label}, `)
 			: userDetails?.branch_name
 	)
+	const [fromDay, setFromDay] = useState(() => "")
+	const [toDay, setToDay] = useState(() => "")
+	const [fromTouched, setFromTouched] = useState(false)
+	const [toTouched, setToTouched] = useState(false)
+
+	const maxDay = searchType2 === "Monthly" ? 31 : 7
+
+	const isValidRange =
+		fromDay !== "" &&
+		toDay !== "" &&
+		+fromDay >= 1 &&
+		+toDay <= maxDay &&
+		+fromDay < +toDay
+
+	const showError = (fromTouched || toTouched) && !isValidRange
 
 	const onChange = (e) => {
 		console.log("radio1 checked", e)
 		setSearchType(e)
+	}
+
+	const onChange2 = (e) => {
+		console.log("radio1 checked", e)
+		setSearchType2(e)
+		setFromDay("")
+		setToDay("")
+		setFromTouched(false)
+		setToTouched(false)
 	}
 
 	// const handleFetchCO = async () => {
@@ -137,6 +171,7 @@ function DemandReportsMain() {
 				setReportData(res?.data?.memberwise_demand_data?.msg)
 				// setTotSum(res?.data?.msg.reduce((n, { credit }) => n + credit, 0))
 				setMetadataDtls(`${userDetails?.brn_code}, Memberwise`)
+				setFetchedReportDate(res?.data?.demand_date)
 			})
 			.catch((err) => {
 				console.log("ERRRR>>>", err)
@@ -342,6 +377,98 @@ function DemandReportsMain() {
 		setLoading(false)
 	}
 
+	const handleFetchGroupwiseDayReport = async () => {
+		setLoading(true)
+		const creds = {
+			demand_date: fetchedReportDate,
+			period_mode: searchType2,
+			from_day: fromDay,
+			to_day: toDay,
+		}
+		await axios
+			.post(`${url}/filter_dayawise_dmd_report_groupwise`, creds)
+			.then((res) => {
+				console.log("RESSSSS======>>>>", res?.data)
+				setReportData(res?.data?.groupwise_demand_data_day?.msg)
+			})
+			.catch((err) => {
+				console.log("ERRRR>>>", err)
+			})
+		setLoading(false)
+	}
+
+	const handleFetchFundwiseDayReport = async () => {
+		setLoading(true)
+		const creds = {
+			demand_date: fetchedReportDate,
+			period_mode: searchType2,
+			from_day: fromDay,
+			to_day: toDay,
+		}
+		await axios
+			.post(`${url}/filter_dayawise_dmd_report_fundwise`, creds)
+			.then((res) => {
+				console.log("RESSSSS======>>>>", res?.data)
+				setReportData(res?.data?.fundwise_demand_data_day?.msg)
+			})
+			.catch((err) => {
+				console.log("ERRRR>>>", err)
+			})
+		setLoading(false)
+	}
+
+	const handleFetchCOwiseDayReport = async () => {
+		setLoading(true)
+		const creds = {
+			demand_date: fetchedReportDate,
+			period_mode: searchType2,
+			from_day: fromDay,
+			to_day: toDay,
+		}
+		await axios
+			.post(`${url}/filter_dayawise_dmd_report_cowise`, creds)
+			.then((res) => {
+				console.log("RESSSSS======>>>>", res?.data)
+				setReportData(res?.data?.cowise_demand_data_day?.msg)
+			})
+			.catch((err) => {
+				console.log("ERRRR>>>", err)
+			})
+		setLoading(false)
+	}
+
+	const handleFetchMemberwiseDayReport = async () => {
+		setLoading(true)
+		const creds = {
+			demand_date: fetchedReportDate,
+			period_mode: searchType2,
+			from_day: fromDay,
+			to_day: toDay,
+		}
+		await axios
+			.post(`${url}/filter_dayawise_dmd_report_membwise`, creds)
+			.then((res) => {
+				console.log("RESSSSS======>>>>", res?.data)
+				setReportData(res?.data?.memberwise_demand_data_day?.msg)
+			})
+			.catch((err) => {
+				console.log("ERRRR>>>", err)
+			})
+		setLoading(false)
+	}
+
+	const handleSubmitDaywise = () => {
+		if (searchType === "G") {
+			handleFetchGroupwiseDayReport()
+		} else if (searchType === "F") {
+			handleFetchFundwiseDayReport()
+		} else if (searchType === "C") {
+			handleFetchCOwiseDayReport()
+		} else if (searchType === "M") {
+			handleFetchMemberwiseDayReport()
+		}
+	}
+
 	useEffect(() => {
 		getBranches()
 	}, [])
@@ -351,6 +478,8 @@ function DemandReportsMain() {
 		setReportData([])
 		setSelectedOptions([])
 		setSelectedCOs([])
+		setFromDay("")
+		setToDay("")
 		if (searchType === "F") {
 			getFunds()
 		}
@@ -362,6 +491,9 @@ function DemandReportsMain() {
 	useEffect(() => {
 		setFetchedReportDate("")
 		setReportData([])
+		setSelectedCOs([])
+		setFromDay("")
+		setToDay("")
 		if (searchType === "C") {
 			getCOs()
 		}
@@ -431,29 +563,34 @@ function DemandReportsMain() {
 		return buf
 	}
 
-	// Example options for the dropdown
 	const dropdownOptions = branches?.map((branch) => ({
 		value: branch.branch_assign_id,
 		label: `${branch.branch_name} - ${branch.branch_assign_id}`,
 	}))
 
-	// Handle change for multi-select
+	const displayedOptions =
+		selectedOptions.length === dropdownOptions.length
+			? [{ value: "all", label: "All" }]
+			: selectedOptions
+
 	const handleMultiSelectChange = (selected) => {
 		if (selected.some((option) => option.value === "all")) {
-			// If "All" is selected, select all options
 			setSelectedOptions(dropdownOptions)
 		} else {
 			setSelectedOptions(selected)
 		}
 	}
 
-	// Example options for the dropdown
 	const dropdownCOs = cos?.map((branch) => ({
 		value: branch.co_id,
 		label: `${branch.emp_name} - ${branch.co_id}`,
 	}))
 
-	// Handle change for multi-select
+	const displayedCOs =
+		selectedCOs.length === dropdownCOs.length && selectedCOs.length !== 0
+			? [{ value: "all", label: "All" }]
+			: selectedCOs
+
 	const handleMultiSelectChangeCOs = (selected) => {
 		if (selected.some((option) => option.value === "all")) {
 			// If "All" is selected, select all options
@@ -510,12 +647,7 @@ function DemandReportsMain() {
 						/>
 					</div>
 
-					{console.log(
-						"=================",
-						formatDateToYYYYMMDD(new Date(fetchedReportDate).toLocaleString())
-					)}
-
-					<div className="mb-4">
+					{/* <div className="mb-4">
 						<TDInputTemplateBr
 							placeholder="Demand Date..."
 							type="date"
@@ -527,7 +659,7 @@ function DemandReportsMain() {
 							mode={1}
 							disabled={true}
 						/>
-					</div>
+					</div> */}
 
 					<div>
 						{(userDetails?.id === 3 ||
@@ -541,7 +673,7 @@ function DemandReportsMain() {
 											...dropdownOptions,
 										]}
 										isMulti
-										value={selectedOptions}
+										value={displayedOptions}
 										onChange={handleMultiSelectChange}
 										placeholder="Select branches..."
 										className="basic-multi-select"
@@ -641,7 +773,7 @@ function DemandReportsMain() {
 									<Select
 										options={[{ value: "all", label: "All" }, ...dropdownCOs]}
 										isMulti
-										value={selectedCOs}
+										value={displayedCOs}
 										onChange={handleMultiSelectChangeCOs}
 										placeholder="Select COs'..."
 										className="basic-multi-select"
@@ -787,9 +919,80 @@ function DemandReportsMain() {
 								handleSubmit()
 							}}
 						>
-							<SearchOutlined /> <spann class={`ml-2`}>Search</spann>
+							<SearchOutlined /> <span class={`ml-2`}>Search</span>
 						</button>
 					</div>
+
+					{reportData?.length > 0 && (
+						<div>
+							<div className="text-xl -mb-4 text-slate-700 font-bold">
+								Daywise
+							</div>
+							<div className="mb-2">
+								<Radiobtn
+									data={options2}
+									val={searchType2}
+									onChangeVal={(e) => onChange2(e)}
+								/>
+							</div>
+
+							<div className="grid grid-cols-3 gap-5 mt-5 items-end">
+								<div>
+									<TDInputTemplateBr
+										placeholder="From Day"
+										type="number"
+										label="From Day"
+										name="from_day"
+										formControlName={fromDay}
+										handleChange={(e) => setFromDay(e.target.value)}
+										handleBlur={() => setFromTouched(true)}
+										mode={1}
+										min={1}
+										max={maxDay}
+									/>
+									{showError && (
+										<p className="text-red-500 text-xs mt-1">
+											From day must be lower than To day and within 1 to{" "}
+											{maxDay}.
+										</p>
+									)}
+								</div>
+
+								<div>
+									<TDInputTemplateBr
+										placeholder="To Day"
+										type="number"
+										label="To Day"
+										name="to_day"
+										formControlName={toDay}
+										handleChange={(e) => setToDay(e.target.value)}
+										handleBlur={() => setToTouched(true)}
+										mode={1}
+										min={1}
+										max={maxDay}
+									/>
+									{showError && (
+										<p className="text-red-500 text-xs mt-1">
+											From day must be lower than To day and within 1 to{" "}
+											{maxDay}.
+										</p>
+									)}
+								</div>
+
+								<div>
+									<button
+										className={`inline-flex items-center px-4 py-2 mt-0 ml-0 sm:mt-0 text-sm font-small text-center text-white border hover:border-green-600 border-teal-500 bg-teal-500 transition ease-in-out hover:bg-green-600 duration-300 rounded-full  dark:focus:ring-primary-900`}
+										onClick={() => {
+											handleSubmitDaywise()
+										}}
+										disabled={!isValidRange}
+									>
+										<SearchOutlined /> <span className="ml-2">Find</span>
+									</button>
+								</div>
+							</div>
+						</div>
+					)}
 
 					{/* "Groupwise" */}
 
@@ -798,8 +1001,8 @@ function DemandReportsMain() {
 							<DynamicTailwindTable
 								data={reportData}
 								pageSize={50}
-								columnTotal={[7, 14, 15, 16]}
-								dateTimeExceptionCols={[6, 12, 13]}
+								columnTotal={[8, 15, 16, 17]}
+								dateTimeExceptionCols={[0, 7, 13, 14]}
 								headersMap={groupwiseDemandReportHeader}
 							/>
 						</>
@@ -812,8 +1015,8 @@ function DemandReportsMain() {
 							<DynamicTailwindTable
 								data={reportData}
 								pageSize={50}
-								columnTotal={[10, 11]}
-								// dateTimeExceptionCols={[8]}
+								columnTotal={[11, 12]}
+								dateTimeExceptionCols={[0]}
 								headersMap={fundwiseDemandReportHeader}
 							/>
 						</>
@@ -826,8 +1029,8 @@ function DemandReportsMain() {
 							<DynamicTailwindTable
 								data={reportData}
 								pageSize={50}
-								columnTotal={[8, 9]}
-								// dateTimeExceptionCols={[8]}
+								columnTotal={[10, 11]}
+								dateTimeExceptionCols={[0]}
 								headersMap={cowiseDemandReportHeader}
 							/>
 						</>
@@ -840,8 +1043,8 @@ function DemandReportsMain() {
 							<DynamicTailwindTable
 								data={reportData}
 								pageSize={50}
-								columnTotal={[10, 17, 18, 19]}
-								dateTimeExceptionCols={[9, 15, 16]}
+								columnTotal={[11, 18, 19, 20]}
+								dateTimeExceptionCols={[0, 10, 16, 17]}
 								headersMap={memberwiseDemandReportHeader}
 							/>
 						</>
@@ -855,7 +1058,7 @@ function DemandReportsMain() {
 								data={reportData}
 								pageSize={50}
 								columnTotal={[2, 3]}
-								// dateTimeExceptionCols={[8]}
+								dateTimeExceptionCols={[0]}
 								headersMap={branchwiseDemandReportHeader}
 							/>
 						</>

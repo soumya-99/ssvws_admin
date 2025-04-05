@@ -323,6 +323,7 @@ function LoanTransactionsMain() {
 	}, [searchType, searchType2])
 
 	useEffect(() => {
+		setSelectedCOs([])
 		if (searchType2 === "C") {
 			getCOs()
 		}
@@ -377,11 +378,15 @@ function LoanTransactionsMain() {
 		return buf
 	}
 
-	// Example options for the dropdown
 	const dropdownOptions = branches?.map((branch) => ({
 		value: branch.branch_assign_id,
 		label: `${branch.branch_name} - ${branch.branch_assign_id}`,
 	}))
+
+	const displayedOptions =
+		selectedOptions.length === dropdownOptions.length
+			? [{ value: "all", label: "All" }]
+			: selectedOptions
 
 	const handleMultiSelectChange = (selected) => {
 		if (selected.some((option) => option.value === "all")) {
@@ -395,6 +400,11 @@ function LoanTransactionsMain() {
 		value: branch.co_id,
 		label: `${branch.emp_name} - ${branch.co_id}`,
 	}))
+
+	const displayedCOs =
+		selectedCOs.length === dropdownCOs.length
+			? [{ value: "all", label: "All" }]
+			: selectedCOs
 
 	const handleMultiSelectChangeCOs = (selected) => {
 		if (selected.some((option) => option.value === "all")) {
@@ -426,7 +436,7 @@ function LoanTransactionsMain() {
 							userDetails?.id === 4 ||
 							userDetails?.id === 11) &&
 						userDetails?.brn_code == 100
-							? selectedOptions?.map((item, _) => `${item?.label}, `)
+							? displayedOptions?.map((item, _) => `${item?.label}, `)
 							: userDetails?.branch_name}{" "}
 						from {fromDate} to {toDate}
 					</div>
@@ -460,7 +470,7 @@ function LoanTransactionsMain() {
 								<Select
 									options={[{ value: "all", label: "All" }, ...dropdownOptions]}
 									isMulti
-									value={selectedOptions}
+									value={displayedOptions}
 									onChange={handleMultiSelectChange}
 									placeholder="Select branches..."
 									className="basic-multi-select"
@@ -531,7 +541,7 @@ function LoanTransactionsMain() {
 							<Select
 								options={[{ value: "all", label: "All" }, ...dropdownCOs]}
 								isMulti
-								value={selectedCOs}
+								value={displayedCOs}
 								onChange={handleMultiSelectChangeCOs}
 								placeholder="Select COs'..."
 								className="basic-multi-select"

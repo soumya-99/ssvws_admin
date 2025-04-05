@@ -336,6 +336,7 @@ function OutstaningReportMain() {
 	}, [searchType])
 
 	useEffect(() => {
+		setSelectedCOs([])
 		if (searchType === "C") {
 			getCOs()
 		}
@@ -378,29 +379,34 @@ function OutstaningReportMain() {
 		return buf
 	}
 
-	// Example options for the dropdown
 	const dropdownOptions = branches?.map((branch) => ({
 		value: branch.branch_assign_id,
 		label: `${branch.branch_name} - ${branch.branch_assign_id}`,
 	}))
 
-	// Handle change for multi-select
+	const displayedOptions =
+		selectedOptions.length === dropdownOptions.length
+			? [{ value: "all", label: "All" }]
+			: selectedOptions
+
 	const handleMultiSelectChange = (selected) => {
 		if (selected.some((option) => option.value === "all")) {
-			// If "All" is selected, select all options
 			setSelectedOptions(dropdownOptions)
 		} else {
 			setSelectedOptions(selected)
 		}
 	}
 
-	// Example options for the dropdown
 	const dropdownCOs = cos?.map((branch) => ({
 		value: branch.co_id,
 		label: `${branch.emp_name} - ${branch.co_id}`,
 	}))
 
-	// Handle change for multi-select
+	const displayedCOs =
+		selectedCOs.length === dropdownCOs.length
+			? [{ value: "all", label: "All" }]
+			: selectedCOs
+
 	const handleMultiSelectChangeCOs = (selected) => {
 		if (selected.some((option) => option.value === "all")) {
 			// If "All" is selected, select all options
@@ -435,7 +441,7 @@ function OutstaningReportMain() {
 							userDetails?.id === 4 ||
 							userDetails?.id === 11) &&
 						userDetails?.brn_code == 100
-							? selectedOptions?.map((item, _) => `${item?.label}, `)
+							? displayedOptions?.map((item, _) => `${item?.label}, `)
 							: userDetails?.branch_name}{" "}
 						as on {fetchedReportDate}
 					</div>
@@ -457,7 +463,7 @@ function OutstaningReportMain() {
 								<Select
 									options={[{ value: "all", label: "All" }, ...dropdownOptions]}
 									isMulti
-									value={selectedOptions}
+									value={displayedOptions}
 									onChange={handleMultiSelectChange}
 									placeholder="Select branches..."
 									className="basic-multi-select"
@@ -547,7 +553,7 @@ function OutstaningReportMain() {
 								<Select
 									options={[{ value: "all", label: "All" }, ...dropdownCOs]}
 									isMulti
-									value={selectedCOs}
+									value={displayedCOs}
 									onChange={handleMultiSelectChangeCOs}
 									placeholder="Select COs'..."
 									className="basic-multi-select"
