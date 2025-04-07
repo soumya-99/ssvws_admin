@@ -122,6 +122,10 @@ const groupwiseDemandReportHeader = {
 	tot_emi: "Total EMI",
 	demand_amt: "Demand Amount",
 	curr_outstanding: "Current Outstanding",
+	emp_name: "Employee Name",
+	coll_amt: "Collection Amount",
+	loan_period: "Loan Period",
+	demand_after_collection: "Demand After Collection",
 }
 
 const fundwiseDemandReportHeader = {
@@ -138,6 +142,9 @@ const fundwiseDemandReportHeader = {
 	recovery_day: "Recovery Day",
 	demand_amt: "Demand Amount",
 	curr_outstanding: "Current Outstanding",
+	demand_after_collection: "Demand After Collection",
+	coll_amt: "Collection Amount",
+	emp_name: "Employee Name",
 }
 
 const cowiseDemandReportHeader = {
@@ -152,6 +159,11 @@ const cowiseDemandReportHeader = {
 	recovery_day: "Recovery Day",
 	demand_amt: "Demand Amount",
 	curr_outstanding: "Current Outstanding",
+	collec_upto: "Collection Upto",
+	emp_name: "Employee Name",
+	tot_emi: "Total EMI",
+	coll_amt: "Collection Amount",
+	demand_after_collection: "Demand After Collection",
 }
 
 const memberwiseDemandReportHeader = {
@@ -175,6 +187,8 @@ const memberwiseDemandReportHeader = {
 	tot_emi: "Total EMI",
 	demand_amt: "Demand Amount",
 	curr_outstanding: "Current Outstanding",
+	coll_amt: "Collection Amount",
+	demand_after_collection: "Demand After Collection",
 }
 
 const branchwiseDemandReportHeader = {
@@ -183,6 +197,7 @@ const branchwiseDemandReportHeader = {
 	branch_name: "Branch Name",
 	demand_amt: "Demand Amount",
 	curr_outstanding: "Current Outstanding",
+	collec_upto: "Collected Upto",
 }
 
 export {

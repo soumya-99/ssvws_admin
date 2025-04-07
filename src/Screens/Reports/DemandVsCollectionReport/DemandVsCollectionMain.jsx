@@ -895,7 +895,7 @@ function DemandVsCollectionMain() {
 						</button>
 					</div>
 
-					{reportData?.length > 0 && (
+					{/* {reportData?.length > 0 && (
 						<div>
 							<div className="text-xl -mb-4 text-slate-700 font-bold">
 								Daywise
@@ -965,7 +965,7 @@ function DemandVsCollectionMain() {
 								</div>
 							</div>
 						</div>
-					)}
+					)} */}
 
 					{/* "Groupwise" */}
 
@@ -974,8 +974,8 @@ function DemandVsCollectionMain() {
 							<DynamicTailwindTable
 								data={reportData}
 								pageSize={50}
-								columnTotal={[9, 16, 17, 18, 19, 20]}
-								dateTimeExceptionCols={[8, 14, 15]}
+								columnTotal={[9, 15, 16, 17, 18]}
+								dateTimeExceptionCols={[8, 13, 14]}
 								headersMap={groupwiseDemandReportHeader}
 							/>
 						</>
@@ -988,7 +988,7 @@ function DemandVsCollectionMain() {
 							<DynamicTailwindTable
 								data={reportData}
 								pageSize={50}
-								columnTotal={[12, 13, 14, 15, 16]}
+								columnTotal={[11, 12, 13]}
 								// dateTimeExceptionCols={[8]}
 								headersMap={fundwiseDemandReportHeader}
 							/>
@@ -1002,7 +1002,7 @@ function DemandVsCollectionMain() {
 							<DynamicTailwindTable
 								data={reportData}
 								pageSize={50}
-								columnTotal={[10, 11, 12, 13, 14]}
+								columnTotal={[9, 10, 11, 12]}
 								// dateTimeExceptionCols={[8]}
 								headersMap={cowiseDemandReportHeader}
 							/>
@@ -1016,8 +1016,8 @@ function DemandVsCollectionMain() {
 							<DynamicTailwindTable
 								data={reportData}
 								pageSize={50}
-								columnTotal={[12, 19, 20, 21, 22, 23]}
-								dateTimeExceptionCols={[11, 17, 18]}
+								columnTotal={[12, 18, 19, 20, 21]}
+								dateTimeExceptionCols={[11, 16, 17]}
 								headersMap={memberwiseDemandReportHeader}
 							/>
 						</>
