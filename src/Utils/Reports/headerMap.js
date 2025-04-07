@@ -104,6 +104,7 @@ const branchwiseTxnReportHeader = {
 }
 
 const groupwiseDemandReportHeader = {
+	demand_date: "Demand Date",
 	branch_code: "Branch Code",
 	branch_name: "Branch Name",
 	group_code: "Group Code",
@@ -124,6 +125,7 @@ const groupwiseDemandReportHeader = {
 }
 
 const fundwiseDemandReportHeader = {
+	demand_date: "Demand Date",
 	branch_code: "Branch Code",
 	branch_name: "Branch Name",
 	group_code: "Group Code",
@@ -139,6 +141,7 @@ const fundwiseDemandReportHeader = {
 }
 
 const cowiseDemandReportHeader = {
+	demand_date: "Demand Date",
 	branch_code: "Branch Code",
 	branch_name: "Branch Name",
 	group_code: "Group Code",
@@ -152,6 +155,7 @@ const cowiseDemandReportHeader = {
 }
 
 const memberwiseDemandReportHeader = {
+	demand_date: "Demand Date",
 	branch_code: "Branch Code",
 	branch_name: "Branch Name",
 	loan_id: "Loan ID",
@@ -174,6 +178,7 @@ const memberwiseDemandReportHeader = {
 }
 
 const branchwiseDemandReportHeader = {
+	demand_date: "Demand Date",
 	branch_code: "Branch Code",
 	branch_name: "Branch Name",
 	demand_amt: "Demand Amount",

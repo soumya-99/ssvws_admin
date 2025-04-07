@@ -1057,7 +1057,7 @@ function DemandReportsMain() {
 							<DynamicTailwindTable
 								data={reportData}
 								pageSize={50}
-								columnTotal={[2, 3]}
+								columnTotal={[3, 4]}
 								dateTimeExceptionCols={[0]}
 								headersMap={branchwiseDemandReportHeader}
 							/>
