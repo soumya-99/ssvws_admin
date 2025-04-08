@@ -256,7 +256,6 @@ function DisbursedLoanApproveBM() {
 
 	return (
 		<div>
-			
 			<Sidebar mode={2} />
 			<Spin
 				indicator={<LoadingOutlined spin />}

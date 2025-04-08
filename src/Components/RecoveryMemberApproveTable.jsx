@@ -482,7 +482,7 @@ function RecoveryMemberApproveTable({
 									<CheckCircleOutlined /> <span class={`ml-2`}>Reject</span>
 								</button> */}
 
-								<Popconfirm
+								{/* <Popconfirm
 									title={`Delete Member`}
 									description={
 										<>
@@ -514,7 +514,7 @@ function RecoveryMemberApproveTable({
 									>
 										<CheckCircleOutlined /> <spann class={`ml-2`}>Reject</spann>
 									</button>
-								</Popconfirm>
+								</Popconfirm> */}
 							</motion.section>
 						</>
 					)}

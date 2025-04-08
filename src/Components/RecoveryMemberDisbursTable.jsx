@@ -82,7 +82,6 @@ function RecoveryMemberDisbursTable({
 		}
 	}, [loanAppData])
 
-
 	const handleSelectionChange = (e) => {
 		// Update the selected products
 
@@ -130,7 +129,6 @@ function RecoveryMemberDisbursTable({
 			console.log("No rows selected")
 		}
 	}
-
 
 	const fetchLoanApplicationsMember = async () => {
 		setLoading(true)
@@ -424,7 +422,7 @@ function RecoveryMemberDisbursTable({
 									<CheckCircleOutlined /> <span class={`ml-2`}>Reject</span>
 								</button> */}
 
-								<Popconfirm
+								{/* <Popconfirm
 									title={`Delete Member`}
 									description={
 										<>
@@ -456,7 +454,7 @@ function RecoveryMemberDisbursTable({
 									>
 										<CheckCircleOutlined /> <spann class={`ml-2`}>Reject</spann>
 									</button>
-								</Popconfirm>
+								</Popconfirm> */}
 							</motion.section>
 						</>
 					)}
