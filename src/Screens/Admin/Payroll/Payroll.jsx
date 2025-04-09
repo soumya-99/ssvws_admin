@@ -110,7 +110,8 @@ function Payroll() {
 		const creds = {
 			from_date: formatDateToYYYYMMDD(fromDate),
 			to_date: formatDateToYYYYMMDD(toDate),
-			branch_id: userDetails?.brn_code,
+			// branch_id: userDetails?.brn_code,
+			branch_id: branch.split(",")[0],
 			emp_id: employee,
 		}
 		console.log("KKKKKKKKKKKKKKKKKKK======", branch)

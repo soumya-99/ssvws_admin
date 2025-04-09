@@ -569,7 +569,7 @@ const router = createBrowserRouter([
 		],
 	},
 	{
-		path: "payroll",
+		path: "attendance_report",
 		element: <Payroll />,
 	},
 	{
