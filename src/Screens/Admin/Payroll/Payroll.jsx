@@ -65,7 +65,7 @@ function Payroll() {
 		setLoading(true)
 		await axios
 			.post(`${url}/fetch_employee_fr_branch`, {
-				branch_id: userDetails?.brn_code,
+				branch_id: branch?.split(",")[0],
 			})
 			.then((res) => {
 				console.log("QQQQQQQQQQQQQQQQ", res?.data)
@@ -84,7 +84,7 @@ function Payroll() {
 
 	useEffect(() => {
 		handleFetchEmployees()
-	}, [])
+	}, [branch])
 	const timeDifference = (startDateStr, endDateStr) => {
 		// Convert date strings to Date objects
 		const startDate = new Date(startDateStr)
