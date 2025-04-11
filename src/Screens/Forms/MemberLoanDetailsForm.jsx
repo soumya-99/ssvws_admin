@@ -747,11 +747,12 @@ function MemberLoanDetailsForm() {
 																		}
 																		mode={1}
 																		disabled={
-																			!(
-																				item?.tr_type === "I" ||
-																				item?.tr_type === "R" ||
-																				item?.tr_type === "D"
-																			) || userDetails?.id !== 4
+																			// !(
+																			// 	item?.tr_type === "I" ||
+																			// 	item?.tr_type === "R" ||
+																			// 	item?.tr_type === "D"
+																			// ) || userDetails?.id !== 4
+																			true
 																		}
 																	/>
 																</div>
