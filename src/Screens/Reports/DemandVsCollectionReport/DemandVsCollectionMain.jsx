@@ -11,6 +11,7 @@ import {
 	PrinterOutlined,
 	FileExcelOutlined,
 } from "@ant-design/icons"
+import { RefreshOutlined, Search } from "@mui/icons-material"
 import Radiobtn from "../../../Components/Radiobtn"
 import TDInputTemplateBr from "../../../Components/TDInputTemplateBr"
 import { formatDateToYYYYMMDD } from "../../../Utils/formateDate"
@@ -623,7 +624,7 @@ function DemandVsCollectionMain() {
 						as on {fetchedReportDate}
 					</div> */}
 
-					<div className="mb-2">
+					{/* <div className="mb-2">
 						<Radiobtn
 							data={options}
 							val={searchType}
@@ -631,7 +632,7 @@ function DemandVsCollectionMain() {
 								onChange(value)
 							}}
 						/>
-					</div>
+					</div> */}
 
 					<div>
 						{(userDetails?.id === 3 ||
@@ -886,13 +887,31 @@ function DemandVsCollectionMain() {
 					</div>
 					<div className="flex justify-center my-3">
 						<button
-							className={`inline-flex items-center px-4 py-2 mt-0 ml-0 sm:mt-0 text-sm font-small text-center text-white border hover:border-green-600 border-teal-500 bg-teal-500 transition ease-in-out hover:bg-green-600 duration-300 rounded-full  dark:focus:ring-primary-900`}
+							className={`inline-flex items-center px-4 py-2 mt-0 ml-0 sm:mt-0 text-sm font-small text-center text-white border hover:border-green-600 border-teal-500 bg-teal-500 transition ease-in-out hover:bg-green-600 duration-300 rounded-full dark:focus:ring-primary-900`}
 							onClick={() => {
 								handleSubmit()
 							}}
 						>
-							<SearchOutlined /> <spann class={`ml-2`}>Search</spann>
+							<SearchOutlined /> <span class={`ml-2`}>Process Report</span>
 						</button>
+					</div>
+
+					<div className="flex gap-6 items-center align-middle">
+						<Radiobtn
+							data={options}
+							val={searchType}
+							onChangeVal={(value) => {
+								onChange(value)
+							}}
+						/>
+						<div className="mt-3">
+							<button
+								className="inline-flex items-center px-4 py-2 text-sm font-small text-white border hover:border-pink-600 border-pink-500 bg-pink-500 transition ease-in-out hover:bg-pink-700 duration-300 rounded-full"
+								onClick={handleSubmit}
+							>
+								<Search /> <span className="ml-2">Fetch</span>
+							</button>
+						</div>
 					</div>
 
 					{/* {reportData?.length > 0 && (

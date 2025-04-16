@@ -65,7 +65,6 @@ function OutstaningReportMain() {
 	const [selectedCO, setSelectedCO] = useState("")
 	const [selectedOptions, setSelectedOptions] = useState([])
 	const [selectedCOs, setSelectedCOs] = useState([])
-	const [procedureSuccessFlag, setProcedureSuccessFlag] = useState("0")
 
 	const onChange = (e) => {
 		console.log("radio1 checked", e)
@@ -336,7 +335,6 @@ function OutstaningReportMain() {
 			.post(`${url}/call_outstanding_proc`, creds)
 			.then((res) => {
 				console.log("Procedure called", res?.data)
-				setProcedureSuccessFlag(res?.data?.suc)
 			})
 			.catch((err) => {
 				console.log("Some error while running procedure.", err)
@@ -365,7 +363,6 @@ function OutstaningReportMain() {
 		setSelectedOptions([])
 		setSelectedCOs([])
 		setMetadataDtls(null)
-		setProcedureSuccessFlag("0")
 		if (searchType === "F") {
 			getFunds()
 		}
@@ -376,7 +373,6 @@ function OutstaningReportMain() {
 
 	useEffect(() => {
 		setSelectedCOs([])
-		setProcedureSuccessFlag("0")
 		if (searchType === "C") {
 			getCOs()
 		}
@@ -424,13 +420,17 @@ function OutstaningReportMain() {
 		label: `${branch.branch_name} - ${branch.branch_assign_id}`,
 	}))
 
-	const displayedOptions = selectedOptions
+	const displayedOptions =
+		selectedOptions.length === dropdownOptions.length
+			? [{ value: "all", label: "All" }]
+			: selectedOptions
 
 	const handleMultiSelectChange = (selected) => {
-		if (selected && selected.length > 4) {
-			return
+		if (selected.some((option) => option.value === "all")) {
+			setSelectedOptions(dropdownOptions)
+		} else {
+			setSelectedOptions(selected)
 		}
-		setSelectedOptions(selected)
 	}
 
 	const dropdownCOs = cos?.map((branch) => ({
@@ -497,7 +497,7 @@ function OutstaningReportMain() {
 						userDetails?.brn_code == 100 && (
 							<div className="w-full">
 								<Select
-									options={dropdownOptions}
+									options={[{ value: "all", label: "All" }, ...dropdownOptions]}
 									isMulti
 									value={displayedOptions}
 									onChange={handleMultiSelectChange}
@@ -546,32 +546,8 @@ function OutstaningReportMain() {
 							</div>
 						)}
 
-					<div className="mt-4">
-						<div>
-							<TDInputTemplateBr
-								placeholder="From Date"
-								type="date"
-								label="From Date"
-								name="fromDate"
-								formControlName={fromDate}
-								handleChange={(e) => setFromDate(e.target.value)}
-								min={"1900-12-31"}
-								mode={1}
-							/>
-						</div>
-						<div className="mt-4">
-							<button
-								className="inline-flex items-center px-4 py-2 text-sm font-small text-white border hover:border-green-600 border-teal-500 bg-teal-500 transition ease-in-out hover:bg-green-600 duration-300 rounded-full disabled:cursor-not-allowed"
-								onClick={runProcedureReport}
-								disabled={selectedOptions?.length == 0}
-							>
-								<RefreshOutlined /> <span className="ml-2">Process Report</span>
-							</button>
-						</div>
-					</div>
-
 					<div className="grid grid-cols-2 gap-5 mt-5 items-end">
-						{searchType === "F" && +procedureSuccessFlag === 1 && (
+						{searchType === "F" && (
 							<div>
 								<TDInputTemplateBr
 									placeholder="Select Fund..."
@@ -590,7 +566,6 @@ function OutstaningReportMain() {
 						)}
 
 						{searchType === "C" &&
-						+procedureSuccessFlag === 1 &&
 						(userDetails?.id === 3 ||
 							userDetails?.id === 4 ||
 							userDetails?.id === 11) &&
@@ -660,8 +635,7 @@ function OutstaningReportMain() {
 								/>
 							</div>
 						) : (
-							searchType === "C" &&
-							+procedureSuccessFlag === 1 && (
+							searchType === "C" && (
 								<div>
 									<TDInputTemplateBr
 										placeholder="Select CO..."
@@ -680,7 +654,7 @@ function OutstaningReportMain() {
 							)
 						)}
 
-						{/* <div>
+						<div>
 							<TDInputTemplateBr
 								placeholder="From Date"
 								type="date"
@@ -694,13 +668,12 @@ function OutstaningReportMain() {
 						</div>
 						<div>
 							<button
-								className="inline-flex items-center px-4 py-2 text-sm font-small text-white border hover:border-green-600 border-teal-500 bg-teal-500 transition ease-in-out hover:bg-green-600 duration-300 rounded-full disabled:cursor-not-allowed"
+								className="inline-flex items-center px-4 py-2 text-sm font-small text-white border hover:border-green-600 border-teal-500 bg-teal-500 transition ease-in-out hover:bg-green-600 duration-300 rounded-full"
 								onClick={runProcedureReport}
-								disabled={selectedOptions?.length == 0}
 							>
 								<RefreshOutlined /> <span className="ml-2">Process Report</span>
 							</button>
-						</div> */}
+						</div>
 					</div>
 
 					<div className="flex gap-6 items-center align-middle">
@@ -711,16 +684,14 @@ function OutstaningReportMain() {
 								onChangeVal={(value) => onChange(value)}
 							/>
 						</div>
-						{+procedureSuccessFlag === 1 && (
-							<div className="mt-3">
-								<button
-									className="inline-flex items-center px-4 py-2 text-sm font-small text-white border hover:border-pink-600 border-pink-500 bg-pink-500 transition ease-in-out hover:bg-pink-700 duration-300 rounded-full"
-									onClick={handleSubmit}
-								>
-									<Search /> <span className="ml-2">Fetch</span>
-								</button>
-							</div>
-						)}
+						<div className="mt-3">
+							<button
+								className="inline-flex items-center px-4 py-2 text-sm font-small text-white border hover:border-pink-600 border-pink-500 bg-pink-500 transition ease-in-out hover:bg-pink-700 duration-300 rounded-full"
+								onClick={handleSubmit}
+							>
+								<Search /> <span className="ml-2">Fetch</span>
+							</button>
+						</div>
 					</div>
 
 					{/* Memberwise Results */}
@@ -753,7 +724,7 @@ function OutstaningReportMain() {
 							<DynamicTailwindTable
 								data={reportData}
 								pageSize={50}
-								columnTotal={[6, 7, 8, 9]}
+								columnTotal={[7, 8, 9]}
 								headersMap={fundwiseOutstandingHeader}
 							/>
 						</>
