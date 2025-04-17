@@ -11,6 +11,7 @@ const DynamicTailwindTable = ({
 	dateTimeExceptionCols = [],
 	showCheckbox = false,
 	selectedRowIndices = [],
+	disableAllCheckbox = false,
 	onRowSelectionChange = () => {},
 }) => {
 	const [currentPage, setCurrentPage] = useState(1)
@@ -116,6 +117,7 @@ const DynamicTailwindTable = ({
 							{showCheckbox && (
 								<th className="px-6 py-3">
 									<input
+										disabled={disableAllCheckbox}
 										className="rounded-sm checked:bg-pink-600"
 										type="checkbox"
 										checked={allVisibleSelected}
@@ -148,6 +150,7 @@ const DynamicTailwindTable = ({
 									{showCheckbox && (
 										<td className="px-6 py-3">
 											<input
+												disabled={disableAllCheckbox}
 												className="rounded-sm checked:bg-pink-600"
 												type="checkbox"
 												checked={isChecked}

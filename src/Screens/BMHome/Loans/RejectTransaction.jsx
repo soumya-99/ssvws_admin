@@ -62,7 +62,7 @@ const RejectTransaction = () => {
 	}
 
 	const rejectTnx = async () => {
-		// setLoading(true)
+		setLoading(true)
 
 		const modifiedArr = data
 			.filter((_, i) => selectedRowIndices.includes(i))
@@ -80,19 +80,18 @@ const RejectTransaction = () => {
 		// console.log("Modified Arr - reject Txn inside", modifiedArr)
 		// console.log("selectedRowIndices - reject Txn inside", selectedRowIndices)
 
-		try {
-			const res = await axios.post(`${url}/reject_loan_transactions`, creds)
-			if (res.data.suc === 0) {
-				Message("warning", res.data.msg)
-				setLoading(false)
-				return
-			}
-		} catch (err) {
-			console.error(err)
-			Message("error", "Some error occurred while searching...")
-		} finally {
-			setLoading(false)
-		}
+		await axios
+			.post(`${url}/reject_loan_transactions`, creds)
+			.then((res) => {
+				console.log("RES", res?.data)
+				Message("success", "Loan Txns rejected.")
+			})
+			.catch((err) => {
+				Message("error", "Some error occurred.")
+				console.log("ERRR", err)
+			})
+
+		setLoading(false)
 	}
 
 	console.log("Updated SELECTED CHECKSSS", selectedRowIndices)
@@ -161,9 +160,11 @@ const RejectTransaction = () => {
 								pageSize={50}
 								dateTimeExceptionCols={[0]}
 								showCheckbox
+								disableAllCheckbox
 								selectedRowIndices={selectedRowIndices}
 								onRowSelectionChange={setSelectedRowIndices}
 								headersMap={transactionFieldNames}
+								colRemove={[6]}
 							/>
 						</div>
 
