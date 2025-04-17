@@ -200,6 +200,33 @@ const branchwiseDemandReportHeader = {
 	collec_upto: "Collected Upto",
 }
 
+
+const overduereportheader = {
+	trf_date: "Report Date",
+	first_od_date: "OD Date",
+	branch_code: "Branch Code",
+	branch_name: "Branch Name",
+	group_code: "Group Code",
+	group_name: "Group Name",
+	co_id: "CO Name",
+	disb_dt: "Disbursement Date",
+	disb_amt: "Disbursement Amount",
+	curr_roi: "Current ROI",
+	period: "Period",
+	period_mode: "Period Mode",
+	recovery_day: "Recovery Day",
+	instl_start_dt: "Demand Start Date",
+	instl_end_dt: "Demand End Date",
+	tot_emi: "Total EMI",
+	demand_amt: "Demand Amount",
+	curr_outstanding: "Current Outstanding",
+	emp_name: "Employee Name",
+	coll_amt: "Collection Amount",
+	loan_period: "Loan Period",
+	od_amt:'OD Amount',
+	demand_after_collection: "Demand After Collection",
+}
+
 export {
 	fundwiseOutstandingHeader,
 	cowiseOutstandingHeader,
@@ -213,4 +240,5 @@ export {
 	cowiseDemandReportHeader,
 	memberwiseDemandReportHeader,
 	branchwiseDemandReportHeader,
+	overduereportheader
 }
