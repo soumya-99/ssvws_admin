@@ -200,7 +200,6 @@ const branchwiseDemandReportHeader = {
 	collec_upto: "Collected Upto",
 }
 
-
 const overduereportheader = {
 	trf_date: "Report Date",
 	first_od_date: "OD Date",
@@ -227,6 +226,17 @@ const overduereportheader = {
 	demand_after_collection: "Demand After Collection",
 }
 
+const transactionFieldNames = {
+	transaction_date: "Transaction Date",
+	transaction_id: "Transaction ID",
+	loan_id: "Loan ID",
+	tr_type: "Transaction Type",
+	debit: "Debit Amount",
+	credit: "Credit Amount",
+	created_code: "Created Branch Code",
+	created_by: "Created By",
+  }
+
 export {
 	fundwiseOutstandingHeader,
 	cowiseOutstandingHeader,
@@ -240,5 +250,6 @@ export {
 	cowiseDemandReportHeader,
 	memberwiseDemandReportHeader,
 	branchwiseDemandReportHeader,
-	overduereportheader
+	overduereportheader,
+	transactionFieldNames
 }

@@ -563,7 +563,7 @@ function OutstaningReportMain() {
 							<button
 								className="inline-flex items-center px-4 py-2 text-sm font-small text-white border hover:border-green-600 border-teal-500 bg-teal-500 transition ease-in-out hover:bg-green-600 duration-300 rounded-full disabled:cursor-not-allowed"
 								onClick={runProcedureReport}
-								disabled={selectedOptions?.length == 0}
+								// disabled={selectedOptions?.length == 0}
 							>
 								<RefreshOutlined /> <span className="ml-2">Process Report</span>
 							</button>
