@@ -151,22 +151,22 @@ function OverdueReport() {
 	const handleFetchTxnReportFundwise = async () => {
 		setLoading(true)
 
-		const branchCodes = selectedOptions?.map((item, i) => item?.value)
+		const branchCodes = selectedOptions?.map((item, i) =>{return {"branch_code":item?.value}})
 
 		const creds = {
-			from_dt: formatDateToYYYYMMDD(fromDate),
-			to_dt: formatDateToYYYYMMDD(toDate),
-			branch_code:
-				branchCodes?.length === 0 ? [userDetails?.brn_code] : branchCodes,
+			send_date: formatDateToYYYYMMDD(fromDate),
+			// to_dt: formatDateToYYYYMMDD(toDate),
+			search_brn_id:
+				branchCodes?.length === 0 ? [{"branch_code":userDetails?.brn_code}] : branchCodes,
 			fund_id: selectedFund,
-			tr_type: searchType,
+			// tr_type: searchType,
 		}
 
 		await axios
-			.post(`${url}/transaction_report_fundwise`, creds)
+			.post(`${url}/loan_overdue_report_fundwise`, creds)
 			.then((res) => {
 				console.log("RESSSSS======>>>>", res?.data)
-				setReportData(res?.data?.transaction_fund_data?.msg)
+				setReportData(res?.data?.msg)
 			})
 			.catch((err) => {
 				console.log("ERRRR>>>", err)
@@ -178,7 +178,7 @@ function OverdueReport() {
 	const getCOs = () => {
 		setLoading(true)
 
-		const branchCodes = selectedOptions?.map((item, i) => item?.value)
+		const branchCodes = selectedOptions?.map((item, i) => {return {"branch_code":item?.value}})
 
 		const creds = {
 			branch_code:
@@ -205,23 +205,23 @@ function OverdueReport() {
 	const handleFetchTxnReportCOwise = async () => {
 		setLoading(true)
 
-		const branchCodes = selectedOptions?.map((item, i) => item?.value)
+		const branchCodes = selectedOptions?.map((item, i) =>{return {"branch_code":item?.value}})
 		const coCodes = selectedCOs?.map((item, i) => item?.value)
 
 		const creds = {
-			from_dt: formatDateToYYYYMMDD(fromDate),
-			to_dt: formatDateToYYYYMMDD(toDate),
-			branch_code:
-				branchCodes?.length === 0 ? [userDetails?.brn_code] : branchCodes,
+			send_date: formatDateToYYYYMMDD(fromDate),
+			// to_dt: formatDateToYYYYMMDD(toDate),
+			search_brn_id:
+				branchCodes?.length === 0 ? [{"branch_code":userDetails?.brn_code}] : branchCodes,
 			co_id: coCodes?.length === 0 ? selectedCO : coCodes,
-			tr_type: searchType,
+			// tr_type: searchType,
 		}
 
 		await axios
-			.post(`${url}/transaction_report_cowise`, creds)
+			.post(`${url}/loan_overdue_report_cowise`, creds)
 			.then((res) => {
 				console.log("RESSSSS======>>>>", res?.data)
-				setReportData(res?.data?.transaction_co_data?.msg)
+				setReportData(res?.data?.msg)
 			})
 			.catch((err) => {
 				console.log("ERRRR>>>", err)
@@ -233,21 +233,21 @@ function OverdueReport() {
 	const handleFetchTxnReportBranchwise = async () => {
 		setLoading(true)
 
-		const branchCodes = selectedOptions?.map((item, i) => item?.value)
+		const branchCodes = selectedOptions?.map((item, i) =>{return {"branch_code":item?.value}})
 
 		const creds = {
-			from_dt: formatDateToYYYYMMDD(fromDate),
-			to_dt: formatDateToYYYYMMDD(toDate),
-			branch_code:
-				branchCodes?.length === 0 ? [userDetails?.brn_code] : branchCodes,
-			tr_type: searchType,
+			send_date: formatDateToYYYYMMDD(fromDate),
+			// to_dt: formatDateToYYYYMMDD(toDate),
+			search_brn_id:
+				branchCodes?.length === 0 ? [{"branch_code":userDetails?.brn_code}] : branchCodes,
+			// tr_type: searchType,
 		}
 
 		await axios
-			.post(`${url}/transaction_report_branchwise`, creds)
+			.post(`${url}/loan_overdue_report_branchwise`, creds)
 			.then((res) => {
 				console.log("RESSSSS======>>>>", res?.data)
-				setReportData(res?.data?.transaction_branch_data?.msg)
+				setReportData(res?.data?.msg)
 			})
 			.catch((err) => {
 				console.log("ERRRR>>>", err)
@@ -259,21 +259,25 @@ function OverdueReport() {
 	const handleFetchTxnReportMemberwise = async () => {
 		setLoading(true)
 
-		const branchCodes = selectedOptions?.map((item, i) => item?.value)
+		const branchCodes = selectedOptions?.map((item, i) =>{return {"branch_code":item?.value}})
 
 		const creds = {
-			from_dt: formatDateToYYYYMMDD(fromDate),
-			to_dt: formatDateToYYYYMMDD(toDate),
-			branch_code:
-				branchCodes?.length === 0 ? [userDetails?.brn_code] : branchCodes,
-			tr_type: searchType,
+			// from_dt: formatDateToYYYYMMDD(fromDate),
+			// to_dt: formatDateToYYYYMMDD(toDate),
+			// branch_code:
+			// 	branchCodes?.length === 0 ? [userDetails?.brn_code] : branchCodes,
+			// tr_type: searchType,
+            send_date: formatDateToYYYYMMDD(fromDate),
+			// to_dt: formatDateToYYYYMMDD(toDate),
+			search_brn_id:
+				branchCodes?.length === 0 ? [{"branch_code":userDetails?.brn_code}] : branchCodes,
 		}
 
 		await axios
-			.post(`${url}/transaction_report_memberwise`, creds)
+			.post(`${url}/loan_overdue_report_memberwise`, creds)
 			.then((res) => {
 				console.log("RESSSSS======>>>>", res?.data)
-				setReportData(res?.data?.transaction_member_data?.msg)
+				setReportData(res?.data?.msg)
 			})
 			.catch((err) => {
 				console.log("ERRRR>>>", err)
@@ -308,13 +312,13 @@ function OverdueReport() {
 	const searchData = async () => {
 		if (searchType2 === "G" && fromDate) {
 			await handleFetchTxnReportGroupwise()
-		} else if (searchType2 === "F" && fromDate && toDate) {
+		} else if (searchType2 === "F" && fromDate) {
 			await handleFetchTxnReportFundwise()
-		} else if (searchType2 === "C" && fromDate && toDate) {
+		} else if (searchType2 === "C" && fromDate) {
 			await handleFetchTxnReportCOwise()
-		} else if (searchType2 === "M" && fromDate && toDate) {
+		} else if (searchType2 === "M" && fromDate) {
 			await handleFetchTxnReportMemberwise()
-		} else if (searchType2 === "B" && fromDate && toDate) {
+		} else if (searchType2 === "B" && fromDate) {
 			await handleFetchTxnReportBranchwise()
 		}
 	}
@@ -676,10 +680,10 @@ function OverdueReport() {
 							<DynamicTailwindTable
 								data={reportData}
 								pageSize={50}
-								columnTotal={[18, 19]}
-								colRemove={[13, 14]}
-								headersMap={memberwiseOutstandingHeader}
-								dateTimeExceptionCols={[2, 16, 21]}
+                                columnTotal={[11,15,16]}
+								dateTimeExceptionCols={[10,12]}
+								headersMap={overduereportheader}
+                                colRemove={[7]}
 							/>
 						</>
 					)}
@@ -690,8 +694,8 @@ function OverdueReport() {
 							<DynamicTailwindTable
 								data={reportData}
 								pageSize={50}
-								columnTotal={[14, 15]}
-								dateTimeExceptionCols={[0, 1, 9, 11]}
+								columnTotal={[9,14,15]}
+								dateTimeExceptionCols={[0,1,9,11]}
 								headersMap={overduereportheader}
 								colRemove={[6]}
 							/>
@@ -704,8 +708,11 @@ function OverdueReport() {
 							<DynamicTailwindTable
 								data={reportData}
 								pageSize={50}
-								columnTotal={[12]}
-								dateTimeExceptionCols={[2]}
+								columnTotal={[12,16,17]}
+								dateTimeExceptionCols={[0,1,11,13]}
+								headersMap={overduereportheader}
+                                colRemove={[6]}
+
 								// headersMap={fundwiseOutstandingHeader}
 							/>
 						</>
@@ -717,8 +724,11 @@ function OverdueReport() {
 							<DynamicTailwindTable
 								data={reportData}
 								pageSize={50}
-								columnTotal={[9]}
-								dateTimeExceptionCols={[2]}
+								columnTotal={[10,14,15]}
+								dateTimeExceptionCols={[0,1,9,11]}
+								headersMap={overduereportheader}
+                                colRemove={[6]}
+
 								// headersMap={cowiseOutstandingHeader}
 							/>
 						</>
@@ -730,8 +740,10 @@ function OverdueReport() {
 							<DynamicTailwindTable
 								data={reportData}
 								pageSize={50}
-								columnTotal={[2, 3]}
-								headersMap={branchwiseTxnReportHeader}
+								columnTotal={[2,3,4]}
+								// dateTimeExceptionCols={[0,1,9,11]}
+								headersMap={overduereportheader}
+                                // colRemove={[6]}
 							/>
 						</>
 					)}
