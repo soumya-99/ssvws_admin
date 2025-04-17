@@ -100,7 +100,7 @@ function OverdueReport() {
 
 		// const branchCodes = selectedOptions?.map((item, i) => item?.value)
 		const branchCodes = selectedOptions?.map((item, i) => {
-			return { branch_code: userDetails.brn_code }
+			return { branch_code: item.value }
 		})
 
 		// const creds = {
@@ -112,7 +112,7 @@ function OverdueReport() {
 		// }
 		const creds = {
 			send_date: formatDateToYYYYMMDD(fromDate),
-			search_brn_id: [{ branch_code: userDetails.brn_code }],
+			search_brn_id:branchCodes?.length === 0 ? [{ branch_code: userDetails.brn_code }]:branchCodes,
 		}
 
 		await axios
@@ -293,7 +293,7 @@ function OverdueReport() {
 			user_type: userDetails?.id,
 		}
 		axios
-			.post(`${url}/fetch_brnname_based_usertype`, creds)
+			.post(`${url}/fetch_usertypeWise_branch_name`, creds)
 			.then((res) => {
 				console.log("Branches ======>", res?.data)
 				setBranches(res?.data?.msg)
