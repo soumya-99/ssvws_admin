@@ -52,6 +52,7 @@ import ViewMemberTransfer from "./Screens/BMHome/ViewMemberTransfer"
 import TransferMemberViewScreen from "./Screens/BMHome/TransferMemberViewScreen"
 import MonthEnd from "./Screens/Admin/UserManagement/MonthEnd"
 import Payroll from "./Screens/Admin/Payroll/Payroll"
+import RejectTransaction from "./Screens/BMHome/Loans/RejectTransaction"
 // import A_LoanStatementMain from "./Screens/Admin/Reports/LoanStatements/A_LoanStatementMain"
 // import A_LoanTransactionsMain from "./Screens/Admin/Reports/LoanTransactions/A_LoanTransactionsMain"
 // import A_DemandReportsMain from "./Screens/Admin/Reports/DemandReports/A_DemandReportsMain"
@@ -282,6 +283,10 @@ const router = createBrowserRouter([
 							// 	path: "masteremployees/:id",
 							// 	element: <EditMasterEmployee />,
 							// },
+							{
+								path: "rejecttxn",
+								element: <RejectTransaction />,
+							},
 							{
 								path: "approveloan",
 								element: <DisbursedLoanApproveBM />,

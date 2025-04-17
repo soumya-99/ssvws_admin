@@ -1,4 +1,4 @@
-import React, { useState } from "react"
+import React, { useState, useMemo } from "react"
 import { Pagination } from "antd"
 
 const DynamicTailwindTable = ({
@@ -9,37 +9,80 @@ const DynamicTailwindTable = ({
 	colRemove = [],
 	headersMap = null,
 	dateTimeExceptionCols = [],
+	showCheckbox = false,
+	selectedRowIndices = [],
+	onRowSelectionChange = () => {},
 }) => {
 	const [currentPage, setCurrentPage] = useState(1)
 
-	if (!data || data.length === 0) {
+	const isDataEmpty = !data || data.length === 0
+
+	const originalHeaders = useMemo(() => {
+		return isDataEmpty ? [] : Object.keys(data[0])
+	}, [data, isDataEmpty])
+
+	const filteredHeadersWithIndex = useMemo(() => {
+		return originalHeaders
+			.map((header, index) => ({ header, index }))
+			.filter((item) => !colRemove.includes(item.index))
+	}, [originalHeaders, colRemove])
+
+	const totals = useMemo(() => {
+		const result = {}
+		columnTotal.forEach((origIndex) => {
+			if (origIndex >= 0 && origIndex < originalHeaders.length) {
+				const headerKey = originalHeaders[origIndex]
+				result[origIndex] = data.reduce((acc, row) => {
+					const value = parseFloat(row[headerKey])
+					return !isNaN(value) ? acc + value : acc
+				}, 0)
+			}
+		})
+		return result
+	}, [data, columnTotal, originalHeaders])
+
+	const currentData = useMemo(() => {
+		return data.slice((currentPage - 1) * pageSize, currentPage * pageSize)
+	}, [data, currentPage, pageSize])
+
+	const visibleIndices = useMemo(
+		() => currentData.map((_, i) => (currentPage - 1) * pageSize + i),
+		[currentData, currentPage, pageSize]
+	)
+
+	const allVisibleSelected = useMemo(
+		() => visibleIndices.every((idx) => selectedRowIndices.includes(idx)),
+		[visibleIndices, selectedRowIndices]
+	)
+
+	if (isDataEmpty) {
 		return <div>No data available</div>
 	}
 
-	const originalHeaders = Object.keys(data[0])
-
-	const filteredHeadersWithIndex = originalHeaders
-		.map((header, index) => ({ header, index }))
-		.filter((item) => !colRemove.includes(item.index))
-
-	const totals = {}
-	columnTotal.forEach((origIndex) => {
-		if (origIndex >= 0 && origIndex < originalHeaders.length) {
-			const headerKey = originalHeaders[origIndex]
-			totals[origIndex] = data.reduce((acc, row) => {
-				const value = parseFloat(row[headerKey])
-				return !isNaN(value) ? acc + value : acc
-			}, 0)
-		}
-	})
-
-	const currentData = data.slice(
-		(currentPage - 1) * pageSize,
-		currentPage * pageSize
-	)
-
 	const handlePageChange = (page) => {
 		setCurrentPage(page)
+	}
+
+	const handleSelectAllChange = () => {
+		let newSelection
+		if (allVisibleSelected) {
+			newSelection = selectedRowIndices.filter(
+				(idx) => !visibleIndices.includes(idx)
+			)
+		} else {
+			newSelection = Array.from(
+				new Set([...selectedRowIndices, ...visibleIndices])
+			)
+		}
+		onRowSelectionChange(newSelection)
+	}
+
+	const handleCheckboxChange = (globalIndex) => {
+		const isAlready = selectedRowIndices.includes(globalIndex)
+		const newSelection = isAlready
+			? selectedRowIndices.filter((idx) => idx !== globalIndex)
+			: [...selectedRowIndices, globalIndex]
+		onRowSelectionChange(newSelection)
 	}
 
 	const formatCellValue = (value, colIndex) => {
@@ -70,6 +113,16 @@ const DynamicTailwindTable = ({
 						className={`text-xs uppercase text-slate-50 sticky top-0 ${headerBgColor}`}
 					>
 						<tr>
+							{showCheckbox && (
+								<th className="px-6 py-3">
+									<input
+										className="rounded-sm checked:bg-pink-600"
+										type="checkbox"
+										checked={allVisibleSelected}
+										onChange={handleSelectAllChange}
+									/>
+								</th>
+							)}
 							{filteredHeadersWithIndex.map((item, i) => (
 								<th key={i} className="px-6 py-3 font-semibold">
 									{headersMap
@@ -79,26 +132,44 @@ const DynamicTailwindTable = ({
 							))}
 						</tr>
 					</thead>
+
 					<tbody>
-						{currentData.map((row, rowIndex) => (
-							<tr
-								key={rowIndex}
-								className={
-									rowIndex % 2 === 0 ? "bg-slate-200 text-slate-900" : ""
-								}
-							>
-								{filteredHeadersWithIndex.map((item, colIndex) => (
-									<td key={colIndex} className="px-6 py-3">
-										{row[item.header] !== undefined
-											? formatCellValue(row[item.header], item.index)
-											: "---"}
-									</td>
-								))}
-							</tr>
-						))}
+						{currentData.map((row, rowIndex) => {
+							const globalIndex = (currentPage - 1) * pageSize + rowIndex
+							const isChecked = selectedRowIndices.includes(globalIndex)
+
+							return (
+								<tr
+									key={rowIndex}
+									className={
+										rowIndex % 2 === 0 ? "bg-slate-200 text-slate-900" : ""
+									}
+								>
+									{showCheckbox && (
+										<td className="px-6 py-3">
+											<input
+												className="rounded-sm checked:bg-pink-600"
+												type="checkbox"
+												checked={isChecked}
+												onChange={() => handleCheckboxChange(globalIndex)}
+											/>
+										</td>
+									)}
+									{filteredHeadersWithIndex.map((item, colIndex) => (
+										<td key={colIndex} className="px-6 py-3">
+											{row[item.header] !== undefined
+												? formatCellValue(row[item.header], item.index)
+												: "---"}
+										</td>
+									))}
+								</tr>
+							)
+						})}
 					</tbody>
+
 					<tfoot className="sticky bottom-0">
 						<tr className="text-slate-50 bg-slate-700">
+							{showCheckbox && <td className="px-6 py-3" />}
 							{filteredHeadersWithIndex.map((item, i) => (
 								<td key={i} className="px-6 py-3">
 									{i === 0
@@ -113,6 +184,7 @@ const DynamicTailwindTable = ({
 					</tfoot>
 				</table>
 			</div>
+
 			<div className="flex justify-end my-4">
 				<Pagination
 					current={currentPage}
