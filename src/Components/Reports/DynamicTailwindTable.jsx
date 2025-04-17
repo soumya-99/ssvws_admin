@@ -142,7 +142,7 @@ const DynamicTailwindTable = ({
 								<tr
 									key={rowIndex}
 									className={
-										rowIndex % 2 === 0 ? "bg-slate-200 text-slate-900" : ""
+										rowIndex % 2 === 0 ? "bg-slate-100 text-slate-900" : ""
 									}
 								>
 									{showCheckbox && (

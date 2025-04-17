@@ -19,8 +19,8 @@ import DynamicTailwindTable from "../../../Components/Reports/DynamicTailwindTab
 import {
 	branchwiseTxnReportHeader,
 	memberwiseOutstandingHeader,
-    overduereport,
-    overduereportheader,
+	overduereport,
+	overduereportheader,
 } from "../../../Utils/Reports/headerMap"
 import Select from "react-select"
 
@@ -58,9 +58,8 @@ const options2 = [
 	},
 ]
 
-
 function OverdueReport() {
-    const userDetails = JSON.parse(localStorage.getItem("user_details")) || ""
+	const userDetails = JSON.parse(localStorage.getItem("user_details")) || ""
 	const [loading, setLoading] = useState(false)
 
 	const [searchType, setSearchType] = useState(() => "D")
@@ -100,9 +99,9 @@ function OverdueReport() {
 		setLoading(true)
 
 		// const branchCodes = selectedOptions?.map((item, i) => item?.value)
-		const branchCodes = selectedOptions?.map((item, i) =>{
-            return  {"branch_code":userDetails.brn_code}
-    })
+		const branchCodes = selectedOptions?.map((item, i) => {
+			return { branch_code: userDetails.brn_code }
+		})
 
 		// const creds = {
 		// 	from_dt: formatDateToYYYYMMDD(fromDate),
@@ -111,9 +110,9 @@ function OverdueReport() {
 		// 		branchCodes?.length === 0 ? [userDetails?.brn_code] : branchCodes,
 		// 	tr_type: searchType,
 		// }
-        const creds = {
-            send_date:formatDateToYYYYMMDD(fromDate),
-			search_brn_id: [{"branch_code":userDetails.brn_code}]
+		const creds = {
+			send_date: formatDateToYYYYMMDD(fromDate),
+			search_brn_id: [{ branch_code: userDetails.brn_code }],
 		}
 
 		await axios
@@ -307,7 +306,7 @@ function OverdueReport() {
 	}, [])
 
 	const searchData = async () => {
-		if (searchType2 === "G" && fromDate ) {
+		if (searchType2 === "G" && fromDate) {
 			await handleFetchTxnReportGroupwise()
 		} else if (searchType2 === "F" && fromDate && toDate) {
 			await handleFetchTxnReportFundwise()
@@ -448,7 +447,7 @@ function OverdueReport() {
 						userDetails?.brn_code == 100
 							? displayedOptions?.map((item, _) => `${item?.label}, `)
 							: userDetails?.branch_name}{" "}
-						from {fromDate} 
+						from {fromDate}
 					</div>
 
 					<div className="mb-2 flex justify-start gap-5 items-center">
@@ -691,10 +690,10 @@ function OverdueReport() {
 							<DynamicTailwindTable
 								data={reportData}
 								pageSize={50}
-								columnTotal={[14,15]}
-								dateTimeExceptionCols={[0,1,9,11]}
+								columnTotal={[14, 15]}
+								dateTimeExceptionCols={[0, 1, 9, 11]}
 								headersMap={overduereportheader}
-                                colRemove={[6]}
+								colRemove={[6]}
 							/>
 						</>
 					)}
