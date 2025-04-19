@@ -126,6 +126,10 @@ const groupwiseDemandReportHeader = {
 	coll_amt: "Collection Amount",
 	loan_period: "Loan Period",
 	demand_after_collection: "Demand After Collection",
+	dmd_amt: "Demand Amount",
+	prn_outstanding: "Outstanding Principal",
+	intt_outstanding: "Outstanding Interest",
+	prn_disb_amt: "Principal Disbursement Amount",
 }
 
 const fundwiseDemandReportHeader = {
@@ -222,7 +226,7 @@ const overduereportheader = {
 	emp_name: "Employee Name",
 	coll_amt: "Collection Amount",
 	loan_period: "Loan Period",
-	od_amt:'OD Amount',
+	od_amt: "OD Amount",
 	demand_after_collection: "Demand After Collection",
 }
 
@@ -235,7 +239,7 @@ const transactionFieldNames = {
 	credit: "Credit Amount",
 	created_code: "Created Branch Code",
 	created_by: "Created By",
-  }
+}
 
 export {
 	fundwiseOutstandingHeader,
@@ -251,5 +255,5 @@ export {
 	memberwiseDemandReportHeader,
 	branchwiseDemandReportHeader,
 	overduereportheader,
-	transactionFieldNames
+	transactionFieldNames,
 }
