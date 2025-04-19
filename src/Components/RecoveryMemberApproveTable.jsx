@@ -86,6 +86,7 @@ function RecoveryMemberApproveTable({
 	const [getloanAppData, setLoanAppData] = useState([])
 	const [remarksForDelete, setRemarksForDelete] = useState("")
 	const [RejectcachedPaymentId, setRejectCachedPaymentId] = useState(() => [])
+	const [checkBeforeApproveData, setCheckBeforeApproveData] = useState(() => [])
 
 	useEffect(() => {
 		if (loanAppData.length > 0) {
@@ -137,20 +138,18 @@ function RecoveryMemberApproveTable({
 				}
 			})
 
-			const reject_group_Data = selectedRows.map((item) => {
+			const dat = selectedRows.map((item) => {
 				return {
-					payment_date: item?.transaction_date,
 					payment_id: item?.payment_id,
 					loan_id: item?.loan_id,
-					branch_code: userDetails?.brn_code,
-					credit: item?.amt,
 				}
 			})
 
-			console.log(reject_group_Data, "reject_group_Data", e.value)
+			console.log(dat, "check before approve dat", e.value)
 
 			setCachedPaymentId(group_Data)
-			setRejectCachedPaymentId(reject_group_Data)
+			// setRejectCachedPaymentId(reject_group_Data)
+			setCheckBeforeApproveData(dat)
 			setShowApprov(true)
 			console.log("You selected  rows", cachedPaymentId, ">>>", group_Data)
 		} else {
@@ -160,6 +159,26 @@ function RecoveryMemberApproveTable({
 			setOutstanding(0)
 			console.log("No rows selected")
 		}
+	}
+
+	const checkingBeforeApprove = async () => {
+		setLoading(true)
+		const creds = {
+			chkdt: checkBeforeApproveData,
+		}
+		await axios
+			.post(`${url}/checking_before_approve`, creds)
+			.then((res) => {
+				if (res?.data?.suc === 0) {
+					Message("error", res?.data?.msg)
+				} else if (res?.data?.suc === 1) {
+					setVisible(true)
+				}
+			})
+			.catch((err) => {
+				Message("error", "Some error occurred while fetching loans!")
+			})
+		setLoading(false)
 	}
 
 	// const totalEmi = loanAppData?.reduce((sum, item) => sum + parseFloat(item.tot_emi || 0), 0);
@@ -258,22 +277,22 @@ function RecoveryMemberApproveTable({
 		setLoading(false)
 	}
 
-	const confirm = async () => {
-		await rejectRecoveryTransaction(RejectcachedPaymentId)
-			.then(() => {
-				// fetchLoanApplications("R")
-				setRemarksForDelete("")
-			})
-			.catch((err) => {
-				console.log("Err in RecoveryMemberApproveTable.jsx", err)
-			})
-	}
+	// const confirm = async () => {
+	// 	await rejectRecoveryTransaction(RejectcachedPaymentId)
+	// 		.then(() => {
+	// 			// fetchLoanApplications("R")
+	// 			setRemarksForDelete("")
+	// 		})
+	// 		.catch((err) => {
+	// 			console.log("Err in RecoveryMemberApproveTable.jsx", err)
+	// 		})
+	// }
 
-	const cancel = (e) => {
-		console.log(e)
-		setRemarksForDelete("")
-		// message.error('Click on No');
-	}
+	// const cancel = (e) => {
+	// 	console.log(e)
+	// 	setRemarksForDelete("")
+	// 	// message.error('Click on No');
+	// }
 
 	return (
 		<Spin
@@ -464,10 +483,10 @@ function RecoveryMemberApproveTable({
 							>
 								<button
 									className={`inline-flex items-center px-4 py-2 mt-0 ml-0 sm:mt-0 text-sm font-small text-center text-white border hover:border-green-600 border-teal-500 bg-teal-500 transition ease-in-out hover:bg-green-600 duration-300 rounded-full  dark:focus:ring-primary-900`}
-									onClick={() => {
+									onClick={async () => {
 										// setCachedPaymentId(item?.payment_id)
-
-										setVisible(true)
+										// setVisible(true)
+										await checkingBeforeApprove()
 									}}
 								>
 									<CheckCircleOutlined /> <spann class={`ml-2`}>Approve</spann>

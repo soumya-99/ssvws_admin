@@ -209,7 +209,7 @@ const RejectTransaction = () => {
 								pageSize={50}
 								dateTimeExceptionCols={[0]}
 								showCheckbox
-								disableAllCheckbox
+								// disableAllCheckbox
 								selectedRowIndices={selectedRowIndices}
 								onRowSelectionChange={setSelectedRowIndices}
 								headersMap={transactionFieldNames}
@@ -218,7 +218,7 @@ const RejectTransaction = () => {
 							/>
 						</div>
 
-						{data?.length > 0 && (
+						{data?.length > 0 && selectedRowIndices?.length !== 0 && (
 							<div>
 								<Popconfirm
 									title={`Reject Transaction?`}
@@ -238,7 +238,7 @@ const RejectTransaction = () => {
 									disabled={selectedRowIndices?.length === 0}
 								>
 									<button
-										className={`items-center -mt-16 px-6 py-3 text-sm font-medium text-center text-white border border-[#DA4167] bg-[#DA4167] transition ease-in-out hover:bg-[#ac3246] hover:border-[#ac3246] duration-300 rounded-full  dark:focus:ring-primary-900`}
+										className={`items-center -mt-16 px-6 py-3 text-sm font-medium text-center text-white border border-[#DA4167] bg-[#DA4167] transition ease-in-out hover:bg-[#ac3246] hover:border-[#ac3246] duration-300 rounded-full dark:focus:ring-primary-900`}
 									>
 										<CheckCircleOutlined /> <span className="ml-2">Reject</span>
 									</button>

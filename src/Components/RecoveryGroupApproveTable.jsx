@@ -274,46 +274,46 @@ function RecoveryGroupApproveTable({
 		setLoading(false)
 	}
 
-	const rejectRecoveryTransaction = async (cachedDateGcode) => {
-		setLoading(true)
+	// const rejectRecoveryTransaction = async (cachedDateGcode) => {
+	// 	setLoading(true)
 
-		const creds = {
-			rejected_by: userDetails?.emp_id,
-			reject_remarks: remarksForDelete,
-			reject_dt: cachedDateGcode,
-		}
-		// console.log(creds, 'creds');
+	// 	const creds = {
+	// 		rejected_by: userDetails?.emp_id,
+	// 		reject_remarks: remarksForDelete,
+	// 		reject_dt: cachedDateGcode,
+	// 	}
+	// 	// console.log(creds, 'creds');
 
-		await axios
-			.post(`${url}/reject_grp_co_wise_recov`, creds)
-			.then((res) => {
-				fetchLoanApplicationsGroup()
-				setCachedDateGcode(() => [])
-				setSelectedProducts(() => [])
-				console.log("RESSS approveRecoveryTransaction", res?.data)
-			})
-			.catch((err) => {
-				console.log("ERRR approveRecoveryTransaction", err)
-			})
-		setLoading(false)
-	}
+	// 	await axios
+	// 		.post(`${url}/reject_grp_co_wise_recov`, creds)
+	// 		.then((res) => {
+	// 			fetchLoanApplicationsGroup()
+	// 			setCachedDateGcode(() => [])
+	// 			setSelectedProducts(() => [])
+	// 			console.log("RESSS approveRecoveryTransaction", res?.data)
+	// 		})
+	// 		.catch((err) => {
+	// 			console.log("ERRR approveRecoveryTransaction", err)
+	// 		})
+	// 	setLoading(false)
+	// }
 
-	const confirm = async () => {
-		await rejectRecoveryTransaction(cachedDateGcode)
-			.then(() => {
-				// fetchLoanApplications("R")
-				setRemarksForDelete("")
-			})
-			.catch((err) => {
-				console.log("Err in RecoveryMemberApproveTable.jsx", err)
-			})
-	}
+	// const confirm = async () => {
+	// 	await rejectRecoveryTransaction(cachedDateGcode)
+	// 		.then(() => {
+	// 			// fetchLoanApplications("R")
+	// 			setRemarksForDelete("")
+	// 		})
+	// 		.catch((err) => {
+	// 			console.log("Err in RecoveryMemberApproveTable.jsx", err)
+	// 		})
+	// }
 
-	const cancel = (e) => {
-		console.log(e)
-		setRemarksForDelete("")
-		// message.error('Click on No');
-	}
+	// const cancel = (e) => {
+	// 	console.log(e)
+	// 	setRemarksForDelete("")
+	// 	// message.error('Click on No');
+	// }
 
 	const rowExpansionTemplate = () => {
 		return (
@@ -613,18 +613,15 @@ function RecoveryGroupApproveTable({
 				}}
 			/>
 
-			<DialogBox
+			{/* <DialogBox
 				flag={4}
 				onPress={() => setVisible_Reject(!visible_Reject)}
 				visible={visible_Reject}
 				onPressYes={async () => {
-					// editGroup()
 					console.log(cachedDateGcode, "cachedPaymentId__reject ggg yes")
 
 					await approveRecoveryTransaction(cachedDateGcode)
-						.then(() => {
-							// fetchLoanApplications("R")
-						})
+						.then(() => {})
 						.catch((err) => {
 							console.log("Err in RecoveryGroupApproveTable.jsx", err)
 						})
@@ -634,7 +631,7 @@ function RecoveryGroupApproveTable({
 					console.log(cachedDateGcode, "cachedPaymentId__reject ggg no")
 					setVisible_Reject(!visible_Reject)
 				}}
-			/>
+			/> */}
 		</Spin>
 	)
 }

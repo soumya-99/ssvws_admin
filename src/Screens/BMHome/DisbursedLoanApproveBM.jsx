@@ -15,16 +15,16 @@ import { formatDateToYYYYMMDD } from "../../Utils/formateDate"
 
 const options = [
 	{
+		label: "Memberwise",
+		value: "M",
+	},
+	{
 		label: "Groupwise",
 		value: "G",
 	},
 	{
 		label: "Collectorwise",
 		value: "C",
-	},
-	{
-		label: "Memberwise",
-		value: "M",
 	},
 ]
 
@@ -51,7 +51,7 @@ function DisbursedLoanApproveBM() {
 	const [fromDate, setFromDate] = useState()
 	const [toDate, setToDate] = useState()
 
-	const [loanType, setLoanType] = useState("G")
+	const [loanType, setLoanType] = useState("M")
 	// const [value2, setValue2] = useState("S")
 
 	const fetchLoanApplicationsGroup = async () => {
