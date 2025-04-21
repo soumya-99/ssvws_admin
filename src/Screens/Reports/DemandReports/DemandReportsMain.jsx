@@ -1122,7 +1122,7 @@ function DemandReportsMain() {
 							<DynamicTailwindTable
 								data={reportData}
 								pageSize={50}
-								columnTotal={[6, 13, 14, 15, 16]}
+								columnTotal={[6, 12, 13]}
 								dateTimeExceptionCols={[0, 11, 12, 7, 12, 13]}
 								headersMap={groupwiseDemandReportHeader}
 								// colRemove={[11]}
