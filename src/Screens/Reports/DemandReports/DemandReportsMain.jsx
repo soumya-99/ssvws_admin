@@ -693,6 +693,61 @@ function DemandReportsMain() {
 						/>
 					</div> */}
 
+					{(userDetails?.id === 3 ||
+						userDetails?.id === 4 ||
+						userDetails?.id === 11) &&
+						userDetails?.brn_code == 100 && (
+							<div className="w-full">
+								<Select
+									options={[{ value: "all", label: "All" }, ...dropdownOptions]}
+									isMulti
+									value={displayedOptions}
+									onChange={handleMultiSelectChange}
+									placeholder="Select branches..."
+									className="basic-multi-select"
+									classNamePrefix="select"
+									styles={{
+										control: (provided) => ({
+											...provided,
+											borderRadius: "8px",
+										}),
+										valueContainer: (provided) => ({
+											...provided,
+											borderRadius: "8px",
+										}),
+										singleValue: (provided) => ({
+											...provided,
+											color: "black",
+										}),
+										multiValue: (provided) => ({
+											...provided,
+											padding: "0.1rem",
+											backgroundColor: "#da4167",
+											color: "white",
+											borderRadius: "8px",
+										}),
+										multiValueLabel: (provided) => ({
+											...provided,
+											color: "white",
+										}),
+										multiValueRemove: (provided) => ({
+											...provided,
+											color: "white",
+											"&:hover": {
+												backgroundColor: "red",
+												color: "white",
+												borderRadius: "8px",
+											},
+										}),
+										placeholder: (provided) => ({
+											...provided,
+											fontSize: "0.9rem",
+										}),
+									}}
+								/>
+							</div>
+						)}
+
 					<div className="grid grid-cols-2 gap-5 mt-5 items-end">
 						<div>
 							<TDInputTemplateBr
@@ -729,7 +784,7 @@ function DemandReportsMain() {
 					</div>
 
 					<div>
-						{(userDetails?.id === 3 ||
+						{/* {(userDetails?.id === 3 ||
 							userDetails?.id === 4 ||
 							userDetails?.id === 11) &&
 							userDetails?.brn_code == 100 && (
@@ -785,7 +840,7 @@ function DemandReportsMain() {
 										}}
 									/>
 								</div>
-							)}
+							)} */}
 						{searchType === "F" && (
 							<div className="pt-4">
 								<TDInputTemplateBr
@@ -1067,7 +1122,7 @@ function DemandReportsMain() {
 							<DynamicTailwindTable
 								data={reportData}
 								pageSize={50}
-								columnTotal={[6, 7, 13, 14, 15, 16]}
+								columnTotal={[6, 13, 14, 15, 16]}
 								dateTimeExceptionCols={[0, 11, 12, 7, 12, 13]}
 								headersMap={groupwiseDemandReportHeader}
 								// colRemove={[11]}
