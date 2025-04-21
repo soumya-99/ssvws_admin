@@ -511,7 +511,7 @@ function DemandReportsMain() {
 		setSelectedCOs([])
 		setFromDay("")
 		setToDay("")
-		setProcedureSuccessFlag("0")
+		// setProcedureSuccessFlag("0")
 		if (searchType === "F") {
 			getFunds()
 		}
@@ -786,7 +786,6 @@ function DemandReportsMain() {
 									/>
 								</div>
 							)}
-
 						{searchType === "F" && (
 							<div className="pt-4">
 								<TDInputTemplateBr
@@ -969,26 +968,28 @@ function DemandReportsMain() {
 					</div> */}
 
 					{+procedureSuccessFlag === 1 && (
-						<div className="flex gap-6 items-center align-middle">
-							<Radiobtn
-								data={options}
-								val={searchType}
-								onChangeVal={(value) => {
-									onChange(value)
-								}}
-							/>
-							<div className="mt-3">
-								<button
-									className="inline-flex items-center px-4 py-2 text-sm font-small text-white border hover:border-pink-600 border-pink-500 bg-pink-500 transition ease-in-out hover:bg-pink-700 duration-300 rounded-full"
-									onClick={handleSubmit}
-								>
-									<Search /> <span className="ml-2">Fetch</span>
-								</button>
+						<>
+							<div className="flex gap-6 items-center align-middle">
+								<Radiobtn
+									data={options}
+									val={searchType}
+									onChangeVal={(value) => {
+										onChange(value)
+									}}
+								/>
+								<div className="mt-3">
+									<button
+										className="inline-flex items-center px-4 py-2 text-sm font-small text-white border hover:border-pink-600 border-pink-500 bg-pink-500 transition ease-in-out hover:bg-pink-700 duration-300 rounded-full"
+										onClick={handleSubmit}
+									>
+										<Search /> <span className="ml-2">Fetch</span>
+									</button>
+								</div>
 							</div>
-						</div>
+						</>
 					)}
 
-					{/* {reportData?.length > 0 && (
+					{reportData?.length > 0 && searchType !== "B" && (
 						<div>
 							<div className="text-xl -mb-4 text-slate-700 font-bold">
 								Daywise
@@ -1057,7 +1058,7 @@ function DemandReportsMain() {
 								</div>
 							</div>
 						</div>
-					)} */}
+					)}
 
 					{/* "Groupwise" */}
 
@@ -1066,9 +1067,10 @@ function DemandReportsMain() {
 							<DynamicTailwindTable
 								data={reportData}
 								pageSize={50}
-								columnTotal={[6, 13, 14, 15, 16]}
-								dateTimeExceptionCols={[0, 11, 12]}
+								columnTotal={[6, 7, 13, 14, 15, 16]}
+								dateTimeExceptionCols={[0, 11, 12, 7, 12, 13]}
 								headersMap={groupwiseDemandReportHeader}
+								// colRemove={[11]}
 							/>
 						</>
 					)}
@@ -1108,7 +1110,7 @@ function DemandReportsMain() {
 							<DynamicTailwindTable
 								data={reportData}
 								pageSize={50}
-								columnTotal={[11, 18, 19, 20]}
+								columnTotal={[11, 17, 18, 19, 20]}
 								dateTimeExceptionCols={[0, 10, 16, 17]}
 								headersMap={memberwiseDemandReportHeader}
 							/>
