@@ -27,6 +27,7 @@ import { Column } from "primereact/column"
 import { Toast } from "primereact/toast"
 import { Message } from "./Message"
 import TDInputTemplateBr from "./TDInputTemplateBr"
+import { formatDateToYYYYMMDD } from "../Utils/formateDate"
 
 const { Panel } = Collapse
 
@@ -142,6 +143,7 @@ function RecoveryMemberApproveTable({
 				return {
 					payment_id: item?.payment_id,
 					loan_id: item?.loan_id,
+					payment_date: formatDateToYYYYMMDD(item?.transaction_date),
 				}
 			})
 
@@ -164,6 +166,7 @@ function RecoveryMemberApproveTable({
 	const checkingBeforeApprove = async () => {
 		setLoading(true)
 		const creds = {
+			flag: "M",
 			chkdt: checkBeforeApproveData,
 		}
 		await axios

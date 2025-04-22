@@ -64,7 +64,7 @@ function DisbursedLoanApproveBM() {
 			})
 			.then((res) => {
 				if (res?.data?.suc === 1) {
-					// console.log(res?.data?.msg, 'xxxxxxxxx');
+					console.log(res?.data?.msg, "XXXXXXXX GRPPPPP")
 
 					setLoanApplicationsGroup(res?.data?.msg)
 					setCopyLoanApplicationsGroup(res?.data?.msg)
