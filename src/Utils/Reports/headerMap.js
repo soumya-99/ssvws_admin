@@ -82,8 +82,11 @@ const disbursementDetailsHeader = {
 	fund_id: "Fund ID",
 	fund_name: "Fund Name",
 	applied_amt: "Applied Amt",
-	disburse_amt: "Disburse Amt",
 	disb_dt: "Disburse Date",
+	disburse_amt: "Disburse Amt",
+	tot_emi:"Total EMI",
+	recovery_day:"Recovery Day",
+	period_mode:"Period Mode",
 	curr_outstanding: "Current Outstanding",
 }
 

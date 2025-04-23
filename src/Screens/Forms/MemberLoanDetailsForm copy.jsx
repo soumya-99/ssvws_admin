@@ -356,13 +356,299 @@ function MemberLoanDetailsForm() {
 					<div>
 						{/* ///////////////////////// */}
 
+						<div>
+							<div className="grid gap-4 sm:grid-cols-2 sm:gap-6">
+								<div className="text-xl mb-2 mt-5 text-[#DA4167] font-semibold underline">
+									1. Full Loan Details
+								</div>
+							</div>
+							<div className="grid gap-4 sm:grid-cols-4 sm:gap-6">
+								<div className="sm:col-span-2">
+									<TDInputTemplateBr
+										placeholder="Loan ID..."
+										type="text"
+										label="Loan ID"
+										name="loanId"
+										formControlName={memberLoanDetailsData.loanId}
+										handleChange={handleChangeMemberLoanDetails}
+										mode={1}
+										disabled
+									/>
+								</div>
+								<div className="sm:col-span-2">
+									<TDInputTemplateBr
+										placeholder="Member Name..."
+										type="text"
+										label="Member Name"
+										name="memberName"
+										formControlName={memberLoanDetailsData.memberName}
+										handleChange={handleChangeMemberLoanDetails}
+										mode={1}
+										disabled
+									/>
+								</div>
+								<div>
+									<TDInputTemplateBr
+										placeholder="Member Code..."
+										type="text"
+										label="Member Code"
+										name="memberCode"
+										formControlName={memberLoanDetailsData.memberCode}
+										handleChange={handleChangeMemberLoanDetails}
+										mode={1}
+										disabled
+									/>
+								</div>
+
+								<div>
+									<TDInputTemplateBr
+										placeholder="Group Name..."
+										type="text"
+										label="Group Name"
+										name="groupName"
+										formControlName={memberLoanDetailsData.groupName}
+										handleChange={handleChangeMemberLoanDetails}
+										mode={1}
+										disabled
+									/>
+								</div>
+								{/* <div>
+									<TDInputTemplateBr
+										placeholder="Purpose..."
+										type="text"
+										label="Purpose"
+										name="purpose"
+										formControlName={memberLoanDetailsData.purpose}
+										handleChange={handleChangeMemberLoanDetails}
+										mode={1}
+										disabled
+									/>
+								</div> */}
+								<div className="sm:col-span-2">
+									<TDInputTemplateBr
+										placeholder="Select Purpose"
+										type="text"
+										label="Purpose"
+										name="purposeId"
+										formControlName={memberLoanDetailsData?.purposeId}
+										handleChange={handleChangeMemberLoanDetails}
+										data={purposeOfLoan?.map((item, _) => ({
+											code: item?.purp_id,
+											name: item?.purpose_id,
+										}))}
+										mode={2}
+										disabled
+									/>
+								</div>
+								{/* <div>
+									<TDInputTemplateBr
+										placeholder="Sub Purpose..."
+										type="text"
+										label="Sub Purpose"
+										name="subPurpose"
+										formControlName={memberLoanDetailsData.subPurpose}
+										handleChange={handleChangeMemberLoanDetails}
+										mode={1}
+										disabled
+									/>
+								</div> */}
+								{/* <div>
+									<TDInputTemplateBr
+										placeholder="Select Sub Purpose"
+										type="text"
+										label="Sub Purpose"
+										name="subPurposeId"
+										formControlName={memberLoanDetailsData?.subPurposeId}
+										handleChange={handleChangeMemberLoanDetails}
+										data={subPurposeOfLoan?.map((item, _) => ({
+											code: item?.sub_purp_id,
+											name: item?.sub_purp_name,
+										}))}
+										mode={2}
+									/>
+								</div> */}
+								<div>
+									<TDInputTemplateBr
+										placeholder="Disbursement Date..."
+										type="date"
+										label="Disbursement Date"
+										name="disbursementDate"
+										formControlName={formatDateToYYYYMMDD(
+											new Date(memberLoanDetailsData.disbursementDate)
+										)}
+										handleChange={handleChangeMemberLoanDetails}
+										mode={1}
+										disabled
+									/>
+								</div>
+								<div>
+									<TDInputTemplateBr
+										placeholder="Disbursement Amount..."
+										type="text"
+										label="Disbursement Amount"
+										name="disburseAmount"
+										formControlName={memberLoanDetailsData.disburseAmount || ""}
+										handleChange={handleChangeMemberLoanDetails}
+										mode={1}
+										disabled
+									/>
+								</div>
+								<div>
+									<TDInputTemplateBr
+										placeholder="Scheme Name..."
+										type="text"
+										label="Scheme Name"
+										name="schemeName"
+										formControlName={memberLoanDetailsData.schemeName}
+										handleChange={handleChangeMemberLoanDetails}
+										mode={1}
+										disabled
+									/>
+								</div>
+								{/* <div>
+									<TDInputTemplateBr
+										placeholder="Fund Name..."
+										type="text"
+										label="Fund Name"
+										name="fundName"
+										formControlName={memberLoanDetailsData.fundName}
+										handleChange={handleChangeMemberLoanDetails}
+										mode={1}
+										disabled
+									/>
+								</div> */}
+								<div>
+									<TDInputTemplateBr
+										placeholder="Select Fund..."
+										type="text"
+										label="Fund"
+										name="fundId"
+										formControlName={memberLoanDetailsData.fundId}
+										handleChange={handleChangeMemberLoanDetails}
+										data={funds?.map((item, _) => ({
+											code: item?.fund_id,
+											name: item?.fund_name,
+										}))}
+										mode={2}
+										disabled
+									/>
+								</div>
+								<div>
+									<TDInputTemplateBr
+										placeholder="Period Mode..."
+										type="text"
+										label="Period Mode"
+										name="periodMode"
+										formControlName={memberLoanDetailsData.periodMode}
+										handleChange={handleChangeMemberLoanDetails}
+										mode={1}
+										disabled
+									/>
+								</div>
+								<div>
+									<TDInputTemplateBr
+										placeholder="Balance..."
+										type="text"
+										label="Balance"
+										name="principalBalance"
+										formControlName={memberLoanDetailsData.principalBalance}
+										handleChange={handleChangeMemberLoanDetails}
+										mode={1}
+										disabled
+									/>
+								</div>
+								<div>
+									<TDInputTemplateBr
+										placeholder="Period..."
+										type="text"
+										label="Period"
+										name="period"
+										formControlName={memberLoanDetailsData.period}
+										handleChange={handleChangeMemberLoanDetails}
+										mode={1}
+										disabled
+									/>
+								</div>
+								{/* <div>
+									<TDInputTemplateBr
+										placeholder="Principal Amount..."
+										type="text"
+										label="Principal Amount"
+										name="principalAmount"
+										formControlName={memberLoanDetailsData.principalAmount}
+										handleChange={handleChangeMemberLoanDetails}
+										mode={1}
+										disabled
+									/>
+								</div>
+								<div>
+									<TDInputTemplateBr
+										placeholder="Principal EMI..."
+										type="text"
+										label="Principal EMI"
+										name="principalEMI"
+										formControlName={memberLoanDetailsData.principalEMI}
+										handleChange={handleChangeMemberLoanDetails}
+										mode={1}
+										disabled
+									/>
+								</div>
+								<div>
+									<TDInputTemplateBr
+										placeholder="Interest Amount..."
+										type="text"
+										label="Interest Amount"
+										name="interestAmount"
+										formControlName={memberLoanDetailsData.interestAmount}
+										handleChange={handleChangeMemberLoanDetails}
+										mode={1}
+										disabled
+									/>
+								</div>
+								<div>
+									<TDInputTemplateBr
+										placeholder="Interest EMI..."
+										type="text"
+										label="Interest EMI"
+										name="interestEMI"
+										formControlName={memberLoanDetailsData.interestEMI}
+										handleChange={handleChangeMemberLoanDetails}
+										mode={1}
+										disabled
+									/>
+								</div> */}
+								<div>
+									<TDInputTemplateBr
+										placeholder="Total EMI..."
+										type="text"
+										label="Total EMI"
+										name="totalEMI"
+										formControlName={memberLoanDetailsData.totalEMI}
+										handleChange={handleChangeMemberLoanDetails}
+										mode={1}
+										disabled
+									/>
+								</div>
+							</div>
+							{/* {disableCondition() && (
+								<div className="text-center mt-6">
+									<button
+										className="p-2 px-6 bg-teal-500 text-slate-50 rounded-xl hover:bg-green-500 active:ring-2 active:ring-slate-500"
+										type="button"
+										onClick={() => setVisible(true)}
+									>
+										UPDATE
+									</button>
+								</div>
+							)} */}
+						</div>
 
 						{/* ///////////////////////// */}
 
 						<div>
-							{/* <div className="w-full my-10 border-t-4 border-gray-500 border-dashed"></div> */}
+							<div className="w-full my-10 border-t-4 border-gray-500 border-dashed"></div>
 							<div className="text-xl mb-2 mt-5 text-[#DA4167] font-semibold underline">
-								 Transaction Details
+								2. Transaction Details
 							</div>
 						</div>
 

@@ -264,7 +264,7 @@ function TranceferCO({ groupDataArr }) {
 				setValues({
 					Grp_wit_Co: res?.data?.msg[0]?.group_name,
 					frm_co: res?.data?.msg[0]?.from_co_name,
-					frm_branch: res?.data?.msg[0]?.from_brn_name,
+					frm_branch: res?.data?.msg[0]?.grp_brn_name,
 					to_co: res?.data?.msg[0]?.to_co_name,
 					to_branch: res?.data?.msg[0]?.to_brn_name,
 					remarks_: res?.data?.msg[0]?.remarks,
@@ -434,7 +434,7 @@ function TranceferCO({ groupDataArr }) {
 		const creds = {
 			group_code: formik.values.Grp_wit_Co?.split(",")[1],
 			from_co: COAndBranch[0].co_id,
-			from_brn: COAndBranch[0].co_brn_id,
+			from_brn: COAndBranch[0].grp_brn,
 			to_co: formik.values.to_co,
 			to_brn: ToBranchName,
 			remarks: formik.values.remarks_,
@@ -716,6 +716,7 @@ function TranceferCO({ groupDataArr }) {
 									</div>
 
 									<div>
+									{/* {COAndBranch[0]?.co_brn_name} */}
 										<TDInputTemplateBr
 											placeholder="From Branch"
 											type="text"
@@ -724,7 +725,7 @@ function TranceferCO({ groupDataArr }) {
 											handleChange={formik.handleChange}
 											handleBlur={formik.handleBlur}
 											// formControlName={formik.values.frm_branch}
-											formControlName={COAndBranch.length > 0 ? COAndBranch[0].co_brn_name : formik.values.frm_branch}
+											formControlName={COAndBranch.length > 0 ? COAndBranch[0].grp_brn_name : formik.values.frm_branch}
 											mode={1}
 											// disabled={params.id > 0 ? true : false}
 											disabled={true}
