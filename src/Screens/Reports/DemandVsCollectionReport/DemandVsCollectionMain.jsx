@@ -766,91 +766,8 @@ function DemandVsCollectionMain() {
 									}))}
 								/>
 							</div> */}
-							{searchType === "C" &&
-							(userDetails?.id === 3 ||
-								userDetails?.id === 4 ||
-								userDetails?.id === 11) &&
-							userDetails?.brn_code == 100 ? (
-								<div className="w-full pt-4">
-									<Select
-										options={[{ value: "all", label: "All" }, ...dropdownCOs]}
-										isMulti
-										value={displayedCOs}
-										onChange={handleMultiSelectChangeCOs}
-										placeholder="Select COs'..."
-										className="basic-multi-select"
-										classNamePrefix="select"
-										styles={{
-											control: (provided) => ({
-												...provided,
-												borderRadius: "8px",
-											}),
-											valueContainer: (provided) => ({
-												...provided,
-												borderRadius: "8px",
-											}),
-											singleValue: (provided) => ({
-												...provided,
-												color: "black",
-											}),
-											multiValue: (provided) => ({
-												...provided,
-												padding: "0.1rem",
-												backgroundColor: "#da4167",
-												color: "white",
-												borderRadius: "8px",
-											}),
-											multiValueLabel: (provided) => ({
-												...provided,
-												color: "white",
-											}),
-											multiValueRemove: (provided) => ({
-												...provided,
-												color: "white",
-												"&:hover": {
-													backgroundColor: "red",
-													color: "white",
-													borderRadius: "8px",
-												},
-											}),
-											placeholder: (provided) => ({
-												...provided,
-												fontSize: "0.9rem",
-											}),
-										}}
-									/>
-								</div>
-							) :
-							//  (
-							// 	searchType === "C" && (
-							// 		<div className="w-full">
-							// 			<TDInputTemplateBr
-							// 				placeholder="Choose CO..."
-							// 				type="text"
-							// 				label="Credit Officers"
-							// 				name="co"
-							// 				formControlName={co.split(",")[0]}
-							// 				handleChange={(e) => {
-							// 					console.log("***********========", e)
-							// 					setCo(
-							// 						e.target.value +
-							// 							"," +
-							// 							cos.filter((i) => i.co_id == e.target.value)[0]
-							// 								?.emp_name
-							// 					)
-							// 				}}
-							// 				mode={2}
-							// 				data={cos?.map((item, i) => ({
-							// 					code: item?.co_id,
-							// 					name: `${item?.emp_name} - (${item?.co_id})`,
-							// 				}))}
-							// 			/>
-							// 		</div>
-							// 	)
-							// )
 							
-							null
-							}
+						
 						</div>
 					)}
 
@@ -946,7 +863,7 @@ function DemandVsCollectionMain() {
 								/>
 							</div>
 						)}
-						 {
+						 {/* {
 								searchType === "C" && (
 									<div className="w-full">
 										<TDInputTemplateBr
@@ -972,7 +889,63 @@ function DemandVsCollectionMain() {
 										/>
 									</div>
 								)
-}
+} */}
+{searchType === "C" &&
+							(userDetails?.id === 3 ||
+								userDetails?.id === 4 ||
+								userDetails?.id === 11) &&
+							userDetails?.brn_code == 100 && (
+								<div className="w-full pt-4">
+									<Select
+										options={[{ value: "all", label: "All" }, ...dropdownCOs]}
+										isMulti
+										value={displayedCOs}
+										onChange={handleMultiSelectChangeCOs}
+										placeholder="Select COs'..."
+										className="basic-multi-select"
+										classNamePrefix="select"
+										styles={{
+											control: (provided) => ({
+												...provided,
+												borderRadius: "8px",
+											}),
+											valueContainer: (provided) => ({
+												...provided,
+												borderRadius: "8px",
+											}),
+											singleValue: (provided) => ({
+												...provided,
+												color: "black",
+											}),
+											multiValue: (provided) => ({
+												...provided,
+												padding: "0.1rem",
+												backgroundColor: "#da4167",
+												color: "white",
+												borderRadius: "8px",
+											}),
+											multiValueLabel: (provided) => ({
+												...provided,
+												color: "white",
+											}),
+											multiValueRemove: (provided) => ({
+												...provided,
+												color: "white",
+												"&:hover": {
+													backgroundColor: "red",
+													color: "white",
+													borderRadius: "8px",
+												},
+											}),
+											placeholder: (provided) => ({
+												...provided,
+												fontSize: "0.9rem",
+											}),
+										}}
+									/>
+								</div>
+							) 
+						}
 					{+procedureSuccessFlag === 1 && (<div className="flex gap-6 items-center align-middle">
 						<Radiobtn
 							data={options}
