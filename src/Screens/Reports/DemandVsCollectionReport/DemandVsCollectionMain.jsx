@@ -154,7 +154,34 @@ function DemandVsCollectionMain() {
 	// 		handleFetchCO()
 	// 	}
 	// }, [searchType])
+	const runProcedureReport = async () => {
+		setLoading(true)
 
+		const branchCodes = selectedOptions?.map((item, i) => ({
+			branch_code: item?.value,
+		}))
+
+		const creds = {
+			send_month: choosenMonth,
+			send_year: choosenYear,
+			branches:
+				branchCodes?.length === 0
+					? [{ branch_code: userDetails?.brn_code }]
+					: branchCodes,
+		}
+
+		await axios
+			.post(`${url}/call_demand_proc`, creds)
+			.then((res) => {
+				console.log("Procedure called", res?.data)
+				setProcedureSuccessFlag(res?.data?.suc)
+			})
+			.catch((err) => {
+				console.log("Some error while running procedure.", err)
+			})
+
+		setLoading(false)
+	}
 	// "Memberwise"
 	const handleFetchMemberwiseReport = async () => {
 		setLoading(true)
@@ -889,7 +916,8 @@ function DemandVsCollectionMain() {
 						<button
 							className={`inline-flex items-center px-4 py-2 mt-0 ml-0 sm:mt-0 text-sm font-small text-center text-white border hover:border-green-600 border-teal-500 bg-teal-500 transition ease-in-out hover:bg-green-600 duration-300 rounded-full dark:focus:ring-primary-900`}
 							onClick={() => {
-								handleSubmit()
+								// handleSubmit()
+								runProcedureReport()
 							}}
 						>
 							<SearchOutlined /> <span class={`ml-2`}>Process Report</span>
