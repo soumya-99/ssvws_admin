@@ -27,6 +27,7 @@ import { Column } from "primereact/column"
 import { Toast } from "primereact/toast"
 import { Message } from "./Message"
 import TDInputTemplateBr from "./TDInputTemplateBr"
+import { formatDateToYYYYMMDD } from "../Utils/formateDate"
 
 const { Panel } = Collapse
 
@@ -75,6 +76,7 @@ function RecoveryMemberDisbursTable({
 	const [getloanAppData, setLoanAppData] = useState([])
 	const [remarksForDelete, setRemarksForDelete] = useState("")
 	const [RejectcachedPaymentId, setRejectCachedPaymentId] = useState(() => [])
+	const [checkBeforeApproveData, setCheckBeforeApproveData] = useState(() => [])
 
 	useEffect(() => {
 		if (loanAppData.length > 0) {
@@ -115,10 +117,19 @@ function RecoveryMemberDisbursTable({
 				}
 			})
 
+			const dat = selectedRows.map((item) => {
+				return {
+					payment_id: item?.payment_id,
+					loan_id: item?.loan_id,
+					payment_date: formatDateToYYYYMMDD(item?.transaction_date),
+				}
+			})
+
 			console.log(reject_group_Data, "reject_group_Data", e.value)
 
 			setCachedPaymentId(group_Data)
-			setRejectCachedPaymentId(reject_group_Data)
+			// setRejectCachedPaymentId(reject_group_Data)
+			setCheckBeforeApproveData(dat)
 			setShowApprov(true)
 			console.log("You selected  rows", cachedPaymentId, ">>>", group_Data)
 		} else {
@@ -128,6 +139,27 @@ function RecoveryMemberDisbursTable({
 			// setOutstanding(0)
 			console.log("No rows selected")
 		}
+	}
+
+	const checkingBeforeApprove = async () => {
+		setLoading(true)
+		const creds = {
+			flag: "M",
+			chkdt: checkBeforeApproveData,
+		}
+		await axios
+			.post(`${url}/checking_before_approve`, creds)
+			.then((res) => {
+				if (res?.data?.suc === 0) {
+					Message("error", res?.data?.msg)
+				} else if (res?.data?.suc === 1) {
+					setVisible(true)
+				}
+			})
+			.catch((err) => {
+				Message("error", "Some error occurred while fetching loans!")
+			})
+		setLoading(false)
 	}
 
 	const fetchLoanApplicationsMember = async () => {
@@ -404,9 +436,9 @@ function RecoveryMemberDisbursTable({
 							>
 								<button
 									className={`inline-flex items-center px-4 py-2 mt-0 ml-0 sm:mt-0 text-sm font-small text-center text-white border hover:border-green-600 border-teal-500 bg-teal-500 transition ease-in-out hover:bg-green-600 duration-300 rounded-full  dark:focus:ring-primary-900`}
-									onClick={() => {
+									onClick={async () => {
 										// setCachedPaymentId(item?.payment_id)
-
+										// await checkingBeforeApprove()
 										setVisible(true)
 									}}
 								>

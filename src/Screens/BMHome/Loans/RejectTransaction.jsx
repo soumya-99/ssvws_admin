@@ -1,10 +1,11 @@
-import React, { useState, useEffect } from "react"
+import React, { useState, useEffect, useCallback } from "react"
 import Sidebar from "../../../Components/Sidebar"
 import axios from "axios"
 import { url } from "../../../Address/BaseUrl"
 import { Message } from "../../../Components/Message"
 import { Spin, Popconfirm } from "antd"
 import { LoadingOutlined, CheckCircleOutlined } from "@ant-design/icons"
+import debounce from "lodash.debounce"
 import DynamicTailwindTable from "../../../Components/Reports/DynamicTailwindTable"
 import { transactionFieldNames } from "../../../Utils/Reports/headerMap"
 
@@ -15,25 +16,66 @@ const RejectTransaction = () => {
 	const [searchKeywords, setSearchKeywords] = useState("")
 	const [data, setData] = useState([])
 	const [selectedRowIndices, setSelectedRowIndices] = useState([])
-	// const [modifiedArr, setModifiedArr] = useState([])
+	const [suggestions, setSuggestions] = useState([])
+	const [showSuggestions, setShowSuggestions] = useState(false)
 
 	useEffect(() => {
 		if (data.length > 0) {
 			setSelectedRowIndices(data.map((_, idx) => idx))
-
-			// setModifiedArr(
-			// 	data
-			// 		?.filter((item, i) => selectedRowIndices !== i)
-			// 		?.map((txn, idx) => ({
-			// 			payment_date: txn?.transaction_date,
-			// 			loan_id: txn?.loan_id,
-			// 			payment_id: txn?.transaction_id,
-			// 		}))
-			// )
 		} else {
 			setSelectedRowIndices([])
 		}
 	}, [data])
+
+	const fetchGroupNames = async (query) => {
+		setLoading(true)
+		try {
+			const creds = {
+				branch_code: userDetails?.brn_code,
+				grps: query,
+			}
+			const res = await axios.post(`${url}/fetch_group_name`, creds)
+			if (res?.data?.suc === 1 && Array.isArray(res?.data?.msg)) {
+				setSuggestions(res?.data?.msg)
+				setShowSuggestions(true)
+			} else {
+				setSuggestions([])
+				setShowSuggestions(false)
+			}
+		} catch (err) {
+			console.error(err)
+			setSuggestions([])
+			setShowSuggestions(false)
+		}
+		setLoading(false)
+	}
+
+	const debouncedFetchGroups = useCallback(
+		debounce((nextValue) => {
+			fetchGroupNames(nextValue)
+		}, 500),
+		[]
+	)
+
+	const handleSearchChange = (e) => {
+		const value = e.target.value
+		setSearchKeywords(value)
+		if (value.length >= 3) {
+			debouncedFetchGroups(value)
+		} else {
+			debouncedFetchGroups.cancel()
+			setSuggestions([])
+			setShowSuggestions(false)
+		}
+	}
+
+	const handleSuggestionClick = (grp) => {
+		setSearchKeywords(grp?.group_code || grp?.group_name)
+		setSuggestions([])
+		setShowSuggestions(false)
+		// Optionally, trigger the main search here
+		// fetchSearchedGroups()
+	}
 
 	const fetchSearchedGroups = async () => {
 		setLoading(true)
@@ -70,31 +112,24 @@ const RejectTransaction = () => {
 				payment_date: txn.transaction_date,
 				loan_id: txn.loan_id,
 				payment_id: txn.transaction_id,
+				tr_type: txn.tr_type,
 			}))
 
 		const creds = {
 			reject_trans: modifiedArr,
 		}
 
-		// console.log("Data - reject Txn inside", data)
-		// console.log("Modified Arr - reject Txn inside", modifiedArr)
-		// console.log("selectedRowIndices - reject Txn inside", selectedRowIndices)
-
-		await axios
-			.post(`${url}/reject_loan_transactions`, creds)
-			.then((res) => {
-				console.log("RES", res?.data)
-				Message("success", "Loan Txns rejected.")
-			})
-			.catch((err) => {
-				Message("error", "Some error occurred.")
-				console.log("ERRR", err)
-			})
-
-		setLoading(false)
+		try {
+			const res = await axios.post(`${url}/reject_loan_transactions`, creds)
+			console.log("RES", res?.data)
+			Message("success", "Loan Txns rejected.")
+		} catch (err) {
+			Message("error", "Some error occurred.")
+			console.log("ERRR", err)
+		} finally {
+			setLoading(false)
+		}
 	}
-
-	console.log("Updated SELECTED CHECKSSS", selectedRowIndices)
 
 	return (
 		<div className="flex">
@@ -133,9 +168,9 @@ const RejectTransaction = () => {
 									type="search"
 									id="default-search"
 									className="block w-full p-4 ps-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-slate-500 focus:border-slate-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-slate-500 dark:focus:border-slate-500"
-									placeholder="Search by Group Code"
+									placeholder="Search by Group Code/Group Name"
 									value={searchKeywords}
-									onChange={(e) => setSearchKeywords(e.target.value)}
+									onChange={handleSearchChange}
 								/>
 								<button
 									type="button"
@@ -147,6 +182,20 @@ const RejectTransaction = () => {
 								</button>
 							</div>
 						</div>
+
+						{showSuggestions && suggestions?.length > 0 && (
+							<ul className="absolute w-96 left-36 right-0 mt-1 z-10 bg-white border border-gray-300 rounded-md shadow-lg max-h-60 overflow-auto">
+								{suggestions?.map((grp, idx) => (
+									<li
+										key={idx}
+										className="px-4 py-2 hover:bg-gray-100 cursor-pointer border-b-2"
+										onClick={() => handleSuggestionClick(grp)}
+									>
+										{grp?.group_code} - {grp?.group_name}
+									</li>
+								))}
+							</ul>
+						)}
 
 						{/* Title */}
 						<div className="w-full bg-slate-800 text-slate-50 p-3 pl-5 mt-5 rounded-lg font-bold text-xl">
@@ -160,15 +209,16 @@ const RejectTransaction = () => {
 								pageSize={50}
 								dateTimeExceptionCols={[0]}
 								showCheckbox
-								disableAllCheckbox
+								// disableAllCheckbox
 								selectedRowIndices={selectedRowIndices}
 								onRowSelectionChange={setSelectedRowIndices}
 								headersMap={transactionFieldNames}
 								colRemove={[6]}
+								columnTotal={[4, 5]}
 							/>
 						</div>
 
-						{data?.length > 0 && (
+						{data?.length > 0 && selectedRowIndices?.length !== 0 && (
 							<div>
 								<Popconfirm
 									title={`Reject Transaction?`}
@@ -188,9 +238,9 @@ const RejectTransaction = () => {
 									disabled={selectedRowIndices?.length === 0}
 								>
 									<button
-										className={`items-center -mt-16 px-6 py-3 text-sm font-medium text-center text-white border border-[#DA4167] bg-[#DA4167] transition ease-in-out hover:bg-[#ac3246] hover:border-[#ac3246] duration-300 rounded-full  dark:focus:ring-primary-900`}
+										className={`items-center -mt-16 px-6 py-3 text-sm font-medium text-center text-white border border-[#DA4167] bg-[#DA4167] transition ease-in-out hover:bg-[#ac3246] hover:border-[#ac3246] duration-300 rounded-full dark:focus:ring-primary-900`}
 									>
-										<CheckCircleOutlined /> <spann class={`ml-2`}>Reject</spann>
+										<CheckCircleOutlined /> <span className="ml-2">Reject</span>
 									</button>
 								</Popconfirm>
 							</div>

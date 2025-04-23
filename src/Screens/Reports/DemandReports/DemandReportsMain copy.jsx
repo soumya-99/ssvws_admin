@@ -170,7 +170,7 @@ function DemandReportsMain() {
 		}
 
 		await axios
-			.post(`${url}/call_demand_proc`, creds)
+			.post(`${url}/call_outstanding_proc`, creds)
 			.then((res) => {
 				console.log("Procedure called", res?.data)
 				setProcedureSuccessFlag(res?.data?.suc)
@@ -511,7 +511,6 @@ function DemandReportsMain() {
 		setSelectedCOs([])
 		setFromDay("")
 		setToDay("")
-		// setProcedureSuccessFlag("0")
 		if (searchType === "F") {
 			getFunds()
 		}
@@ -693,98 +692,8 @@ function DemandReportsMain() {
 						/>
 					</div> */}
 
-					{(userDetails?.id === 3 ||
-						userDetails?.id === 4 ||
-						userDetails?.id === 11) &&
-						userDetails?.brn_code == 100 && (
-							<div className="w-full">
-								<Select
-									options={[{ value: "all", label: "All" }, ...dropdownOptions]}
-									isMulti
-									value={displayedOptions}
-									onChange={handleMultiSelectChange}
-									placeholder="Select branches..."
-									className="basic-multi-select"
-									classNamePrefix="select"
-									styles={{
-										control: (provided) => ({
-											...provided,
-											borderRadius: "8px",
-										}),
-										valueContainer: (provided) => ({
-											...provided,
-											borderRadius: "8px",
-										}),
-										singleValue: (provided) => ({
-											...provided,
-											color: "black",
-										}),
-										multiValue: (provided) => ({
-											...provided,
-											padding: "0.1rem",
-											backgroundColor: "#da4167",
-											color: "white",
-											borderRadius: "8px",
-										}),
-										multiValueLabel: (provided) => ({
-											...provided,
-											color: "white",
-										}),
-										multiValueRemove: (provided) => ({
-											...provided,
-											color: "white",
-											"&:hover": {
-												backgroundColor: "red",
-												color: "white",
-												borderRadius: "8px",
-											},
-										}),
-										placeholder: (provided) => ({
-											...provided,
-											fontSize: "0.9rem",
-										}),
-									}}
-								/>
-							</div>
-						)}
-
-					<div className="grid grid-cols-2 gap-5 mt-5 items-end">
-						<div>
-							<TDInputTemplateBr
-								placeholder="Month"
-								type="text"
-								label="Month"
-								name="month"
-								formControlName={choosenMonth}
-								handleChange={(e) => setChoosenMonth(e.target.value)}
-								mode={2}
-								data={months}
-							/>
-						</div>
-						<div>
-							<TDInputTemplateBr
-								placeholder="Year"
-								type="text"
-								label="Year"
-								name="year"
-								formControlName={choosenYear}
-								handleChange={(e) => setChoosenYear(e.target.value)}
-								mode={2}
-								data={years}
-							/>
-						</div>
-					</div>
-					<div className="flex justify-center my-3">
-						<button
-							className={`inline-flex items-center px-4 py-2 mt-0 ml-0 sm:mt-0 text-sm font-small text-center text-white border hover:border-green-600 border-teal-500 bg-teal-500 transition ease-in-out hover:bg-green-600 duration-300 rounded-full  dark:focus:ring-primary-900`}
-							onClick={runProcedureReport}
-						>
-							<RefreshOutlined /> <span class={`ml-2`}>Process Report</span>
-						</button>
-					</div>
-
 					<div>
-						{/* {(userDetails?.id === 3 ||
+						{(userDetails?.id === 3 ||
 							userDetails?.id === 4 ||
 							userDetails?.id === 11) &&
 							userDetails?.brn_code == 100 && (
@@ -840,7 +749,8 @@ function DemandReportsMain() {
 										}}
 									/>
 								</div>
-							)} */}
+							)}
+
 						{searchType === "F" && (
 							<div className="pt-4">
 								<TDInputTemplateBr
@@ -987,8 +897,18 @@ function DemandReportsMain() {
 						</div> */}
 					</div>
 
-					{/* <div className="grid grid-cols-2 gap-5 mt-5 items-end">
+					<div className="grid grid-cols-2 gap-5 mt-5 items-end">
 						<div>
+							{/* <TDInputTemplateBr
+								placeholder="From Date"
+								type="date"
+								label="From Date"
+								name="fromDate"
+								formControlName={fromDate}
+								handleChange={(e) => setFromDate(e.target.value)}
+								min={"1900-12-31"}
+								mode={1}
+							/> */}
 							<TDInputTemplateBr
 								placeholder="Month"
 								type="text"
@@ -1001,6 +921,16 @@ function DemandReportsMain() {
 							/>
 						</div>
 						<div>
+							{/* <TDInputTemplateBr
+								placeholder="To Date"
+								type="date"
+								label="To Date"
+								name="toDate"
+								formControlName={toDate}
+								handleChange={(e) => setToDate(e.target.value)}
+								min={"1900-12-31"}
+								mode={1}
+							/> */}
 							<TDInputTemplateBr
 								placeholder="Year"
 								type="text"
@@ -1012,39 +942,37 @@ function DemandReportsMain() {
 								data={years}
 							/>
 						</div>
-					</div> */}
-					{/* <div className="flex justify-center my-3">
+					</div>
+					<div className="flex justify-center my-3">
 						<button
 							className={`inline-flex items-center px-4 py-2 mt-0 ml-0 sm:mt-0 text-sm font-small text-center text-white border hover:border-green-600 border-teal-500 bg-teal-500 transition ease-in-out hover:bg-green-600 duration-300 rounded-full  dark:focus:ring-primary-900`}
 							onClick={runProcedureReport}
 						>
 							<RefreshOutlined /> <span class={`ml-2`}>Process Report</span>
 						</button>
-					</div> */}
+					</div>
 
 					{+procedureSuccessFlag === 1 && (
-						<>
-							<div className="flex gap-6 items-center align-middle">
-								<Radiobtn
-									data={options}
-									val={searchType}
-									onChangeVal={(value) => {
-										onChange(value)
-									}}
-								/>
-								<div className="mt-3">
-									<button
-										className="inline-flex items-center px-4 py-2 text-sm font-small text-white border hover:border-pink-600 border-pink-500 bg-pink-500 transition ease-in-out hover:bg-pink-700 duration-300 rounded-full"
-										onClick={handleSubmit}
-									>
-										<Search /> <span className="ml-2">Fetch</span>
-									</button>
-								</div>
+						<div className="flex gap-6 items-center align-middle">
+							<Radiobtn
+								data={options}
+								val={searchType}
+								onChangeVal={(value) => {
+									onChange(value)
+								}}
+							/>
+							<div className="mt-3">
+								<button
+									className="inline-flex items-center px-4 py-2 text-sm font-small text-white border hover:border-pink-600 border-pink-500 bg-pink-500 transition ease-in-out hover:bg-pink-700 duration-300 rounded-full"
+									onClick={handleSubmit}
+								>
+									<Search /> <span className="ml-2">Fetch</span>
+								</button>
 							</div>
-						</>
+						</div>
 					)}
 
-					{reportData?.length > 0 && searchType !== "B" && (
+					{reportData?.length > 0 && (
 						<div>
 							<div className="text-xl -mb-4 text-slate-700 font-bold">
 								Daywise
@@ -1122,10 +1050,9 @@ function DemandReportsMain() {
 							<DynamicTailwindTable
 								data={reportData}
 								pageSize={50}
-								columnTotal={[6, 12, 13]}
-								dateTimeExceptionCols={[0, 11, 12, 7, 12, 13]}
+								columnTotal={[8, 15, 16, 17]}
+								dateTimeExceptionCols={[0, 7, 13, 14]}
 								headersMap={groupwiseDemandReportHeader}
-								// colRemove={[11]}
 							/>
 						</>
 					)}
@@ -1165,7 +1092,7 @@ function DemandReportsMain() {
 							<DynamicTailwindTable
 								data={reportData}
 								pageSize={50}
-								columnTotal={[11, 17, 18, 19, 20]}
+								columnTotal={[11, 18, 19, 20]}
 								dateTimeExceptionCols={[0, 10, 16, 17]}
 								headersMap={memberwiseDemandReportHeader}
 							/>

@@ -33,14 +33,18 @@ const DynamicTailwindTable = ({
 		columnTotal.forEach((origIndex) => {
 			if (origIndex >= 0 && origIndex < originalHeaders.length) {
 				const headerKey = originalHeaders[origIndex]
-				result[origIndex] = data.reduce((acc, row) => {
+				result[origIndex] = data.reduce((acc, row, rowIndex) => {
+					const globalIndex = rowIndex
+					if (showCheckbox && !selectedRowIndices.includes(globalIndex)) {
+						return acc
+					}
 					const value = parseFloat(row[headerKey])
 					return !isNaN(value) ? acc + value : acc
 				}, 0)
 			}
 		})
 		return result
-	}, [data, columnTotal, originalHeaders])
+	}, [data, columnTotal, originalHeaders, showCheckbox, selectedRowIndices])
 
 	const currentData = useMemo(() => {
 		return data.slice((currentPage - 1) * pageSize, currentPage * pageSize)
