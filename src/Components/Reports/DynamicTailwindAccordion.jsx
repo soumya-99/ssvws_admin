@@ -35,6 +35,7 @@ const DynamicTailwindAccordion = ({
 	}
 
 	const formatCellValue = (value, key) => {
+		if (!value) return ""
 		const isoRegex = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}.+Z$/
 		if (typeof value === "string" && isoRegex.test(value)) {
 			const colIndex = originalHeaders.indexOf(key)

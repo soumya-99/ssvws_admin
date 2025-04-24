@@ -227,26 +227,30 @@ function Payroll() {
 		if (key === "in_date_time") {
 			return (
 				<Tag color="green">
-					{new Date(val)
-						.toLocaleTimeString("en-GB", {
-							hour: "2-digit",
-							minute: "2-digit",
-							hour12: true,
-						})
-						.toUpperCase()}
+					{val
+						? new Date(val)
+								.toLocaleTimeString("en-GB", {
+									hour: "2-digit",
+									minute: "2-digit",
+									hour12: true,
+								})
+								.toUpperCase()
+						: ""}
 				</Tag>
 			)
 		}
 		if (key === "out_date_time") {
 			return (
 				<Tag color="red">
-					{new Date(val)
-						.toLocaleTimeString("en-GB", {
-							hour: "2-digit",
-							minute: "2-digit",
-							hour12: true,
-						})
-						.toUpperCase()}
+					{val
+						? new Date(val)
+								.toLocaleTimeString("en-GB", {
+									hour: "2-digit",
+									minute: "2-digit",
+									hour12: true,
+								})
+								.toUpperCase()
+						: ""}
 				</Tag>
 			)
 		}

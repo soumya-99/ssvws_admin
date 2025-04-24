@@ -130,15 +130,20 @@ function MonthEndForm() {
 				// 	(item, idx) => item.branch_code === res?.data?.details[idx]
 				// )?.branch_name
 
+				console.log(
+					"============ fetch_unapproved_dtls_before_monthend =============",
+					res?.data
+				)
+
 				Message(
 					"warning",
-					`The following loans are not approved for the month end for : ${res?.data?.details?.join(
-						", "
+					`The following loans are not approved for the month end for : ${res?.data?.details?.map(
+						(item, i) => `${item?.branch_id}`
 					)}`
 				)
 				setTopAlertMessage(
-					`Following branches have unapproved transactions. Please approve them before proceeding : ${res?.data?.details?.join(
-						", "
+					`Following branches have unapproved transactions. Please approve them before proceeding : ${res?.data?.details?.map(
+						(item, i) => `${item?.branch_id}, `
 					)}`
 				)
 				setLoading(false)
