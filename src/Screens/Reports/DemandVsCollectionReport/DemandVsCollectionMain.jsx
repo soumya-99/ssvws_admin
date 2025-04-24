@@ -86,6 +86,8 @@ function DemandVsCollectionMain() {
 	const [selectedCO, setSelectedCO] = useState("")
 	const [selectedOptions, setSelectedOptions] = useState([])
 	const [selectedCOs, setSelectedCOs] = useState([])
+	const [procedureSuccessFlag, setProcedureSuccessFlag] = useState("0")
+	
 	// const [reportTxnData, setReportTxnData] = useState(() => [])
 	// const [tot_sum, setTotSum] = useState(0)
 	// const [search, setSearch] = useState("")
@@ -154,7 +156,34 @@ function DemandVsCollectionMain() {
 	// 		handleFetchCO()
 	// 	}
 	// }, [searchType])
+	const runProcedureReport = async () => {
+		setLoading(true)
 
+		const branchCodes = selectedOptions?.map((item, i) => ({
+			branch_code: item?.value,
+		}))
+
+		const creds = {
+			send_month: choosenMonth,
+			send_year: choosenYear,
+			branches:
+				branchCodes?.length === 0
+					? [{ branch_code: userDetails?.brn_code }]
+					: branchCodes,
+		}
+
+		await axios
+			.post(`${url}/call_demand_proc`, creds)
+			.then((res) => {
+				console.log("Procedure called", res?.data)
+				setProcedureSuccessFlag(res?.data?.suc)
+			})
+			.catch((err) => {
+				console.log("Some error while running procedure.", err)
+			})
+
+		setLoading(false)
+	}
 	// "Memberwise"
 	const handleFetchMemberwiseReport = async () => {
 		setLoading(true)
@@ -693,7 +722,7 @@ function DemandVsCollectionMain() {
 								</div>
 							)}
 
-						{searchType === "F" && (
+						{/* {searchType === "F" && (
 							<div className="pt-4">
 								<TDInputTemplateBr
 									placeholder="Select Fund..."
@@ -709,7 +738,7 @@ function DemandVsCollectionMain() {
 									disabled={false}
 								/>
 							</div>
-						)}
+						)} */}
 					</div>
 
 					{searchType === "C" && (
@@ -737,87 +766,8 @@ function DemandVsCollectionMain() {
 									}))}
 								/>
 							</div> */}
-							{searchType === "C" &&
-							(userDetails?.id === 3 ||
-								userDetails?.id === 4 ||
-								userDetails?.id === 11) &&
-							userDetails?.brn_code == 100 ? (
-								<div className="w-full pt-4">
-									<Select
-										options={[{ value: "all", label: "All" }, ...dropdownCOs]}
-										isMulti
-										value={displayedCOs}
-										onChange={handleMultiSelectChangeCOs}
-										placeholder="Select COs'..."
-										className="basic-multi-select"
-										classNamePrefix="select"
-										styles={{
-											control: (provided) => ({
-												...provided,
-												borderRadius: "8px",
-											}),
-											valueContainer: (provided) => ({
-												...provided,
-												borderRadius: "8px",
-											}),
-											singleValue: (provided) => ({
-												...provided,
-												color: "black",
-											}),
-											multiValue: (provided) => ({
-												...provided,
-												padding: "0.1rem",
-												backgroundColor: "#da4167",
-												color: "white",
-												borderRadius: "8px",
-											}),
-											multiValueLabel: (provided) => ({
-												...provided,
-												color: "white",
-											}),
-											multiValueRemove: (provided) => ({
-												...provided,
-												color: "white",
-												"&:hover": {
-													backgroundColor: "red",
-													color: "white",
-													borderRadius: "8px",
-												},
-											}),
-											placeholder: (provided) => ({
-												...provided,
-												fontSize: "0.9rem",
-											}),
-										}}
-									/>
-								</div>
-							) : (
-								searchType === "C" && (
-									<div className="w-full">
-										<TDInputTemplateBr
-											placeholder="Choose CO..."
-											type="text"
-											label="Credit Officers"
-											name="co"
-											formControlName={co.split(",")[0]}
-											handleChange={(e) => {
-												console.log("***********========", e)
-												setCo(
-													e.target.value +
-														"," +
-														cos.filter((i) => i.co_id == e.target.value)[0]
-															?.emp_name
-												)
-											}}
-											mode={2}
-											data={cos?.map((item, i) => ({
-												code: item?.co_id,
-												name: `${item?.emp_name} - (${item?.co_id})`,
-											}))}
-										/>
-									</div>
-								)
-							)}
+							
+						
 						</div>
 					)}
 
@@ -889,14 +839,114 @@ function DemandVsCollectionMain() {
 						<button
 							className={`inline-flex items-center px-4 py-2 mt-0 ml-0 sm:mt-0 text-sm font-small text-center text-white border hover:border-green-600 border-teal-500 bg-teal-500 transition ease-in-out hover:bg-green-600 duration-300 rounded-full dark:focus:ring-primary-900`}
 							onClick={() => {
-								handleSubmit()
+								// handleSubmit()
+								runProcedureReport()
 							}}
 						>
 							<SearchOutlined /> <span class={`ml-2`}>Process Report</span>
 						</button>
 					</div>
-
-					<div className="flex gap-6 items-center align-middle">
+                    {searchType === "F" && (
+							<div className="pt-4">
+								<TDInputTemplateBr
+									placeholder="Select Fund..."
+									type="text"
+									label="Fundwise"
+									name="fund_id"
+									handleChange={handleFundChange}
+									data={funds.map((dat) => ({
+										code: dat.fund_id,
+										name: `${dat.fund_name}`,
+									}))}
+									mode={2}
+									disabled={false}
+								/>
+							</div>
+						)}
+						 {/* {
+								searchType === "C" && (
+									<div className="w-full">
+										<TDInputTemplateBr
+											placeholder="Choose CO..."
+											type="text"
+											label="Credit Officers"
+											name="co"
+											formControlName={co.split(",")[0]}
+											handleChange={(e) => {
+												console.log("***********========", e)
+												setCo(
+													e.target.value +
+														"," +
+														cos.filter((i) => i.co_id == e.target.value)[0]
+															?.emp_name
+												)
+											}}
+											mode={2}
+											data={cos?.map((item, i) => ({
+												code: item?.co_id,
+												name: `${item?.emp_name} - (${item?.co_id})`,
+											}))}
+										/>
+									</div>
+								)
+} */}
+{searchType === "C" &&
+							(userDetails?.id === 3 ||
+								userDetails?.id === 4 ||
+								userDetails?.id === 11) &&
+							userDetails?.brn_code == 100 && (
+								<div className="w-full pt-4">
+									<Select
+										options={[{ value: "all", label: "All" }, ...dropdownCOs]}
+										isMulti
+										value={displayedCOs}
+										onChange={handleMultiSelectChangeCOs}
+										placeholder="Select COs'..."
+										className="basic-multi-select"
+										classNamePrefix="select"
+										styles={{
+											control: (provided) => ({
+												...provided,
+												borderRadius: "8px",
+											}),
+											valueContainer: (provided) => ({
+												...provided,
+												borderRadius: "8px",
+											}),
+											singleValue: (provided) => ({
+												...provided,
+												color: "black",
+											}),
+											multiValue: (provided) => ({
+												...provided,
+												padding: "0.1rem",
+												backgroundColor: "#da4167",
+												color: "white",
+												borderRadius: "8px",
+											}),
+											multiValueLabel: (provided) => ({
+												...provided,
+												color: "white",
+											}),
+											multiValueRemove: (provided) => ({
+												...provided,
+												color: "white",
+												"&:hover": {
+													backgroundColor: "red",
+													color: "white",
+													borderRadius: "8px",
+												},
+											}),
+											placeholder: (provided) => ({
+												...provided,
+												fontSize: "0.9rem",
+											}),
+										}}
+									/>
+								</div>
+							) 
+						}
+					{+procedureSuccessFlag === 1 && (<div className="flex gap-6 items-center align-middle">
 						<Radiobtn
 							data={options}
 							val={searchType}
@@ -912,7 +962,7 @@ function DemandVsCollectionMain() {
 								<Search /> <span className="ml-2">Fetch</span>
 							</button>
 						</div>
-					</div>
+					</div>)}
 
 					{/* {reportData?.length > 0 && (
 						<div>
