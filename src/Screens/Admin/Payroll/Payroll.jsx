@@ -17,6 +17,9 @@ import { formatDateToYYYYMMDD } from "../../../Utils/formateDate"
 import { saveAs } from "file-saver"
 import * as XLSX from "xlsx"
 import { printTableRegular } from "../../../Utils/printTableRegular"
+import { exportToExcel } from "../../../Utils/exportToExcel"
+import { attendanceReportHeader } from "../../../Utils/Reports/headerMap"
+import DynamicTailwindAccordion from "../../../Components/Reports/DynamicTailwindAccordion"
 
 // const { RangePicker } = DatePicker
 // const dateFormat = "YYYY/MM/DD"
@@ -167,24 +170,6 @@ function Payroll() {
 		})
 	}
 
-	const exportToExcel = (data) => {
-		const wb = XLSX.utils.book_new()
-		const ws = XLSX.utils.json_to_sheet(data)
-		XLSX.utils.book_append_sheet(wb, ws, "Sheet1")
-		const wbout = XLSX.write(wb, { bookType: "xlsx", type: "binary" })
-		const blob = new Blob([s2ab(wbout)], { type: "application/octet-stream" })
-		saveAs(blob, `attendance_report_${metadataDtls}.xlsx`)
-	}
-
-	const s2ab = (s) => {
-		const buf = new ArrayBuffer(s.length)
-		const view = new Uint8Array(buf)
-		for (let i = 0; i < s.length; i++) {
-			view[i] = s.charCodeAt(i) & 0xff
-		}
-		return buf
-	}
-
 	const [activeDescriptionId, setActiveDescriptionId] = useState(null)
 
 	const toggleDescription = (userId) => {
@@ -236,6 +221,171 @@ function Payroll() {
 		setRemarksForDelete("")
 		// message.error('Click on No');
 	}
+
+	// ///////////////////////////////////////
+	const renderCell = (key, val) => {
+		if (key === "in_date_time") {
+			return (
+				<Tag color="green">
+					{new Date(val)
+						.toLocaleTimeString("en-GB", {
+							hour: "2-digit",
+							minute: "2-digit",
+							hour12: true,
+						})
+						.toUpperCase()}
+				</Tag>
+			)
+		}
+		if (key === "out_date_time") {
+			return (
+				<Tag color="red">
+					{new Date(val)
+						.toLocaleTimeString("en-GB", {
+							hour: "2-digit",
+							minute: "2-digit",
+							hour12: true,
+						})
+						.toUpperCase()}
+				</Tag>
+			)
+		}
+		if (key === "entry_dt") {
+			return new Date(val).toLocaleDateString("en-GB")
+		}
+		// if (key === "late_in") {
+		// 	const isLate = val === "L"
+		// 	return (
+		// 		<span
+		// 			className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-sm font-medium ${
+		// 				isLate ? "bg-red-100 text-red-800" : "bg-green-100 text-green-800"
+		// 			}`}
+		// 		>
+		// 			{isLate ? "Late In" : "Timely In"}
+		// 		</span>
+		// 	)
+		// }
+		// default
+		return val
+	}
+
+	const renderRowDetails = (user) => (
+		<div className="m-4 mx-auto w-full p-6 bg-white rounded-2xl shadow-md">
+			<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-6">
+				{/* Clock In */}
+				<div>
+					<h4 className="font-medium text-lg text-teal-500 mb-2">Clock In</h4>
+					<Tag color="green" className="mb-2">
+						{new Date(user.in_date_time)
+							.toLocaleTimeString("en-GB", {
+								hour: "2-digit",
+								minute: "2-digit",
+								hour12: true,
+							})
+							.toUpperCase()}
+					</Tag>
+					<p className="text-sm text-gray-700">{user.in_addr}</p>
+				</div>
+				{/* Clock Out */}
+				<div>
+					<h4 className="font-medium text-lg text-teal-500 mb-2">Clock Out</h4>
+					<Tag color="red" className="mb-2">
+						{new Date(user.out_date_time)
+							.toLocaleTimeString("en-GB", {
+								hour: "2-digit",
+								minute: "2-digit",
+								hour12: true,
+							})
+							.toUpperCase()}
+					</Tag>
+					<p className="text-sm text-gray-700">{user.out_addr}</p>
+				</div>
+				{/* Attendance Status */}
+				<div>
+					<h4 className="font-medium text-lg text-teal-500 mb-2">
+						Attendance Status
+					</h4>
+					<p
+						className={`text-sm ${
+							user.attan_status === "A"
+								? "text-green-500"
+								: user.attan_status === "R"
+								? "text-red-500"
+								: "text-gray-700"
+						}`}
+					>
+						{user.attan_status === "A"
+							? "Approved"
+							: user.attan_status === "R"
+							? "Rejected"
+							: "Pending"}
+					</p>
+				</div>
+				{/* Rejection Remarks */}
+				<div>
+					<h4 className="font-medium text-lg text-teal-500 mb-2">
+						Rejection Remarks
+					</h4>
+					<p className="text-sm text-gray-700">
+						{user.attn_reject_remarks || "N/A"}
+					</p>
+				</div>
+				<div>
+					<h4 className="font-medium text-lg text-teal-500 mb-2">
+						Late Status
+					</h4>
+					<span
+						className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-sm font-medium ${
+							user?.late_in === "L"
+								? "bg-red-100 text-red-800"
+								: "bg-green-100 text-green-800"
+						}`}
+					>
+						{user?.late_in === "L"
+							? "Late In"
+							: user?.late_in === "E"
+							? "Early Out"
+							: "Timely In"}
+					</span>
+				</div>
+				{/* Reject Button */}
+				{user.attan_status !== "R" && (
+					<div className="col-span-5 flex justify-center items-center">
+						<Popconfirm
+							title={`Reject Attendance for ${user.emp_name}`}
+							description={
+								<div>
+									<p>Are you sure you want to reject this attendance?</p>
+									{/* your TDInputTemplateBr for remarks */}
+								</div>
+							}
+							onConfirm={() =>
+								confirm(
+									user.emp_id,
+									`${user.in_date_time.split("T")[0]} ${new Date(
+										user.in_date_time
+									).toLocaleTimeString("en-GB", {
+										hour12: false,
+										hour: "2-digit",
+										minute: "2-digit",
+										second: "2-digit",
+									})}`
+								)
+							}
+							onCancel={cancel}
+							okText="Reject"
+							cancelText="Cancel"
+						>
+							<button className="inline-flex items-center px-4 py-2 text-sm font-medium text-white bg-red-500 rounded-full hover:bg-red-600 transition">
+								<CheckCircleOutlined />
+								<span className="ml-2">Reject Attendance</span>
+							</button>
+						</Popconfirm>
+					</div>
+				)}
+			</div>
+		</div>
+	)
 
 	return (
 		<div>
@@ -431,362 +581,15 @@ function Payroll() {
 					{/* For Recovery/Collection Results MR */}
 
 					{reportData?.length > 0 && (
-						<div
-							className={`relative overflow-x-auto shadow-md sm:rounded-lg mt-5 max-h-[500px]
-                                  [&::-webkit-scrollbar]:w-1
-                                  [&::-webkit-scrollbar-track]:rounded-full
-                                  [&::-webkit-scrollbar-track]:bg-transparent
-                                  [&::-webkit-scrollbar-thumb]:rounded-full
-                                  [&::-webkit-scrollbar-thumb]:bg-gray-300
-                                  dark:[&::-webkit-scrollbar-track]:bg-transparent
-                                  dark:[&::-webkit-scrollbar-thumb]:bg-neutral-500
-                              `}
-						>
-							<div
-								className={`w-full text-xs dark:bg-gray-700 dark:text-gray-400`}
-							>
-								<table className="w-full table-auto">
-									<thead>
-										<tr className="text-sm font-normal text-slate-50 border-t border-b text-left bg-slate-800">
-											<th className="px-4 py-2 text-left">Sl. No.</th>
-											<th className="px-4 py-2 text-left">Date</th>
-											<th className="px-4 py-2 text-left">Employee ID</th>
-											<th className="px-4 py-2 text-left">Name</th>
-											{/* <th className="px-4 py-2 text-left">Effective Hours</th> */}
-											<th className="px-4 py-2 text-left">
-												Clock In/Clock Out
-											</th>
-											<th className="px-4 py-2 text-left">Status</th>
-											<th className="px-4 py-2 text-left"></th>
-										</tr>
-									</thead>
-									<tbody className="text-sm font-normal text-gray-700">
-										{reportData?.map((user, i) => (
-											<React.Fragment key={user.id}>
-												<tr
-													className={`cursor-pointer border-b border-gray-200 hover:bg-gray-100 ${
-														i % 2 === 0 ? "bg-slate-200 text-slate-900" : ""
-													}`}
-													onClick={() => toggleDescription(i)}
-												>
-													<td className="px-4 py-2 text-left">{i + 1}</td>
-													<td className="px-4 py-2 text-left">
-														{new Date(user?.entry_dt)?.toLocaleDateString(
-															"en-GB"
-														)}
-													</td>
-													<td className="px-4 py-2 text-left">{user.emp_id}</td>
-													<td className="px-4 py-2 text-left">
-														{user.emp_name}
-													</td>
-													<td className="px-4 py-2 text-left">
-														{/* {new Date(user?.out_date_time).getTime()
-                              ? timeDifference(
-                                  user?.in_date_time,
-                                  user?.out_date_time
-                                ).hours +
-                                "h " +
-                                timeDifference(
-                                  user?.in_date_time,
-                                  user?.out_date_time
-                                ).minutes +
-                                "m "
-                              : "00h 00m"} */}
-														<Tag color="green" className="mb-2">
-															{user?.in_date_time
-																? new Date(user?.in_date_time)
-																		?.toLocaleTimeString("en-GB", {
-																			hour: "2-digit",
-																			minute: "2-digit",
-																			hour12: true,
-																		})
-																		.replace("am", "AM")
-																		.replace("pm", "PM")
-																: ""}
-														</Tag>
-														<Tag color="red" className="mb-2">
-															{user?.out_date_time
-																? new Date(user?.out_date_time)
-																		?.toLocaleTimeString("en-GB", {
-																			hour: "2-digit",
-																			minute: "2-digit",
-																			hour12: true,
-																		})
-																		.replace("am", "AM")
-																		.replace("pm", "PM")
-																: ""}
-														</Tag>
-													</td>
-													<td className="px-4 py-2 text-left">
-														{/* {user?.clock_status === "I" ? (
-                                <span className="mr-1">✅</span>
-                              ) : user?.clock_status === "O" ? (
-                                <span className="mr-1">🕒</span>
-                              ) : user?.clock_status === "E" ? (
-                                <span className="mr-1">⌛</span>
-                              ) : (
-                                <span className="mr-1">🐌</span>
-                              )} */}
-														{/* {user?.clock_status === "I"
-                                ? "Timely In"
-                                : user?.clock_status === "O"
-                                ? "Timely Out"
-                                : user?.clock_status === "E"
-                                ? "Early Out"
-                                : "Late In"} */}
-														<span
-															className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-sm font-medium ${
-																user?.late_in === "L"
-																	? "bg-red-100 text-red-800"
-																	: "bg-green-100 text-green-800"
-															}`}
-														>
-															{user?.late_in === "L"
-																? "Late In"
-																: user?.late_in === "E"
-																? "Early Out"
-																: user?.clock_status == "I"
-																? "Timely In"
-																: user?.clock_status == "O"
-																? "Timely Out"
-																: ""}
-														</span>
-													</td>
-													<td className="p-2 text-left">
-														<div
-															className={`text-white bg-gray-100 border rounded-lg px-2 py-2 text-center inline-flex items-center ${
-																activeDescriptionId === i ? "flipped-icon" : ""
-															}`}
-														>
-															<svg
-																className={`w-4 h-4 transition-transform ${
-																	activeDescriptionId === i ? "rotate-180" : ""
-																}`}
-																xmlns="http://www.w3.org/2000/svg"
-																viewBox="0 0 24 24"
-															>
-																<path d="M11.9997 13.1714L16.9495 8.22168L18.3637 9.63589L11.9997 15.9999L5.63574 9.63589L7.04996 8.22168L11.9997 13.1714Z"></path>
-															</svg>
-														</div>
-													</td>
-												</tr>
-												{activeDescriptionId === i && (
-													<tr
-														className={`transition-all duration-300 ease-in-out transform ${
-															activeDescriptionId === i
-																? "max-h-screen opacity-100"
-																: "max-h-0 opacity-0"
-														} overflow-hidden`}
-														style={{
-															height: activeDescriptionId === i ? "auto" : "0",
-															opacity: activeDescriptionId === i ? "1" : "0",
-														}}
-													>
-														<td colSpan={7} className="p-0 px-5">
-															<div className="m-4 mx-auto w-full p-6 bg-white rounded-2xl shadow-md">
-																<div className="grid grid-cols-1 w-full sm:grid-cols-2 lg:grid-cols-5 gap-6">
-																	<div>
-																		<h4 className="font-medium text-lg text-teal-500 mb-2">
-																			Clock In
-																		</h4>
-																		<Tag color="green" className="mb-2">
-																			{user?.in_date_time
-																				? new Date(user?.in_date_time)
-																						?.toLocaleTimeString("en-GB", {
-																							hour: "2-digit",
-																							minute: "2-digit",
-																							hour12: true,
-																						})
-																						.replace("am", "AM")
-																						.replace("pm", "PM")
-																				: ""}
-																		</Tag>
-
-																		<p className="text-sm text-gray-700">
-																			{user?.in_addr}
-																		</p>
-																	</div>
-																	<div>
-																		<h4 className="font-medium text-lg text-teal-500 mb-2">
-																			Clock Out
-																		</h4>
-																		<Tag color="red" className="mb-2">
-																			{" "}
-																			{user?.out_date_time
-																				? new Date(user?.out_date_time)
-																						?.toLocaleTimeString("en-GB", {
-																							hour: "2-digit",
-																							minute: "2-digit",
-																							hour12: true,
-																						})
-																						.replace("am", "AM")
-																						.replace("pm", "PM")
-																				: ""}
-																		</Tag>
-																		<p className="text-sm text-gray-700">
-																			{user?.out_addr}
-																		</p>
-																	</div>
-																	<div>
-																		<h4 className="font-medium text-lg text-teal-500 mb-2">
-																			Attendance Status
-																		</h4>
-																		<p
-																			className={`text-sm ${
-																				user?.attan_status === "A"
-																					? "text-green-500"
-																					: user?.attan_status === "R"
-																					? "text-red-500"
-																					: "text-gray-700"
-																			}`}
-																		>
-																			{user?.attan_status === "A"
-																				? "Approved"
-																				: user?.attan_status === "R"
-																				? "Rejected"
-																				: "Pending"}
-																		</p>
-																	</div>
-																	{/* <div>
-                                                                          <h4 className="font-medium text-lg text-teal-500 mb-2">
-                                                                              Clock Status
-                                                                          </h4>
-                                                                          <span
-                                                                              className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-sm font-medium ${
-                                                                                  user?.clock_status === "I"
-                                                                                      ? "bg-green-100 text-green-800"
-                                                                                      : user?.clock_status === "O"
-                                                                                      ? "bg-blue-100 text-blue-800"
-                                                                                      : user?.clock_status === "E"
-                                                                                      ? "bg-yellow-100 text-yellow-800"
-                                                                                      : "bg-red-100 text-red-800"
-                                                                              }`}
-                                                                          >
-                                                                              {user?.clock_status === "I" ? (
-                                                                                  <span className="mr-1">✅</span>
-                                                                              ) : user?.clock_status === "O" ? (
-                                                                                  <span className="mr-1">🕒</span>
-                                                                              ) : user?.clock_status === "E" ? (
-                                                                                  <span className="mr-1">⌛</span>
-  
-                                                                              ) : (
-                                                                                  <span className="mr-1">🐌</span>
-                                                                              )}
-                                                                              {user?.clock_status === "I"
-                                                                                  ? "Timely In"
-                                                                                  : user?.clock_status === "O"
-                                                                                  ? "Timely Out"
-                                                                                  : user?.clock_status === "E"
-                                                                                  ? "Early Out"
-                                                                                  : "Late In"}
-                                                                          </span>
-                                                                      </div> */}
-																	<div>
-																		<h4 className="font-medium text-lg text-teal-500 mb-2">
-																			Rejection Remarks
-																		</h4>
-																		<p className="text-sm text-gray-700">
-																			{user?.attn_reject_remarks || "N/A"}
-																		</p>
-																	</div>
-																	{user?.late_in == "L" && (
-																		<div>
-																			<h4 className="font-medium text-lg text-teal-500 mb-2">
-																				Status
-																			</h4>
-																			<span
-																				className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-sm font-medium ${
-																					user?.late_in === "L"
-																						? "bg-red-100 text-red-800"
-																						: "bg-green-100 text-green-800"
-																				}`}
-																			>
-																				Late In
-																			</span>
-																		</div>
-																	)}
-																	{user?.late_in == "E" && (
-																		<div>
-																			<h4 className="font-medium text-lg text-teal-500 mb-2">
-																				Status
-																			</h4>
-																			<span
-																				className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-sm font-medium ${
-																					user?.late_in === "E"
-																						? "bg-red-100 text-red-800"
-																						: "bg-green-100 text-green-800"
-																				}`}
-																			>
-																				Early Out
-																			</span>
-																		</div>
-																	)}
-																	<div className="col-span-5 flex justify-center items-center">
-																		<Popconfirm
-																			title={`Reject Attendance for ${user?.emp_name}`}
-																			description={
-																				<>
-																					<div>
-																						Are you sure you want to reject this
-																						attendance?
-																					</div>
-																					<TDInputTemplateBr
-																						placeholder="Type remarks for rejection..."
-																						type="text"
-																						label="Reason for Rejection*"
-																						name="remarksForDelete"
-																						formControlName={remarksForDelete}
-																						handleChange={(e) =>
-																							setRemarksForDelete(
-																								e.target.value
-																							)
-																						}
-																						mode={3}
-																					/>
-																				</>
-																			}
-																			onConfirm={() => {
-																				console.log(user?.in_date_time)
-																				confirm(
-																					user?.emp_id,
-																					user?.in_date_time.split("T")[0] +
-																						" " +
-																						new Date(user?.in_date_time)
-																							?.toLocaleTimeString("en-GB", {
-																								hour: "2-digit",
-																								minute: "2-digit",
-																								second: "2-digit",
-																								hour12: false,
-																							})
-																							.replace("am", "")
-																							.replace("pm", "")
-																				)
-																			}}
-																			onCancel={cancel}
-																			okText="Reject"
-																			cancelText="Cancel"
-																		>
-																			{user?.attan_status !== "R" && (
-																				<button className="inline-flex items-center px-4 py-2 mt-4 text-sm font-medium text-white bg-red-500 border border-red-500 rounded-full hover:bg-red-600 hover:border-red-600 transition ease-in-out duration-300">
-																					<CheckCircleOutlined />
-																					<span className="ml-2">
-																						Reject Attendance
-																					</span>
-																				</button>
-																			)}
-																		</Popconfirm>
-																	</div>
-																</div>
-															</div>
-														</td>
-													</tr>
-												)}
-											</React.Fragment>
-										))}
-									</tbody>
-								</table>
-							</div>
-						</div>
+						<DynamicTailwindAccordion
+							indexing
+							data={reportData}
+							headerMap={attendanceReportHeader}
+							pageSize={20}
+							renderCell={renderCell}
+							renderRowDetails={renderRowDetails}
+							deleteCols={[7, 8, 9, 10, 11]}
+						/>
 					)}
 
 					{/* ///////////////////////////////////////////////////////////////// */}
@@ -795,7 +598,16 @@ function Payroll() {
 						<div className="flex justify-end gap-4">
 							<Tooltip title="Export to Excel">
 								<button
-									onClick={() => exportToExcel(reportData)}
+									onClick={() =>
+										exportToExcel(
+											reportData,
+											attendanceReportHeader,
+											`Attendance_Report_${new Date().toLocaleString(
+												"en-GB"
+											)}.xlsx`,
+											[0]
+										)
+									}
 									className="mt-5 justify-center items-center rounded-full text-green-900"
 								>
 									<FileExcelOutlined

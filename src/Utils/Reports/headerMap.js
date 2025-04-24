@@ -84,9 +84,9 @@ const disbursementDetailsHeader = {
 	applied_amt: "Applied Amt",
 	disb_dt: "Disburse Date",
 	disburse_amt: "Disburse Amt",
-	tot_emi:"Total EMI",
-	recovery_day:"Recovery Day",
-	period_mode:"Period Mode",
+	tot_emi: "Total EMI",
+	recovery_day: "Recovery Day",
+	period_mode: "Period Mode",
 	curr_outstanding: "Current Outstanding",
 }
 
@@ -244,6 +244,21 @@ const transactionFieldNames = {
 	created_by: "Created By",
 }
 
+const attendanceReportHeader = {
+	entry_dt: "Entry Date",
+	branch_id: "Branch ID",
+	emp_id: "Employee ID",
+	emp_name: "Employee Name",
+	in_date_time: "In Date Time",
+	out_date_time: "Out Date Time",
+	in_addr: "Clock In Address",
+	out_addr: "Clock Out Address",
+	clock_status: "Clock Status",
+	late_in: "Late In",
+	// attn_reject_remarks: "Attendance Reject Remarks",
+	// attan_status: "Attendance Status",
+}
+
 export {
 	fundwiseOutstandingHeader,
 	cowiseOutstandingHeader,
@@ -259,4 +274,5 @@ export {
 	branchwiseDemandReportHeader,
 	overduereportheader,
 	transactionFieldNames,
+	attendanceReportHeader,
 }
