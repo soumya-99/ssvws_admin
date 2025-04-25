@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react"
+import React, { useEffect, useMemo, useState } from "react"
 import Sidebar from "../../../Components/Sidebar"
 import axios from "axios"
 import { url } from "../../../Address/BaseUrl"
@@ -18,8 +18,12 @@ import { saveAs } from "file-saver"
 import * as XLSX from "xlsx"
 import { printTableRegular } from "../../../Utils/printTableRegular"
 import { exportToExcel } from "../../../Utils/exportToExcel"
-import { attendanceReportHeader } from "../../../Utils/Reports/headerMap"
+import {
+	absenteesReportHeader,
+	attendanceReportHeader,
+} from "../../../Utils/Reports/headerMap"
 import DynamicTailwindAccordion from "../../../Components/Reports/DynamicTailwindAccordion"
+import DynamicTailwindTable from "../../../Components/Reports/DynamicTailwindTable"
 import Radiobtn from "../../../Components/Radiobtn"
 
 // const { RangePicker } = DatePicker
@@ -44,15 +48,28 @@ const options = [
 	// },
 ]
 
+const options2 = [
+	{
+		label: "Normal",
+		value: "N",
+	},
+	{
+		label: "Absent",
+		value: "A",
+	},
+]
+
 function Payroll() {
 	const userDetails = JSON.parse(localStorage.getItem("user_details")) || ""
 	const [loading, setLoading] = useState(false)
 
 	const [searchType, setSearchType] = useState(() => "")
+	const [searchType2, setSearchType2] = useState(() => "N")
 
 	const [fromDate, setFromDate] = useState()
 	const [toDate, setToDate] = useState()
 	const [reportData, setReportData] = useState(() => [])
+	const [absentListData, setAbsentListData] = useState(() => [])
 	const [branch, setBranch] = useState(() => "")
 	const [branches, setBranches] = useState(() => [])
 	const [employees, setEmployees] = useState(() => [])
@@ -78,6 +95,11 @@ function Payroll() {
 	const onChange = (e) => {
 		console.log("radio1 checked", e)
 		setSearchType(e)
+	}
+
+	const onChange2 = (e) => {
+		console.log("radio1 checked", e)
+		setSearchType2(e)
 	}
 
 	const handleFetchBranches = async () => {
@@ -119,27 +141,6 @@ function Payroll() {
 		handleFetchEmployees()
 	}, [branch])
 
-	const timeDifference = (startDateStr, endDateStr) => {
-		// Convert date strings to Date objects
-		const startDate = new Date(startDateStr)
-		const endDate = new Date(endDateStr)
-
-		// Calculate the difference in milliseconds
-		const diff = endDate - startDate
-
-		// Convert milliseconds to minutes
-		const diffMinutes = Math.floor(diff / (1000 * 60))
-
-		// Convert minutes to hours and minutes
-		const hours = Math.floor(diffMinutes / 60)
-		const minutes = diffMinutes % 60
-
-		return {
-			hours: hours,
-			minutes: minutes,
-		}
-	}
-
 	const handleFetchReport = async () => {
 		setLoading(true)
 		const creds = {
@@ -177,6 +178,53 @@ function Payroll() {
 
 		setLoading(false)
 	}
+
+	const handleFetchAbsentList = async () => {
+		setLoading(true)
+		const creds = {
+			// from_date: formatDateToYYYYMMDD(fromDate),
+			to_date: formatDateToYYYYMMDD(toDate),
+			branch_id: branch.split(",")[0],
+		}
+
+		await axios
+			.post(`${url}/fetch_absent_list`, creds)
+			.then((res) => {
+				setReportData([])
+				console.log("ABSENT LIST======>>>>", res?.data)
+				setAbsentListData(res?.data?.msg)
+			})
+			.catch((err) => {
+				console.log("ERRRR>>>", err)
+			})
+		setLoading(false)
+	}
+
+	useEffect(() => {
+		if (searchType2 === "A") {
+			setToDate(formatDateToYYYYMMDD(new Date()))
+			setAbsentListData([])
+			setReportData([])
+		}
+	}, [searchType2, branch])
+
+	const filteredReportData = useMemo(() => {
+		if (searchType === "L" || searchType === "E") {
+			const f = filteringData.find((f) => f.value === searchType)
+			return reportData.filter((row) => row[f.header_name] === f.value)
+		}
+		return reportData
+	}, [reportData, searchType])
+
+	const dataToExport = searchType2 === "A" ? absentListData : filteredReportData
+
+	const headersToExport =
+		searchType2 === "A" ? absenteesReportHeader : attendanceReportHeader
+
+	const fileName =
+		searchType2 === "A"
+			? `Absent_List_${new Date().toLocaleString("en-GB")}.xlsx`
+			: `Attendance_Report_${new Date().toLocaleString("en-GB")}.xlsx`
 
 	const handleSubmit = () => {
 		if (fromDate && toDate && employee) {
@@ -251,7 +299,6 @@ function Payroll() {
 	const cancel = (e) => {
 		console.log(e)
 		setRemarksForDelete("")
-		// message.error('Click on No');
 	}
 
 	// ///////////////////////////////////////
@@ -439,19 +486,31 @@ function Payroll() {
 						</div>
 					</div>
 
+					<div className="mb-2">
+						<Radiobtn
+							data={options2}
+							val={searchType2}
+							onChangeVal={(value) => {
+								onChange2(value)
+							}}
+						/>
+					</div>
+
 					<div className="grid grid-cols-3 gap-5 mt-5">
-						<div>
-							<TDInputTemplateBr
-								placeholder="From Date"
-								type="date"
-								label="From Date"
-								name="fromDate"
-								formControlName={fromDate}
-								handleChange={(e) => setFromDate(e.target.value)}
-								min={"1900-12-31"}
-								mode={1}
-							/>
-						</div>
+						{searchType2 !== "A" && (
+							<div>
+								<TDInputTemplateBr
+									placeholder="From Date"
+									type="date"
+									label="From Date"
+									name="fromDate"
+									formControlName={fromDate}
+									handleChange={(e) => setFromDate(e.target.value)}
+									min={"1900-12-31"}
+									mode={1}
+								/>
+							</div>
+						)}
 						<div>
 							<TDInputTemplateBr
 								placeholder="To Date"
@@ -459,9 +518,12 @@ function Payroll() {
 								label="To Date"
 								name="toDate"
 								formControlName={toDate}
-								handleChange={(e) => setToDate(e.target.value)}
+								handleChange={(e) => {
+									setToDate(e.target.value)
+								}}
 								min={"1900-12-31"}
 								mode={1}
+								disabled={searchType2 === "A"}
 							/>
 						</div>
 
@@ -515,48 +577,40 @@ function Payroll() {
 								]}
 							/>
 						</div>
-						<div className="col-span-3">
-							<TDInputTemplateBr
-								placeholder="Employees..."
-								type="text"
-								label="Employees"
-								name="employee"
-								formControlName={employee}
-								handleChange={(e) => {
-									console.log("***********========", e)
-									// setBranch(
-									// 	e.target.value +
-									// 		"," +
-									// 		branches.filter((i) => i.branch_code == e.target.value)[0]
-									// 			?.branch_name
-									// )
-									setEmployee(e.target.value)
-									console.log(branches)
-								}}
-								mode={2}
-								// data={branches?.map((item, i) => ({
-								// 	code: item?.branch_code,
-								// 	name: item?.branch_name,
-								// }))}
-								data={[
-									{ code: "A", name: "All Employees" },
-									...employees?.map((item, i) => ({
-										code: item?.emp_id,
-										name: item?.emp_name,
-									})),
-								]}
-								// data={employees?.map((item, i) => ({
-								//   code: item?.emp_id,
-								//   name: item?.emp_name,
-								// }))}
-							/>
-						</div>
+						{searchType2 !== "A" && (
+							<div className="col-span-3">
+								<TDInputTemplateBr
+									placeholder="Employees..."
+									type="text"
+									label="Employees"
+									name="employee"
+									formControlName={employee}
+									handleChange={(e) => {
+										console.log("***********========", e)
+										setEmployee(e.target.value)
+										console.log(branches)
+									}}
+									mode={2}
+									data={[
+										{ code: "A", name: "All Employees" },
+										...employees?.map((item, i) => ({
+											code: item?.emp_id,
+											name: item?.emp_name,
+										})),
+									]}
+								/>
+							</div>
+						)}
 
 						<div className="flex justify-center col-span-3">
 							<button
 								className={`inline-flex items-center px-4 py-2 mt-0 ml-0 sm:mt-0 text-sm font-small text-center text-white border hover:border-green-600 border-teal-500 bg-teal-500 transition ease-in-out hover:bg-green-600 duration-300 rounded-full  dark:focus:ring-primary-900`}
 								onClick={() => {
-									handleSubmit()
+									if (searchType2 !== "A") {
+										handleSubmit()
+									} else {
+										handleFetchAbsentList()
+									}
 								}}
 							>
 								<SearchOutlined /> <span class={`ml-2`}>Search</span>
@@ -628,7 +682,7 @@ function Payroll() {
 						</div>
 					)}
 
-					{reportData?.length > 0 && (
+					{reportData?.length > 0 && searchType !== "A" && (
 						<DynamicTailwindAccordion
 							indexing
 							data={reportData}
@@ -646,22 +700,23 @@ function Payroll() {
 							}
 						/>
 					)}
+					{absentListData?.length > 0 && searchType2 === "A" && (
+						<DynamicTailwindTable
+							data={absentListData}
+							headersMap={absenteesReportHeader}
+							pageSize={20}
+							indexing
+						/>
+					)}
 
 					{/* ///////////////////////////////////////////////////////////////// */}
 
-					{reportData.length !== 0 && (
+					{(reportData.length !== 0 || absentListData.length !== 0) && (
 						<div className="flex justify-end gap-4">
 							<Tooltip title="Export to Excel">
 								<button
 									onClick={() =>
-										exportToExcel(
-											reportData,
-											attendanceReportHeader,
-											`Attendance_Report_${new Date().toLocaleString(
-												"en-GB"
-											)}.xlsx`,
-											[0]
-										)
+										exportToExcel(dataToExport, headersToExport, fileName, [0])
 									}
 									className="mt-5 justify-center items-center rounded-full text-green-900"
 								>
@@ -672,7 +727,7 @@ function Payroll() {
 									/>
 								</button>
 							</Tooltip>
-							<Tooltip title="Print">
+							{/* <Tooltip title="Print">
 								<button
 									onClick={() => {
 										console.log(metadataDtls)
@@ -692,7 +747,7 @@ function Payroll() {
 										}}
 									/>
 								</button>
-							</Tooltip>
+							</Tooltip> */}
 						</div>
 					)}
 				</main>

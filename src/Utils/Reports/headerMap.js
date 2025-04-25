@@ -259,6 +259,13 @@ const attendanceReportHeader = {
 	// attan_status: "Attendance Status",
 }
 
+const absenteesReportHeader = {
+	emp_id: "Employee ID",
+	emp_name: "Employee Name",
+	branch_id: "Branch ID",
+	branch_name: "Branch Name",
+}
+
 export {
 	fundwiseOutstandingHeader,
 	cowiseOutstandingHeader,
@@ -275,4 +282,5 @@ export {
 	overduereportheader,
 	transactionFieldNames,
 	attendanceReportHeader,
+	absenteesReportHeader,
 }
