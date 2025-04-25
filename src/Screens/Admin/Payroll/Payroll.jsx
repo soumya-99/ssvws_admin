@@ -20,18 +20,35 @@ import { printTableRegular } from "../../../Utils/printTableRegular"
 import { exportToExcel } from "../../../Utils/exportToExcel"
 import { attendanceReportHeader } from "../../../Utils/Reports/headerMap"
 import DynamicTailwindAccordion from "../../../Components/Reports/DynamicTailwindAccordion"
+import Radiobtn from "../../../Components/Radiobtn"
 
 // const { RangePicker } = DatePicker
 // const dateFormat = "YYYY/MM/DD"
+
+const options = [
+	{
+		label: "All",
+		value: "",
+	},
+	{
+		label: "Late In",
+		value: "L",
+	},
+	{
+		label: "Early Out",
+		value: "E",
+	},
+	// {
+	// 	label: "Absent",
+	// 	value: "A",
+	// },
+]
 
 function Payroll() {
 	const userDetails = JSON.parse(localStorage.getItem("user_details")) || ""
 	const [loading, setLoading] = useState(false)
 
-	// const [openModal, setOpenModal] = useState(false)
-	// const [approvalStatus, setApprovalStatus] = useState("S")
-	const [searchType, setSearchType] = useState(() => "D")
-	const [searchType2, setSearchType2] = useState(() => "M")
+	const [searchType, setSearchType] = useState(() => "")
 
 	const [fromDate, setFromDate] = useState()
 	const [toDate, setToDate] = useState()
@@ -44,11 +61,24 @@ function Payroll() {
 	const [tot_early_out, setTotEarlyOut] = useState(() => 0)
 	const [tot_late_in, setTotLateIn] = useState(() => 0)
 	const [tot_hours, setTothours] = useState(() => 0)
-	// const [reportTxnData, setReportTxnData] = useState(() => [])
-	// const [tot_sum, setTotSum] = useState(0)
-	// const [search, setSearch] = useState("")
 
 	const [metadataDtls, setMetadataDtls] = useState(() => "")
+
+	const filteringData = [
+		{
+			header_name: "late_in",
+			value: "L",
+		},
+		{
+			header_name: "late_in",
+			value: "E",
+		},
+	]
+
+	const onChange = (e) => {
+		console.log("radio1 checked", e)
+		setSearchType(e)
+	}
 
 	const handleFetchBranches = async () => {
 		setLoading(true)
@@ -88,6 +118,7 @@ function Payroll() {
 	useEffect(() => {
 		handleFetchEmployees()
 	}, [branch])
+
 	const timeDifference = (startDateStr, endDateStr) => {
 		// Convert date strings to Date objects
 		const startDate = new Date(startDateStr)
@@ -108,6 +139,7 @@ function Payroll() {
 			minutes: minutes,
 		}
 	}
+
 	const handleFetchReport = async () => {
 		setLoading(true)
 		const creds = {
@@ -170,11 +202,11 @@ function Payroll() {
 		})
 	}
 
-	const [activeDescriptionId, setActiveDescriptionId] = useState(null)
+	// const [activeDescriptionId, setActiveDescriptionId] = useState(null)
 
-	const toggleDescription = (userId) => {
-		setActiveDescriptionId((prevId) => (prevId === userId ? null : userId))
-	}
+	// const toggleDescription = (userId) => {
+	// 	setActiveDescriptionId((prevId) => (prevId === userId ? null : userId))
+	// }
 
 	const [remarksForDelete, setRemarksForDelete] = useState(() => "")
 
@@ -585,6 +617,18 @@ function Payroll() {
 					{/* For Recovery/Collection Results MR */}
 
 					{reportData?.length > 0 && (
+						<div className="mb-2">
+							<Radiobtn
+								data={options}
+								val={searchType}
+								onChangeVal={(value) => {
+									onChange(value)
+								}}
+							/>
+						</div>
+					)}
+
+					{reportData?.length > 0 && (
 						<DynamicTailwindAccordion
 							indexing
 							data={reportData}
@@ -593,6 +637,13 @@ function Payroll() {
 							renderCell={renderCell}
 							renderRowDetails={renderRowDetails}
 							deleteCols={[7, 8, 9, 10, 11]}
+							filter={
+								searchType === "L"
+									? filteringData[0]
+									: searchType === "E"
+									? filteringData[1]
+									: searchType === ""
+							}
 						/>
 					)}
 

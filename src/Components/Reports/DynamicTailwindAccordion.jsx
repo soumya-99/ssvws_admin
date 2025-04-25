@@ -11,24 +11,48 @@ const DynamicTailwindAccordion = ({
 	renderCell,
 	dateTimeExceptionCols = [],
 	indexing = false,
+	filter = null,
 }) => {
 	const [activeRowIndex, setActiveRowIndex] = useState(null)
 	const [currentPage, setCurrentPage] = useState(1)
 
+	// Extract headers
 	const originalHeaders = useMemo(
 		() => (data.length ? Object.keys(data[0]) : []),
 		[data]
 	)
 
+	// Determine which columns to include
 	const columns = useMemo(
 		() => originalHeaders.filter((_, idx) => !deleteCols.includes(idx)),
 		[originalHeaders, deleteCols]
 	)
 
+	// Apply filter if provided
+	const filteredData = useMemo(() => {
+		if (
+			filter &&
+			typeof filter.header_name === "string" &&
+			filter.header_name.length > 0 &&
+			filter.value !== undefined &&
+			filter.value !== null
+		) {
+			return data.filter((row) => {
+				const cell = row[filter.header_name]
+				if (cell === undefined || cell === null) return false
+				return String(cell)
+					.toLowerCase()
+					.includes(String(filter.value).toLowerCase())
+			})
+		}
+		return data
+	}, [data, filter])
+
+	// Determine data for current page
 	const pageData = useMemo(() => {
 		const start = (currentPage - 1) * pageSize
-		return data.slice(start, start + pageSize)
-	}, [data, currentPage, pageSize])
+		return filteredData.slice(start, start + pageSize)
+	}, [filteredData, currentPage, pageSize])
 
 	const toggleRow = (index) => {
 		setActiveRowIndex((prev) => (prev === index ? null : index))
@@ -130,7 +154,7 @@ const DynamicTailwindAccordion = ({
 				<Pagination
 					current={currentPage}
 					pageSize={pageSize}
-					total={data.length}
+					total={filteredData.length}
 					onChange={(page) => setCurrentPage(page)}
 					showSizeChanger={false}
 				/>
@@ -148,6 +172,10 @@ DynamicTailwindAccordion.propTypes = {
 	renderCell: PropTypes.func,
 	dateTimeExceptionCols: PropTypes.arrayOf(PropTypes.number),
 	indexing: PropTypes.bool,
+	filter: PropTypes.shape({
+		header_name: PropTypes.string.isRequired,
+		value: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
+	}),
 }
 
 export default DynamicTailwindAccordion
