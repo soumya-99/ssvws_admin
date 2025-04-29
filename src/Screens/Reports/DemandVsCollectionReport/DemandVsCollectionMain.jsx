@@ -590,6 +590,7 @@ function DemandVsCollectionMain() {
 			: selectedOptions
 
 	const handleMultiSelectChange = (selected) => {
+		console.log(selected,displayedOptions)
 		if (selected.some((option) => option.value === "all")) {
 			setSelectedOptions(dropdownOptions)
 		} else {

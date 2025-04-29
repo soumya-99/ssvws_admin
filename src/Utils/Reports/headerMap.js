@@ -243,6 +243,29 @@ const transactionFieldNames = {
 	created_code: "Created Branch Code",
 	created_by: "Created By",
 }
+const rejectTransFieldNames  = {
+	payment_date:"Payment Date",
+	payment_id:"Payment ID",
+	branch_name:"Branch Name",
+	group_name:"Group Name",
+	loan_id:"Loan ID",
+	client_name:"Client Name",
+	particulars:"Particulars",
+	credit:"Credit Amount",
+	debit:"Debit Amount",
+	tr_type:"Transaction Type",
+	tr_mode:"Transaction Mode",
+	reject_remarks:"Reject Remarks",
+	created_by:"Created By",
+	created_at:"Created At",
+	modified_by:"Modified By",
+	modified_at:"Modified At",
+	approved_at:"Approved At",
+	approved_by:"Approved By",
+	rejected_by:"Rejected By",
+	rejected_at:"Rejected At"
+
+}
 
 const attendanceReportHeader = {
 	entry_dt: "Entry Date",
@@ -283,4 +306,5 @@ export {
 	transactionFieldNames,
 	attendanceReportHeader,
 	absenteesReportHeader,
+	rejectTransFieldNames
 }
