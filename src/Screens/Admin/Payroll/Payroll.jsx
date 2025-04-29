@@ -182,9 +182,13 @@ function Payroll() {
 	const handleFetchAbsentList = async () => {
 		setLoading(true)
 		const creds = {
-			// from_date: formatDateToYYYYMMDD(fromDate),
-			to_date: formatDateToYYYYMMDD(toDate),
-			branch_id: branch.split(",")[0],
+			absent_data: [
+				{
+					from_date: formatDateToYYYYMMDD(fromDate),
+					to_date: formatDateToYYYYMMDD(toDate),
+					branch_id: branch.split(",")[0],
+				},
+			],
 		}
 
 		await axios
@@ -202,7 +206,7 @@ function Payroll() {
 
 	useEffect(() => {
 		if (searchType2 === "A") {
-			setToDate(formatDateToYYYYMMDD(new Date()))
+			// setToDate(formatDateToYYYYMMDD(new Date()))
 			setAbsentListData([])
 			setReportData([])
 		}
@@ -359,13 +363,15 @@ function Payroll() {
 				<div>
 					<h4 className="font-medium text-lg text-teal-500 mb-2">Clock In</h4>
 					<Tag color="green" className="mb-2">
-						{new Date(user.in_date_time)
-							.toLocaleTimeString("en-GB", {
-								hour: "2-digit",
-								minute: "2-digit",
-								hour12: true,
-							})
-							.toUpperCase()}
+						{user.in_date_time
+							? new Date(user.in_date_time)
+									.toLocaleTimeString("en-GB", {
+										hour: "2-digit",
+										minute: "2-digit",
+										hour12: true,
+									})
+									.toUpperCase()
+							: ""}
 					</Tag>
 					<p className="text-sm text-gray-700">{user.in_addr}</p>
 				</div>
@@ -373,13 +379,15 @@ function Payroll() {
 				<div>
 					<h4 className="font-medium text-lg text-teal-500 mb-2">Clock Out</h4>
 					<Tag color="red" className="mb-2">
-						{new Date(user.out_date_time)
-							.toLocaleTimeString("en-GB", {
-								hour: "2-digit",
-								minute: "2-digit",
-								hour12: true,
-							})
-							.toUpperCase()}
+						{user.out_date_time
+							? new Date(user.out_date_time)
+									.toLocaleTimeString("en-GB", {
+										hour: "2-digit",
+										minute: "2-digit",
+										hour12: true,
+									})
+									.toUpperCase()
+							: ""}
 					</Tag>
 					<p className="text-sm text-gray-700">{user.out_addr}</p>
 				</div>
@@ -497,20 +505,20 @@ function Payroll() {
 					</div>
 
 					<div className="grid grid-cols-3 gap-5 mt-5">
-						{searchType2 !== "A" && (
-							<div>
-								<TDInputTemplateBr
-									placeholder="From Date"
-									type="date"
-									label="From Date"
-									name="fromDate"
-									formControlName={fromDate}
-									handleChange={(e) => setFromDate(e.target.value)}
-									min={"1900-12-31"}
-									mode={1}
-								/>
-							</div>
-						)}
+						{/* {searchType2 !== "A" && ( */}
+						<div>
+							<TDInputTemplateBr
+								placeholder="From Date"
+								type="date"
+								label="From Date"
+								name="fromDate"
+								formControlName={fromDate}
+								handleChange={(e) => setFromDate(e.target.value)}
+								min={"1900-12-31"}
+								mode={1}
+							/>
+						</div>
+						{/* )} */}
 						<div>
 							<TDInputTemplateBr
 								placeholder="To Date"
@@ -523,7 +531,7 @@ function Payroll() {
 								}}
 								min={"1900-12-31"}
 								mode={1}
-								disabled={searchType2 === "A"}
+								// disabled={searchType2 === "A"}
 							/>
 						</div>
 
@@ -706,6 +714,7 @@ function Payroll() {
 							headersMap={absenteesReportHeader}
 							pageSize={20}
 							indexing
+							dateTimeExceptionCols={[4]}
 						/>
 					)}
 
