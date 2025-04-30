@@ -181,7 +181,7 @@ const router = createBrowserRouter([
 						element: <></>,
 					},
 					{
-						path: "finance",
+						path: "ssvws_fin",
 						element: <></>,
 					},
 					{
