@@ -54,6 +54,8 @@ import MonthEnd from "./Screens/Admin/UserManagement/MonthEnd"
 import Payroll from "./Screens/Admin/Payroll/Payroll"
 import OverdueReport from "./Screens/Reports/OverdueReport/OverdueReport"
 import RejectTransaction from "./Screens/BMHome/Loans/RejectTransaction"
+import Landing from "./Screens/Landing/Landing"
+import LandingOutlet from "./Screens/Landing/LandingOutlet"
 // import A_LoanStatementMain from "./Screens/Admin/Reports/LoanStatements/A_LoanStatementMain"
 // import A_LoanTransactionsMain from "./Screens/Admin/Reports/LoanTransactions/A_LoanTransactionsMain"
 // import A_DemandReportsMain from "./Screens/Admin/Reports/DemandReports/A_DemandReportsMain"
@@ -164,11 +166,23 @@ const router = createBrowserRouter([
 		children: [
 			{
 				path: "",
-				element: <AuthMis />,
+				element: <LandingOutlet />,
 				children: [
 					{
 						path: "",
+						element: <Landing />,
+					},
+					{
+						path: "loan",
 						element: <SigninMis />,
+					},
+					{
+						path: "payroll",
+						element: <></>,
+					},
+					{
+						path: "finance",
+						element: <></>,
 					},
 					{
 						path: "signup",

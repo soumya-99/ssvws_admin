@@ -163,6 +163,24 @@ function RecoveryMemberApproveTable({
 		}
 	}
 
+	const checkingCreditAmt = async () => {
+		const creds = {
+			checklist: checkBeforeApproveData?.map((item) => ({
+				payment_id: item?.payment_id,
+				payment_date: item?.payment_date,
+			})),
+		}
+		await axios.post(`${url}/checking_credit_amt`, creds).then((res) => {
+			if (res?.data?.suc === 0) {
+				Message("error", res?.data?.msg)
+			} else if (res?.data?.suc === 1) {
+				// Message("success", res?.data?.msg)
+				console.log("Credit amt check OK.")
+				setVisible(true)
+			}
+		})
+	}
+
 	const checkingBeforeApprove = async () => {
 		setLoading(true)
 		const creds = {
@@ -171,11 +189,12 @@ function RecoveryMemberApproveTable({
 		}
 		await axios
 			.post(`${url}/checking_before_approve`, creds)
-			.then((res) => {
+			.then(async (res) => {
 				if (res?.data?.suc === 0) {
 					Message("error", res?.data?.msg)
 				} else if (res?.data?.suc === 1) {
-					setVisible(true)
+					// setVisible(true)
+					await checkingCreditAmt()
 				}
 			})
 			.catch((err) => {
@@ -490,9 +509,10 @@ function RecoveryMemberApproveTable({
 										// setCachedPaymentId(item?.payment_id)
 										// setVisible(true)
 										await checkingBeforeApprove()
+										// await checkingCreditAmt()
 									}}
 								>
-									<CheckCircleOutlined /> <spann class={`ml-2`}>Approve</spann>
+									<CheckCircleOutlined /> <span class={`ml-2`}>Approve</span>
 								</button>
 
 								{/* <button

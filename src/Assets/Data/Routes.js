@@ -1,5 +1,7 @@
 export const routePaths = {
 	LANDING: "/",
+	LANDING_LOAN: "/loan/",
+	PAYROLL: "/payroll/",
 
 	SIGN_UP: "/signup/",
 	// LOAN_FORM: "/loan/loanform/",

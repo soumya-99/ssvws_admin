@@ -49,7 +49,7 @@ function App() {
 			navigate(routePaths.BM_HOME)
 		} else {
 			localStorage.clear()
-			navigate(routePaths.LANDING)
+			navigate(routePaths.LANDING_LOAN)
 		}
 	}, [navigate])
 
