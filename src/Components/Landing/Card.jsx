@@ -5,7 +5,7 @@ import TrendingUpRoundedIcon from "@mui/icons-material/TrendingUpRounded"
 import loanPhoto from "../../Assets/Images/loan.webp"
 
 function Card({
-	icon = <AccessTimeRoundedIcon />,
+	// icon = <AccessTimeRoundedIcon />,
 	photo = loanPhoto,
 	title = "",
 	description = "",
@@ -14,9 +14,18 @@ function Card({
 	buttonColor = "bg-slate-600 hover:bg-slate-600/90",
 	path,
 }) {
+	// Determine if the link is external
+	const isExternal = typeof path === "string" && /^(https?:)?\/\//.test(path)
+
+	const linkProps = isExternal
+		? { href: path, target: "_blank", rel: "noopener noreferrer" }
+		: { to: path }
+
+	const Wrapper = isExternal ? "a" : Link
+
 	return (
-		<Link
-			to={path}
+		<Wrapper
+			{...linkProps}
 			className={
 				"group max-w-sm p-6 bg-white border border-gray-200 rounded-3xl shadow-sm " +
 				"dark:bg-gray-800 dark:border-gray-700 bg-clip-padding backdrop-filter " +
@@ -24,6 +33,7 @@ function Card({
 				"hover:scale-105 transition-transform duration-300 ease-in-out active:scale-95"
 			}
 		>
+			{/* {icon} */}
 			<img
 				className="object-cover w-full h-96 md:h-auto md:w-48 rounded-2xl border-2 border-yellow-200 transition-transform duration-300 ease-in-out group-hover:scale-105 shadow-sm"
 				src={photo}
@@ -40,7 +50,7 @@ function Card({
 					<div className="mt-4">
 						<button
 							className={
-								`inline-flex items-center px-4 py-2 text-white rounded-md` +
+								`inline-flex items-center px-4 py-2 text-white rounded-md ` +
 								buttonColor
 							}
 						>
@@ -50,7 +60,7 @@ function Card({
 					</div>
 				)}
 			</div>
-		</Link>
+		</Wrapper>
 	)
 }
 

@@ -36,14 +36,14 @@ function Landing() {
 							icon={<CurrencyRupeeRoundedIcon />}
 							title="PAYROLL"
 							// description="To access your payroll management, please click the button below."
-							path={"/payroll"}
+							path={"https://ssvws.opentech4u.co.in/payroll"}
 							photo={payrollImg}
 						/>
 						<Card
 							icon={<AccountBalanceRoundedIcon />}
 							title="FINANCE"
 							// description="To access your finance management, please click the button below."
-							path={"/ssvws_fin"}
+							path={"https://ssvws.opentech4u.co.in/ssvws_fin"}
 							photo={financeImg}
 						/>
 					</div>
