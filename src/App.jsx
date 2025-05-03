@@ -18,21 +18,17 @@ function App() {
 
 	useIdleTimer()
 
-	// list every exact path you want to remain public:
 	const publicPaths = new Set([
 		routePaths.LANDING, // "/"
-		routePaths.LANDING_LOAN, // "/loan/"
-		"/loan", // also without trailing slash
+		routePaths.LANDING_LOAN,
+		"/loan",
 		"/loan/",
 
 		"/payroll",
 		"/payroll/",
 
-		// "/finance",
-		// "/finance/",
-
 		"/ssvws_fin",
-		"/ssvws_fin/"
+		"/ssvws_fin/",
 	])
 
 	// Only check session‐validity when you *do* have one and you're on a protected route:

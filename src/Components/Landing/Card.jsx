@@ -14,7 +14,6 @@ function Card({
 	buttonColor = "bg-slate-600 hover:bg-slate-600/90",
 	path,
 }) {
-	// Determine if the link is external
 	const isExternal = typeof path === "string" && /^(https?:)?\/\//.test(path)
 
 	const linkProps = isExternal

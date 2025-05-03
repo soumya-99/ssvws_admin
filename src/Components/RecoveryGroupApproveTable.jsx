@@ -187,6 +187,29 @@ function RecoveryGroupApproveTable({
 		}
 	}
 
+	const checkingCreditAmt = async () => {
+		setLoading(true)
+		const creds = {
+			checklist: checkBeforeApproveData?.map((item) => ({
+				group_code: item?.group_code,
+				payment_date: item?.payment_date,
+			})),
+		}
+		await axios
+			.post(`${url}/checking_credit_amount_grp_cowise`, creds)
+			.then((res) => {
+				if (res?.data?.suc === 0) {
+					Message("error", res?.data?.msg)
+				} else if (res?.data?.suc === 1) {
+					setVisible(true)
+				}
+			})
+			.catch((err) => {
+				Message("error", "Some error occurred while fetching loans!")
+			})
+		setLoading(false)
+	}
+
 	const checkingBeforeApprove = async () => {
 		setLoading(true)
 		const creds = {
@@ -195,11 +218,12 @@ function RecoveryGroupApproveTable({
 		}
 		await axios
 			.post(`${url}/checking_before_approve`, creds)
-			.then((res) => {
+			.then(async (res) => {
 				if (res?.data?.suc === 0) {
 					Message("error", res?.data?.msg)
 				} else if (res?.data?.suc === 1) {
-					setVisible(true)
+					// setVisible(true)
+					await checkingCreditAmt()
 				}
 			})
 			.catch((err) => {

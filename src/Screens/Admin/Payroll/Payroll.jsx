@@ -59,7 +59,7 @@ const options2 = [
 	},
 ]
 
-function Payroll() {
+function Payroll({ user_type_id = 4 }) {
 	const userDetails = JSON.parse(localStorage.getItem("user_details")) || ""
 	const [loading, setLoading] = useState(false)
 
@@ -70,7 +70,11 @@ function Payroll() {
 	const [toDate, setToDate] = useState()
 	const [reportData, setReportData] = useState(() => [])
 	const [absentListData, setAbsentListData] = useState(() => [])
-	const [branch, setBranch] = useState(() => "")
+	const [branch, setBranch] = useState(() =>
+		user_type_id !== 4
+			? `${userDetails?.brn_code},${userDetails?.branch_name}`
+			: ""
+	)
 	const [branches, setBranches] = useState(() => [])
 	const [employees, setEmployees] = useState(() => [])
 	const [employee, setEmployee] = useState(() => "")
@@ -571,7 +575,7 @@ function Payroll() {
 									)
 								}}
 								mode={2}
-								// disabled={true}
+								disabled={user_type_id !== 4}
 								// data={branches?.map((item, i) => ({
 								// 	code: item?.branch_code,
 								// 	name: item?.branch_name,
