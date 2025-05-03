@@ -289,6 +289,20 @@ const absenteesReportHeader = {
 	branch_name: "Branch Name",
 }
 
+const loanStatementHeader = {
+	trans_date: "Transaction Date",
+	trans_no: "Transaction No",
+	tr_type: "Transaction Type",
+	debit: "Debit",
+	credit: "Credit",
+	prn_bal: "Principal Balance",
+	intt_bal: "Interest Balance",
+	total_outstanding: "Total Outstanding",
+	tr_mode: "Transaction Mode",
+	particulars: "Particulars",
+	status: "Status",
+}
+
 export {
 	fundwiseOutstandingHeader,
 	cowiseOutstandingHeader,
@@ -307,4 +321,5 @@ export {
 	attendanceReportHeader,
 	absenteesReportHeader,
 	rejectTransFieldNames,
+	loanStatementHeader,
 }
