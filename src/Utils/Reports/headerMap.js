@@ -301,6 +301,7 @@ const loanStatementHeader = {
 	tr_mode: "Transaction Mode",
 	particulars: "Particulars",
 	status: "Status",
+	period_mode: "Period Mode",
 }
 
 export {

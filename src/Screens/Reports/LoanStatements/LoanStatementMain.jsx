@@ -52,17 +52,45 @@ function LoanStatementMain() {
 	const [search, setSearch] = useState("")
 
 	const [metadataDtls, setMetadataDtls] = useState(() => null)
+	const [branches, setBranches] = useState(() => [])
+	const [branch, setBranch] = useState(() =>
+		+userDetails?.brn_code !== 100
+			? `${userDetails?.brn_code},${userDetails?.branch_name}`
+			: ""
+	)
 
 	const onChange = (e) => {
 		console.log("radio1 checked", e)
 		setSearchType(e)
 	}
 
+	const handleFetchBranches = async () => {
+		setLoading(true)
+		await axios
+			.get(`${url}/fetch_all_branch_dt`)
+			.then((res) => {
+				console.log("QQQQQQQQQQQQQQQQ", res?.data)
+				setBranches(res?.data?.msg)
+			})
+			.catch((err) => {
+				console.log("?????????????????????", err)
+			})
+
+		setLoading(false)
+	}
+
+	useEffect(() => {
+		handleFetchBranches()
+	}, [])
+
 	const handleFetchReportMemberwise = async () => {
 		setLoading(true)
 		const creds = {
 			memb: search,
-			branch_code: userDetails?.brn_code,
+			branch_code:
+				+userDetails?.brn_code === 100
+					? branch.split(",")[0]
+					: userDetails?.brn_code,
 		}
 
 		await axios
@@ -227,6 +255,48 @@ function LoanStatementMain() {
 							}}
 						/>
 					</div>
+
+					{+userDetails?.brn_code === 100 && (
+						<div>
+							<TDInputTemplateBr
+								placeholder="Branch..."
+								type="text"
+								label="Branch"
+								name="branch"
+								formControlName={branch?.split(",")[0]}
+								handleChange={(e) => {
+									console.log("***********========", e)
+									setBranch(
+										e.target.value +
+											"," +
+											[
+												// { branch_code: "A", branch_name: "All Branches" },
+												...branches,
+											].filter((i) => i.branch_code == e.target.value)[0]
+												?.branch_name
+									)
+									console.log(branches)
+									console.log(
+										e.target.value +
+											"," +
+											[
+												// { branch_code: "A", branch_name: "All Branches" },
+												...branches,
+											].filter((i) => i.branch_code == e.target.value)[0]
+												?.branch_name
+									)
+								}}
+								mode={2}
+								data={[
+									// { code: "A", name: "All Branches" },
+									...branches?.map((item, i) => ({
+										code: item?.branch_code,
+										name: item?.branch_name,
+									})),
+								]}
+							/>
+						</div>
+					)}
 
 					{/* <div class="my-4 mx-auto"> */}
 					<div class="w-full gap-5 mt-5 items-end">
@@ -516,8 +586,8 @@ function LoanStatementMain() {
 							<DynamicTailwindTable
 								data={reportTxnData}
 								dateTimeExceptionCols={[0]}
-								colRemove={[8, 9]}
-								columnTotal={[3, 4, 5, 6, 7]}
+								colRemove={[5, 6, 8, 9]}
+								columnTotal={[3, 4, 7]}
 								headersMap={loanStatementHeader}
 								indexing
 							/>
@@ -529,7 +599,7 @@ function LoanStatementMain() {
 							<DynamicTailwindTable
 								data={reportTxnData}
 								dateTimeExceptionCols={[0]}
-								// columnTotal={[3, 4, 5, 6, 7]}
+								columnTotal={[2, 3, 4]}
 								headersMap={loanStatementHeader}
 								indexing
 							/>

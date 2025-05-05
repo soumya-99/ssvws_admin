@@ -59,7 +59,7 @@ const options2 = [
 	},
 ]
 
-function Payroll({ user_type_id = 4 }) {
+function Payroll({ branchCode = 100 }) {
 	const userDetails = JSON.parse(localStorage.getItem("user_details")) || ""
 	const [loading, setLoading] = useState(false)
 
@@ -71,7 +71,7 @@ function Payroll({ user_type_id = 4 }) {
 	const [reportData, setReportData] = useState(() => [])
 	const [absentListData, setAbsentListData] = useState(() => [])
 	const [branch, setBranch] = useState(() =>
-		user_type_id !== 4
+		+branchCode !== 100
 			? `${userDetails?.brn_code},${userDetails?.branch_name}`
 			: ""
 	)
@@ -95,6 +95,8 @@ function Payroll({ user_type_id = 4 }) {
 			value: "E",
 		},
 	]
+
+	console.log("+branchCode !== 100", +branchCode !== 100)
 
 	const onChange = (e) => {
 		console.log("radio1 checked", e)
@@ -575,7 +577,7 @@ function Payroll({ user_type_id = 4 }) {
 									)
 								}}
 								mode={2}
-								disabled={user_type_id !== 4}
+								disabled={+branchCode !== 100}
 								// data={branches?.map((item, i) => ({
 								// 	code: item?.branch_code,
 								// 	name: item?.branch_name,
