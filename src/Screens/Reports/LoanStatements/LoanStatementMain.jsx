@@ -111,7 +111,10 @@ function LoanStatementMain() {
 		setLoading(true)
 		const creds = {
 			grp: search,
-			branch_code: userDetails?.brn_code,
+			branch_code:
+				+userDetails?.brn_code === 100
+					? branch.split(",")[0]
+					: userDetails?.brn_code,
 		}
 
 		await axios
@@ -134,7 +137,10 @@ function LoanStatementMain() {
 			from_dt: formatDateToYYYYMMDD(fromDate),
 			to_dt: formatDateToYYYYMMDD(toDate),
 			loan_id: loanId || "",
-			branch_id: userDetails.brn_code,
+			branch_id:
+				+userDetails?.brn_code === 100
+					? branch.split(",")[0]
+					: userDetails?.brn_code,
 		}
 
 		await axios
@@ -157,7 +163,10 @@ function LoanStatementMain() {
 			from_dt: formatDateToYYYYMMDD(fromDate),
 			to_dt: formatDateToYYYYMMDD(toDate),
 			group_code: grpCode || "",
-			branch_code: userDetails.brn_code,
+			branch_code:
+				+userDetails?.brn_code === 100
+					? branch.split(",")[0]
+					: userDetails?.brn_code,
 		}
 
 		await axios
@@ -219,16 +228,6 @@ function LoanStatementMain() {
 			return "Recovery"
 		}
 	}
-
-	const dateFormatInGB = (date) => {
-		return new Date(date).toLocaleDateString("en-GB")
-	}
-
-	let totalRecovery = 0
-	let totalCredit = 0
-	let totalDebit = 0
-	let totalCreditGrpwise = 0
-	let totalDebitGrpwise = 0
 
 	return (
 		<div>
