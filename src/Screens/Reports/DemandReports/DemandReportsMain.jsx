@@ -300,13 +300,14 @@ function DemandReportsMain() {
 		setLoading(true)
 
 		const branchCodes = selectedOptions?.map((item, i) => item?.value)
+		const selectedFunds = funds?.map((item, i) => item?.fund_id)
 
 		const creds = {
 			send_month: choosenMonth,
 			send_year: choosenYear,
 			branch_code:
 				branchCodes?.length === 0 ? [userDetails?.brn_code] : branchCodes,
-			fund_id: selectedFund,
+			fund_id: selectedFund === "F" ? selectedFunds : [selectedFund],
 		}
 
 		await axios
@@ -361,14 +362,22 @@ function DemandReportsMain() {
 
 		const branchCodes = selectedOptions?.map((item, i) => item?.value)
 		const coCodes = selectedCOs?.map((item, i) => item?.value)
+		const allCos = cos?.map((item, i) => item?.co_id)
 
 		const creds = {
 			branch_code:
 				branchCodes?.length === 0 ? [userDetails?.brn_code] : branchCodes,
 			send_month: choosenMonth,
 			send_year: choosenYear,
-			co_id: coCodes?.length === 0 ? [co?.split(",")[0]] : coCodes,
+			co_id:
+				coCodes?.length === 0
+					? co?.split(",")[0] === "AC"
+						? allCos
+						: [co?.split(",")[0]]
+					: coCodes,
 		}
+
+		console.log("CREDS==", creds)
 
 		await axios
 			.post(`${url}/loan_demand_report_cowise`, creds)
@@ -849,10 +858,13 @@ function DemandReportsMain() {
 									label="Fundwise"
 									name="fund_id"
 									handleChange={handleFundChange}
-									data={funds.map((dat) => ({
-										code: dat.fund_id,
-										name: `${dat.fund_name}`,
-									}))}
+									data={[
+										{ code: "F", name: "All funds" },
+										...funds.map((dat) => ({
+											code: dat.fund_id,
+											name: `${dat.fund_name}`,
+										})),
+									]}
 									mode={2}
 									disabled={false}
 								/>
@@ -958,10 +970,13 @@ function DemandReportsMain() {
 												)
 											}}
 											mode={2}
-											data={cos?.map((item, i) => ({
-												code: item?.co_id,
-												name: `${item?.emp_name} - (${item?.co_id})`,
-											}))}
+											data={[
+												{ code: "AC", name: "All COs" },
+												...cos?.map((item, i) => ({
+													code: item?.co_id,
+													name: `${item?.emp_name} - (${item?.co_id})`,
+												})),
+											]}
 										/>
 									</div>
 								)
