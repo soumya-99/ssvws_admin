@@ -99,13 +99,6 @@ const branchwiseOutstandingHeader = {
 	outstanding: "Outstanding",
 }
 
-const branchwiseTxnReportHeader = {
-	branch_id: "Branch ID",
-	branch_name: "Branch Name",
-	debit: "Debit",
-	curr_balance: "Current Balance",
-}
-
 const groupwiseDemandReportHeader = {
 	demand_date: "Demand Date",
 	branch_code: "Branch Code",
@@ -304,6 +297,86 @@ const loanStatementHeader = {
 	period_mode: "Period Mode",
 }
 
+const txnGrpHeader = {
+	branch_code: "Branch Code",
+	branch_name: "Branch Name",
+	payment_date: "Payment Date",
+	group_code: "Group Code",
+	group_name: "Group Name",
+	acc_no1: "Account No 1",
+	acc_no2: "Account No 2",
+	grp_addr: "Group Address",
+	co_id: "CO ID",
+	co_name: "CO Name",
+	debit: "Debit",
+	curr_balance: "Current Balance",
+}
+
+const txnFundHeader = {
+	branch_code: "Branch Code",
+	branch_name: "Branch Name",
+	payment_date: "Payment Date",
+	group_code: "Group Code",
+	group_name: "Group Name",
+	fund_id: "Fund ID",
+	fund_name: "Fund Name",
+	acc_no1: "Account No 1",
+	acc_no2: "Account No 2",
+	grp_addr: "Group Address",
+	co_id: "CO ID",
+	co_name: "CO Name",
+	debit: "Debit",
+	curr_balance: "Current Balance",
+}
+
+const txnCoHeader = {
+	branch_code: "Branch Code",
+	branch_name: "Branch Name",
+	payment_date: "Payment Date",
+	co_id: "CO ID",
+	co_name: "CO Name",
+	total_group: "Total Group",
+	total_member: "Total Member",
+	fund_id: "Fund ID",
+	fund_name: "Fund Name",
+	debit: "Debit",
+	curr_balance: "Current Balance",
+}
+
+const txnMembHeader = {
+	branch_code: "Branch Code",
+	branch_name: "Branch Name",
+	payment_date: "Payment Date",
+	group_code: "Group Code",
+	group_name: "Group Name",
+	acc_no1: "Account No 1",
+	acc_no2: "Account No 2",
+	grp_addr: "Group Address",
+	co_id: "CO ID",
+	emp_name: "Employee Name",
+	loan_id: "Loan ID",
+	member_code: "Member Code",
+	client_name: "Client Name",
+	transaction_id: "Transaction ID",
+	transaction_date: "Transaction Date",
+	particulars: "Particulars",
+	debit: "Debit",
+	curr_balance: "Current Balance",
+	created_code: "Created Code",
+	created_at: "Created At",
+	created_by: "Created By",
+	approved_at: "Approved At",
+	approved_code: "Approved Code",
+	approved_by: "Approved By",
+}
+
+const branchwiseTxnReportHeader = {
+	branch_id: "Branch ID",
+	branch_name: "Branch Name",
+	debit: "Debit",
+	curr_balance: "Current Balance",
+}
+
 export {
 	fundwiseOutstandingHeader,
 	cowiseOutstandingHeader,
@@ -323,4 +396,8 @@ export {
 	absenteesReportHeader,
 	rejectTransFieldNames,
 	loanStatementHeader,
+	txnGrpHeader,
+	txnFundHeader,
+	txnCoHeader,
+	txnMembHeader,
 }

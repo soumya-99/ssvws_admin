@@ -18,9 +18,15 @@ import { printTableLoanTransactions } from "../../../Utils/printTableLoanTransac
 import DynamicTailwindTable from "../../../Components/Reports/DynamicTailwindTable"
 import {
 	branchwiseTxnReportHeader,
+	loanStatementHeader,
 	memberwiseOutstandingHeader,
+	txnCoHeader,
+	txnFundHeader,
+	txnGrpHeader,
+	txnMembHeader,
 } from "../../../Utils/Reports/headerMap"
 import Select from "react-select"
+import { exportToExcel } from "../../../Utils/exportToExcel"
 
 const options = [
 	{
@@ -143,13 +149,14 @@ function LoanTransactionsMain() {
 		setLoading(true)
 
 		const branchCodes = selectedOptions?.map((item, i) => item?.value)
+		const selectedFunds = funds?.map((item, i) => item?.fund_id)
 
 		const creds = {
 			from_dt: formatDateToYYYYMMDD(fromDate),
 			to_dt: formatDateToYYYYMMDD(toDate),
 			branch_code:
 				branchCodes?.length === 0 ? [userDetails?.brn_code] : branchCodes,
-			fund_id: selectedFund,
+			fund_id: selectedFund === "F" ? selectedFunds : [selectedFund],
 			tr_type: searchType,
 		}
 
@@ -198,15 +205,23 @@ function LoanTransactionsMain() {
 
 		const branchCodes = selectedOptions?.map((item, i) => item?.value)
 		const coCodes = selectedCOs?.map((item, i) => item?.value)
+		const allCos = cos?.map((item, i) => item?.co_id)
 
 		const creds = {
 			from_dt: formatDateToYYYYMMDD(fromDate),
 			to_dt: formatDateToYYYYMMDD(toDate),
 			branch_code:
 				branchCodes?.length === 0 ? [userDetails?.brn_code] : branchCodes,
-			co_id: coCodes?.length === 0 ? selectedCO : coCodes,
+			co_id:
+				coCodes?.length === 0
+					? selectedCO === "AC"
+						? allCos
+						: [selectedCO]
+					: coCodes,
 			tr_type: searchType,
 		}
+
+		console.log("CREDSS", creds)
 
 		await axios
 			.post(`${url}/transaction_report_cowise`, creds)
@@ -347,36 +362,53 @@ function LoanTransactionsMain() {
 		}
 	}
 
-	const dateFormatInGB = (date) => {
-		return new Date(date).toLocaleDateString("en-GB")
-	}
+	const dataToExport = reportData
 
-	const exportToExcel = (data) => {
-		const wb = XLSX.utils.book_new()
-		const ws = XLSX.utils.json_to_sheet(data)
-		XLSX.utils.book_append_sheet(wb, ws, "Sheet1")
-		const wbout = XLSX.write(wb, { bookType: "xlsx", type: "binary" })
-		const blob = new Blob([s2ab(wbout)], { type: "application/octet-stream" })
-		saveAs(
-			blob,
-			`Loan_Txn_Report_${fetchSearchTypeName(
-				searchType2
-			)}_${fetchSearchTypeName(
-				searchType
-			)}_${metadataDtls}_From_${dateFormatInGB(fromDate)}_To_${dateFormatInGB(
-				toDate
-			)}.xlsx`
-		)
-	}
+	const headersToExport =
+		searchType2 === "G"
+			? txnGrpHeader
+			: searchType2 === "F"
+			? txnFundHeader
+			: searchType2 === "C"
+			? txnCoHeader
+			: searchType2 === "M"
+			? txnMembHeader
+			: branchwiseTxnReportHeader
 
-	const s2ab = (s) => {
-		const buf = new ArrayBuffer(s.length)
-		const view = new Uint8Array(buf)
-		for (let i = 0; i < s.length; i++) {
-			view[i] = s.charCodeAt(i) & 0xff
-		}
-		return buf
-	}
+	const fileName = `Loan_Txn_${fetchSearchTypeName(
+		searchType2
+	)}_${new Date().toLocaleString("en-GB")}.xlsx`
+
+	// const dateFormatInGB = (date) => {
+	// 	return new Date(date).toLocaleDateString("en-GB")
+	// }
+
+	// const exportToExcel = (data) => {
+	// 	const wb = XLSX.utils.book_new()
+	// 	const ws = XLSX.utils.json_to_sheet(data)
+	// 	XLSX.utils.book_append_sheet(wb, ws, "Sheet1")
+	// 	const wbout = XLSX.write(wb, { bookType: "xlsx", type: "binary" })
+	// 	const blob = new Blob([s2ab(wbout)], { type: "application/octet-stream" })
+	// 	saveAs(
+	// 		blob,
+	// 		`Loan_Txn_Report_${fetchSearchTypeName(
+	// 			searchType2
+	// 		)}_${fetchSearchTypeName(
+	// 			searchType
+	// 		)}_${metadataDtls}_From_${dateFormatInGB(fromDate)}_To_${dateFormatInGB(
+	// 			toDate
+	// 		)}.xlsx`
+	// 	)
+	// }
+
+	// const s2ab = (s) => {
+	// 	const buf = new ArrayBuffer(s.length)
+	// 	const view = new Uint8Array(buf)
+	// 	for (let i = 0; i < s.length; i++) {
+	// 		view[i] = s.charCodeAt(i) & 0xff
+	// 	}
+	// 	return buf
+	// }
 
 	const dropdownOptions = branches?.map((branch) => ({
 		value: branch.branch_assign_id,
@@ -595,10 +627,13 @@ function LoanTransactionsMain() {
 									label="CO-wise"
 									name="co_id"
 									handleChange={handleCOChange}
-									data={cos.map((dat) => ({
-										code: dat.co_id,
-										name: `${dat.emp_name}`,
-									}))}
+									data={[
+										{ code: "AC", name: "All COs" },
+										...cos.map((dat) => ({
+											code: dat.co_id,
+											name: `${dat.emp_name}`,
+										})),
+									]}
 									mode={2}
 									disabled={false}
 								/>
@@ -640,10 +675,13 @@ function LoanTransactionsMain() {
 									label="Fundwise"
 									name="fund_id"
 									handleChange={handleFundChange}
-									data={funds.map((dat) => ({
-										code: dat.fund_id,
-										name: `${dat.fund_name}`,
-									}))}
+									data={[
+										{ code: "F", name: "All funds" },
+										...funds.map((dat) => ({
+											code: dat.fund_id,
+											name: `${dat.fund_name}`,
+										})),
+									]}
 									mode={2}
 									disabled={false}
 								/>
@@ -669,7 +707,7 @@ function LoanTransactionsMain() {
 								pageSize={50}
 								columnTotal={[18, 19]}
 								colRemove={[13, 14]}
-								headersMap={memberwiseOutstandingHeader}
+								headersMap={txnMembHeader}
 								dateTimeExceptionCols={[2, 16, 21]}
 							/>
 						</>
@@ -683,7 +721,7 @@ function LoanTransactionsMain() {
 								pageSize={50}
 								columnTotal={[10]}
 								dateTimeExceptionCols={[2]}
-								// headersMap={groupwiseOutstandingHeader}
+								headersMap={txnGrpHeader}
 							/>
 						</>
 					)}
@@ -694,9 +732,9 @@ function LoanTransactionsMain() {
 							<DynamicTailwindTable
 								data={reportData}
 								pageSize={50}
-								columnTotal={[12]}
+								columnTotal={[12, 13]}
 								dateTimeExceptionCols={[2]}
-								// headersMap={fundwiseOutstandingHeader}
+								headersMap={txnFundHeader}
 							/>
 						</>
 					)}
@@ -707,9 +745,9 @@ function LoanTransactionsMain() {
 							<DynamicTailwindTable
 								data={reportData}
 								pageSize={50}
-								columnTotal={[9]}
+								columnTotal={[9, 10]}
 								dateTimeExceptionCols={[2]}
-								// headersMap={cowiseOutstandingHeader}
+								headersMap={txnCoHeader}
 							/>
 						</>
 					)}
@@ -732,7 +770,9 @@ function LoanTransactionsMain() {
 						<div className="flex gap-4">
 							<Tooltip title="Export to Excel">
 								<button
-									onClick={() => exportToExcel(reportData)}
+									onClick={() =>
+										exportToExcel(dataToExport, headersToExport, fileName, [0])
+									}
 									className="mt-5 justify-center items-center rounded-full text-green-900"
 								>
 									<FileExcelOutlined
