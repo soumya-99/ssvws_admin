@@ -134,8 +134,11 @@ function DisbursmentForm() {
 		b_remarks: "",
 	})
 
+	console.log("transactionDetailsData", transactionDetailsData)
+
 	const handleChangeTnxDetailsDetails = (e) => {
 		// console.log(e.target.value)
+		// console.log(e.target.name, e.target.value)
 		const { name, value } = e.target || e
 		setTransactionDetailsData((prevData) => ({
 			...prevData,
@@ -1752,7 +1755,7 @@ function DisbursmentForm() {
 											showSearch
 											placeholder={"Banks"}
 											label="Banks"
-											name="banks"
+											name="b_bankName"
 											filterOption={false} // Disable default filtering to use API search
 											onSearch={(e) => getBanks(e)} // Call API on typing
 											notFoundContent={
@@ -1767,6 +1770,7 @@ function DisbursmentForm() {
 											// }}
 											// value={formValues.Grp_wit_Co ? formValues.Grp_wit_Co : COPickup} // Controlled value
 											onChange={(value) => {
+												console.log(value)
 												handleChangeTnxDetailsDetails(value)
 												// formik.setFieldValue("Grp_wit_Co", value);
 											}}
@@ -1955,22 +1959,24 @@ function DisbursmentForm() {
 								{AppliedDisbursLoan && (
 									<div className="mt-10">
 										{/* {Period_mode_valid ==  'Weekly' || Period_mode_valid ==  'Monthly' ? "" : ""}  */}
-										{Period_mode_valid === "Weekly" ||
-										Period_mode_valid === "Monthly" ||
-										!disbursementDetailsData.b_fund ||
-										!disbursementDetailsData.b_mode ||
-										!disbursementDetailsData.b_period ||
-										!disbursementDetailsData.b_dayOfRecovery ||
-										!transactionDetailsData.b_bankName ||
-										!transactionDetailsData.b_remarks ||
-										!personalDetailsData.b_purpose ||
-										!transactionDetailsData.b_tnxDate ||
-										!disbursementDetailsData.b_period ||
-										!disbursementDetailsData.b_scheme ? (
-											<BtnComp mode="A" onReset={onReset} />
-										) : (
-											<BtnComp mode="B" onReset={onReset} disabled />
-										)}
+										{
+											// Period_mode_valid === "Weekly" ||
+											// Period_mode_valid === "Monthly" ||
+											!disbursementDetailsData.b_fund ||
+											!disbursementDetailsData.b_mode ||
+											!disbursementDetailsData.b_period ||
+											!disbursementDetailsData.b_dayOfRecovery ||
+											!transactionDetailsData.b_bankName ||
+											!transactionDetailsData.b_remarks ||
+											!personalDetailsData.b_purpose ||
+											!transactionDetailsData.b_tnxDate ||
+											!disbursementDetailsData.b_period ||
+											!disbursementDetailsData.b_scheme ? (
+												<BtnComp mode="A" onReset={onReset} />
+											) : (
+												<BtnComp mode="B" onReset={onReset} disabled />
+											)
+										}
 									</div>
 								)}
 							</>

@@ -705,10 +705,10 @@ function LoanTransactionsMain() {
 							<DynamicTailwindTable
 								data={reportData}
 								pageSize={50}
-								columnTotal={[18, 19]}
-								colRemove={[13, 14]}
+								columnTotal={[15]}
+								// colRemove={[13, 14]}
 								headersMap={txnMembHeader}
-								dateTimeExceptionCols={[2, 16, 21]}
+								dateTimeExceptionCols={[0]}
 							/>
 						</>
 					)}
@@ -720,7 +720,7 @@ function LoanTransactionsMain() {
 								data={reportData}
 								pageSize={50}
 								columnTotal={[10]}
-								dateTimeExceptionCols={[2]}
+								dateTimeExceptionCols={[0]}
 								headersMap={txnGrpHeader}
 							/>
 						</>
@@ -732,8 +732,8 @@ function LoanTransactionsMain() {
 							<DynamicTailwindTable
 								data={reportData}
 								pageSize={50}
-								columnTotal={[12, 13]}
-								dateTimeExceptionCols={[2]}
+								columnTotal={[12]}
+								dateTimeExceptionCols={[0]}
 								headersMap={txnFundHeader}
 							/>
 						</>
@@ -745,8 +745,8 @@ function LoanTransactionsMain() {
 							<DynamicTailwindTable
 								data={reportData}
 								pageSize={50}
-								columnTotal={[9, 10]}
-								dateTimeExceptionCols={[2]}
+								columnTotal={[9]}
+								dateTimeExceptionCols={[0]}
 								headersMap={txnCoHeader}
 							/>
 						</>
@@ -758,7 +758,7 @@ function LoanTransactionsMain() {
 							<DynamicTailwindTable
 								data={reportData}
 								pageSize={50}
-								columnTotal={[2, 3]}
+								columnTotal={[2]}
 								headersMap={branchwiseTxnReportHeader}
 							/>
 						</>
