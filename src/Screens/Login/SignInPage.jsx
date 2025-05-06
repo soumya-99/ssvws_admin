@@ -204,14 +204,16 @@ const SignInPage = () => {
 				<div className="p-8 md:p-12 lg:p-16 z-10">
 					<div className="flex justify-between items-center mb-10">
 						<div className="flex items-center">
-							<div className="w-8 h-8 bg-white border border-sky-100 rounded-full mr-2">
+							<div className="w-12 h-12 bg-white border border-sky-100 rounded-full mr-2">
 								<img
 									src={LOGO}
 									alt="Logo"
 									className="w-full h-full rounded-full"
 								/>
 							</div>
-							<span className="font-semibold text-gray-800">SSVWS</span>
+							<span className="font-semibold text-slate-600 text-2xl">
+								SSVWS
+							</span>
 						</div>
 						<nav className="hidden md:flex space-x-6">
 							<a
@@ -256,7 +258,7 @@ const SignInPage = () => {
 									htmlFor="user_id"
 									className="block text-sm font-medium text-gray-700 mb-1"
 								>
-									Username
+									User ID
 								</label>
 								<input
 									id="user_id"
@@ -336,7 +338,7 @@ const SignInPage = () => {
 							<button
 								type="submit"
 								disabled={!formik.isValid || loading}
-								className="w-full px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-sky-800 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 cursor-pointer"
+								className="w-full px-6 py-3 bg-pink-600 text-white rounded-lg hover:bg-pink-800 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 cursor-pointer"
 							>
 								Sign In
 							</button>

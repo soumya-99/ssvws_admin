@@ -99,6 +99,97 @@ const branchwiseOutstandingHeader = {
 	outstanding: "Outstanding",
 }
 
+const groupwiseDemandVsCollectionHeader = {
+	demand_date: "Demand Date",
+	collec_between: "Collection Between",
+	branch_code: "Branch Code",
+	branch_name: "Branch Name",
+	group_code: "Group Code",
+	group_name: "Group Name",
+	co_id: "CO ID",
+	emp_name: "CO Name",
+	disb_dt: "Disbursement Date",
+	disb_amt: "Disbursement Amount",
+	curr_roi: "Current ROI",
+	loan_period: "Loan Period",
+	period_mode: "Period Mode",
+	instl_start_dt: "Installment Start Date",
+	instl_end_dt: "Loan End Date",
+	tot_emi: "Total EMI",
+	coll_amt: "Collection Amount",
+	demand_after_collection: "Demand After Collection",
+	curr_outstanding: "Current Outstanding",
+}
+
+const cowiseDemandVsCollectionHeader = {
+	demand_date: "Demand Date",
+	collec_upto: "Collection Upto",
+	branch_code: "Branch Code",
+	branch_name: "Branch Name",
+	group_code: "Group Code",
+	group_name: "Group Name",
+	co_id: "CO ID",
+	emp_name: "CO Name",
+	period_mode: "Period Mode",
+	tot_emi: "Total EMI",
+	coll_amt: "Collection Amount",
+	demand_after_collection: "Demand After Collection",
+	curr_outstanding: "Current Outstanding",
+}
+
+const memberwiseDemandVsCollectionHeader = {
+	demand_date: "Demand Date",
+	"collec between": "Collection Between",
+	branch_code: "Branch Code",
+	branch_name: "Branch Name",
+	loan_id: "Loan ID",
+	member_code: "Member Code",
+	client_name: "Client Name",
+	group_code: "Group Code",
+	group_name: "Group Name",
+	co_id: "CO ID",
+	emp_name: "CO Name",
+	disb_dt: "Disbursement Date",
+	disb_amt: "Disbursement Amount",
+	curr_roi: "Current ROI",
+	loan_period: "Loan Period",
+	period_mode: "Period Mode",
+	instl_start_dt: "Installment Start Date",
+	instl_end_dt: "Loan End Date",
+	tot_emi: "Total EMI",
+	coll_amt: "Collection Amount",
+	demand_after_collection: "Demand After Collection",
+	curr_outstanding: "Current Outstanding",
+}
+
+const branchwiseDemandVsCollectionHeader = {
+	demand_date: "Demand Date",
+	"collec between": "Collection Between",
+	branch_code: "Branch Code",
+	branch_name: "Branch Name",
+	tot_emi: "Total EMI",
+	coll_amt: "Collection Amount",
+	demand_after_collection: "Demand After Collection",
+	curr_outstanding: "Current Outstanding",
+}
+
+const fundwiseDemandVsCollectionHeader = {
+	demand_date: "Demand Date",
+	collec_upto: "Collection Upto",
+	branch_code: "Branch Code",
+	branch_name: "Branch Name",
+	group_code: "Group Code",
+	group_name: "Group Name",
+	co_id: "CO ID",
+	emp_name: "CO Name",
+	fund_id: "Fund ID",
+	fund_name: "Fund Name",
+	period_mode: "Period Mode",
+	coll_amt: "Collection Amount",
+	demand_after_collection: "Demand After Collection",
+	curr_outstanding: "Current Outstanding",
+}
+
 const groupwiseDemandReportHeader = {
 	demand_date: "Demand Date",
 	branch_code: "Branch Code",
@@ -416,4 +507,9 @@ export {
 	txnFundHeader,
 	txnCoHeader,
 	txnMembHeader,
+	groupwiseDemandVsCollectionHeader,
+	cowiseDemandVsCollectionHeader,
+	memberwiseDemandVsCollectionHeader,
+	branchwiseDemandVsCollectionHeader,
+	fundwiseDemandVsCollectionHeader,
 }

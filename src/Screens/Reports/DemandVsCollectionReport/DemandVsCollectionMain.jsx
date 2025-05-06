@@ -23,11 +23,17 @@ import DynamicTailwindTable from "../../../Components/Reports/DynamicTailwindTab
 import Select from "react-select"
 import {
 	branchwiseDemandReportHeader,
+	branchwiseDemandVsCollectionHeader,
 	cowiseDemandReportHeader,
+	cowiseDemandVsCollectionHeader,
 	fundwiseDemandReportHeader,
+	fundwiseDemandVsCollectionHeader,
 	groupwiseDemandReportHeader,
+	groupwiseDemandVsCollectionHeader,
 	memberwiseDemandReportHeader,
+	memberwiseDemandVsCollectionHeader,
 } from "../../../Utils/Reports/headerMap"
+import { exportToExcel } from "../../../Utils/exportToExcel"
 
 // const { RangePicker } = DatePicker
 // const dateFormat = "YYYY/MM/DD"
@@ -87,7 +93,7 @@ function DemandVsCollectionMain() {
 	const [selectedOptions, setSelectedOptions] = useState([])
 	const [selectedCOs, setSelectedCOs] = useState([])
 	const [procedureSuccessFlag, setProcedureSuccessFlag] = useState("0")
-	
+
 	// const [reportTxnData, setReportTxnData] = useState(() => [])
 	// const [tot_sum, setTotSum] = useState(0)
 	// const [search, setSearch] = useState("")
@@ -296,13 +302,14 @@ function DemandVsCollectionMain() {
 		setLoading(true)
 
 		const branchCodes = selectedOptions?.map((item, i) => item?.value)
+		const selectedFunds = funds?.map((item, i) => item?.fund_id)
 
 		const creds = {
 			send_month: choosenMonth,
 			send_year: choosenYear,
 			branch_code:
 				branchCodes?.length === 0 ? [userDetails?.brn_code] : branchCodes,
-			fund_id: selectedFund,
+			fund_id: selectedFund === "F" ? selectedFunds : [selectedFund],
 		}
 
 		await axios
@@ -354,13 +361,19 @@ function DemandVsCollectionMain() {
 
 		const branchCodes = selectedOptions?.map((item, i) => item?.value)
 		const coCodes = selectedCOs?.map((item, i) => item?.value)
+		const allCos = cos?.map((item, i) => item?.co_id)
 
 		const creds = {
 			branch_code:
 				branchCodes?.length === 0 ? [userDetails?.brn_code] : branchCodes,
 			send_month: choosenMonth,
 			send_year: choosenYear,
-			co_id: coCodes?.length === 0 ? [co?.split(",")[0]] : coCodes,
+			co_id:
+				coCodes?.length === 0
+					? selectedCO === "AC"
+						? allCos
+						: [selectedCO]
+					: coCodes,
 		}
 
 		await axios
@@ -556,28 +569,22 @@ function DemandVsCollectionMain() {
 		}
 	}
 
-	const exportToExcel = (data) => {
-		const wb = XLSX.utils.book_new()
-		const ws = XLSX.utils.json_to_sheet(data)
-		XLSX.utils.book_append_sheet(wb, ws, "Sheet1")
-		const wbout = XLSX.write(wb, { bookType: "xlsx", type: "binary" })
-		const blob = new Blob([s2ab(wbout)], { type: "application/octet-stream" })
-		saveAs(
-			blob,
-			`Demand_Report_${metadataDtls?.split(",")[0]}_${fetchSearchTypeName(
-				searchType
-			)}.xlsx`
-		)
-	}
+	const dataToExport = reportData
 
-	const s2ab = (s) => {
-		const buf = new ArrayBuffer(s.length)
-		const view = new Uint8Array(buf)
-		for (let i = 0; i < s.length; i++) {
-			view[i] = s.charCodeAt(i) & 0xff
-		}
-		return buf
-	}
+	const headersToExport =
+		searchType === "G"
+			? groupwiseDemandVsCollectionHeader
+			: searchType === "M"
+			? memberwiseDemandVsCollectionHeader
+			: searchType === "F"
+			? fundwiseDemandVsCollectionHeader
+			: searchType === "C"
+			? cowiseDemandVsCollectionHeader
+			: branchwiseDemandVsCollectionHeader
+
+	const fileName = `Demand_Vs_Collection_${fetchSearchTypeName(
+		searchType
+	)}_${new Date().toLocaleString("en-GB")}.xlsx`
 
 	const dropdownOptions = branches?.map((branch) => ({
 		value: branch.branch_assign_id,
@@ -590,7 +597,7 @@ function DemandVsCollectionMain() {
 			: selectedOptions
 
 	const handleMultiSelectChange = (selected) => {
-		console.log(selected,displayedOptions)
+		console.log(selected, displayedOptions)
 		if (selected.some((option) => option.value === "all")) {
 			setSelectedOptions(dropdownOptions)
 		} else {
@@ -767,8 +774,6 @@ function DemandVsCollectionMain() {
 									}))}
 								/>
 							</div> */}
-							
-						
 						</div>
 					)}
 
@@ -847,123 +852,148 @@ function DemandVsCollectionMain() {
 							<SearchOutlined /> <span class={`ml-2`}>Process Report</span>
 						</button>
 					</div>
-                    {searchType === "F" && (
-							<div className="pt-4">
-								<TDInputTemplateBr
-									placeholder="Select Fund..."
-									type="text"
-									label="Fundwise"
-									name="fund_id"
-									handleChange={handleFundChange}
-									data={funds.map((dat) => ({
+					{searchType === "F" && (
+						<div className="pt-4">
+							<TDInputTemplateBr
+								placeholder="Select Fund..."
+								type="text"
+								label="Fundwise"
+								name="fund_id"
+								handleChange={handleFundChange}
+								data={[
+									{ code: "F", name: "All funds" },
+									...funds.map((dat) => ({
 										code: dat.fund_id,
 										name: `${dat.fund_name}`,
-									}))}
+									})),
+								]}
+								mode={2}
+								disabled={false}
+							/>
+						</div>
+					)}
+					{/* {searchType === "C" && (
+						<div className="w-full">
+							<TDInputTemplateBr
+								placeholder="Choose CO..."
+								type="text"
+								label="Credit Officers"
+								name="co"
+								formControlName={co.split(",")[0]}
+								handleChange={(e) => {
+									console.log("***********========", e)
+									setCo(
+										e.target.value +
+											"," +
+											cos.filter((i) => i.co_id == e.target.value)[0]?.emp_name
+									)
+								}}
+								mode={2}
+								data={[
+									{ code: "AC", name: "All COs" },
+									...cos?.map((item, i) => ({
+										code: item?.co_id,
+										name: `${item?.emp_name} - (${item?.co_id})`,
+									})),
+								]}
+							/>
+						</div>
+					)} */}
+					{searchType === "C" &&
+					(userDetails?.id === 3 ||
+						userDetails?.id === 4 ||
+						userDetails?.id === 11) &&
+					userDetails?.brn_code == 100 ? (
+						<div className="w-full pt-4">
+							<Select
+								options={[{ value: "all", label: "All" }, ...dropdownCOs]}
+								isMulti
+								value={displayedCOs}
+								onChange={handleMultiSelectChangeCOs}
+								placeholder="Select COs'..."
+								className="basic-multi-select"
+								classNamePrefix="select"
+								styles={{
+									control: (provided) => ({
+										...provided,
+										borderRadius: "8px",
+									}),
+									valueContainer: (provided) => ({
+										...provided,
+										borderRadius: "8px",
+									}),
+									singleValue: (provided) => ({
+										...provided,
+										color: "black",
+									}),
+									multiValue: (provided) => ({
+										...provided,
+										padding: "0.1rem",
+										backgroundColor: "#da4167",
+										color: "white",
+										borderRadius: "8px",
+									}),
+									multiValueLabel: (provided) => ({
+										...provided,
+										color: "white",
+									}),
+									multiValueRemove: (provided) => ({
+										...provided,
+										color: "white",
+										"&:hover": {
+											backgroundColor: "red",
+											color: "white",
+											borderRadius: "8px",
+										},
+									}),
+									placeholder: (provided) => ({
+										...provided,
+										fontSize: "0.9rem",
+									}),
+								}}
+							/>
+						</div>
+					) : (
+						searchType === "C" && (
+							<div>
+								<TDInputTemplateBr
+									placeholder="Select CO..."
+									type="text"
+									label="CO Name"
+									name="co_id"
+									handleChange={handleCOChange}
+									data={[
+										{ code: "AC", name: "All COs" },
+										...cos.map((dat) => ({
+											code: dat.co_id,
+											name: `${dat.emp_name}`,
+										})),
+									]}
 									mode={2}
 									disabled={false}
 								/>
 							</div>
-						)}
-						 {/* {
-								searchType === "C" && (
-									<div className="w-full">
-										<TDInputTemplateBr
-											placeholder="Choose CO..."
-											type="text"
-											label="Credit Officers"
-											name="co"
-											formControlName={co.split(",")[0]}
-											handleChange={(e) => {
-												console.log("***********========", e)
-												setCo(
-													e.target.value +
-														"," +
-														cos.filter((i) => i.co_id == e.target.value)[0]
-															?.emp_name
-												)
-											}}
-											mode={2}
-											data={cos?.map((item, i) => ({
-												code: item?.co_id,
-												name: `${item?.emp_name} - (${item?.co_id})`,
-											}))}
-										/>
-									</div>
-								)
-} */}
-{searchType === "C" &&
-							(userDetails?.id === 3 ||
-								userDetails?.id === 4 ||
-								userDetails?.id === 11) &&
-							userDetails?.brn_code == 100 && (
-								<div className="w-full pt-4">
-									<Select
-										options={[{ value: "all", label: "All" }, ...dropdownCOs]}
-										isMulti
-										value={displayedCOs}
-										onChange={handleMultiSelectChangeCOs}
-										placeholder="Select COs'..."
-										className="basic-multi-select"
-										classNamePrefix="select"
-										styles={{
-											control: (provided) => ({
-												...provided,
-												borderRadius: "8px",
-											}),
-											valueContainer: (provided) => ({
-												...provided,
-												borderRadius: "8px",
-											}),
-											singleValue: (provided) => ({
-												...provided,
-												color: "black",
-											}),
-											multiValue: (provided) => ({
-												...provided,
-												padding: "0.1rem",
-												backgroundColor: "#da4167",
-												color: "white",
-												borderRadius: "8px",
-											}),
-											multiValueLabel: (provided) => ({
-												...provided,
-												color: "white",
-											}),
-											multiValueRemove: (provided) => ({
-												...provided,
-												color: "white",
-												"&:hover": {
-													backgroundColor: "red",
-													color: "white",
-													borderRadius: "8px",
-												},
-											}),
-											placeholder: (provided) => ({
-												...provided,
-												fontSize: "0.9rem",
-											}),
-										}}
-									/>
-								</div>
-							) 
-						}
-					{+procedureSuccessFlag === 1 && (<div className="flex gap-6 items-center align-middle">
-						<Radiobtn
-							data={options}
-							val={searchType}
-							onChangeVal={(value) => {
-								onChange(value)
-							}}
-						/>
-						<div className="mt-3">
-							<button
-								className="inline-flex items-center px-4 py-2 text-sm font-small text-white border hover:border-pink-600 border-pink-500 bg-pink-500 transition ease-in-out hover:bg-pink-700 duration-300 rounded-full"
-								onClick={handleSubmit}
-							>
-								<Search /> <span className="ml-2">Fetch</span>
-							</button>
+						)
+					)}
+					{+procedureSuccessFlag === 1 && (
+						<div className="flex gap-6 items-center align-middle">
+							<Radiobtn
+								data={options}
+								val={searchType}
+								onChangeVal={(value) => {
+									onChange(value)
+								}}
+							/>
+							<div className="mt-3">
+								<button
+									className="inline-flex items-center px-4 py-2 text-sm font-small text-white border hover:border-pink-600 border-pink-500 bg-pink-500 transition ease-in-out hover:bg-pink-700 duration-300 rounded-full"
+									onClick={handleSubmit}
+								>
+									<Search /> <span className="ml-2">Fetch</span>
+								</button>
+							</div>
 						</div>
-					</div>)}
+					)}
 
 					{/* {reportData?.length > 0 && (
 						<div>
@@ -1044,9 +1074,10 @@ function DemandVsCollectionMain() {
 							<DynamicTailwindTable
 								data={reportData}
 								pageSize={50}
-								columnTotal={[9, 15, 16, 17, 18]}
+								columnTotal={[9, 16, 17]}
+								colRemove={[13]}
 								dateTimeExceptionCols={[8, 13, 14]}
-								headersMap={groupwiseDemandReportHeader}
+								headersMap={groupwiseDemandVsCollectionHeader}
 							/>
 						</>
 					)}
@@ -1058,9 +1089,9 @@ function DemandVsCollectionMain() {
 							<DynamicTailwindTable
 								data={reportData}
 								pageSize={50}
-								columnTotal={[11, 12, 13]}
+								columnTotal={[11, 12]}
 								// dateTimeExceptionCols={[8]}
-								headersMap={fundwiseDemandReportHeader}
+								headersMap={fundwiseDemandVsCollectionHeader}
 							/>
 						</>
 					)}
@@ -1072,9 +1103,9 @@ function DemandVsCollectionMain() {
 							<DynamicTailwindTable
 								data={reportData}
 								pageSize={50}
-								columnTotal={[9, 10, 11, 12]}
+								columnTotal={[10, 11]}
 								// dateTimeExceptionCols={[8]}
-								headersMap={cowiseDemandReportHeader}
+								headersMap={cowiseDemandVsCollectionHeader}
 							/>
 						</>
 					)}
@@ -1086,9 +1117,10 @@ function DemandVsCollectionMain() {
 							<DynamicTailwindTable
 								data={reportData}
 								pageSize={50}
-								columnTotal={[12, 18, 19, 20, 21]}
+								columnTotal={[12, 19, 20]}
 								dateTimeExceptionCols={[11, 16, 17]}
-								headersMap={memberwiseDemandReportHeader}
+								colRemove={[16]}
+								headersMap={memberwiseDemandVsCollectionHeader}
 							/>
 						</>
 					)}
@@ -1102,7 +1134,7 @@ function DemandVsCollectionMain() {
 								pageSize={50}
 								// columnTotal={[2, 3]}
 								// dateTimeExceptionCols={[8]}
-								headersMap={branchwiseDemandReportHeader}
+								headersMap={branchwiseDemandVsCollectionHeader}
 							/>
 						</>
 					)}
@@ -1113,7 +1145,9 @@ function DemandVsCollectionMain() {
 						<div className="flex gap-4">
 							<Tooltip title="Export to Excel">
 								<button
-									onClick={() => exportToExcel(reportData)}
+									onClick={() =>
+										exportToExcel(dataToExport, headersToExport, fileName, [0])
+									}
 									className="mt-5 justify-center items-center rounded-full text-green-900"
 								>
 									<FileExcelOutlined
