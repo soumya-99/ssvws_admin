@@ -18,7 +18,10 @@ import { formatDateToYYYYMMDD } from "../../../Utils/formateDate"
 import { saveAs } from "file-saver"
 import * as XLSX from "xlsx"
 import { printTableLoanStatement } from "../../../Utils/printTableLoanStatement"
-import { loanStatementHeader } from "../../../Utils/Reports/headerMap"
+import {
+	loanStatementHeader,
+	loanStatementHeaderGroupwise,
+} from "../../../Utils/Reports/headerMap"
 import { exportToExcel } from "../../../Utils/exportToExcel"
 import DynamicTailwindTable from "../../../Components/Reports/DynamicTailwindTable"
 
@@ -205,12 +208,6 @@ function LoanStatementMain() {
 		setMetadataDtls(() => null)
 	}, [searchType])
 
-	const dataToExport = reportTxnData
-
-	const headersToExport = loanStatementHeader
-
-	const fileName = `Loan_Statement_${new Date().toLocaleString("en-GB")}.xlsx`
-
 	const fetchSearchTypeName = (searchType) => {
 		if (searchType === "M") {
 			return "Memberwise"
@@ -228,6 +225,15 @@ function LoanStatementMain() {
 			return "Recovery"
 		}
 	}
+
+	const dataToExport = reportTxnData
+
+	const headersToExport =
+		searchType === "M" ? loanStatementHeader : loanStatementHeaderGroupwise
+
+	const fileName = `Loan_Statement_${fetchSearchTypeName(
+		searchType
+	)}_${new Date().toLocaleString("en-GB")}.xlsx`
 
 	return (
 		<div>
@@ -585,8 +591,8 @@ function LoanStatementMain() {
 							<DynamicTailwindTable
 								data={reportTxnData}
 								dateTimeExceptionCols={[0]}
-								colRemove={[5, 6, 8, 9]}
-								columnTotal={[3, 4, 7]}
+								colRemove={[5]}
+								columnTotal={[2, 3]}
 								headersMap={loanStatementHeader}
 								indexing
 							/>
@@ -598,8 +604,9 @@ function LoanStatementMain() {
 							<DynamicTailwindTable
 								data={reportTxnData}
 								dateTimeExceptionCols={[0]}
-								columnTotal={[2, 3, 4]}
-								headersMap={loanStatementHeader}
+								columnTotal={[1, 2]}
+								colRemove={[4]}
+								headersMap={loanStatementHeaderGroupwise}
 								indexing
 							/>
 						)}
@@ -607,7 +614,6 @@ function LoanStatementMain() {
 							<div className="flex gap-4 -mt-14">
 								<Tooltip title="Export to Excel">
 									<button
-										// onClick={() => exportToExcel(reportTxnData)}
 										onClick={() =>
 											exportToExcel(dataToExport, headersToExport, fileName, [
 												0,

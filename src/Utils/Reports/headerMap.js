@@ -297,6 +297,19 @@ const loanStatementHeader = {
 	period_mode: "Period Mode",
 }
 
+const loanStatementHeaderGroupwise = {
+	trans_date: "Transaction Date",
+	tr_type: "Transaction Type",
+	tr_mode: "Transaction Mode",
+	debit: "Debit",
+	credit: "Credit",
+	total_outstanding: "Total Outstanding",
+	particulars: "Particulars",
+	// period: "Period",
+	// period_mode: "Period Mode",
+	status: "Status",
+}
+
 const txnGrpHeader = {
 	branch_code: "Branch Code",
 	branch_name: "Branch Name",
@@ -396,6 +409,7 @@ export {
 	absenteesReportHeader,
 	rejectTransFieldNames,
 	loanStatementHeader,
+	loanStatementHeaderGroupwise,
 	txnGrpHeader,
 	txnFundHeader,
 	txnCoHeader,
