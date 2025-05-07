@@ -19,10 +19,16 @@ import DynamicTailwindTable from "../../../Components/Reports/DynamicTailwindTab
 import {
 	branchwiseTxnReportHeader,
 	memberwiseOutstandingHeader,
+	overdueBranchReportHeader,
+	overdueCOReportHeader,
+	overdueFundReportHeader,
+	overdueGroupReportHeader,
+	overdueMemberReportHeader,
 	overduereport,
 	overduereportheader,
 } from "../../../Utils/Reports/headerMap"
 import Select from "react-select"
+import { exportToExcel } from "../../../Utils/exportToExcel"
 
 const options = [
 	{
@@ -112,7 +118,10 @@ function OverdueReport() {
 		// }
 		const creds = {
 			send_date: formatDateToYYYYMMDD(fromDate),
-			search_brn_id:branchCodes?.length === 0 ? [{ branch_code: userDetails.brn_code }]:branchCodes,
+			search_brn_id:
+				branchCodes?.length === 0
+					? [{ branch_code: userDetails.brn_code }]
+					: branchCodes,
 		}
 
 		await axios
@@ -151,14 +160,19 @@ function OverdueReport() {
 	const handleFetchTxnReportFundwise = async () => {
 		setLoading(true)
 
-		const branchCodes = selectedOptions?.map((item, i) =>{return {"branch_code":item?.value}})
+		const branchCodes = selectedOptions?.map((item, i) => {
+			return { branch_code: item?.value }
+		})
+		const selectedFunds = funds?.map((item, i) => item?.fund_id)
 
 		const creds = {
 			send_date: formatDateToYYYYMMDD(fromDate),
 			// to_dt: formatDateToYYYYMMDD(toDate),
 			search_brn_id:
-				branchCodes?.length === 0 ? [{"branch_code":userDetails?.brn_code}] : branchCodes,
-			fund_id: selectedFund,
+				branchCodes?.length === 0
+					? [{ branch_code: userDetails?.brn_code }]
+					: branchCodes,
+			fund_id: selectedFund === "F" ? selectedFunds : [selectedFund],
 			// tr_type: searchType,
 		}
 
@@ -178,7 +192,9 @@ function OverdueReport() {
 	const getCOs = () => {
 		setLoading(true)
 
-		const branchCodes = selectedOptions?.map((item, i) => {return {"branch_code":item?.value}})
+		const branchCodes = selectedOptions?.map((item, i) => {
+			return { branch_code: item?.value }
+		})
 
 		const creds = {
 			branch_code:
@@ -205,15 +221,25 @@ function OverdueReport() {
 	const handleFetchTxnReportCOwise = async () => {
 		setLoading(true)
 
-		const branchCodes = selectedOptions?.map((item, i) =>{return {"branch_code":item?.value}})
+		const branchCodes = selectedOptions?.map((item, i) => {
+			return { branch_code: item?.value }
+		})
 		const coCodes = selectedCOs?.map((item, i) => item?.value)
+		const allCos = cos?.map((item, i) => item?.co_id)
 
 		const creds = {
 			send_date: formatDateToYYYYMMDD(fromDate),
 			// to_dt: formatDateToYYYYMMDD(toDate),
 			search_brn_id:
-				branchCodes?.length === 0 ? [{"branch_code":userDetails?.brn_code}] : branchCodes,
-			co_id: coCodes?.length === 0 ? selectedCO : coCodes,
+				branchCodes?.length === 0
+					? [{ branch_code: userDetails?.brn_code }]
+					: branchCodes,
+			co_id:
+				coCodes?.length === 0
+					? selectedCO === "AC"
+						? allCos
+						: [selectedCO]
+					: coCodes,
 			// tr_type: searchType,
 		}
 
@@ -233,13 +259,17 @@ function OverdueReport() {
 	const handleFetchTxnReportBranchwise = async () => {
 		setLoading(true)
 
-		const branchCodes = selectedOptions?.map((item, i) =>{return {"branch_code":item?.value}})
+		const branchCodes = selectedOptions?.map((item, i) => {
+			return { branch_code: item?.value }
+		})
 
 		const creds = {
 			send_date: formatDateToYYYYMMDD(fromDate),
 			// to_dt: formatDateToYYYYMMDD(toDate),
 			search_brn_id:
-				branchCodes?.length === 0 ? [{"branch_code":userDetails?.brn_code}] : branchCodes,
+				branchCodes?.length === 0
+					? [{ branch_code: userDetails?.brn_code }]
+					: branchCodes,
 			// tr_type: searchType,
 		}
 
@@ -259,7 +289,9 @@ function OverdueReport() {
 	const handleFetchTxnReportMemberwise = async () => {
 		setLoading(true)
 
-		const branchCodes = selectedOptions?.map((item, i) =>{return {"branch_code":item?.value}})
+		const branchCodes = selectedOptions?.map((item, i) => {
+			return { branch_code: item?.value }
+		})
 
 		const creds = {
 			// from_dt: formatDateToYYYYMMDD(fromDate),
@@ -267,10 +299,12 @@ function OverdueReport() {
 			// branch_code:
 			// 	branchCodes?.length === 0 ? [userDetails?.brn_code] : branchCodes,
 			// tr_type: searchType,
-            send_date: formatDateToYYYYMMDD(fromDate),
+			send_date: formatDateToYYYYMMDD(fromDate),
 			// to_dt: formatDateToYYYYMMDD(toDate),
 			search_brn_id:
-				branchCodes?.length === 0 ? [{"branch_code":userDetails?.brn_code}] : branchCodes,
+				branchCodes?.length === 0
+					? [{ branch_code: userDetails?.brn_code }]
+					: branchCodes,
 		}
 
 		await axios
@@ -360,36 +394,22 @@ function OverdueReport() {
 		}
 	}
 
-	const dateFormatInGB = (date) => {
-		return new Date(date).toLocaleDateString("en-GB")
-	}
+	const dataToExport = reportData
 
-	const exportToExcel = (data) => {
-		const wb = XLSX.utils.book_new()
-		const ws = XLSX.utils.json_to_sheet(data)
-		XLSX.utils.book_append_sheet(wb, ws, "Sheet1")
-		const wbout = XLSX.write(wb, { bookType: "xlsx", type: "binary" })
-		const blob = new Blob([s2ab(wbout)], { type: "application/octet-stream" })
-		saveAs(
-			blob,
-			`Loan_Txn_Report_${fetchSearchTypeName(
-				searchType2
-			)}_${fetchSearchTypeName(
-				searchType
-			)}_${metadataDtls}_From_${dateFormatInGB(fromDate)}_To_${dateFormatInGB(
-				toDate
-			)}.xlsx`
-		)
-	}
+	const headersToExport =
+		searchType2 === "G"
+			? overdueGroupReportHeader
+			: searchType2 === "F"
+			? overdueFundReportHeader
+			: searchType2 === "C"
+			? overdueCOReportHeader
+			: searchType2 === "M"
+			? overdueMemberReportHeader
+			: overdueBranchReportHeader
 
-	const s2ab = (s) => {
-		const buf = new ArrayBuffer(s.length)
-		const view = new Uint8Array(buf)
-		for (let i = 0; i < s.length; i++) {
-			view[i] = s.charCodeAt(i) & 0xff
-		}
-		return buf
-	}
+	const fileName = `Overdue_Report_${fetchSearchTypeName(
+		searchType2
+	)}_${new Date().toLocaleString("en-GB")}.xlsx`
 
 	const dropdownOptions = branches?.map((branch) => ({
 		value: branch.branch_assign_id,
@@ -608,10 +628,13 @@ function OverdueReport() {
 									label="CO-wise"
 									name="co_id"
 									handleChange={handleCOChange}
-									data={cos.map((dat) => ({
-										code: dat.co_id,
-										name: `${dat.emp_name}`,
-									}))}
+									data={[
+										{ code: "AC", name: "All COs" },
+										...cos.map((dat) => ({
+											code: dat.co_id,
+											name: `${dat.emp_name}`,
+										})),
+									]}
 									mode={2}
 									disabled={false}
 								/>
@@ -653,10 +676,13 @@ function OverdueReport() {
 									label="Fundwise"
 									name="fund_id"
 									handleChange={handleFundChange}
-									data={funds.map((dat) => ({
-										code: dat.fund_id,
-										name: `${dat.fund_name}`,
-									}))}
+									data={[
+										{ code: "F", name: "All funds" },
+										...funds.map((dat) => ({
+											code: dat.fund_id,
+											name: `${dat.fund_name}`,
+										})),
+									]}
 									mode={2}
 									disabled={false}
 								/>
@@ -680,54 +706,51 @@ function OverdueReport() {
 							<DynamicTailwindTable
 								data={reportData}
 								pageSize={50}
-                                columnTotal={[11,15,16]}
-								dateTimeExceptionCols={[10,12]}
-								headersMap={overduereportheader}
-                                colRemove={[7]}
+								columnTotal={[11, 15, 16]}
+								dateTimeExceptionCols={[0, 1, 10, 12]}
+								headersMap={overdueMemberReportHeader}
+								// colRemove={[7]}
 							/>
 						</>
 					)}
 
-					{/* Groupwise Results with Pagination */}
 					{searchType2 === "G" && reportData?.length > 0 && (
 						<>
 							<DynamicTailwindTable
 								data={reportData}
 								pageSize={50}
-								columnTotal={[9,14,15]}
-								dateTimeExceptionCols={[0,1,9,11]}
-								headersMap={overduereportheader}
-								colRemove={[6]}
+								columnTotal={[9, 14, 15]}
+								dateTimeExceptionCols={[0, 1, 9, 11]}
+								headersMap={overdueGroupReportHeader}
+								// colRemove={[6]}
 							/>
 						</>
 					)}
 
-					{/* Fundwise Results with Pagination */}
 					{searchType2 === "F" && reportData?.length > 0 && (
 						<>
 							<DynamicTailwindTable
 								data={reportData}
 								pageSize={50}
-								columnTotal={[12,16,17]}
-								dateTimeExceptionCols={[0,1,11,13]}
-								headersMap={overduereportheader}
-                                colRemove={[6]}
+								columnTotal={[12, 16, 17]}
+								dateTimeExceptionCols={[0, 1, 11, 13]}
+								headersMap={overdueFundReportHeader}
+								// colRemove={[6]}
 
 								// headersMap={fundwiseOutstandingHeader}
 							/>
 						</>
 					)}
 
-					{/* COwise Results with Pagination */}
 					{searchType2 === "C" && reportData?.length > 0 && (
 						<>
 							<DynamicTailwindTable
 								data={reportData}
 								pageSize={50}
-								columnTotal={[10,14,15]}
-								dateTimeExceptionCols={[0,1,9,11]}
-								headersMap={overduereportheader}
-                                colRemove={[6]}
+								columnTotal={[10, 14, 15]}
+								dateTimeExceptionCols={[0, 1, 9, 11]}
+								headersMap={overdueCOReportHeader}
+								// colRemove={[6]}
 
 								// headersMap={cowiseOutstandingHeader}
 							/>
@@ -740,10 +763,10 @@ function OverdueReport() {
 							<DynamicTailwindTable
 								data={reportData}
 								pageSize={50}
-								columnTotal={[2,3,4]}
+								columnTotal={[2, 3, 4]}
 								// dateTimeExceptionCols={[0,1,9,11]}
-								headersMap={overduereportheader}
-                                // colRemove={[6]}
+								headersMap={overdueBranchReportHeader}
+								// colRemove={[6]}
 							/>
 						</>
 					)}
@@ -754,7 +777,14 @@ function OverdueReport() {
 						<div className="flex gap-4">
 							<Tooltip title="Export to Excel">
 								<button
-									onClick={() => exportToExcel(reportData)}
+									onClick={() =>
+										exportToExcel(
+											dataToExport,
+											headersToExport,
+											fileName,
+											[0, 1, 9, 11]
+										)
+									}
 									className="mt-5 justify-center items-center rounded-full text-green-900"
 								>
 									<FileExcelOutlined
