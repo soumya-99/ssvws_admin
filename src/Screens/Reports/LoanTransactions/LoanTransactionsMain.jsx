@@ -771,7 +771,12 @@ function LoanTransactionsMain() {
 							<Tooltip title="Export to Excel">
 								<button
 									onClick={() =>
-										exportToExcel(dataToExport, headersToExport, fileName, [0])
+										exportToExcel(
+											dataToExport,
+											headersToExport,
+											fileName,
+											[0, 2]
+										)
 									}
 									className="mt-5 justify-center items-center rounded-full text-green-900"
 								>

@@ -26,6 +26,7 @@ import {
 	groupwiseDemandReportHeader,
 	memberwiseDemandReportHeader,
 } from "../../../Utils/Reports/headerMap"
+import { exportToExcel } from "../../../Utils/exportToExcel"
 
 // const { RangePicker } = DatePicker
 // const dateFormat = "YYYY/MM/DD"
@@ -581,28 +582,22 @@ function DemandReportsMain() {
 		}
 	}
 
-	const exportToExcel = (data) => {
-		const wb = XLSX.utils.book_new()
-		const ws = XLSX.utils.json_to_sheet(data)
-		XLSX.utils.book_append_sheet(wb, ws, "Sheet1")
-		const wbout = XLSX.write(wb, { bookType: "xlsx", type: "binary" })
-		const blob = new Blob([s2ab(wbout)], { type: "application/octet-stream" })
-		saveAs(
-			blob,
-			`Demand_Report_${metadataDtls?.split(",")[0]}_${fetchSearchTypeName(
-				searchType
-			)}.xlsx`
-		)
-	}
+	const dataToExport = reportData
 
-	const s2ab = (s) => {
-		const buf = new ArrayBuffer(s.length)
-		const view = new Uint8Array(buf)
-		for (let i = 0; i < s.length; i++) {
-			view[i] = s.charCodeAt(i) & 0xff
-		}
-		return buf
-	}
+	const headersToExport =
+		searchType === "G"
+			? groupwiseDemandReportHeader
+			: searchType === "F"
+			? fundwiseDemandReportHeader
+			: searchType === "C"
+			? cowiseDemandReportHeader
+			: searchType === "M"
+			? memberwiseDemandReportHeader
+			: branchwiseDemandReportHeader
+
+	const fileName = `Demand_Report_${fetchSearchTypeName(
+		searchType
+	)}_${new Date().toLocaleString("en-GB")}.xlsx`
 
 	const dropdownOptions = branches?.map((branch) => ({
 		value: branch.branch_assign_id,
@@ -1137,7 +1132,7 @@ function DemandReportsMain() {
 							<DynamicTailwindTable
 								data={reportData}
 								pageSize={50}
-								columnTotal={[6, 12, 13]}
+								columnTotal={[12]}
 								dateTimeExceptionCols={[0, 11, 12, 7, 12, 13]}
 								headersMap={groupwiseDemandReportHeader}
 								// colRemove={[11]}
@@ -1152,7 +1147,7 @@ function DemandReportsMain() {
 							<DynamicTailwindTable
 								data={reportData}
 								pageSize={50}
-								columnTotal={[11, 12]}
+								columnTotal={[11]}
 								dateTimeExceptionCols={[0]}
 								headersMap={fundwiseDemandReportHeader}
 							/>
@@ -1166,7 +1161,7 @@ function DemandReportsMain() {
 							<DynamicTailwindTable
 								data={reportData}
 								pageSize={50}
-								columnTotal={[10, 11]}
+								columnTotal={[9]}
 								dateTimeExceptionCols={[0]}
 								headersMap={cowiseDemandReportHeader}
 							/>
@@ -1180,7 +1175,7 @@ function DemandReportsMain() {
 							<DynamicTailwindTable
 								data={reportData}
 								pageSize={50}
-								columnTotal={[11, 17, 18, 19, 20]}
+								columnTotal={[18]}
 								dateTimeExceptionCols={[0, 10, 16, 17]}
 								headersMap={memberwiseDemandReportHeader}
 							/>
@@ -1194,7 +1189,7 @@ function DemandReportsMain() {
 							<DynamicTailwindTable
 								data={reportData}
 								pageSize={50}
-								columnTotal={[3, 4]}
+								columnTotal={[3]}
 								dateTimeExceptionCols={[0]}
 								headersMap={branchwiseDemandReportHeader}
 							/>
@@ -1207,7 +1202,14 @@ function DemandReportsMain() {
 						<div className="flex gap-4">
 							<Tooltip title="Export to Excel">
 								<button
-									onClick={() => exportToExcel(reportData)}
+									onClick={() =>
+										exportToExcel(
+											dataToExport,
+											headersToExport,
+											fileName,
+											[0, 10, 11, 16]
+										)
+									}
 									className="mt-5 justify-center items-center rounded-full text-green-900"
 								>
 									<FileExcelOutlined

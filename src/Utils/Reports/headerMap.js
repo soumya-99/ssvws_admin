@@ -197,26 +197,15 @@ const groupwiseDemandReportHeader = {
 	group_code: "Group Code",
 	group_name: "Group Name",
 	co_id: "CO ID",
-	co_name: "CO Name",
-	disb_dt: "Disbursement Date",
-	disb_amt: "Disbursement Amount",
+	prn_disb_amt: "Principal Disbursement Amount",
 	curr_roi: "Current ROI",
 	period: "Period",
 	period_mode: "Period Mode",
 	recovery_day: "Recovery Day",
-	instl_start_dt: "Demand Start Date",
 	instl_end_dt: "Demand End Date",
-	tot_emi: "Total EMI",
-	demand_amt: "Demand Amount",
-	curr_outstanding: "Current Outstanding",
-	emp_name: "Employee Name",
-	coll_amt: "Collection Amount",
-	loan_period: "Loan Period",
-	demand_after_collection: "Demand After Collection",
 	dmd_amt: "Demand Amount",
-	prn_outstanding: "Outstanding Principal",
-	intt_outstanding: "Outstanding Interest",
-	prn_disb_amt: "Principal Disbursement Amount",
+	outstanding: "Outstanding",
+	co_name: "CO Name",
 }
 
 const fundwiseDemandReportHeader = {
@@ -231,11 +220,8 @@ const fundwiseDemandReportHeader = {
 	fund_name: "Fund Name",
 	period_mode: "Period Mode",
 	recovery_day: "Recovery Day",
-	demand_amt: "Demand Amount",
+	dmd_amt: "Demand Amount",
 	curr_outstanding: "Current Outstanding",
-	demand_after_collection: "Demand After Collection",
-	coll_amt: "Collection Amount",
-	emp_name: "Employee Name",
 }
 
 const cowiseDemandReportHeader = {
@@ -248,13 +234,8 @@ const cowiseDemandReportHeader = {
 	co_name: "CO Name",
 	period_mode: "Period Mode",
 	recovery_day: "Recovery Day",
-	demand_amt: "Demand Amount",
+	dmd_amt: "Demand Amount",
 	curr_outstanding: "Current Outstanding",
-	collec_upto: "Collection Upto",
-	emp_name: "Employee Name",
-	tot_emi: "Total EMI",
-	coll_amt: "Collection Amount",
-	demand_after_collection: "Demand After Collection",
 }
 
 const memberwiseDemandReportHeader = {
@@ -273,13 +254,11 @@ const memberwiseDemandReportHeader = {
 	curr_roi: "Current ROI",
 	period: "Period",
 	period_mode: "Period Mode",
-	instl_start_dt: "Demand Start Date",
+	recovery_day: "Recovery Day",
 	instl_end_dt: "Demand End Date",
 	tot_emi: "Total EMI",
 	demand_amt: "Demand Amount",
 	curr_outstanding: "Current Outstanding",
-	coll_amt: "Collection Amount",
-	demand_after_collection: "Demand After Collection",
 }
 
 const branchwiseDemandReportHeader = {
@@ -288,7 +267,6 @@ const branchwiseDemandReportHeader = {
 	branch_name: "Branch Name",
 	demand_amt: "Demand Amount",
 	curr_outstanding: "Current Outstanding",
-	collec_upto: "Collected Upto",
 }
 
 const overduereportheader = {
@@ -413,6 +391,7 @@ const txnGrpHeader = {
 	co_id: "CO ID",
 	co_name: "CO Name",
 	debit: "Debit",
+	credit: "Credit",
 	curr_balance: "Current Balance",
 }
 
@@ -430,6 +409,7 @@ const txnFundHeader = {
 	co_id: "CO ID",
 	co_name: "CO Name",
 	debit: "Debit",
+	credit: "Credit",
 	curr_balance: "Current Balance",
 }
 
@@ -444,42 +424,42 @@ const txnCoHeader = {
 	fund_id: "Fund ID",
 	fund_name: "Fund Name",
 	debit: "Debit",
+	credit: "Credit",
 	curr_balance: "Current Balance",
 }
 
 const txnMembHeader = {
+	payment_date: "Payment Date",
 	branch_code: "Branch Code",
 	branch_name: "Branch Name",
-	payment_date: "Payment Date",
+	loan_id: "Loan ID",
+	member_code: "Member Code",
+	client_name: "Client Name",
 	group_code: "Group Code",
 	group_name: "Group Name",
-	sb_account: "Savings Account",
+	sb_account: "SB Account",
 	loan_account: "Loan Account",
 	grp_addr: "Group Address",
 	co_id: "CO ID",
 	emp_name: "CO Name",
-	loan_id: "Loan ID",
 	scheme_id: "Scheme ID",
 	scheme_name: "Scheme Name",
-	member_code: "Member Code",
-	client_name: "Client Name",
-	transaction_id: "Transaction ID",
-	transaction_date: "Transaction Date",
-	particulars: "Particulars",
 	debit: "Debit",
+	credit: "Credit",
 	curr_balance: "Current Balance",
 	created_code: "Created Code",
 	created_at: "Created At",
 	created_by: "Created By",
 	approved_code: "Approved Code",
-	approved_at: "Approved At",
 	approved_by: "Approved By",
+	approved_at: "Approved At",
 }
 
 const branchwiseTxnReportHeader = {
 	branch_id: "Branch ID",
 	branch_name: "Branch Name",
 	debit: "Debit",
+	credit: "Credit",
 	curr_balance: "Current Balance",
 }
 
