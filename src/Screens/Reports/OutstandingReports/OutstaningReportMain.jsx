@@ -371,8 +371,8 @@ function OutstaningReportMain() {
 	// Reset states when searchType changes
 	useEffect(() => {
 		setReportData([])
-		setSelectedOptions([])
-		setSelectedCOs([])
+		// setSelectedOptions([])
+		// setSelectedCOs([])
 		setMetadataDtls(null)
 		// setProcedureSuccessFlag("0")
 		if (searchType === "F") {
@@ -384,7 +384,7 @@ function OutstaningReportMain() {
 	}, [searchType])
 
 	useEffect(() => {
-		setSelectedCOs([])
+		// setSelectedCOs([])
 		// setProcedureSuccessFlag("0")
 		if (searchType === "C") {
 			getCOs()

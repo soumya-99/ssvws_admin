@@ -192,9 +192,7 @@ function OverdueReport() {
 	const getCOs = () => {
 		setLoading(true)
 
-		const branchCodes = selectedOptions?.map((item, i) => {
-			return { branch_code: item?.value }
-		})
+		const branchCodes = selectedOptions?.map((item, i) => item?.value)
 
 		const creds = {
 			branch_code:
@@ -370,7 +368,7 @@ function OverdueReport() {
 	}, [searchType, searchType2])
 
 	useEffect(() => {
-		setSelectedCOs([])
+		// setSelectedCOs([])
 		if (searchType2 === "C") {
 			getCOs()
 		}
@@ -719,7 +717,7 @@ function OverdueReport() {
 							<DynamicTailwindTable
 								data={reportData}
 								pageSize={50}
-								columnTotal={[9, 14, 15]}
+								columnTotal={[10, 14, 15]}
 								dateTimeExceptionCols={[0, 1, 9, 11]}
 								headersMap={overdueGroupReportHeader}
 								// colRemove={[6]}
