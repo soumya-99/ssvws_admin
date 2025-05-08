@@ -67,15 +67,6 @@ const collectionYearly = [
 	{ month: "2023", disbursement: 4800, recovery: 4500 },
 ]
 
-const materialColors = [
-	"#FFAB91", // vibrant peach
-	"#A5D6A7", // medium mint
-	"#CE93D8", // bright lavender
-	"#FFF59D", // sunny sand
-	"#81D4FA", // vivid ice
-	"#FF8A80", // warm blush
-]
-
 export default function Dashboard() {
 	const userDetails = JSON.parse(localStorage.getItem("user_details")) || {}
 	const type = userDetails.id === 2 ? "BM" : "Admin 2"
