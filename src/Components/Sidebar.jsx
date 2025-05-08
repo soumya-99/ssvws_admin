@@ -393,11 +393,7 @@ function Sidebar({ mode = 0 }) {
 							{
 								key: "sub6-11",
 								icon: <BarChartOutlined />,
-								label: (
-									<Link to={"/homebm/overduereport"}>
-										Overdue Report
-									</Link>
-								),
+								label: <Link to={"/homebm/overduereport"}>Overdue Report</Link>,
 								// hidden: data?.demand_vs_collection == "Y" ? false : true,
 							},
 							{
@@ -522,25 +518,30 @@ function Sidebar({ mode = 0 }) {
 			</aside>
 
 			<div
-				className={`w-full p-0.5 py-1 bg-slate-600 text-slate-100 justify-center align-middle
+				className={`w-full h-7 p-0.5 py-1 bg-slate-600 text-slate-100 justify-center align-middle items-center text-left
 				 font-thin text-sm fixed left-0 top-20 shadow-sm z-10`}
 			>
-				<div className="mt-2 italic ml-10">
-					⇨{" "}
-					{userDetails?.id == 1
-						? `Credit Officer - ${userDetails?.emp_name} `
-						: userDetails?.id == 2
-						? `Branch Manager - ${userDetails?.emp_name} `
-						: userDetails?.id == 3
-						? `MIS Assistant - ${userDetails?.emp_name} `
-						: userDetails?.id == 4
-						? `Administrator - ${userDetails?.emp_name} `
-						: userDetails?.id == 5
-						? `General User - ${userDetails?.emp_name}`
-						: userDetails?.id == 11
-						? `Admin 2 - ${userDetails?.emp_name}`
-						: `HO User - ${userDetails?.emp_name} `}
-					({userDetails?.branch_name})
+				<div className="flex items-center justify-between">
+					<div className="italic ml-10">
+						⇨{" "}
+						{userDetails?.id == 1
+							? `Credit Officer - ${userDetails?.emp_name} `
+							: userDetails?.id == 2
+							? `Branch Manager - ${userDetails?.emp_name} `
+							: userDetails?.id == 3
+							? `MIS Assistant - ${userDetails?.emp_name} `
+							: userDetails?.id == 4
+							? `Administrator - ${userDetails?.emp_name} `
+							: userDetails?.id == 5
+							? `General User - ${userDetails?.emp_name}`
+							: userDetails?.id == 11
+							? `Admin 2 - ${userDetails?.emp_name}`
+							: `HO User - ${userDetails?.emp_name} `}
+						({userDetails?.branch_name})
+					</div>
+					{/* <div className="italic mr-10">
+						⇨ Date of Operation : {new Date().toLocaleDateString("en-GB")}
+					</div> */}
 				</div>
 			</div>
 		</div>

@@ -8,6 +8,11 @@ module.exports = {
 				hello: "url('Assets/Images/hello.png')",
 				hellooffice: "url('Assets/Images/hellooffice.png')",
 				hero_pattern: "url('Assets/Images/colored_shapes.svg')",
+				hero_pattern2: "url('Assets/Images/Sprinkle.svg')",
+				hero_anim: "url('Assets/Images/Animated_Shape_Blue.svg')",
+				hero_anim_pink: "url('Assets/Images/Animated_Shape_Pink.svg')",
+				hero_anim_purple: "url('Assets/Images/Animated_Shape_Purple.svg')",
+				hero_anim_green: "url('Assets/Images/Animated_Shape_Green.svg')",
 			},
 			backgroundColor: {
 				emerald: {

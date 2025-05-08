@@ -26,7 +26,7 @@ function HomeBM() {
 						"p-4 h-auto rounded-3xl bg-transparent dark:border-gray-700 dark:bg-transparent dark:text-white min-w-screen-xl"
 					}
 				>
-					{!(paths.length == 2 && paths[1] == "home") && <BreadCrumbComp />}
+					{/* {!(paths.length == 2 && paths[1] == "home") && <BreadCrumbComp />} */}
 					{/* <BreadCrumbComp /> */}
 					<ErrorBoundary
 						FallbackComponent={Error}
@@ -36,7 +36,9 @@ function HomeBM() {
 					>
 						<ScrollTop className="bg-[#DA4167]" />
 
-						<Outlet />
+						<main className="flex-1 pt-28 overflow-auto">
+							<Outlet />
+						</main>
 					</ErrorBoundary>
 				</div>
 			</div>

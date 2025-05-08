@@ -57,6 +57,7 @@ import RejectTransaction from "./Screens/BMHome/Loans/RejectTransaction"
 import Landing from "./Screens/Landing/Landing"
 import LandingOutlet from "./Screens/Landing/LandingOutlet"
 import SignInPage from "./Screens/Login/SignInPage"
+import Dashboard from "./Screens/BMHome/Dashboard/Dashboard"
 // import A_LoanStatementMain from "./Screens/Admin/Reports/LoanStatements/A_LoanStatementMain"
 // import A_LoanTransactionsMain from "./Screens/Admin/Reports/LoanTransactions/A_LoanTransactionsMain"
 // import A_DemandReportsMain from "./Screens/Admin/Reports/DemandReports/A_DemandReportsMain"
@@ -238,7 +239,7 @@ const router = createBrowserRouter([
 						children: [
 							{
 								path: "",
-								element: <DashboardBM />,
+								element: <Dashboard />,
 							},
 							{
 								path: "grtappls",
