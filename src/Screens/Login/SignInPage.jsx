@@ -296,7 +296,7 @@ const SignInPage = () => {
 										placeholder="••••••••"
 									/>
 									<div
-										className="absolute inset-y-0 right-0 pr-3 flex items-c-                                                                                                                                                                                                                                         enter cursor-pointer"
+										className="absolute inset-y-0 right-0 pr-3 flex items-center cursor-pointer"
 										onClick={() => setShowPassword((prev) => !prev)}
 									>
 										{showPassword ? (
