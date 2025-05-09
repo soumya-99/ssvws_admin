@@ -281,7 +281,7 @@ export default function Dashboard() {
 								backfaceVisibility: "hidden",
 							}}
 						>
-							<div className="w-full max-h-[150px] overflow-auto">
+							<div className="w-full max-h-[160px] overflow-auto">
 								<ul class="max-w-md space-y-1 text-slate-600 list-inside dark:text-slate-400">
 									{dummyUserList?.map((user, i) => (
 										<>
