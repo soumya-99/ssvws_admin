@@ -12,6 +12,8 @@ import DialogBox from "../../Components/DialogBox"
 import { generateRandomAlphanumeric } from "../../Utils/generateRandomAlphanumeric"
 import { routePaths } from "../../Assets/Data/Routes"
 import ArrowBackIcon from "@mui/icons-material/ArrowBack"
+import Visibility from "@mui/icons-material/Visibility"
+import VisibilityOff from "@mui/icons-material/VisibilityOff"
 
 const SignInPage = () => {
 	const navigate = useNavigate()
@@ -20,13 +22,12 @@ const SignInPage = () => {
 	const [branches, setBranches] = useState([])
 	const [sessionId, setSessionId] = useState("")
 	const [visible, setVisible] = useState(false)
+	const [showPassword, setShowPassword] = useState(false)
 
-	// generate session ID on mount
 	useEffect(() => {
 		setSessionId(generateRandomAlphanumeric(15))
 	}, [])
 
-	// fetch branch list on any user type change
 	useEffect(() => {
 		if (userTypeId !== 0) {
 			setLoading(true)
@@ -224,7 +225,7 @@ const SignInPage = () => {
 								<ArrowBackIcon />
 							</a>
 							<a
-								href="https://ssvws.opentech4u.co.in/payroll"
+								href={`https://ssvws.opentech4u.co.in/payroll`}
 								target="_blank"
 								rel="noreferrer"
 								className="text-gray-600 hover:text-blue-600"
@@ -267,7 +268,7 @@ const SignInPage = () => {
 									onChange={formik.handleChange}
 									onBlur={handleUserBlur}
 									value={formik.values.user_id}
-									className="w-full px-4 py-2 bg-gray-100 border border-gray-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-sky-500"
+									className="w-full px-4 py-2 bg-slate-100 border border-slate-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-sky-500"
 									placeholder="9999"
 								/>
 								{formik.touched.user_id && formik.errors.user_id && (
@@ -283,16 +284,28 @@ const SignInPage = () => {
 								>
 									Password
 								</label>
-								<input
-									id="password"
-									name="password"
-									type="password"
-									onChange={formik.handleChange}
-									onBlur={formik.handleBlur}
-									value={formik.values.password}
-									className="w-full px-4 py-2 bg-gray-100 border border-gray-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-sky-500"
-									placeholder="••••••••"
-								/>
+								<div className="relative">
+									<input
+										id="password"
+										name="password"
+										type={showPassword ? "text" : "password"}
+										onChange={formik.handleChange}
+										onBlur={formik.handleBlur}
+										value={formik.values.password}
+										className="w-full px-4 py-2 pr-10 bg-slate-100 border border-slate-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-sky-500"
+										placeholder="••••••••"
+									/>
+									<div
+										className="absolute inset-y-0 right-0 pr-3 flex items-c-                                                                                                                                                                                                                                         enter cursor-pointer"
+										onClick={() => setShowPassword((prev) => !prev)}
+									>
+										{showPassword ? (
+											<VisibilityOff className="text-slate-700" />
+										) : (
+											<Visibility className="text-slate-700" />
+										)}
+									</div>
+								</div>
 								{formik.touched.password && formik.errors.password && (
 									<div className="text-red-500 text-sm">
 										{formik.errors.password}
@@ -305,7 +318,7 @@ const SignInPage = () => {
 							<div>
 								<label
 									htmlFor="brnch"
-									className="block text-sm font-medium text-gray-700 mb-1"
+									className="block text-sm font-medium text-slate-700 mb-1"
 								>
 									Branches / Choose branch
 								</label>
@@ -315,7 +328,7 @@ const SignInPage = () => {
 									onChange={formik.handleChange}
 									onBlur={formik.handleBlur}
 									value={formik.values.brnch}
-									className="w-full px-4 py-2 bg-gray-100 border border-gray-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-sky-500"
+									className="w-full px-4 py-2 bg-slate-100 border border-slate-100 rounded-lg focus:outline-none focus:ring-2 focus:ring-sky-500"
 								>
 									<option value="" disabled>
 										Select a branch

@@ -2238,7 +2238,7 @@ function MenusBr({ theme, data }) {
 	]
 
 	return (
-		<div className="bg-[#EEEEEE44] flex justify-between align-middle gap-4 rounded-full">
+		<div className="bg-slate-600 flex justify-between align-middle gap-4 rounded-full">
 			<img src={IMG} className="w-12 h-12 p-2 -mr-6" alt="Flowbite Logo" />
 			<Menu
 				onClick={onClick}
