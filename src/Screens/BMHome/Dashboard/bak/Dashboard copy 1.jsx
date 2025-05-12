@@ -78,7 +78,7 @@ export default function Dashboard() {
 	const [loading, setLoading] = useState(() => false)
 	const [branches, setBranches] = useState(() => [])
 	const [choosenBranch, setChoosenBranch] = useState(() =>
-		+branchId === 100 ? "100" : branchId
+		+branchId === 100 ? "100" : ""
 	)
 
 	const [view, setView] = useState("Monthly")
@@ -93,116 +93,145 @@ export default function Dashboard() {
 		{ label: "Approved", value: 0, color: "bg-green-300" },
 		{ label: "Rejected", value: 0, color: "bg-red-300" },
 	])
-	const [grtDataMonth, setGrtDataMonth] = useState([...grtDataToday])
-	const [activeGroupsNumber, setActiveGroupsNumber] = useState("")
-	const [activeUsersCount, setActiveUsersCount] = useState("")
-	const [activeUsers, setActiveUsers] = useState([])
-	const activeGrtData = grtPeriod === "Today" ? grtDataToday : grtDataMonth
 
-	const getBranchCodes = () => {
-		if (+choosenBranch === 100) return branches.map((b) => b.code)
-		return [+choosenBranch]
-	}
+	const [grtDataMonth, setGrtDataMonth] = useState([
+		{ label: "Pending", value: 0, color: "bg-orange-300" },
+		{ label: "Sent to MIS", value: 0, color: "bg-blue-300" },
+		{ label: "Approved", value: 0, color: "bg-green-300" },
+		{ label: "Rejected", value: 0, color: "bg-red-300" },
+	])
+
+	const [activeGroupsNumber, setActiveGroupsNumber] = useState("")
+
+	const activeGrtData = grtPeriod === "Today" ? grtDataToday : grtDataMonth
 
 	const fetchBranches = async () => {
 		setLoading(true)
-		try {
-			const res = await axios.get(`${url}/admin/fetch_branch`)
-			setBranches(
-				res.data.msg.map((item) => ({
-					code: item.branch_code,
-					name: `${item.branch_name} (${item.branch_code})`,
-				}))
-			)
-		} catch {
-		} finally {
-			setLoading(false)
-		}
-	}
-
-	const fetchTotalGrtDetails = async (flag) => {
-		setLoading(true)
-		try {
-			const creds = { flag, branch_code: getBranchCodes() }
-			const res = await axios.post(
-				`${url}/admin/dashboard_tot_grt_details`,
-				creds
-			)
-			const baseData = [
-				{
-					label: "Pending",
-					value: res.data.data.tot_pending,
-					color: "bg-orange-300",
-				},
-				{
-					label: "Sent to MIS",
-					value: res.data.data.tot_send_mis,
-					color: "bg-blue-300",
-				},
-				{
-					label: "Approved",
-					value: res.data.data.tot_approved,
-					color: "bg-green-300",
-				},
-				{
-					label: "Rejected",
-					value: res.data.data.tot_rejected,
-					color: "bg-red-300",
-				},
-			]
-			flag === "Today" ? setGrtDataToday(baseData) : setGrtDataMonth(baseData)
-		} catch {
-		} finally {
-			setLoading(false)
-		}
-	}
-
-	const fetchActiveGroups = async () => {
-		setLoading(true)
-		try {
-			const creds = { branch_code: getBranchCodes() }
-			const res = await axios.post(`${url}/admin/dashboard_active_group`, creds)
-			setActiveGroupsNumber(res.data.data.tot_active_grp || 0)
-		} catch {
-		} finally {
-			setLoading(false)
-		}
-	}
-
-	const fetchUserLoggedInDetails = async () => {
-		setLoading(true)
-		try {
-			const creds = { branch_code: getBranchCodes() }
-			const res = await axios.post(
-				`${url}/admin/dshboard_user_logged_in_details`,
-				creds
-			)
-			setActiveUsersCount(res?.data?.data?.tot_user_active)
-			setActiveUsers(res?.data?.data?.active_user)
-		} catch {
-		} finally {
-			setLoading(false)
-		}
+		await axios
+			.get(`${url}/admin/fetch_branch`)
+			.then((res) => {
+				setBranches(
+					res.data.msg.map((item) => ({
+						code: item.branch_code,
+						name: `${item.branch_name} (${item.branch_code})`,
+					}))
+				)
+			})
+			.catch(console.error)
+			.finally(() => setLoading(false))
 	}
 
 	useEffect(() => {
 		fetchBranches()
 	}, [])
 
-	useEffect(() => {
-		if (branches.length)
-			fetchTotalGrtDetails(grtPeriod !== "Today" ? "Month" : "Today")
-	}, [grtPeriod, choosenBranch, branches])
+	const totalGrtDetails = async (flag) => {
+		setLoading(true)
+		const allBranches = branches?.map((item, i) => item?.code)
+		console.log("ALL BRANCHES", allBranches)
 
-	useEffect(() => {
-		if (branches.length) {
-			fetchActiveGroups()
-			fetchUserLoggedInDetails()
+		const creds = {
+			flag: flag, // [Today, Month]
+			branch_code: +choosenBranch === 100 ? allBranches : [choosenBranch],
 		}
-	}, [choosenBranch, branches])
+		await axios
+			.post(`${url}/admin/dashboard_tot_grt_details`, creds)
+			.then((res) => {
+				console.log("totalGrtDetails", res?.data)
+				if (grtPeriod === "Today") {
+					setGrtDataToday([
+						{
+							label: "Pending",
+							value: res?.data?.data?.tot_pending,
+							color: "bg-orange-300",
+						},
+						{
+							label: "Sent to MIS",
+							value: res?.data?.data?.tot_send_mis,
+							color: "bg-blue-300",
+						},
+						{
+							label: "Approved",
+							value: res?.data?.data?.tot_approved,
+							color: "bg-green-300",
+						},
+						{
+							label: "Rejected",
+							value: res?.data?.data?.tot_rejected,
+							color: "bg-red-300",
+						},
+					])
+				} else {
+					setGrtDataMonth([
+						{
+							label: "Pending",
+							value: res?.data?.data?.tot_pending,
+							color: "bg-orange-300",
+						},
+						{
+							label: "Sent to MIS",
+							value: res?.data?.data?.tot_send_mis,
+							color: "bg-blue-300",
+						},
+						{
+							label: "Approved",
+							value: res?.data?.data?.tot_approved,
+							color: "bg-green-300",
+						},
+						{
+							label: "Rejected",
+							value: res?.data?.data?.tot_rejected,
+							color: "bg-red-300",
+						},
+					])
+				}
+			})
+			.catch((err) => {
+				console.log("totalGrtDetails ERRR", err)
+			})
+			.finally(() => setLoading(false))
+	}
 
-	const handleBranchChange = (e) => setChoosenBranch(e.target.value)
-	const handleGraphYearChange = (e) => setChoosenGraphYear(e.target.value)
+	useEffect(() => {
+		if (grtPeriod === "Today") {
+			totalGrtDetails("Today")
+		} else {
+			totalGrtDetails("Month")
+		}
+	}, [grtPeriod, choosenBranch])
+
+	const handleFetchActiveGroups = async () => {
+		setLoading(true)
+		const allBranches = branches?.map((item, i) => item?.code)
+
+		const creds = {
+			branch_code: +choosenBranch === 100 ? allBranches : [choosenBranch],
+		}
+		await axios
+			.post(`${url}/admin/dashboard_active_group`, creds)
+			.then((res) => {
+				console.log("activeGroups", res?.data)
+				setActiveGroupsNumber(res?.data?.data?.tot_active_grp)
+			})
+			.catch((err) => {
+				console.log("activeGroups ERRR", err)
+			})
+			.finally(() => setLoading(false))
+	}
+
+	useEffect(() => {
+		handleFetchActiveGroups()
+	}, [choosenBranch])
+
+	const handleGraphYearChange = (e) => {
+		const selectedId = e.target.value
+		setChoosenGraphYear(selectedId)
+	}
+
+	const handleBranchChange = (e) => {
+		const selectedId = e.target.value
+		setChoosenBranch(selectedId)
+	}
 
 	return (
 		<div className="p-8 space-y-6 bg-slate-50 min-h-screen rounded-3xl">
@@ -363,11 +392,7 @@ export default function Dashboard() {
 									/>
 								</svg>
 							</div>
-							<Spin spinning={loading}>
-								<span className="text-3xl font-bold text-slate-800">
-									{new Intl.NumberFormat("en-IN").format(activeUsersCount || 0)}
-								</span>
-							</Spin>
+							<span className="text-3xl font-bold text-slate-800">250</span>
 							<span className="text-sm text-slate-600 mt-1">Active users</span>
 						</div>
 
@@ -381,10 +406,10 @@ export default function Dashboard() {
 						>
 							<div className="w-full max-h-[160px] overflow-auto">
 								<ul class="max-w-md space-y-1 text-slate-600 list-inside dark:text-slate-400">
-									{activeUsers?.map((user, i) => (
+									{dummyUserList?.map((user, i) => (
 										<>
 											<li class="flex items-center">
-												{user?.user_status === "A" ? (
+												{i % 2 === 0 ? (
 													<svg
 														class="w-3.5 h-3.5 me-2 text-green-500 dark:text-green-400 shrink-0"
 														aria-hidden="true"
@@ -418,7 +443,7 @@ export default function Dashboard() {
 														/>
 													</svg>
 												)}
-												{user?.emp_name} - {user?.emp_id}
+												{user.emp_name}
 											</li>
 											<hr className="border-t border-purple-200 my-2 w-3/4" />
 										</>
