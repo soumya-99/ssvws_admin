@@ -9,29 +9,11 @@ import {
 	Tooltip,
 	ResponsiveContainer,
 } from "recharts"
-import axios, { all } from "axios"
+import axios from "axios"
 import TDInputTemplateBr from "../../../Components/TDInputTemplateBr"
 import DashboardCard from "../../../Components/Dashboard/DashboardCard"
 import { url } from "../../../Address/BaseUrl"
 import { Spin } from "antd"
-
-const dummyUserList = [
-	{ emp_name: "John Doe", id: 1 },
-	{ emp_name: "Jane Smith", id: 2 },
-	{ emp_name: "Alice Johnson", id: 3 },
-	{ emp_name: "Bob Brown", id: 4 },
-	{ emp_name: "Charlie Davis", id: 5 },
-	{ emp_name: "David Wilson", id: 6 },
-	{ emp_name: "Eva Martinez", id: 7 },
-	{ emp_name: "Frank Garcia", id: 8 },
-	{ emp_name: "Grace Lee", id: 9 },
-	{ emp_name: "Henry Walker", id: 10 },
-	{ emp_name: "Isabella Hall", id: 11 },
-	{ emp_name: "Jack Young", id: 12 },
-	{ emp_name: "Liam King", id: 13 },
-	{ emp_name: "Mia Wright", id: 14 },
-	{ emp_name: "Noah Scott", id: 15 },
-]
 
 const collectionMonthly = [
 	{ month: "Jan", disbursement: 300, recovery: 250 },
@@ -48,13 +30,13 @@ const collectionMonthly = [
 	{ month: "Dec", disbursement: 470, recovery: 430 },
 ]
 
-const collectionYearly = [
-	{ month: "2019", disbursement: 3000, recovery: 2700 },
-	{ month: "2020", disbursement: 3500, recovery: 3200 },
-	{ month: "2021", disbursement: 4000, recovery: 3700 },
-	{ month: "2022", disbursement: 4500, recovery: 4200 },
-	{ month: "2023", disbursement: 4800, recovery: 4500 },
-]
+// const collectionYearly = [
+// 	{ month: "2019", disbursement: 3000, recovery: 2700 },
+// 	{ month: "2020", disbursement: 3500, recovery: 3200 },
+// 	{ month: "2021", disbursement: 4000, recovery: 3700 },
+// 	{ month: "2022", disbursement: 4500, recovery: 4200 },
+// 	{ month: "2023", disbursement: 4800, recovery: 4500 },
+// ]
 
 export default function Dashboard() {
 	const userDetails = JSON.parse(localStorage.getItem("user_details")) || {}
@@ -68,8 +50,8 @@ export default function Dashboard() {
 	)
 
 	const [view, setView] = useState("Monthly")
-	const data = view === "Monthly" ? collectionMonthly : collectionYearly
-
+	// const data = view === "Monthly" ? collectionMonthly : collectionYearly
+	const data = collectionMonthly
 	const [grtPeriod, setGrtPeriod] = useState("Today")
 	const [choosenGraphYear, setChoosenGraphYear] = useState("A")
 
@@ -101,6 +83,17 @@ export default function Dashboard() {
 			noOfGroups: "",
 		})
 	const [collectedLoanDetailCountsMonth, setCollectedLoanDetailCountsMonth] =
+		useState({
+			data: "",
+			noOfGroups: "",
+		})
+
+	const [unapprovedTxnsDetailCountsToday, setUnapprovedTxnsDetailCountsToday] =
+		useState({
+			data: "",
+			noOfGroups: "",
+		})
+	const [unapprovedTxnsDetailCountsMonth, setUnapprovedTxnsDetailCountsMonth] =
 		useState({
 			data: "",
 			noOfGroups: "",
@@ -266,6 +259,42 @@ export default function Dashboard() {
 		}
 	}
 
+	const fetchUnapprovedTxnsToday = async () => {
+		setLoading(true)
+		try {
+			const creds = { flag: "Today", branch_code: getBranchCodes() }
+			const res = await axios.post(
+				`${url}/admin/dashboard_tot_loan_unapprove_dtls`,
+				creds
+			)
+			setUnapprovedTxnsDetailCountsToday({
+				data: res?.data?.data?.total_loan_unapprove,
+				noOfGroups: res?.data?.data?.total_group_unapprove,
+			})
+		} catch {
+		} finally {
+			setLoading(false)
+		}
+	}
+
+	const fetchUnapprovedTxnsMonth = async () => {
+		setLoading(true)
+		try {
+			const creds = { flag: "Month", branch_code: getBranchCodes() }
+			const res = await axios.post(
+				`${url}/admin/dashboard_tot_loan_unapprove_dtls`,
+				creds
+			)
+			setUnapprovedTxnsDetailCountsMonth({
+				data: res?.data?.data?.total_loan_unapprove,
+				noOfGroups: res?.data?.data?.total_group_unapprove,
+			})
+		} catch {
+		} finally {
+			setLoading(false)
+		}
+	}
+
 	useEffect(() => {
 		fetchBranches()
 	}, [])
@@ -283,6 +312,8 @@ export default function Dashboard() {
 			fetchLoanDisbursedDetailsThisMonth()
 			fetchLoanCollectedDetailsToday()
 			fetchLoanCollectedDetailsThisMonth()
+			fetchUnapprovedTxnsToday()
+			fetchUnapprovedTxnsMonth()
 		}
 	}, [choosenBranch, branches])
 
@@ -580,12 +611,33 @@ export default function Dashboard() {
 
 				<DashboardCard
 					title="Unapproved Transactions"
-					left1Data={{ label: "This Month", value: "1,920" }}
-					left2Data={{ label: "Today", value: "62" }}
-					right1Data={{ label: "No. of Groups", value: "28" }}
-					right2Data={{ label: "No. of Groups", value: "50" }}
+					left1Data={{
+						label: "This Month",
+						value: new Intl.NumberFormat("en-IN").format(
+							unapprovedTxnsDetailCountsMonth.data || 0
+						),
+					}}
+					left2Data={{
+						label: "Today",
+						value: new Intl.NumberFormat("en-IN").format(
+							unapprovedTxnsDetailCountsToday.data || 0
+						),
+					}}
+					right1Data={{
+						label: "No. of Groups",
+						value: new Intl.NumberFormat("en-IN").format(
+							unapprovedTxnsDetailCountsMonth.noOfGroups || 0
+						),
+					}}
+					right2Data={{
+						label: "No. of Groups",
+						value: new Intl.NumberFormat("en-IN").format(
+							unapprovedTxnsDetailCountsToday.data || 0
+						),
+					}}
 					leftColor="#7C3AED"
 					rightColor="#334155"
+					loading={loading}
 				/>
 				{/* <div className="md:col-span-2 bg-white rounded-3xl shadow-md p-6 flex flex-col items-center justify-center">
 					<h3 className="text-lg font-medium bg-green-100 text-green-800 px-5 py-2 rounded-full">
