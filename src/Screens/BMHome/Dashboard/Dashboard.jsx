@@ -49,7 +49,7 @@ export default function Dashboard() {
 		+branchId === 100 ? "100" : branchId
 	)
 
-	const [view, setView] = useState("Monthly")
+	// const [view, setView] = useState("Monthly")
 	// const data = view === "Monthly" ? collectionMonthly : collectionYearly
 	const data = collectionMonthly
 	const [grtPeriod, setGrtPeriod] = useState("Today")
