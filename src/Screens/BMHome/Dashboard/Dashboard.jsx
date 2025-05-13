@@ -1,19 +1,28 @@
 import "./Dashboard.css"
 import React, { useEffect, useState } from "react"
 import { motion } from "framer-motion"
-import {
-	BarChart,
-	Bar,
-	XAxis,
-	YAxis,
-	Tooltip,
-	ResponsiveContainer,
-} from "recharts"
+// import {
+// 	BarChart,
+// 	Bar,
+// 	XAxis,
+// 	YAxis,
+// 	Tooltip,
+// 	ResponsiveContainer,
+// } from "recharts"
 import axios from "axios"
 import TDInputTemplateBr from "../../../Components/TDInputTemplateBr"
 import DashboardCard from "../../../Components/Dashboard/DashboardCard"
 import { url } from "../../../Address/BaseUrl"
 import { Spin } from "antd"
+
+const formatINR = (num) =>
+	new Intl.NumberFormat("en-IN", {
+		style: "currency",
+		currency: "INR",
+		minimumFractionDigits: 2,
+	}).format(num || 0)
+
+const formatNumber = (num) => new Intl.NumberFormat("en-IN").format(num || 0)
 
 const collectionMonthly = [
 	{ month: "Jan", disbursement: 300, recovery: 250 },
@@ -55,6 +64,7 @@ export default function Dashboard() {
 	const [grtPeriod, setGrtPeriod] = useState("Today")
 	const [choosenGraphYear, setChoosenGraphYear] = useState("A")
 
+	const [dateOfOperation, setDateOfOperation] = useState("")
 	const [grtDataToday, setGrtDataToday] = useState([
 		{ label: "Pending", value: 0, color: "bg-orange-300" },
 		{ label: "Sent to MIS", value: 0, color: "bg-blue-300" },
@@ -250,7 +260,7 @@ export default function Dashboard() {
 				creds
 			)
 			setCollectedLoanDetailCountsMonth({
-				data: res?.data?.data?.total_grp_loan_recovery,
+				data: res?.data?.data?.total_loan_recovery,
 				noOfGroups: res?.data?.data?.total_grp_loan_recovery,
 			})
 		} catch {
@@ -295,6 +305,18 @@ export default function Dashboard() {
 		}
 	}
 
+	const fetchDateOfOperation = async () => {
+		setLoading(true)
+		try {
+			const creds = { branch_code: getBranchCodes()[0] }
+			const res = await axios.post(`${url}/admin/date_of_operation`, creds)
+			setDateOfOperation(res?.data?.data?.date_of_operation)
+		} catch {
+		} finally {
+			setLoading(false)
+		}
+	}
+
 	useEffect(() => {
 		fetchBranches()
 	}, [])
@@ -314,6 +336,7 @@ export default function Dashboard() {
 			fetchLoanCollectedDetailsThisMonth()
 			fetchUnapprovedTxnsToday()
 			fetchUnapprovedTxnsMonth()
+			fetchDateOfOperation()
 		}
 	}, [choosenBranch, branches])
 
@@ -335,10 +358,14 @@ export default function Dashboard() {
 					</span>
 				</h1>
 				<h1 className="text-2xl font-bold text-slate-700 uppercase">
-					Date of operation :{" "}
-					<span className="text-slate-600 text-2xl font-thin">
-						{new Date().toLocaleDateString("en-GB")}
-					</span>
+					<Spin spinning={loading}>
+						Date of operation :{" "}
+						<span className="text-slate-600 text-2xl font-thin">
+							{+choosenBranch === 100
+								? new Date().toLocaleDateString("en-GB")
+								: dateOfOperation}
+						</span>
+					</Spin>
 				</h1>
 			</div>
 
@@ -426,7 +453,7 @@ export default function Dashboard() {
 							{new Intl.NumberFormat("en-IN").format(activeGroupsNumber || 0)}
 						</span>
 					</Spin>
-					<span className="text-sm text-slate-600 mt-1">Loan active</span>
+					{/* <span className="text-sm text-slate-600 mt-1">Group count</span> */}
 				</div>
 
 				{/* <div className="bg-white rounded-3xl shadow-md p-6 flex flex-col items-center justify-center">
@@ -551,27 +578,19 @@ export default function Dashboard() {
 					title="Loan Disbursed"
 					left1Data={{
 						label: "This Month",
-						value: new Intl.NumberFormat("en-IN").format(
-							disbursedLoanDetailCountsMonth.data || 0
-						),
+						value: formatINR(disbursedLoanDetailCountsMonth.data),
 					}}
 					left2Data={{
 						label: "Today",
-						value: new Intl.NumberFormat("en-IN").format(
-							disbursedLoanDetailCountsToday.data || 0
-						),
+						value: formatINR(disbursedLoanDetailCountsToday.data),
 					}}
 					right1Data={{
 						label: "No. of Groups",
-						value: new Intl.NumberFormat("en-IN").format(
-							disbursedLoanDetailCountsMonth.noOfGroups || 0
-						),
+						value: formatNumber(disbursedLoanDetailCountsMonth.noOfGroups),
 					}}
 					right2Data={{
 						label: "No. of Groups",
-						value: new Intl.NumberFormat("en-IN").format(
-							disbursedLoanDetailCountsToday.data || 0
-						),
+						value: formatNumber(disbursedLoanDetailCountsToday.noOfGroups),
 					}}
 					leftColor="#DB2777"
 					rightColor="#334155"
@@ -582,27 +601,19 @@ export default function Dashboard() {
 					title="Loan Collected"
 					left1Data={{
 						label: "This Month",
-						value: new Intl.NumberFormat("en-IN").format(
-							collectedLoanDetailCountsMonth.data || 0
-						),
+						value: formatINR(collectedLoanDetailCountsMonth.data),
 					}}
 					left2Data={{
 						label: "Today",
-						value: new Intl.NumberFormat("en-IN").format(
-							collectedLoanDetailCountsToday.data || 0
-						),
+						value: formatINR(collectedLoanDetailCountsToday.data),
 					}}
 					right1Data={{
 						label: "No. of Groups",
-						value: new Intl.NumberFormat("en-IN").format(
-							collectedLoanDetailCountsMonth.noOfGroups || 0
-						),
+						value: formatNumber(collectedLoanDetailCountsMonth.noOfGroups),
 					}}
 					right2Data={{
 						label: "No. of Groups",
-						value: new Intl.NumberFormat("en-IN").format(
-							collectedLoanDetailCountsToday.data || 0
-						),
+						value: formatNumber(collectedLoanDetailCountsToday.noOfGroups),
 					}}
 					leftColor="#2563EB"
 					rightColor="#334155"
@@ -613,27 +624,19 @@ export default function Dashboard() {
 					title="Unapproved Transactions"
 					left1Data={{
 						label: "This Month",
-						value: new Intl.NumberFormat("en-IN").format(
-							unapprovedTxnsDetailCountsMonth.data || 0
-						),
+						value: formatINR(unapprovedTxnsDetailCountsMonth.data),
 					}}
 					left2Data={{
 						label: "Today",
-						value: new Intl.NumberFormat("en-IN").format(
-							unapprovedTxnsDetailCountsToday.data || 0
-						),
+						value: formatINR(unapprovedTxnsDetailCountsToday.data),
 					}}
 					right1Data={{
 						label: "No. of Groups",
-						value: new Intl.NumberFormat("en-IN").format(
-							unapprovedTxnsDetailCountsMonth.noOfGroups || 0
-						),
+						value: formatNumber(unapprovedTxnsDetailCountsMonth.noOfGroups),
 					}}
 					right2Data={{
 						label: "No. of Groups",
-						value: new Intl.NumberFormat("en-IN").format(
-							unapprovedTxnsDetailCountsToday.data || 0
-						),
+						value: formatNumber(unapprovedTxnsDetailCountsToday.noOfGroups),
 					}}
 					leftColor="#7C3AED"
 					rightColor="#334155"
@@ -661,25 +664,12 @@ export default function Dashboard() {
 				</div> */}
 			</div>
 
-			<div className="col-span-1 md:col-span-4 bg-white rounded-3xl shadow-md p-6">
+			{/* <div className="col-span-1 md:col-span-4 bg-white rounded-3xl shadow-md p-6">
 				<div className="flex justify-between items-center mb-4">
 					<h2 className="text-xl font-medium text-slate-800">
 						Loan Collection
 					</h2>
 					<div>
-						{/* {["Monthly", "Yearly"].map((option) => (
-							<button
-								key={option}
-								onClick={() => setView(option)}
-								className={`px-3 py-1 rounded-full text-sm ${
-									view === option
-										? "bg-teal-600 text-white"
-										: "bg-slate-100 text-slate-600"
-								}`}
-							>
-								{option}
-							</button>
-						))} */}
 						<TDInputTemplateBr
 							placeholder="Select Financial Year..."
 							type="text"
@@ -716,7 +706,7 @@ export default function Dashboard() {
 						/>
 					</BarChart>
 				</ResponsiveContainer>
-			</div>
+			</div> */}
 		</div>
 	)
 }
