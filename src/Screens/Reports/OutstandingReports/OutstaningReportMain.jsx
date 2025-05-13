@@ -739,7 +739,7 @@ function OutstaningReportMain() {
 							<DynamicTailwindTable
 								data={reportData}
 								pageSize={50}
-								columnTotal={[32, 37]}
+								columnTotal={[32, 35, 36, 37]}
 								dateTimeExceptionCols={[8, 29, 31]}
 								headersMap={memberwiseOutstandingHeader}
 							/>
@@ -751,7 +751,7 @@ function OutstaningReportMain() {
 							<DynamicTailwindTable
 								data={reportData}
 								pageSize={50}
-								columnTotal={[9, 12]}
+								columnTotal={[9, 10, 11, 12]}
 								headersMap={groupwiseOutstandingHeader}
 							/>
 						</>
@@ -762,7 +762,7 @@ function OutstaningReportMain() {
 							<DynamicTailwindTable
 								data={reportData}
 								pageSize={50}
-								columnTotal={[6, 9]}
+								columnTotal={[6, 7, 8, 9]}
 								headersMap={fundwiseOutstandingHeader}
 							/>
 						</>
@@ -773,7 +773,7 @@ function OutstaningReportMain() {
 							<DynamicTailwindTable
 								data={reportData}
 								pageSize={50}
-								columnTotal={[5, 8]}
+								columnTotal={[5, 6, 7, 8]}
 								headersMap={cowiseOutstandingHeader}
 							/>
 						</>
@@ -785,7 +785,7 @@ function OutstaningReportMain() {
 							<DynamicTailwindTable
 								data={reportData}
 								pageSize={50}
-								columnTotal={[2, 5]}
+								columnTotal={[2, 3, 4, 5]}
 								headersMap={branchwiseOutstandingHeader}
 							/>
 						</>

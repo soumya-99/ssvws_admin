@@ -33,20 +33,6 @@ const dummyUserList = [
 	{ emp_name: "Noah Scott", id: 15 },
 ]
 
-// const grtDataToday = [
-// 	{ label: "Pending", value: 1200, color: "bg-orange-300" },
-// 	{ label: "Sent to MIS", value: 450, color: "bg-blue-300" },
-// 	{ label: "Approved", value: 900, color: "bg-green-300" },
-// 	{ label: "Rejected", value: 350, color: "bg-red-300" },
-// ]
-
-// const grtDataMonth = [
-// 	{ label: "Pending", value: 5320, color: "bg-orange-300" },
-// 	{ label: "Sent to MIS", value: 1250, color: "bg-blue-300" },
-// 	{ label: "Approved", value: 3580, color: "bg-green-300" },
-// 	{ label: "Rejected", value: 481, color: "bg-red-300" },
-// ]
-
 const collectionMonthly = [
 	{ month: "Jan", disbursement: 300, recovery: 250 },
 	{ month: "Feb", disbursement: 350, recovery: 300 },
@@ -97,6 +83,29 @@ export default function Dashboard() {
 	const [activeGroupsNumber, setActiveGroupsNumber] = useState("")
 	const [activeUsersCount, setActiveUsersCount] = useState("")
 	const [activeUsers, setActiveUsers] = useState([])
+
+	const [disbursedLoanDetailCountsToday, setDisbursedLoanDetailCountsToday] =
+		useState({
+			data: "",
+			noOfGroups: "",
+		})
+	const [disbursedLoanDetailCountsMonth, setDisbursedLoanDetailCountsMonth] =
+		useState({
+			data: "",
+			noOfGroups: "",
+		})
+
+	const [collectedLoanDetailCountsToday, setCollectedLoanDetailCountsToday] =
+		useState({
+			data: "",
+			noOfGroups: "",
+		})
+	const [collectedLoanDetailCountsMonth, setCollectedLoanDetailCountsMonth] =
+		useState({
+			data: "",
+			noOfGroups: "",
+		})
+
 	const activeGrtData = grtPeriod === "Today" ? grtDataToday : grtDataMonth
 
 	const getBranchCodes = () => {
@@ -185,6 +194,78 @@ export default function Dashboard() {
 		}
 	}
 
+	const fetchLoanDisbursedDetailsToday = async () => {
+		setLoading(true)
+		try {
+			const creds = { flag: "Today", branch_code: getBranchCodes() }
+			const res = await axios.post(
+				`${url}/admin/dashboard_tot_loan_disbursed_dtls`,
+				creds
+			)
+			setDisbursedLoanDetailCountsToday({
+				data: res?.data?.data?.total_loan_disbursed,
+				noOfGroups: res?.data?.data?.total_grp_loan_disbursed,
+			})
+		} catch {
+		} finally {
+			setLoading(false)
+		}
+	}
+
+	const fetchLoanDisbursedDetailsThisMonth = async () => {
+		setLoading(true)
+		try {
+			const creds = { flag: "Month", branch_code: getBranchCodes() }
+			const res = await axios.post(
+				`${url}/admin/dashboard_tot_loan_disbursed_dtls`,
+				creds
+			)
+			setDisbursedLoanDetailCountsMonth({
+				data: res?.data?.data?.total_loan_disbursed,
+				noOfGroups: res?.data?.data?.total_grp_loan_disbursed,
+			})
+		} catch {
+		} finally {
+			setLoading(false)
+		}
+	}
+
+	const fetchLoanCollectedDetailsToday = async () => {
+		setLoading(true)
+		try {
+			const creds = { flag: "Today", branch_code: getBranchCodes() }
+			const res = await axios.post(
+				`${url}/admin/dashboard_tot_loan_recov_dtls`,
+				creds
+			)
+			setCollectedLoanDetailCountsToday({
+				data: res?.data?.data?.total_loan_recovery,
+				noOfGroups: res?.data?.data?.total_grp_loan_recovery,
+			})
+		} catch {
+		} finally {
+			setLoading(false)
+		}
+	}
+
+	const fetchLoanCollectedDetailsThisMonth = async () => {
+		setLoading(true)
+		try {
+			const creds = { flag: "Month", branch_code: getBranchCodes() }
+			const res = await axios.post(
+				`${url}/admin/dashboard_tot_loan_recov_dtls`,
+				creds
+			)
+			setCollectedLoanDetailCountsMonth({
+				data: res?.data?.data?.total_grp_loan_recovery,
+				noOfGroups: res?.data?.data?.total_grp_loan_recovery,
+			})
+		} catch {
+		} finally {
+			setLoading(false)
+		}
+	}
+
 	useEffect(() => {
 		fetchBranches()
 	}, [])
@@ -198,6 +279,10 @@ export default function Dashboard() {
 		if (branches.length) {
 			fetchActiveGroups()
 			fetchUserLoggedInDetails()
+			fetchLoanDisbursedDetailsToday()
+			fetchLoanDisbursedDetailsThisMonth()
+			fetchLoanCollectedDetailsToday()
+			fetchLoanCollectedDetailsThisMonth()
 		}
 	}, [choosenBranch, branches])
 
@@ -272,7 +357,7 @@ export default function Dashboard() {
 										className={`${item.color} h-4`}
 										style={{ clipPath: "inset(0 round 999px)" }}
 										initial={{ width: 0 }}
-										animate={{ width: `${(item.value / 500) * 100}%` }}
+										animate={{ width: `${(item.value / 200) * 100}%` }}
 										transition={{
 											duration: 0.6,
 											ease: [0.7, 0.0, 0.3, 1.0],
@@ -433,22 +518,64 @@ export default function Dashboard() {
 			<div className="grid grid-cols-1 md:grid-cols-6 gap-6">
 				<DashboardCard
 					title="Loan Disbursed"
-					left1Data={{ label: "This Month", value: "1,920" }}
-					left2Data={{ label: "Today", value: "22" }}
-					right1Data={{ label: "No. of Groups", value: "35" }}
-					right2Data={{ label: "No. of Groups", value: "50" }}
+					left1Data={{
+						label: "This Month",
+						value: new Intl.NumberFormat("en-IN").format(
+							disbursedLoanDetailCountsMonth.data || 0
+						),
+					}}
+					left2Data={{
+						label: "Today",
+						value: new Intl.NumberFormat("en-IN").format(
+							disbursedLoanDetailCountsToday.data || 0
+						),
+					}}
+					right1Data={{
+						label: "No. of Groups",
+						value: new Intl.NumberFormat("en-IN").format(
+							disbursedLoanDetailCountsMonth.noOfGroups || 0
+						),
+					}}
+					right2Data={{
+						label: "No. of Groups",
+						value: new Intl.NumberFormat("en-IN").format(
+							disbursedLoanDetailCountsToday.data || 0
+						),
+					}}
 					leftColor="#DB2777"
 					rightColor="#334155"
+					loading={loading}
 				/>
 
 				<DashboardCard
 					title="Loan Collected"
-					left1Data={{ label: "This Month", value: "1,920" }}
-					left2Data={{ label: "Today", value: "22" }}
-					right1Data={{ label: "No. of Groups", value: "35" }}
-					right2Data={{ label: "No. of Groups", value: "50" }}
+					left1Data={{
+						label: "This Month",
+						value: new Intl.NumberFormat("en-IN").format(
+							collectedLoanDetailCountsMonth.data || 0
+						),
+					}}
+					left2Data={{
+						label: "Today",
+						value: new Intl.NumberFormat("en-IN").format(
+							collectedLoanDetailCountsToday.data || 0
+						),
+					}}
+					right1Data={{
+						label: "No. of Groups",
+						value: new Intl.NumberFormat("en-IN").format(
+							collectedLoanDetailCountsMonth.noOfGroups || 0
+						),
+					}}
+					right2Data={{
+						label: "No. of Groups",
+						value: new Intl.NumberFormat("en-IN").format(
+							collectedLoanDetailCountsToday.data || 0
+						),
+					}}
 					leftColor="#2563EB"
 					rightColor="#334155"
+					loading={loading}
 				/>
 
 				<DashboardCard
