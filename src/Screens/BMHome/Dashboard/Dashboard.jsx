@@ -14,6 +14,7 @@ import TDInputTemplateBr from "../../../Components/TDInputTemplateBr"
 import DashboardCard from "../../../Components/Dashboard/DashboardCard"
 import { url } from "../../../Address/BaseUrl"
 import { Spin } from "antd"
+// import { Squircle } from "@squircle-js/react"
 
 const formatINR = (num) =>
 	new Intl.NumberFormat("en-IN", {
@@ -53,6 +54,7 @@ export default function Dashboard() {
 	const branchId = userDetails?.brn_code
 
 	const [loading, setLoading] = useState(() => false)
+	const [loadingLong, setLoadingLong] = useState(() => false)
 	const [branches, setBranches] = useState(() => [])
 	const [choosenBranch, setChoosenBranch] = useState(() =>
 		+branchId === 100 ? "100" : branchId
@@ -72,7 +74,8 @@ export default function Dashboard() {
 		{ label: "Rejected", value: 0, color: "bg-red-300" },
 	])
 	const [grtDataMonth, setGrtDataMonth] = useState([...grtDataToday])
-	const [activeGroupsNumber, setActiveGroupsNumber] = useState("")
+	const [activeGroupsCount, setActiveGroupsCount] = useState("")
+	const [totalGroupsCount, setTotalGroupsCount] = useState("")
 	const [activeUsersCount, setActiveUsersCount] = useState("")
 	const [activeUsers, setActiveUsers] = useState([])
 
@@ -98,16 +101,16 @@ export default function Dashboard() {
 			noOfGroups: "",
 		})
 
-	const [unapprovedTxnsDetailCountsToday, setUnapprovedTxnsDetailCountsToday] =
+	const [unapprovedTxnsDetailCountsTotal, setUnapprovedTxnsDetailCountsTotal] =
 		useState({
 			data: "",
 			noOfGroups: "",
 		})
-	const [unapprovedTxnsDetailCountsMonth, setUnapprovedTxnsDetailCountsMonth] =
-		useState({
-			data: "",
-			noOfGroups: "",
-		})
+	// const [unapprovedTxnsDetailCountsMonth, setUnapprovedTxnsDetailCountsMonth] =
+	// 	useState({
+	// 		data: "",
+	// 		noOfGroups: "",
+	// 	})
 
 	const activeGrtData = grtPeriod === "Today" ? grtDataToday : grtDataMonth
 
@@ -174,7 +177,8 @@ export default function Dashboard() {
 		try {
 			const creds = { branch_code: getBranchCodes() }
 			const res = await axios.post(`${url}/admin/dashboard_active_group`, creds)
-			setActiveGroupsNumber(res.data.data.tot_active_grp || 0)
+			setActiveGroupsCount(res.data.data.tot_active_grp || 0)
+			setTotalGroupsCount(res.data.data.tot_group)
 		} catch {
 		} finally {
 			setLoading(false)
@@ -269,41 +273,41 @@ export default function Dashboard() {
 		}
 	}
 
-	const fetchUnapprovedTxnsToday = async () => {
-		setLoading(true)
+	const fetchUnapprovedTxnsTotal = async () => {
+		setLoadingLong(true)
 		try {
-			const creds = { flag: "Today", branch_code: getBranchCodes() }
+			const creds = { branch_code: getBranchCodes() }
 			const res = await axios.post(
 				`${url}/admin/dashboard_tot_loan_unapprove_dtls`,
 				creds
 			)
-			setUnapprovedTxnsDetailCountsToday({
+			setUnapprovedTxnsDetailCountsTotal({
 				data: res?.data?.data?.total_loan_unapprove,
 				noOfGroups: res?.data?.data?.total_group_unapprove,
 			})
-		} catch {
+		} catch (err) {
 		} finally {
-			setLoading(false)
+			setLoadingLong(false)
 		}
 	}
 
-	const fetchUnapprovedTxnsMonth = async () => {
-		setLoading(true)
-		try {
-			const creds = { flag: "Month", branch_code: getBranchCodes() }
-			const res = await axios.post(
-				`${url}/admin/dashboard_tot_loan_unapprove_dtls`,
-				creds
-			)
-			setUnapprovedTxnsDetailCountsMonth({
-				data: res?.data?.data?.total_loan_unapprove,
-				noOfGroups: res?.data?.data?.total_group_unapprove,
-			})
-		} catch {
-		} finally {
-			setLoading(false)
-		}
-	}
+	// const fetchUnapprovedTxnsMonth = async () => {
+	// 	setLoading(true)
+	// 	try {
+	// 		const creds = { flag: "Month", branch_code: getBranchCodes() }
+	// 		const res = await axios.post(
+	// 			`${url}/admin/dashboard_tot_loan_unapprove_dtls`,
+	// 			creds
+	// 		)
+	// 		setUnapprovedTxnsDetailCountsMonth({
+	// 			data: res?.data?.data?.total_loan_unapprove,
+	// 			noOfGroups: res?.data?.data?.total_group_unapprove,
+	// 		})
+	// 	} catch {
+	// 	} finally {
+	// 		setLoading(false)
+	// 	}
+	// }
 
 	const fetchDateOfOperation = async () => {
 		setLoading(true)
@@ -334,8 +338,8 @@ export default function Dashboard() {
 			fetchLoanDisbursedDetailsThisMonth()
 			fetchLoanCollectedDetailsToday()
 			fetchLoanCollectedDetailsThisMonth()
-			fetchUnapprovedTxnsToday()
-			fetchUnapprovedTxnsMonth()
+			fetchUnapprovedTxnsTotal()
+			// fetchUnapprovedTxnsMonth()
 			fetchDateOfOperation()
 		}
 	}, [choosenBranch, branches])
@@ -450,11 +454,48 @@ export default function Dashboard() {
 					</div>
 					<Spin spinning={loading}>
 						<span className="text-3xl font-bold text-slate-800">
-							{new Intl.NumberFormat("en-IN").format(activeGroupsNumber || 0)}
+							{formatNumber(activeGroupsCount)}
 						</span>
 					</Spin>
-					{/* <span className="text-sm text-slate-600 mt-1">Group count</span> */}
+					<span className="text-sm text-slate-600 mt-1">
+						Total Groups • {formatNumber(totalGroupsCount)}
+					</span>
 				</div>
+
+				{/* <Squircle
+					cornerRadius={50}
+					cornerSmoothing={1}
+					className="bg-slate-700 p-6 flex flex-col items-center justify-center group"
+				>
+					<h3 className="text-lg font-medium text-slate-50">Active Groups</h3>
+
+					<div className="bg-green-100 rounded-full p-4 my-4">
+						<svg
+							xmlns="http://www.w3.org/2000/svg"
+							className="h-6 w-6 text-green-600 arrow"
+							fill="none"
+							viewBox="0 0 24 24"
+							stroke="currentColor"
+						>
+							<path
+								strokeLinecap="round"
+								strokeLinejoin="round"
+								strokeWidth={2}
+								d="M5 10l7-7m0 0l7 7m-7-7v18"
+							/>
+						</svg>
+					</div>
+
+					<Spin spinning={loading}>
+						<span className="text-3xl font-bold text-slate-50">
+							{formatNumber(activeGroupsCount)}
+						</span>
+					</Spin>
+
+					<span className="text-sm text-slate-100 mt-1">
+						Total Groups • {formatNumber(totalGroupsCount)}
+					</span>
+				</Squircle> */}
 
 				{/* <div className="bg-white rounded-3xl shadow-md p-6 flex flex-col items-center justify-center">
 					<h3 className="text-lg font-medium text-slate-800">User Logged in</h3>
@@ -620,7 +661,7 @@ export default function Dashboard() {
 					loading={loading}
 				/>
 
-				<DashboardCard
+				{/* <DashboardCard
 					title="Unapproved Transactions"
 					left1Data={{
 						label: "This Month",
@@ -641,27 +682,31 @@ export default function Dashboard() {
 					leftColor="#7C3AED"
 					rightColor="#334155"
 					loading={loading}
-				/>
-				{/* <div className="md:col-span-2 bg-white rounded-3xl shadow-md p-6 flex flex-col items-center justify-center">
-					<h3 className="text-lg font-medium bg-green-100 text-green-800 px-5 py-2 rounded-full">
-						Loan Approval Status
+				/> */}
+				<div className="md:col-span-2 bg-white rounded-3xl shadow-md p-6 flex flex-col items-center justify-center">
+					<h3 className="text-lg font-medium bg-purple-100 text-purple-900 px-5 py-2 rounded-full">
+						Unapproved Transactions
 					</h3>
 					<div className="flex justify-between items-center w-full px-14 py-5 rounded-3xl bg-white">
 						<div className="flex flex-col items-center gap-2">
-							<span className="text-4xl font-bold text-emerald-600 mt-4">
-								1,240
-							</span>
-							<span className="text-sm text-slate-600">Monthly</span>
+							<Spin spinning={loadingLong}>
+								<span className="text-3xl font-bold text-emerald-600 mt-4">
+									{formatINR(unapprovedTxnsDetailCountsTotal.data)}
+								</span>
+							</Spin>
+							<span className="text-sm text-slate-600">Unapproved</span>
 						</div>
 						<div className="h-16 w-[2px] rounded bg-slate-300" />
 						<div className="flex flex-col items-center gap-2">
-							<span className="text-4xl font-bold text-sky-600 mt-4">
-								1,240
-							</span>
-							<span className="text-sm text-slate-600">Daily</span>
+							<Spin spinning={loadingLong}>
+								<span className="text-3xl font-bold text-blue-600 mt-4">
+									{formatNumber(unapprovedTxnsDetailCountsTotal.noOfGroups)}
+								</span>
+							</Spin>
+							<span className="text-sm text-slate-600">Groups</span>
 						</div>
 					</div>
-				</div> */}
+				</div>
 			</div>
 
 			{/* <div className="col-span-1 md:col-span-4 bg-white rounded-3xl shadow-md p-6">
