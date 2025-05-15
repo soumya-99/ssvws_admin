@@ -424,10 +424,10 @@ function DisbursmentForm() {
 			// .post(`${url}/admin/fetch_loan_application_dtls`, creds)
 			.post(`${url}/admin/fetch_appl_dtls_via_grp`, creds)
 			.then((res) => {
-				console.log(
-					"KKKKKKKKkkkkk8888KKKKKkkkkKKKK",
-					res?.data?.msg[0]?.mem_dt_grp
-				)
+				// console.log(
+				// 	"KKKKKKKKkkkkk8888KKKKKkkkkKKKK",
+				// 	res?.data?.msg[0]?.mem_dt_grp
+				// )
 				setMembers(res?.data?.msg[0]?.mem_dt_grp)
 				membersForDisb.length = 0
 				var count = 0
@@ -447,6 +447,10 @@ function DisbursmentForm() {
 				count = 0
 				setMembersForDisb(membersForDisb)
 				console.log(members)
+				console.log(
+					"fetchSearchedApplication ===========>>>>>>>>>>>>>>>>>",
+					res?.data
+				)
 				setPersonalDetailsData({
 					// b_memCode: res?.data?.msg[0]?.member_code,
 					b_clientName: res?.data?.msg[0]?.client_name,
@@ -461,16 +465,17 @@ function DisbursmentForm() {
 					// b_formNo: res?.data?.msg[0]?.form_no,
 					// b_grtApproveDate: res?.data?.msg[0]?.grt_approve_date,
 					// b_branch: res?.data?.msg[0]?.branch_name,
-					b_purpose: res?.data?.msg[0]?.mem_dt_grp[0].purpose_id,
-					b_purposeId: res?.data?.msg[0]?.mem_dt_grp[0].loan_purpose,
-					b_subPurpose: res?.data?.msg[0]?.mem_dt_grp[0].sub_pupose,
-					b_subPurposeId: res?.data?.msg[0]?.mem_dt_grp[0].sub_pupose,
+					b_purpose: res?.data?.msg[0]?.mem_dt_grp[0]?.purpose_id,
+					b_purposeId: res?.data?.msg[0]?.mem_dt_grp[0]?.loan_purpose,
+					b_subPurpose: res?.data?.msg[0]?.mem_dt_grp[0]?.sub_pupose,
+					b_subPurposeId: res?.data?.msg[0]?.mem_dt_grp[0]?.sub_pupose,
 					// b_applicationDate: res?.data?.msg[0]?.application_date,
 					// b_appliedAmt: res?.data?.msg[0]?.applied_amt,
 				})
 			})
 			.catch((err) => {
-				Message("error", "Some error occurred while searching...")
+				// console.log("fetchSearchedApplication ERRRRR", err)
+				Message("error", `Some error occurred while searching... ${err}`)
 			})
 		setLoading(false)
 	}

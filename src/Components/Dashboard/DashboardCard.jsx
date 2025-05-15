@@ -15,7 +15,7 @@ export default function DashboardCard({
 	return (
 		<div className="col-span-1 md:col-span-2 bg-white rounded-2xl shadow-md p-6">
 			<h2 className="text-xl font-medium text-slate-700">{title}</h2>
-			<div className="grid grid-cols-2 gap-4 mt-4 text-slate-700">
+			<div className="grid grid-cols-3 gap-4 mt-4 place-items-center text-slate-700">
 				<Spin spinning={loading}>
 					<div>
 						<p className="text-sm">{left1Data.label}</p>
@@ -24,6 +24,7 @@ export default function DashboardCard({
 						</p>
 					</div>
 				</Spin>
+				<div className="h-[100%] w-[2px] rounded bg-slate-200" />
 				<Spin spinning={loading}>
 					<div>
 						<p className="text-sm">{right1Data.label}</p>
@@ -32,6 +33,7 @@ export default function DashboardCard({
 						</p>
 					</div>
 				</Spin>
+				<div className="h-[2px] w-[100%] rounded bg-slate-200 col-span-3" />
 				<Spin spinning={loading}>
 					<div>
 						<p className="text-sm">{left2Data.label}</p>
@@ -40,6 +42,7 @@ export default function DashboardCard({
 						</p>
 					</div>
 				</Spin>
+				<div className="h-[100%] w-[2px] rounded bg-slate-200" />
 				<Spin spinning={loading}>
 					<div>
 						<p className="text-sm">{right2Data.label}</p>
