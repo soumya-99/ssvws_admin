@@ -27,6 +27,7 @@ import {
 	memberwiseDemandReportHeader,
 } from "../../../Utils/Reports/headerMap"
 import { exportToExcel } from "../../../Utils/exportToExcel"
+import { printTableReport } from "../../../Utils/printTableReport"
 
 // const { RangePicker } = DatePicker
 // const dateFormat = "YYYY/MM/DD"
@@ -1222,12 +1223,18 @@ function DemandReportsMain() {
 							<Tooltip title="Print">
 								<button
 									onClick={() =>
-										printTableRegular(
-											reportData,
-											"Demand Report",
-											metadataDtls,
-											fromDate,
-											toDate
+										// printTableRegular(
+										// 	reportData,
+										// 	"Demand Report",
+										// 	metadataDtls,
+										// 	fromDate,
+										// 	toDate
+										// )
+										printTableReport(
+											dataToExport,
+											headersToExport,
+											fileName?.split(",")[0],
+											[0, 10, 11, 16]
 										)
 									}
 									className="mt-5 justify-center items-center rounded-full text-pink-600"

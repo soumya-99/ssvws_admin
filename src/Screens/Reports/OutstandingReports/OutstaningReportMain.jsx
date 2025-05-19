@@ -27,6 +27,7 @@ import {
 } from "../../../Utils/Reports/headerMap"
 import Select from "react-select"
 import { exportToExcel } from "../../../Utils/exportToExcel"
+import { printTableReport } from "../../../Utils/printTableReport"
 
 const options = [
 	{
@@ -811,18 +812,24 @@ function OutstaningReportMain() {
 							<Tooltip title="Print">
 								<button
 									onClick={() =>
-										printTableOutstandingReport(
-											reportData,
-											"Outstanding Report",
-											searchType,
-											(userDetails?.id === 3 ||
-												userDetails?.id === 4 ||
-												userDetails?.id === 11) &&
-												userDetails?.brn_code == 100
-												? selectedOptions?.map((item, _) => `${item?.label}, `)
-												: userDetails?.branch_name,
-											fromDate,
-											toDate
+										// printTableOutstandingReport(
+										// 	reportData,
+										// 	"Outstanding Report",
+										// 	searchType,
+										// 	(userDetails?.id === 3 ||
+										// 		userDetails?.id === 4 ||
+										// 		userDetails?.id === 11) &&
+										// 		userDetails?.brn_code == 100
+										// 		? selectedOptions?.map((item, _) => `${item?.label}, `)
+										// 		: userDetails?.branch_name,
+										// 	fromDate,
+										// 	toDate
+										// )
+										printTableReport(
+											dataToExport,
+											headersToExport,
+											fileName?.split(",")[0],
+											[29, 31]
 										)
 									}
 									className="mt-5 justify-center items-center rounded-full text-pink-600 disabled:text-pink-300"

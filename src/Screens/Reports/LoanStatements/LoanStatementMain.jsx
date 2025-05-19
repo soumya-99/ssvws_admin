@@ -24,6 +24,7 @@ import {
 } from "../../../Utils/Reports/headerMap"
 import { exportToExcel } from "../../../Utils/exportToExcel"
 import DynamicTailwindTable from "../../../Components/Reports/DynamicTailwindTable"
+import { printTableReport } from "../../../Utils/printTableReport"
 
 // const { RangePicker } = DatePicker
 // const dateFormat = "YYYY/MM/DD"
@@ -628,16 +629,24 @@ function LoanStatementMain() {
 										/>
 									</button>
 								</Tooltip>
-								{/* <Tooltip title="Print">
+								<Tooltip title="Print">
 									<button
+										// onClick={() =>
+										// 	printTableLoanStatement(
+										// 		reportTxnData,
+										// 		"Loan Statement",
+										// 		searchType,
+										// 		metadataDtls,
+										// 		fromDate,
+										// 		toDate
+										// 	)
+										// }
 										onClick={() =>
-											printTableLoanStatement(
-												reportTxnData,
-												"Loan Statement",
-												searchType,
-												metadataDtls,
-												fromDate,
-												toDate
+											printTableReport(
+												dataToExport,
+												headersToExport,
+												fileName?.split(",")[0],
+												[0]
 											)
 										}
 										className="mt-5 justify-center items-center rounded-full text-pink-600"
@@ -648,7 +657,7 @@ function LoanStatementMain() {
 											}}
 										/>
 									</button>
-								</Tooltip> */}
+								</Tooltip>
 							</div>
 						)}
 

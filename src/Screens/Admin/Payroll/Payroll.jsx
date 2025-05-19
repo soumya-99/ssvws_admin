@@ -25,6 +25,7 @@ import {
 import DynamicTailwindAccordion from "../../../Components/Reports/DynamicTailwindAccordion"
 import DynamicTailwindTable from "../../../Components/Reports/DynamicTailwindTable"
 import Radiobtn from "../../../Components/Radiobtn"
+import { printTableReport } from "../../../Utils/printTableReport"
 
 // const { RangePicker } = DatePicker
 // const dateFormat = "YYYY/MM/DD"
@@ -742,16 +743,22 @@ function Payroll({ branchCode = 100 }) {
 									/>
 								</button>
 							</Tooltip>
-							{/* <Tooltip title="Print">
+							<Tooltip title="Print">
 								<button
 									onClick={() => {
-										console.log(metadataDtls)
-										printTableRegular(
-											reportData,
-											"Attendance Report",
-											metadataDtls,
-											fromDate,
-											toDate
+										// console.log(metadataDtls)
+										// printTableRegular(
+										// 	reportData,
+										// 	"Attendance Report",
+										// 	metadataDtls,
+										// 	fromDate,
+										// 	toDate
+										// )
+										printTableReport(
+											dataToExport,
+											headersToExport,
+											fileName?.split(",")[0],
+											[0]
 										)
 									}}
 									className="mt-5 justify-center items-center rounded-full text-pink-600"
@@ -762,7 +769,7 @@ function Payroll({ branchCode = 100 }) {
 										}}
 									/>
 								</button>
-							</Tooltip> */}
+							</Tooltip>
 						</div>
 					)}
 				</main>

@@ -29,6 +29,7 @@ import {
 } from "../../../Utils/Reports/headerMap"
 import Select from "react-select"
 import { exportToExcel } from "../../../Utils/exportToExcel"
+import { printTableReport } from "../../../Utils/printTableReport"
 
 const options = [
 	{
@@ -795,14 +796,20 @@ function OverdueReport() {
 							<Tooltip title="Print">
 								<button
 									onClick={() =>
-										printTableLoanTransactions(
-											reportData,
-											"Loan Transaction",
-											searchType,
-											searchType2,
-											metadataDtls,
-											fromDate,
-											toDate
+										// printTableLoanTransactions(
+										// 	reportData,
+										// 	"Loan Transaction",
+										// 	searchType,
+										// 	searchType2,
+										// 	metadataDtls,
+										// 	fromDate,
+										// 	toDate
+										// )
+										printTableReport(
+											dataToExport,
+											headersToExport,
+											fileName?.split(",")[0],
+											[0, 1, 9, 11]
 										)
 									}
 									className="mt-5 justify-center items-center rounded-full text-pink-600"
