@@ -3,7 +3,7 @@
 /core
 /nextgenvenv
 # package-lock.json
-*.html
+# *.html
 *.zip
 .env*
 *.sql
