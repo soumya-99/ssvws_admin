@@ -2,7 +2,7 @@
 /assets
 /core
 /nextgenvenv
-package-lock.json
+# package-lock.json
 *.html
 *.zip
 .env*
