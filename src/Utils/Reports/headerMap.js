@@ -100,7 +100,6 @@ const disbursementDetailsHeader = {
 	disburse_amt: "Disburse Amt",
 	tot_emi: "Total EMI",
 	recovery_day: "Recovery Day",
-	period_mode: "Period Mode",
 	curr_outstanding: "Current Outstanding",
 }
 
@@ -367,7 +366,7 @@ const overdueBranchReportHeader = {
 	branch_name: "Branch Name",
 	disb_amt: "Disbursement Amount",
 	od_amt: "Overdue Amount",
-	outstanding: "Outstanding"
+	outstanding: "Outstanding",
 }
 
 const transactionFieldNames = {
