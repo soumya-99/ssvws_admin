@@ -419,7 +419,7 @@ export default function Dashboard() {
 										className={`${item.color} h-4`}
 										style={{ clipPath: "inset(0 round 999px)" }}
 										initial={{ width: 0 }}
-										animate={{ width: `${(item.value / 200) * 100}%` }}
+										animate={{ width: `${(item.value / 300) * 100}%` }}
 										transition={{
 											duration: 0.6,
 											ease: [0.7, 0.0, 0.3, 1.0],
