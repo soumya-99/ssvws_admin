@@ -114,7 +114,7 @@ const branchwiseOutstandingHeader = {
 
 const groupwiseDemandVsCollectionHeader = {
 	demand_date: "Demand Date",
-	collec_between: "Collection Between",
+	"collec between": "Collection Between",
 	branch_code: "Branch Code",
 	branch_name: "Branch Name",
 	group_code: "Group Code",
@@ -126,6 +126,7 @@ const groupwiseDemandVsCollectionHeader = {
 	curr_roi: "Current ROI",
 	loan_period: "Loan Period",
 	period_mode: "Period Mode",
+	recovery_day: "Recovery Day",
 	instl_start_dt: "Installment Start Date",
 	instl_end_dt: "Loan End Date",
 	tot_emi: "Total EMI",
@@ -144,6 +145,7 @@ const cowiseDemandVsCollectionHeader = {
 	co_id: "CO ID",
 	emp_name: "CO Name",
 	period_mode: "Period Mode",
+	recovery_day: "Recovery Day",
 	tot_emi: "Total EMI",
 	coll_amt: "Collection Amount",
 	demand_after_collection: "Demand After Collection",
@@ -167,6 +169,7 @@ const memberwiseDemandVsCollectionHeader = {
 	curr_roi: "Current ROI",
 	loan_period: "Loan Period",
 	period_mode: "Period Mode",
+	recovery_day: "Recovery Day",
 	instl_start_dt: "Installment Start Date",
 	instl_end_dt: "Loan End Date",
 	tot_emi: "Total EMI",
@@ -198,6 +201,7 @@ const fundwiseDemandVsCollectionHeader = {
 	fund_id: "Fund ID",
 	fund_name: "Fund Name",
 	period_mode: "Period Mode",
+	recovery_day: "Recovery Day",
 	coll_amt: "Collection Amount",
 	demand_after_collection: "Demand After Collection",
 	curr_outstanding: "Current Outstanding",
@@ -537,6 +541,20 @@ const branchwiseTxnReportHeader = {
 	curr_balance: "Current Balance",
 }
 
+const txnDetailsHeader = {
+	payment_date: "Payment Date",
+	payment_id: "Payment ID",
+	particulars: "Particulars",
+	credit: "Credit",
+	debit: "Debit",
+	prn_bal: "Principal Balance",
+	intt_balance: "Interest Balance",
+	outstanding: "Outstanding",
+	tr_type: "Transaction Type",
+	tr_mode: "Transaction Mode",
+	status: "Status",
+}
+
 export {
 	fundwiseOutstandingHeader,
 	cowiseOutstandingHeader,
@@ -570,4 +588,5 @@ export {
 	memberwiseDemandVsCollectionHeader,
 	branchwiseDemandVsCollectionHeader,
 	fundwiseDemandVsCollectionHeader,
+	txnDetailsHeader,
 }

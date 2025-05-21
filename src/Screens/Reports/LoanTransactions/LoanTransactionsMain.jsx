@@ -31,6 +31,10 @@ import { printTableReport } from "../../../Utils/printTableReport"
 
 const options = [
 	{
+		label: "Both",
+		value: "B",
+	},
+	{
 		label: "Disbursement",
 		value: "D",
 	},
@@ -67,7 +71,7 @@ function LoanTransactionsMain() {
 	const userDetails = JSON.parse(localStorage.getItem("user_details")) || ""
 	const [loading, setLoading] = useState(false)
 
-	const [searchType, setSearchType] = useState(() => "D")
+	const [searchType, setSearchType] = useState(() => "B")
 	const [searchType2, setSearchType2] = useState(() => "G")
 
 	const [fromDate, setFromDate] = useState()
@@ -706,7 +710,7 @@ function LoanTransactionsMain() {
 							<DynamicTailwindTable
 								data={reportData}
 								pageSize={50}
-								columnTotal={[15]}
+								columnTotal={[15, 16, 17]}
 								// colRemove={[13, 14]}
 								headersMap={txnMembHeader}
 								dateTimeExceptionCols={[0]}
@@ -720,7 +724,7 @@ function LoanTransactionsMain() {
 							<DynamicTailwindTable
 								data={reportData}
 								pageSize={50}
-								columnTotal={[10]}
+								columnTotal={[10, 11, 12]}
 								dateTimeExceptionCols={[0]}
 								headersMap={txnGrpHeader}
 							/>
@@ -733,7 +737,7 @@ function LoanTransactionsMain() {
 							<DynamicTailwindTable
 								data={reportData}
 								pageSize={50}
-								columnTotal={[12]}
+								columnTotal={[12, 13, 14]}
 								dateTimeExceptionCols={[0]}
 								headersMap={txnFundHeader}
 							/>
@@ -746,7 +750,7 @@ function LoanTransactionsMain() {
 							<DynamicTailwindTable
 								data={reportData}
 								pageSize={50}
-								columnTotal={[9]}
+								columnTotal={[9, 10, 11]}
 								dateTimeExceptionCols={[0]}
 								headersMap={txnCoHeader}
 							/>
@@ -759,7 +763,7 @@ function LoanTransactionsMain() {
 							<DynamicTailwindTable
 								data={reportData}
 								pageSize={50}
-								columnTotal={[2]}
+								columnTotal={[2, 3, 4]}
 								headersMap={branchwiseTxnReportHeader}
 							/>
 						</>

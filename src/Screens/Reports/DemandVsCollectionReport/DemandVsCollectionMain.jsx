@@ -415,16 +415,18 @@ function DemandVsCollectionMain() {
 	const handleFetchGroupwiseDayReport = async () => {
 		setLoading(true)
 		const creds = {
-			demand_date: fetchedReportDate,
+			// demand_date: fetchedReportDate,
+			send_year: choosenYear,
+			send_month: choosenMonth,
 			period_mode: searchType2,
 			from_day: fromDay,
 			to_day: toDay,
 		}
 		await axios
-			.post(`${url}/filter_dayawise_dmd_report_groupwise`, creds)
+			.post(`${url}/filter_dayawise_coll_report_groupwise`, creds)
 			.then((res) => {
 				console.log("RESSSSS======>>>>", res?.data)
-				setReportData(res?.data?.groupwise_demand_data_day?.msg)
+				setReportData(res?.data?.groupwise_demand_collec_data_day?.msg)
 			})
 			.catch((err) => {
 				console.log("ERRRR>>>", err)
@@ -435,16 +437,18 @@ function DemandVsCollectionMain() {
 	const handleFetchFundwiseDayReport = async () => {
 		setLoading(true)
 		const creds = {
-			demand_date: fetchedReportDate,
+			// demand_date: fetchedReportDate,
+			send_year: choosenYear,
+			send_month: choosenMonth,
 			period_mode: searchType2,
 			from_day: fromDay,
 			to_day: toDay,
 		}
 		await axios
-			.post(`${url}/filter_dayawise_dmd_report_fundwise`, creds)
+			.post(`${url}/filter_dayawise_coll_report_fundwise`, creds)
 			.then((res) => {
 				console.log("RESSSSS======>>>>", res?.data)
-				setReportData(res?.data?.fundwise_demand_data_day?.msg)
+				setReportData(res?.data?.fund_demand_collec_data_day?.msg)
 			})
 			.catch((err) => {
 				console.log("ERRRR>>>", err)
@@ -455,16 +459,18 @@ function DemandVsCollectionMain() {
 	const handleFetchCOwiseDayReport = async () => {
 		setLoading(true)
 		const creds = {
-			demand_date: fetchedReportDate,
+			// demand_date: fetchedReportDate,
+			send_year: choosenYear,
+			send_month: choosenMonth,
 			period_mode: searchType2,
 			from_day: fromDay,
 			to_day: toDay,
 		}
 		await axios
-			.post(`${url}/filter_dayawise_dmd_report_cowise`, creds)
+			.post(`${url}/filter_dayawise_coll_report_cowise`, creds)
 			.then((res) => {
 				console.log("RESSSSS======>>>>", res?.data)
-				setReportData(res?.data?.cowise_demand_data_day?.msg)
+				setReportData(res?.data?.co_demand_collec_data_day?.msg)
 			})
 			.catch((err) => {
 				console.log("ERRRR>>>", err)
@@ -475,16 +481,18 @@ function DemandVsCollectionMain() {
 	const handleFetchMemberwiseDayReport = async () => {
 		setLoading(true)
 		const creds = {
-			demand_date: fetchedReportDate,
+			// demand_date: fetchedReportDate,
+			send_year: choosenYear,
+			send_month: choosenMonth,
 			period_mode: searchType2,
 			from_day: fromDay,
 			to_day: toDay,
 		}
 		await axios
-			.post(`${url}/filter_dayawise_dmd_report_membwise`, creds)
+			.post(`${url}/filter_dayawise_coll_report_membwise`, creds)
 			.then((res) => {
 				console.log("RESSSSS======>>>>", res?.data)
-				setReportData(res?.data?.memberwise_demand_data_day?.msg)
+				setReportData(res?.data?.member_demand_collec_data_day?.msg)
 			})
 			.catch((err) => {
 				console.log("ERRRR>>>", err)
@@ -996,7 +1004,7 @@ function DemandVsCollectionMain() {
 						</div>
 					)}
 
-					{/* {reportData?.length > 0 && (
+					{reportData?.length > 0 && searchType !== "B" && (
 						<div>
 							<div className="text-xl -mb-4 text-slate-700 font-bold">
 								Daywise
@@ -1056,8 +1064,7 @@ function DemandVsCollectionMain() {
 									<button
 										className={`inline-flex items-center px-4 py-2 mt-0 ml-0 sm:mt-0 text-sm font-small text-center text-white border hover:border-green-600 border-teal-500 bg-teal-500 transition ease-in-out hover:bg-green-600 duration-300 rounded-full  dark:focus:ring-primary-900`}
 										onClick={() => {
-											// handleSubmitDaywise()
-											return null
+											handleSubmitDaywise()
 										}}
 										disabled={!isValidRange}
 									>
@@ -1066,7 +1073,7 @@ function DemandVsCollectionMain() {
 								</div>
 							</div>
 						</div>
-					)} */}
+					)}
 
 					{/* "Groupwise" */}
 
@@ -1075,8 +1082,8 @@ function DemandVsCollectionMain() {
 							<DynamicTailwindTable
 								data={reportData}
 								pageSize={50}
-								columnTotal={[9, 16, 17]}
-								colRemove={[13]}
+								columnTotal={[9, 16, 17, 18, 19]}
+								// colRemove={[13]}
 								dateTimeExceptionCols={[8, 13, 14]}
 								headersMap={groupwiseDemandVsCollectionHeader}
 							/>
@@ -1090,7 +1097,7 @@ function DemandVsCollectionMain() {
 							<DynamicTailwindTable
 								data={reportData}
 								pageSize={50}
-								columnTotal={[11, 12]}
+								columnTotal={[11, 12, 13, 14]}
 								// dateTimeExceptionCols={[8]}
 								headersMap={fundwiseDemandVsCollectionHeader}
 							/>
@@ -1104,7 +1111,7 @@ function DemandVsCollectionMain() {
 							<DynamicTailwindTable
 								data={reportData}
 								pageSize={50}
-								columnTotal={[10, 11]}
+								columnTotal={[10, 11, 12, 13]}
 								// dateTimeExceptionCols={[8]}
 								headersMap={cowiseDemandVsCollectionHeader}
 							/>
@@ -1118,9 +1125,9 @@ function DemandVsCollectionMain() {
 							<DynamicTailwindTable
 								data={reportData}
 								pageSize={50}
-								columnTotal={[12, 19, 20]}
-								dateTimeExceptionCols={[11, 16, 17]}
-								colRemove={[16]}
+								columnTotal={[12, 19, 20, 21, 22]}
+								dateTimeExceptionCols={[11, 16, 17, 18, 19, 20]}
+								// colRemove={[16]}
 								headersMap={memberwiseDemandVsCollectionHeader}
 							/>
 						</>
@@ -1172,7 +1179,7 @@ function DemandVsCollectionMain() {
 											dataToExport,
 											headersToExport,
 											fileName?.split(",")[0],
-											[0, 8, 13, 14]
+											[0, 8, 13, 14, 15]
 										)
 									}
 									className="mt-5 justify-center items-center rounded-full text-pink-600"

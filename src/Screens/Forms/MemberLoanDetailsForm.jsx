@@ -9,8 +9,12 @@ import * as Yup from "yup"
 import axios from "axios"
 import { Message } from "../../Components/Message"
 import { url } from "../../Address/BaseUrl"
-import { Badge, Spin, Card } from "antd"
-import { LoadingOutlined } from "@ant-design/icons"
+import { Badge, Spin, Card, Tooltip } from "antd"
+import {
+	FileExcelOutlined,
+	LoadingOutlined,
+	PrinterOutlined,
+} from "@ant-design/icons"
 import { useLocation } from "react-router"
 import TDInputTemplateBr from "../../Components/TDInputTemplateBr"
 import { formatDateToYYYYMMDD } from "../../Utils/formateDate"
@@ -18,6 +22,9 @@ import DialogBox from "../../Components/DialogBox"
 // import { disableInputArray } from "./disableInputArray"
 import { disableCondition } from "./disableCondition"
 import { getOrdinalSuffix } from "../../Utils/ordinalSuffix"
+import { txnDetailsHeader } from "../../Utils/Reports/headerMap"
+import { exportToExcel } from "../../Utils/exportToExcel"
+import { printTableReport } from "../../Utils/printTableReport"
 
 function MemberLoanDetailsForm() {
 	const params = useParams()
@@ -319,6 +326,12 @@ function MemberLoanDetailsForm() {
 		return userDetails?.id === 4
 	}
 
+	const dataToExport = tnxDetails
+
+	const headersToExport = txnDetailsHeader
+
+	const fileName = `Txn_Details_${new Date().toLocaleString("en-GB")}.xlsx`
+
 	return (
 		<>
 			{/* {disburseOrNot && (
@@ -356,13 +369,12 @@ function MemberLoanDetailsForm() {
 					<div>
 						{/* ///////////////////////// */}
 
-
 						{/* ///////////////////////// */}
 
 						<div>
 							{/* <div className="w-full my-10 border-t-4 border-gray-500 border-dashed"></div> */}
 							<div className="text-xl mb-2 mt-5 text-[#DA4167] font-semibold underline">
-								 Transaction Details
+								Transaction Details
 							</div>
 						</div>
 
@@ -597,6 +609,41 @@ function MemberLoanDetailsForm() {
 						{/* ////////////////////////////////////////////////////// */}
 					</div>
 				</form>
+				<div className="flex gap-4">
+					<Tooltip title="Export to Excel">
+						<button
+							onClick={() =>
+								exportToExcel(dataToExport, headersToExport, fileName, [0])
+							}
+							className="mt-5 justify-center items-center rounded-full text-green-900"
+						>
+							<FileExcelOutlined
+								style={{
+									fontSize: 30,
+								}}
+							/>
+						</button>
+					</Tooltip>
+					<Tooltip title="Print">
+						<button
+							onClick={() =>
+								printTableReport(
+									dataToExport,
+									headersToExport,
+									fileName?.split(".")[0],
+									[0]
+								)
+							}
+							className="mt-5 justify-center items-center rounded-full text-pink-600"
+						>
+							<PrinterOutlined
+								style={{
+									fontSize: 30,
+								}}
+							/>
+						</button>
+					</Tooltip>
+				</div>
 			</Spin>
 
 			{/* For Approve */}
