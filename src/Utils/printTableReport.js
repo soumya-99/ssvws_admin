@@ -70,7 +70,7 @@ export function printTableReport(
 		return
 	}
 
-	printWindow.document.write(`
+	printWindow.document.writeln(`
     <html><head><title>${title}</title><style>
       body { font-family: sans-serif; margin: 20px; }
       h1 { text-align: center; }
@@ -92,10 +92,10 @@ export function printTableReport(
 		500
 	)
 	for (const batchStr of batchGen) {
-		printWindow.document.write(batchStr)
+		printWindow.document.writeln(batchStr)
 	}
 
-	printWindow.document.write(`</tbody></table></body></html>`)
+	printWindow.document.writeln(`</tbody></table></body></html>`)
 	printWindow.document.close()
 	printWindow.focus()
 	printWindow.print()
