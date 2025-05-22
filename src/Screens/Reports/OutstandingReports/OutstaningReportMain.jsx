@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react"
+import React, { useCallback, useEffect, useState } from "react"
 import Sidebar from "../../../Components/Sidebar"
 import axios from "axios"
 import { url } from "../../../Address/BaseUrl"
@@ -28,6 +28,7 @@ import {
 import Select from "react-select"
 import { exportToExcel } from "../../../Utils/exportToExcel"
 import { printTableReport } from "../../../Utils/printTableReport"
+import { useCtrlP } from "../../../Hooks/useCtrlP"
 
 const options = [
 	{
@@ -455,6 +456,17 @@ function OutstaningReportMain() {
 			setSelectedCOs(selected)
 		}
 	}
+
+	const handlePrint = useCallback(() => {
+		printTableReport(
+			dataToExport,
+			headersToExport,
+			fileName?.split(",")[0],
+			[29, 31]
+		)
+	}, [dataToExport, headersToExport, fileName, printTableReport])
+
+	useCtrlP(handlePrint)
 
 	console.log("selectedOptions", selectedOptions)
 	console.log("selectedCOs", selectedCOs)

@@ -65,12 +65,24 @@ const options2 = [
 	},
 ]
 
+const options3 = [
+	{
+		label: "Monthly",
+		value: "Monthly",
+	},
+	{
+		label: "Weekly",
+		value: "Weekly",
+	},
+]
+
 function OverdueReport() {
 	const userDetails = JSON.parse(localStorage.getItem("user_details")) || ""
 	const [loading, setLoading] = useState(false)
 
 	const [searchType, setSearchType] = useState(() => "D")
 	const [searchType2, setSearchType2] = useState(() => "G")
+	const [searchType3, setSearchType3] = useState(() => "Monthly")
 
 	const [fromDate, setFromDate] = useState()
 	const [toDate, setToDate] = useState()
@@ -92,6 +104,22 @@ function OverdueReport() {
 			: userDetails?.branch_name
 	)
 
+	const [fromDay, setFromDay] = useState(() => "")
+	const [toDay, setToDay] = useState(() => "")
+	const [fromTouched, setFromTouched] = useState(false)
+	const [toTouched, setToTouched] = useState(false)
+
+	const maxDay = searchType3 === "Monthly" ? 31 : 7
+
+	const isValidRange =
+		fromDay !== "" &&
+		toDay !== "" &&
+		+fromDay >= 1 &&
+		+toDay <= maxDay &&
+		+fromDay <= +toDay
+
+	const showError = (fromTouched || toTouched) && !isValidRange
+
 	const onChange = (e) => {
 		console.log("radio1 checked", e)
 		setSearchType(e)
@@ -100,6 +128,15 @@ function OverdueReport() {
 	const onChange2 = (e) => {
 		console.log("radio1 checked", e)
 		setSearchType2(e)
+	}
+
+	const onChange3 = (e) => {
+		console.log("radio1 checked", e)
+		setSearchType3(e)
+		setFromDay("")
+		setToDay("")
+		setFromTouched(false)
+		setToTouched(false)
 	}
 
 	const handleFetchTxnReportGroupwise = async () => {
@@ -336,6 +373,142 @@ function OverdueReport() {
 				setLoading(false)
 			})
 		setLoading(false)
+	}
+
+	const handleFetchGroupwiseDayReport = async () => {
+		setLoading(true)
+
+		const branchCodes = selectedOptions?.map((item, i) => {
+			return { branch_code: item.value }
+		})
+
+		const creds = {
+			// demand_date: fetchedReportDate,
+			// send_year: choosenYear,
+			// send_month: choosenMonth,
+			search_brn_id:
+				branchCodes?.length === 0
+					? [{ branch_code: userDetails.brn_code }]
+					: branchCodes,
+			period_mode: searchType3,
+			from_day: fromDay,
+			to_day: toDay,
+		}
+		await axios
+			.post(`${url}/filter_daywise_overdue_report_groupwise`, creds)
+			.then((res) => {
+				console.log("RESSSSS======>>>>", res?.data)
+				setReportData(res?.data?.msg)
+			})
+			.catch((err) => {
+				console.log("ERRRR>>>", err)
+			})
+		setLoading(false)
+	}
+
+	const handleFetchFundwiseDayReport = async () => {
+		setLoading(true)
+
+		const branchCodes = selectedOptions?.map((item, i) => {
+			return { branch_code: item.value }
+		})
+
+		const creds = {
+			// demand_date: fetchedReportDate,
+			// send_year: choosenYear,
+			// send_month: choosenMonth,
+			search_brn_id:
+				branchCodes?.length === 0
+					? [{ branch_code: userDetails.brn_code }]
+					: branchCodes,
+			period_mode: searchType3,
+			from_day: fromDay,
+			to_day: toDay,
+		}
+		await axios
+			.post(`${url}/filter_daywise_overdue_report_fundwise`, creds)
+			.then((res) => {
+				console.log("RESSSSS======>>>>", res?.data)
+				setReportData(res?.data?.msg)
+			})
+			.catch((err) => {
+				console.log("ERRRR>>>", err)
+			})
+		setLoading(false)
+	}
+
+	const handleFetchCOwiseDayReport = async () => {
+		setLoading(true)
+
+		const branchCodes = selectedOptions?.map((item, i) => {
+			return { branch_code: item.value }
+		})
+
+		const creds = {
+			// demand_date: fetchedReportDate,
+			// send_year: choosenYear,
+			// send_month: choosenMonth,
+			search_brn_id:
+				branchCodes?.length === 0
+					? [{ branch_code: userDetails.brn_code }]
+					: branchCodes,
+			period_mode: searchType3,
+			from_day: fromDay,
+			to_day: toDay,
+		}
+		await axios
+			.post(`${url}/filter_dayawise_overdue_report_cowise`, creds)
+			.then((res) => {
+				console.log("RESSSSS======>>>>", res?.data)
+				setReportData(res?.data?.msg)
+			})
+			.catch((err) => {
+				console.log("ERRRR>>>", err)
+			})
+		setLoading(false)
+	}
+
+	const handleFetchMemberwiseDayReport = async () => {
+		setLoading(true)
+
+		const branchCodes = selectedOptions?.map((item, i) => {
+			return { branch_code: item.value }
+		})
+
+		const creds = {
+			// demand_date: fetchedReportDate,
+			// send_year: choosenYear,
+			// send_month: choosenMonth,
+			search_brn_id:
+				branchCodes?.length === 0
+					? [{ branch_code: userDetails.brn_code }]
+					: branchCodes,
+			period_mode: searchType3,
+			from_day: fromDay,
+			to_day: toDay,
+		}
+		await axios
+			.post(`${url}/filter_dayawise_overdue_report_membwise`, creds)
+			.then((res) => {
+				console.log("RESSSSS======>>>>", res?.data)
+				setReportData(res?.data?.msg)
+			})
+			.catch((err) => {
+				console.log("ERRRR>>>", err)
+			})
+		setLoading(false)
+	}
+
+	const handleSubmitDaywise = () => {
+		if (searchType2 === "G") {
+			handleFetchGroupwiseDayReport()
+		} else if (searchType2 === "F") {
+			handleFetchFundwiseDayReport()
+		} else if (searchType2 === "C") {
+			handleFetchCOwiseDayReport()
+		} else if (searchType2 === "M") {
+			handleFetchMemberwiseDayReport()
+		}
 	}
 
 	useEffect(() => {
@@ -700,15 +873,86 @@ function OverdueReport() {
 						</div>
 					</div>
 
+					{reportData?.length > 0 && searchType2 !== "B" && (
+						<div className="mt-4">
+							<div className="text-xl -mb-4 text-slate-700 font-bold">
+								Daywise
+							</div>
+							<div className="mb-2">
+								<Radiobtn
+									data={options3}
+									val={searchType3}
+									onChangeVal={(e) => onChange3(e)}
+								/>
+							</div>
+
+							<div className="grid grid-cols-3 gap-5 mt-5 items-end">
+								<div>
+									<TDInputTemplateBr
+										placeholder="From Day"
+										type="number"
+										label="From Day"
+										name="from_day"
+										formControlName={fromDay}
+										handleChange={(e) => setFromDay(e.target.value)}
+										handleBlur={() => setFromTouched(true)}
+										mode={1}
+										min={1}
+										max={maxDay}
+									/>
+									{showError && (
+										<p className="text-red-500 text-xs mt-1">
+											From day must be lower than To day and within 1 to{" "}
+											{maxDay}.
+										</p>
+									)}
+								</div>
+
+								<div>
+									<TDInputTemplateBr
+										placeholder="To Day"
+										type="number"
+										label="To Day"
+										name="to_day"
+										formControlName={toDay}
+										handleChange={(e) => setToDay(e.target.value)}
+										handleBlur={() => setToTouched(true)}
+										mode={1}
+										min={1}
+										max={maxDay}
+									/>
+									{showError && (
+										<p className="text-red-500 text-xs mt-1">
+											From day must be lower than To day and within 1 to{" "}
+											{maxDay}.
+										</p>
+									)}
+								</div>
+
+								<div>
+									<button
+										className={`inline-flex items-center px-4 py-2 mt-0 ml-0 sm:mt-0 text-sm font-small text-center text-white border hover:border-green-600 border-teal-500 bg-teal-500 transition ease-in-out hover:bg-green-600 duration-300 rounded-full  dark:focus:ring-primary-900`}
+										onClick={() => {
+											handleSubmitDaywise()
+										}}
+										disabled={!isValidRange}
+									>
+										<SearchOutlined /> <span className="ml-2">Find</span>
+									</button>
+								</div>
+							</div>
+						</div>
+					)}
+
 					{searchType2 === "M" && reportData?.length > 0 && (
 						<>
 							<DynamicTailwindTable
 								data={reportData}
 								pageSize={50}
-								columnTotal={[11, 15, 16]}
-								dateTimeExceptionCols={[0, 1, 10, 12]}
+								columnTotal={[23, 24, 25, 26]}
+								dateTimeExceptionCols={[0, 1, 20, 22, 27]}
 								headersMap={overdueMemberReportHeader}
-								// colRemove={[7]}
+								colRemove={[16]}
 							/>
 						</>
 					)}
@@ -718,10 +962,10 @@ function OverdueReport() {
 							<DynamicTailwindTable
 								data={reportData}
 								pageSize={50}
-								columnTotal={[10, 14, 15]}
-								dateTimeExceptionCols={[0, 1, 9, 11]}
+								columnTotal={[16, 17, 18, 19]}
+								dateTimeExceptionCols={[0, 1, 15]}
 								headersMap={overdueGroupReportHeader}
-								// colRemove={[6]}
+								colRemove={[12]}
 							/>
 						</>
 					)}
@@ -731,10 +975,10 @@ function OverdueReport() {
 							<DynamicTailwindTable
 								data={reportData}
 								pageSize={50}
-								columnTotal={[12, 16, 17]}
-								dateTimeExceptionCols={[0, 1, 11, 13]}
+								columnTotal={[15, 16, 17, 18]}
+								dateTimeExceptionCols={[0, 1, 14]}
 								headersMap={overdueFundReportHeader}
-								// colRemove={[6]}
+								colRemove={[6]}
 
 								// headersMap={fundwiseOutstandingHeader}
 							/>
@@ -746,12 +990,10 @@ function OverdueReport() {
 							<DynamicTailwindTable
 								data={reportData}
 								pageSize={50}
-								columnTotal={[10, 14, 15]}
-								dateTimeExceptionCols={[0, 1, 9, 11]}
+								columnTotal={[13, 14, 15, 16]}
+								dateTimeExceptionCols={[0, 1, 12]}
 								headersMap={overdueCOReportHeader}
-								// colRemove={[6]}
-
-								// headersMap={cowiseOutstandingHeader}
+								colRemove={[6]}
 							/>
 						</>
 					)}
@@ -762,7 +1004,7 @@ function OverdueReport() {
 							<DynamicTailwindTable
 								data={reportData}
 								pageSize={50}
-								columnTotal={[2, 3, 4]}
+								columnTotal={[3, 4, 5, 6]}
 								// dateTimeExceptionCols={[0,1,9,11]}
 								headersMap={overdueBranchReportHeader}
 								// colRemove={[6]}
@@ -781,7 +1023,7 @@ function OverdueReport() {
 											dataToExport,
 											headersToExport,
 											fileName,
-											[0, 1, 9, 11]
+											[0, 1, 9, 11, 14, 15, 20, 22, 27]
 										)
 									}
 									className="mt-5 justify-center items-center rounded-full text-green-900"
@@ -809,7 +1051,7 @@ function OverdueReport() {
 											dataToExport,
 											headersToExport,
 											fileName?.split(",")[0],
-											[0, 1, 9, 11]
+											[0, 1, 9, 11, 14, 15, 20, 22, 27]
 										)
 									}
 									className="mt-5 justify-center items-center rounded-full text-pink-600"

@@ -456,9 +456,9 @@ function DisbursmentForm() {
 					b_clientName: res?.data?.msg[0]?.client_name,
 					b_groupName: res?.data?.msg[0]?.group_name,
 					b_branchcode: res?.data?.msg[0]?.branch_code,
-					b_branchname: res?.data?.msg[0]?.branch_name,
+					b_branchname: res?.data?.msg[0]?.brn_name,
 					b_bank_name: res?.data?.msg[0]?.bank_name,
-					b_bank_branch: res?.data?.msg[0]?.brn_name,
+					b_bank_branch: res?.data?.msg[0]?.branch_name,
 					b_acc1: res?.data?.msg[0]?.acc_no1,
 					b_acc2: res?.data?.msg[0]?.acc_no2,
 					b_memCode: res?.data?.msg[0]?.mem_dt_grp,
@@ -828,13 +828,25 @@ function DisbursmentForm() {
 										/>
 									</div>
 
-									<div className="sm:col-span-2">
+									{/* <div className="sm:col-span-2">
 										<TDInputTemplateBr
 											placeholder="Bank Branch"
 											type="text"
 											label="Bank Branch"
 											name="b_bank_branch"
 											formControlName={personalDetailsData?.b_bank_branch}
+											handleChange={handleChangePersonalDetails}
+											mode={1}
+											disabled
+										/>
+									</div> */}
+									<div className="sm:col-span-2">
+										<TDInputTemplateBr
+											placeholder="Branch Name"
+											type="text"
+											label="Branch Name"
+											name="b_branchname"
+											formControlName={personalDetailsData?.b_branchname}
 											handleChange={handleChangePersonalDetails}
 											mode={1}
 											disabled
@@ -854,16 +866,17 @@ function DisbursmentForm() {
 									</div>
 									<div>
 										<TDInputTemplateBr
-											placeholder="Branch Name"
+											placeholder="Bank Branch"
 											type="text"
-											label="Branch Name"
-											name="b_branchname"
-											formControlName={personalDetailsData?.b_branchname}
+											label="Bank Branch"
+											name="b_bank_branch"
+											formControlName={personalDetailsData?.b_bank_branch}
 											handleChange={handleChangePersonalDetails}
 											mode={1}
 											disabled
 										/>
 									</div>
+
 									<div>
 										<TDInputTemplateBr
 											placeholder="SB Account"
