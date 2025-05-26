@@ -12,14 +12,9 @@ import {
 import Radiobtn from "../../../Components/Radiobtn"
 import TDInputTemplateBr from "../../../Components/TDInputTemplateBr"
 import { formatDateToYYYYMMDD } from "../../../Utils/formateDate"
-import { saveAs } from "file-saver"
-import * as XLSX from "xlsx"
-import { printTableLoanTransactions } from "../../../Utils/printTableLoanTransactions"
 import DynamicTailwindTable from "../../../Components/Reports/DynamicTailwindTable"
 import {
 	branchwiseTxnReportHeader,
-	loanStatementHeader,
-	memberwiseOutstandingHeader,
 	txnCoHeader,
 	txnFundHeader,
 	txnGrpHeader,
@@ -704,13 +699,23 @@ function LoanTransactionsMain() {
 								/>
 							</div>
 						)}
-
 						<div>
 							<button
-								className={`inline-flex items-center px-4 py-2 mt-0 ml-0 sm:mt-0 text-sm font-small text-center text-white border hover:border-green-600 border-teal-500 bg-teal-500 transition ease-in-out hover:bg-green-600 duration-300 rounded-full  dark:focus:ring-primary-900`}
+								className={`inline-flex items-center px-4 py-2 mt-0 ml-0 sm:mt-0 text-sm font-small text-center text-white border hover:border-green-600 border-teal-500 bg-teal-500 transition ease-in-out hover:bg-green-600 duration-300 rounded-full dark:focus:ring-primary-900`}
 								onClick={() => {
 									searchData()
 								}}
+								// disabled={
+								// 	(searchType2 === "F" &&
+								// 		(!fromDate ||
+								// 			!toDate ||
+								// 			selectedFund == "Select Fund..." ||
+								// 			selectedFund == "")) ||
+								// 	(searchType2 === "C" &&
+								// 		(!fromDate || !toDate || userDetails?.brn_code !== 100
+								// 			? selectedCO == "Select CO..." || selectedCO == ""
+								// 			: selectedCOs.length == 0))
+								// }
 							>
 								<SearchOutlined /> <span class={`ml-2`}>Search</span>
 							</button>

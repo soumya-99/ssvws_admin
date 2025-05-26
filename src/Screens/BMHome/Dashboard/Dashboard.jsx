@@ -330,7 +330,24 @@ export default function Dashboard() {
 		}
 	}
 
-	const fetchCODashboardDetails = async (flag) => {
+	// const fetchCODashboardDetails = async (flag) => {
+	// 	setLoading(true)
+	// 	try {
+	// 		const creds = {
+	// 			flag,
+	// 			branch_code: getBranchCodes()[0],
+	// 			emp_id: userDetails?.emp_id,
+	// 		}
+	// 		const res = await axios.post(`${url}/admin/co_dashboard_dtls`, creds)
+	// 		// setDateOfOperation(res?.data?.data?.date_of_operation)
+	// 		setDashboardDetailsCO(res?.data?.data?.dashboard_dt)
+	// 	} catch {
+	// 	} finally {
+	// 		setLoading(false)
+	// 	}
+	// }
+
+	const fetchCOTotalGrtDetails = async (flag) => {
 		setLoading(true)
 		try {
 			const creds = {
@@ -339,8 +356,29 @@ export default function Dashboard() {
 				emp_id: userDetails?.emp_id,
 			}
 			const res = await axios.post(`${url}/admin/co_dashboard_dtls`, creds)
-			// setDateOfOperation(res?.data?.data?.date_of_operation)
-			setDashboardDetailsCO(res?.data?.data?.dashboard_dt)
+			const baseData = [
+				{
+					label: "Pending",
+					value: res.data.data.tot_pending_co,
+					color: "bg-orange-300",
+				},
+				{
+					label: "Sent to MIS",
+					value: res.data.data.tot_send_mis_co,
+					color: "bg-blue-300",
+				},
+				{
+					label: "Approved",
+					value: res.data.data.tot_approved_co,
+					color: "bg-green-300",
+				},
+				{
+					label: "Rejected",
+					value: res.data.data.tot_rejected_co,
+					color: "bg-red-300",
+				},
+			]
+			flag === "Today" ? setGrtDataToday(baseData) : setGrtDataMonth(baseData)
 		} catch {
 		} finally {
 			setLoading(false)
@@ -396,7 +434,7 @@ export default function Dashboard() {
 	useEffect(() => {
 		if (branches.length) {
 			if (+userDetails?.id === 1) {
-				fetchCODashboardDetails(grtPeriod !== "Today" ? "Month" : "Today")
+				fetchCOTotalGrtDetails(grtPeriod !== "Today" ? "Month" : "Today")
 				fetchCOTotalCashRecovery(grtPeriod !== "Today" ? "Month" : "Today")
 				fetchCOTotalBankOrUPIRecovery(grtPeriod !== "Today" ? "Month" : "Today")
 			} else {
@@ -460,236 +498,230 @@ export default function Dashboard() {
 				</div>
 			)}
 
-			{+userDetails?.id !== 1 && (
-				<div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-					<div className="col-span-1 md:col-span-2 rounded-3xl bg-white shadow-md p-6 space-y-4 overflow-hidden">
-						<div className="flex justify-between items-center">
-							<h2 className="text-xl font-medium text-slate-700">Total GRT</h2>
+			{/* {+userDetails?.id !== 1 && ( */}
+			<div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+				<div className="col-span-1 md:col-span-2 rounded-3xl bg-white shadow-md p-6 space-y-4 overflow-hidden">
+					<div className="flex justify-between items-center">
+						<h2 className="text-xl font-medium text-slate-700">Total GRT</h2>
 
-							<div className="space-x-2">
-								{["Today", "This month"].map((option) => (
-									<button
-										key={option}
-										onClick={() => setGrtPeriod(option)}
-										className={`px-3 py-1 rounded-full font-medium text-sm ${
-											grtPeriod === option
-												? "bg-teal-600 text-white"
-												: "bg-slate-100 text-slate-600"
-										}`}
-									>
-										{option}
-									</button>
-								))}
-							</div>
+						<div className="space-x-2">
+							{["Today", "This month"].map((option) => (
+								<button
+									key={option}
+									onClick={() => setGrtPeriod(option)}
+									className={`px-3 py-1 rounded-full font-medium text-sm ${
+										grtPeriod === option
+											? "bg-teal-600 text-white"
+											: "bg-slate-100 text-slate-600"
+									}`}
+								>
+									{option}
+								</button>
+							))}
 						</div>
-
-						{activeGrtData.map((item) => (
-							<Spin spinning={loading}>
-								<div key={item.label} className="flex items-center">
-									<span className="w-40 text-sm text-slate-600">
-										{item.label}
-									</span>
-									<div className="flex-1 bg-slate-100 h-4 rounded-full mx-4 overflow-hidden relative">
-										<motion.div
-											className={`${item.color} h-4`}
-											style={{ clipPath: "inset(0 round 999px)" }}
-											initial={{ width: 0 }}
-											animate={{ width: `${(item.value / 300) * 100}%` }}
-											transition={{
-												duration: 0.6,
-												ease: [0.7, 0.0, 0.3, 1.0],
-											}}
-										/>
-									</div>
-									<span className="text-slate-800 font-semibold">
-										{item.value?.toLocaleString()}
-									</span>
-								</div>
-							</Spin>
-						))}
 					</div>
 
-					<div className="bg-white rounded-3xl shadow-md p-6 flex flex-col items-center justify-center group">
-						<h3 className="text-lg font-medium text-slate-700">
-							Active Groups
-						</h3>
-						<div className="bg-green-100 rounded-full p-4 my-4">
-							<svg
-								xmlns="http://www.w3.org/2000/svg"
-								className="h-6 w-6 text-green-600 arrow"
-								fill="none"
-								viewBox="0 0 24 24"
-								stroke="currentColor"
-							>
-								<path
-									strokeLinecap="round"
-									strokeLinejoin="round"
-									strokeWidth={2}
-									d="M5 10l7-7m0 0l7 7m-7-7v18"
-								/>
-							</svg>
-						</div>
+					{activeGrtData.map((item) => (
 						<Spin spinning={loading}>
-							<span className="text-3xl font-bold text-slate-800">
-								{formatNumber(activeGroupsCount)}
-							</span>
-						</Spin>
-						<span className="text-sm text-slate-600 mt-1">
-							Total Groups • {formatNumber(totalGroupsCount)}
-						</span>
-					</div>
-
-					<div className="col-span-1 md:col-span-1 perspective cursor-pointer">
-						<div
-							className="relative w-full h-full transition-transform duration-500"
-							style={{
-								transformStyle: "preserve-3d",
-							}}
-						>
-							{/* Front */}
-							<div
-								className="absolute inset-0 bg-white rounded-3xl shadow-md p-6 flex flex-col items-center justify-center"
-								style={{ backfaceVisibility: "hidden" }}
-							>
-								<h3 className="text-lg font-medium text-slate-700">
-									Users Logged In
-								</h3>
-								<div className="bg-purple-100 rounded-full p-4 my-4">
-									<svg
-										xmlns="http://www.w3.org/2000/svg"
-										className="h-6 w-6 text-purple-600"
-										fill="currentColor"
-										viewBox="0 0 24 24"
-									>
-										<path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4z" />
-										<path
-											fillRule="evenodd"
-											d="M4 20c0-4 4-6 8-6s8 2 8 6v1H4v-1z"
-											clipRule="evenodd"
-										/>
-									</svg>
+							<div key={item.label} className="flex items-center">
+								<span className="w-40 text-sm text-slate-600">
+									{item.label}
+								</span>
+								<div className="flex-1 bg-slate-100 h-4 rounded-full mx-4 overflow-hidden relative">
+									<motion.div
+										className={`${item.color} h-4`}
+										style={{ clipPath: "inset(0 round 999px)" }}
+										initial={{ width: 0 }}
+										animate={{ width: `${(item.value / 300) * 100}%` }}
+										transition={{
+											duration: 0.6,
+											ease: [0.7, 0.0, 0.3, 1.0],
+										}}
+									/>
 								</div>
-								<Spin spinning={loading}>
-									<span className="text-3xl font-bold text-slate-800">
-										{new Intl.NumberFormat("en-IN").format(
-											activeUsersCount || 0
-										)}
-									</span>
-								</Spin>
-								<span className="text-sm text-slate-600 mt-1">
-									Active users
+								<span className="text-slate-800 font-semibold">
+									{item.value?.toLocaleString()}
 								</span>
 							</div>
+						</Spin>
+					))}
+				</div>
 
-							{/* Back */}
-							<div
-								className="absolute inset-0 bg-purple-50 rounded-3xl shadow-md p-6 flex items-center justify-center"
-								style={{
-									transform: "rotateY(-180deg)",
-									backfaceVisibility: "hidden",
-								}}
-							>
-								<div className="w-full max-h-[160px] overflow-auto">
-									<ul class="max-w-md space-y-1 text-slate-600 list-inside dark:text-slate-400">
-										{activeUsers?.map((user, i) => (
-											<>
-												<li class="flex items-center">
-													{user?.user_status === "A" ? (
-														<svg
-															class="w-3.5 h-3.5 me-2 text-green-500 dark:text-green-400 shrink-0"
-															aria-hidden="true"
-															xmlns="http://www.w3.org/2000/svg"
-															fill="currentColor"
-															viewBox="0 0 20 20"
-														>
-															<path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5Zm3.707 8.207-4 4a1 1 0 0 1-1.414 0l-2-2a1 1 0 0 1 1.414-1.414L9 10.586l3.293-3.293a1 1 0 0 1 1.414 1.414Z" />
-														</svg>
-													) : i % 3 === 0 ? (
-														<svg
-															class="w-3.5 h-3.5 me-2 text-slate-500 dark:text-slate-400 shrink-0"
-															aria-hidden="true"
-															xmlns="http://www.w3.org/2000/svg"
-															fill="currentColor"
-															viewBox="0 0 20 20"
-														>
-															<path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5Zm3.707 8.207-4 4a1 1 0 0 1-1.414 0l-2-2a1 1 0 0 1 1.414-1.414L9 10.586l3.293-3.293a1 1 0 0 1 1.414 1.414Z" />
-														</svg>
-													) : (
-														<svg
-															class="w-3.5 h-3.5 me-2 shrink-0"
-															aria-hidden="true"
-															xmlns="http://www.w3.org/2000/svg"
-															viewBox="0 0 20 20"
-														>
-															<circle cx="10" cy="10" r="9.5" fill="#ef4444" />
-															<path
-																fill="#ffffff"
-																d="M13.414 6.586a1 1 0 0 0-1.414 0L10 8.586 8 6.586a1 1 0 1 0-1.414 1.414L8.586 10l-1.999 2a1 1 0 1 0 1.414 1.414L10 11.414l2 1.999a1 1 0 0 0 1.414-1.414L11.414 10l2-2a1 1 0 0 0 0-1.414z"
-															/>
-														</svg>
-													)}
-													{user?.emp_name} - {user?.emp_id}
-												</li>
-												<hr className="border-t border-purple-200 my-2 w-3/4" />
-											</>
-										))}
-									</ul>
-								</div>
+				<div className="bg-white rounded-3xl shadow-md p-6 flex flex-col items-center justify-center group">
+					<h3 className="text-lg font-medium text-slate-700">Active Groups</h3>
+					<div className="bg-green-100 rounded-full p-4 my-4">
+						<svg
+							xmlns="http://www.w3.org/2000/svg"
+							className="h-6 w-6 text-green-600 arrow"
+							fill="none"
+							viewBox="0 0 24 24"
+							stroke="currentColor"
+						>
+							<path
+								strokeLinecap="round"
+								strokeLinejoin="round"
+								strokeWidth={2}
+								d="M5 10l7-7m0 0l7 7m-7-7v18"
+							/>
+						</svg>
+					</div>
+					<Spin spinning={loading}>
+						<span className="text-3xl font-bold text-slate-800">
+							{formatNumber(activeGroupsCount)}
+						</span>
+					</Spin>
+					<span className="text-sm text-slate-600 mt-1">
+						Total Groups • {formatNumber(totalGroupsCount)}
+					</span>
+				</div>
+
+				<div className="col-span-1 md:col-span-1 perspective cursor-pointer">
+					<div
+						className="relative w-full h-full transition-transform duration-500"
+						style={{
+							transformStyle: "preserve-3d",
+						}}
+					>
+						{/* Front */}
+						<div
+							className="absolute inset-0 bg-white rounded-3xl shadow-md p-6 flex flex-col items-center justify-center"
+							style={{ backfaceVisibility: "hidden" }}
+						>
+							<h3 className="text-lg font-medium text-slate-700">
+								Users Logged In
+							</h3>
+							<div className="bg-purple-100 rounded-full p-4 my-4">
+								<svg
+									xmlns="http://www.w3.org/2000/svg"
+									className="h-6 w-6 text-purple-600"
+									fill="currentColor"
+									viewBox="0 0 24 24"
+								>
+									<path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4z" />
+									<path
+										fillRule="evenodd"
+										d="M4 20c0-4 4-6 8-6s8 2 8 6v1H4v-1z"
+										clipRule="evenodd"
+									/>
+								</svg>
+							</div>
+							<Spin spinning={loading}>
+								<span className="text-3xl font-bold text-slate-800">
+									{new Intl.NumberFormat("en-IN").format(activeUsersCount || 0)}
+								</span>
+							</Spin>
+							<span className="text-sm text-slate-600 mt-1">Active users</span>
+						</div>
+
+						{/* Back */}
+						<div
+							className="absolute inset-0 bg-purple-50 rounded-3xl shadow-md p-6 flex items-center justify-center"
+							style={{
+								transform: "rotateY(-180deg)",
+								backfaceVisibility: "hidden",
+							}}
+						>
+							<div className="w-full max-h-[160px] overflow-auto">
+								<ul class="max-w-md space-y-1 text-slate-600 list-inside dark:text-slate-400">
+									{activeUsers?.map((user, i) => (
+										<>
+											<li class="flex items-center">
+												{user?.user_status === "A" ? (
+													<svg
+														class="w-3.5 h-3.5 me-2 text-green-500 dark:text-green-400 shrink-0"
+														aria-hidden="true"
+														xmlns="http://www.w3.org/2000/svg"
+														fill="currentColor"
+														viewBox="0 0 20 20"
+													>
+														<path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5Zm3.707 8.207-4 4a1 1 0 0 1-1.414 0l-2-2a1 1 0 0 1 1.414-1.414L9 10.586l3.293-3.293a1 1 0 0 1 1.414 1.414Z" />
+													</svg>
+												) : i % 3 === 0 ? (
+													<svg
+														class="w-3.5 h-3.5 me-2 text-slate-500 dark:text-slate-400 shrink-0"
+														aria-hidden="true"
+														xmlns="http://www.w3.org/2000/svg"
+														fill="currentColor"
+														viewBox="0 0 20 20"
+													>
+														<path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5Zm3.707 8.207-4 4a1 1 0 0 1-1.414 0l-2-2a1 1 0 0 1 1.414-1.414L9 10.586l3.293-3.293a1 1 0 0 1 1.414 1.414Z" />
+													</svg>
+												) : (
+													<svg
+														class="w-3.5 h-3.5 me-2 shrink-0"
+														aria-hidden="true"
+														xmlns="http://www.w3.org/2000/svg"
+														viewBox="0 0 20 20"
+													>
+														<circle cx="10" cy="10" r="9.5" fill="#ef4444" />
+														<path
+															fill="#ffffff"
+															d="M13.414 6.586a1 1 0 0 0-1.414 0L10 8.586 8 6.586a1 1 0 1 0-1.414 1.414L8.586 10l-1.999 2a1 1 0 1 0 1.414 1.414L10 11.414l2 1.999a1 1 0 0 0 1.414-1.414L11.414 10l2-2a1 1 0 0 0 0-1.414z"
+														/>
+													</svg>
+												)}
+												{user?.emp_name} - {user?.emp_id}
+											</li>
+											<hr className="border-t border-purple-200 my-2 w-3/4" />
+										</>
+									))}
+								</ul>
 							</div>
 						</div>
 					</div>
 				</div>
-			)}
+			</div>
+			{/* )} */}
 
-			{+userDetails?.id !== 1 && (
-				<div className="grid grid-cols-1 md:grid-cols-6 gap-6">
-					<DashboardCard
-						title="Loan Disbursed"
-						left1Data={{
-							label: "This Month",
-							value: formatINR(disbursedLoanDetailCountsMonth.data),
-						}}
-						left2Data={{
-							label: "Today",
-							value: formatINR(disbursedLoanDetailCountsToday.data),
-						}}
-						right1Data={{
-							label: "No. of Groups",
-							value: formatNumber(disbursedLoanDetailCountsMonth.noOfGroups),
-						}}
-						right2Data={{
-							label: "No. of Groups",
-							value: formatNumber(disbursedLoanDetailCountsToday.noOfGroups),
-						}}
-						leftColor="#DB2777"
-						rightColor="#334155"
-						loading={loading}
-					/>
+			{/* {+userDetails?.id !== 1 && ( */}
+			<div className="grid grid-cols-1 md:grid-cols-6 gap-6">
+				<DashboardCard
+					title="Loan Disbursed"
+					left1Data={{
+						label: "This Month",
+						value: formatINR(disbursedLoanDetailCountsMonth.data),
+					}}
+					left2Data={{
+						label: "Today",
+						value: formatINR(disbursedLoanDetailCountsToday.data),
+					}}
+					right1Data={{
+						label: "No. of Groups",
+						value: formatNumber(disbursedLoanDetailCountsMonth.noOfGroups),
+					}}
+					right2Data={{
+						label: "No. of Groups",
+						value: formatNumber(disbursedLoanDetailCountsToday.noOfGroups),
+					}}
+					leftColor="#DB2777"
+					rightColor="#334155"
+					loading={loading}
+				/>
 
-					<DashboardCard
-						title="Loan Collected"
-						left1Data={{
-							label: "This Month",
-							value: formatINR(collectedLoanDetailCountsMonth.data),
-						}}
-						left2Data={{
-							label: "Today",
-							value: formatINR(collectedLoanDetailCountsToday.data),
-						}}
-						right1Data={{
-							label: "No. of Groups",
-							value: formatNumber(collectedLoanDetailCountsMonth.noOfGroups),
-						}}
-						right2Data={{
-							label: "No. of Groups",
-							value: formatNumber(collectedLoanDetailCountsToday.noOfGroups),
-						}}
-						leftColor="#2563EB"
-						rightColor="#334155"
-						loading={loading}
-					/>
+				<DashboardCard
+					title="Loan Collected"
+					left1Data={{
+						label: "This Month",
+						value: formatINR(collectedLoanDetailCountsMonth.data),
+					}}
+					left2Data={{
+						label: "Today",
+						value: formatINR(collectedLoanDetailCountsToday.data),
+					}}
+					right1Data={{
+						label: "No. of Groups",
+						value: formatNumber(collectedLoanDetailCountsMonth.noOfGroups),
+					}}
+					right2Data={{
+						label: "No. of Groups",
+						value: formatNumber(collectedLoanDetailCountsToday.noOfGroups),
+					}}
+					leftColor="#2563EB"
+					rightColor="#334155"
+					loading={loading}
+				/>
 
-					{/* <DashboardCard
+				{/* <DashboardCard
 					title="Unapproved Transactions"
 					left1Data={{
 						label: "This Month",
@@ -711,34 +743,34 @@ export default function Dashboard() {
 					rightColor="#334155"
 					loading={loading}
 				/> */}
-					<div className="md:col-span-2 bg-white rounded-3xl shadow-md p-6 flex flex-col items-center justify-center">
-						<h3 className="text-lg font-medium bg-purple-100 text-purple-900 px-5 py-2 rounded-full">
-							Unapproved Transactions
-						</h3>
-						<div className="flex justify-between items-center w-full px-14 py-5 rounded-3xl bg-white">
-							<div className="flex flex-col items-center gap-2">
-								<Spin spinning={loadingLong}>
-									<span className="text-3xl font-bold text-emerald-600 mt-4">
-										{formatINR(unapprovedTxnsDetailCountsTotal.data)}
-									</span>
-								</Spin>
-								<span className="text-sm text-slate-600">Unapproved</span>
-							</div>
-							<div className="h-16 w-[2px] rounded bg-slate-200" />
-							<div className="flex flex-col items-center gap-2">
-								<Spin spinning={loadingLong}>
-									<span className="text-3xl font-bold text-blue-600 mt-4">
-										{formatNumber(unapprovedTxnsDetailCountsTotal.noOfGroups)}
-									</span>
-								</Spin>
-								<span className="text-sm text-slate-600">Groups</span>
-							</div>
+				<div className="md:col-span-2 bg-white rounded-3xl shadow-md p-6 flex flex-col items-center justify-center">
+					<h3 className="text-lg font-medium bg-purple-100 text-purple-900 px-5 py-2 rounded-full">
+						Unapproved Transactions
+					</h3>
+					<div className="flex justify-between items-center w-full px-14 py-5 rounded-3xl bg-white">
+						<div className="flex flex-col items-center gap-2">
+							<Spin spinning={loadingLong}>
+								<span className="text-3xl font-bold text-emerald-600 mt-4">
+									{formatINR(unapprovedTxnsDetailCountsTotal.data)}
+								</span>
+							</Spin>
+							<span className="text-sm text-slate-600">Unapproved</span>
+						</div>
+						<div className="h-16 w-[2px] rounded bg-slate-200" />
+						<div className="flex flex-col items-center gap-2">
+							<Spin spinning={loadingLong}>
+								<span className="text-3xl font-bold text-blue-600 mt-4">
+									{formatNumber(unapprovedTxnsDetailCountsTotal.noOfGroups)}
+								</span>
+							</Spin>
+							<span className="text-sm text-slate-600">Groups</span>
 						</div>
 					</div>
 				</div>
-			)}
+			</div>
+			{/* )} */}
 
-			{+userDetails?.id == 1 && (
+			{/* {+userDetails?.id == 1 && (
 				<>
 					<div className="space-x-2">
 						{["Today", "This month"].map((option) => (
@@ -756,52 +788,6 @@ export default function Dashboard() {
 						))}
 					</div>
 					<div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-						{/* <DashboardCard
-						title="Loan Disbursed"
-						left1Data={{
-							label: "This Month",
-							value: formatINR(disbursedLoanDetailCountsMonth.data),
-						}}
-						left2Data={{
-							label: "Today",
-							value: formatINR(disbursedLoanDetailCountsToday.data),
-						}}
-						right1Data={{
-							label: "No. of Groups",
-							value: formatNumber(disbursedLoanDetailCountsMonth.noOfGroups),
-						}}
-						right2Data={{
-							label: "No. of Groups",
-							value: formatNumber(disbursedLoanDetailCountsToday.noOfGroups),
-						}}
-						leftColor="#DB2777"
-						rightColor="#334155"
-						loading={loading}
-					/> */}
-
-						{/* <DashboardCard
-						title="Loan Collected"
-						left1Data={{
-							label: "This Month",
-							value: formatINR(collectedLoanDetailCountsMonth.data),
-						}}
-						left2Data={{
-							label: "Today",
-							value: formatINR(collectedLoanDetailCountsToday.data),
-						}}
-						right1Data={{
-							label: "No. of Groups",
-							value: formatNumber(collectedLoanDetailCountsMonth.noOfGroups),
-						}}
-						right2Data={{
-							label: "No. of Groups",
-							value: formatNumber(collectedLoanDetailCountsToday.noOfGroups),
-						}}
-						leftColor="#2563EB"
-						rightColor="#334155"
-						loading={loading}
-					/> */}
-
 						<div className="bg-white rounded-3xl shadow-md p-6 flex flex-col items-center justify-center group">
 							<h3 className="text-lg font-medium text-slate-700">Total GRT</h3>
 							<div className="bg-teal-100 rounded-full p-4 my-4">
@@ -846,34 +832,9 @@ export default function Dashboard() {
 								({grtPeriod})
 							</span>
 						</div>
-
-						{/* <div className="md:col-span-2 bg-white rounded-3xl shadow-md p-6 flex flex-col items-center justify-center">
-							<h3 className="text-lg font-medium bg-purple-100 text-purple-900 px-5 py-2 rounded-full">
-								Unapproved Transactions
-							</h3>
-							<div className="flex justify-between items-center w-full px-14 py-5 rounded-3xl bg-white">
-								<div className="flex flex-col items-center gap-2">
-									<Spin spinning={loadingLong}>
-										<span className="text-3xl font-bold text-emerald-600 mt-4">
-											{formatINR(unapprovedTxnsDetailCountsTotal.data)}
-										</span>
-									</Spin>
-									<span className="text-sm text-slate-600">Unapproved</span>
-								</div>
-								<div className="h-16 w-[2px] rounded bg-slate-200" />
-								<div className="flex flex-col items-center gap-2">
-									<Spin spinning={loadingLong}>
-										<span className="text-3xl font-bold text-blue-600 mt-4">
-											{formatNumber(unapprovedTxnsDetailCountsTotal.noOfGroups)}
-										</span>
-									</Spin>
-									<span className="text-sm text-slate-600">Groups</span>
-								</div>
-							</div>
-						</div> */}
 					</div>
 				</>
-			)}
+			)} */}
 
 			{/* <div className="col-span-1 md:col-span-4 bg-white rounded-3xl shadow-md p-6">
 				<div className="flex justify-between items-center mb-4">
