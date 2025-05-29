@@ -18,6 +18,7 @@ import { Spin } from "antd"
 import CurrencyRupeeOutlinedIcon from "@mui/icons-material/CurrencyRupeeOutlined"
 import AccountBalanceOutlinedIcon from "@mui/icons-material/AccountBalanceOutlined"
 import ListAltOutlinedIcon from "@mui/icons-material/ListAltOutlined"
+import AutoAwesomeOutlinedIcon from "@mui/icons-material/AutoAwesomeOutlined"
 
 const formatINR = (num) =>
 	new Intl.NumberFormat("en-IN", {
@@ -115,11 +116,10 @@ export default function Dashboard() {
 	// 		noOfGroups: "",
 	// 	})
 
-	// For CO API Data
-	const [dashboardDetailsCO, setDashboardDetailsCO] = useState("")
-	const [totalCashRecoveryCO, setTotalCashRecoveryCO] = useState("")
-	const [totalBankRecoveryCO, setTotalBankRecoveryCO] = useState("")
-	// const [dashboardDetailsToday, setDashboardDetailsToday] = useState("")
+	const [odFlags, setOdFlags] = useState({
+		flag: "D",
+		recovDay: "",
+	}) // D, W, M
 
 	const activeGrtData = grtPeriod === "Today" ? grtDataToday : grtDataMonth
 
@@ -347,6 +347,7 @@ export default function Dashboard() {
 	// 	}
 	// }
 
+	// CO Start
 	const fetchCOTotalGrtDetails = async (flag) => {
 		setLoading(true)
 		try {
@@ -385,42 +386,168 @@ export default function Dashboard() {
 		}
 	}
 
-	const fetchCOTotalCashRecovery = async (flag) => {
+	const fetchActiveGroupsCO = async () => {
 		setLoading(true)
 		try {
 			const creds = {
-				flag,
+				co_id: userDetails?.emp_id,
 				branch_code: getBranchCodes()[0],
-				emp_id: userDetails?.emp_id,
-				tr_mode: "C",
 			}
 			const res = await axios.post(
-				`${url}/admin/co_dashboard_dtls_cash_recov`,
+				`${url}/admin/co_dashboard_active_group`,
 				creds
 			)
-			// setDateOfOperation(res?.data?.data?.date_of_operation)
-			setTotalCashRecoveryCO(res?.data?.data?.co_dashboard_dt_cash)
+			setActiveGroupsCount(res.data.data.tot_active_grp || 0)
+			setTotalGroupsCount(res.data.data.co_total_group)
 		} catch {
 		} finally {
 			setLoading(false)
 		}
 	}
 
-	const fetchCOTotalBankOrUPIRecovery = async (flag) => {
+	const fetchUserLoggedInDetailsCO = async () => {
 		setLoading(true)
 		try {
 			const creds = {
-				flag,
 				branch_code: getBranchCodes()[0],
-				emp_id: userDetails?.emp_id,
-				tr_mode: "B",
+				co_id: userDetails?.emp_id,
 			}
 			const res = await axios.post(
-				`${url}/admin/co_dashboard_dtls_bank_recov`,
+				`${url}/admin/co_dashboard_user_logged_in_details`,
 				creds
 			)
-			// setDateOfOperation(res?.data?.data?.date_of_operation)
-			setTotalBankRecoveryCO(res?.data?.data?.co_dashboard_dt_bank)
+			setActiveUsersCount(res?.data?.data?.co_tot_user_active)
+			setActiveUsers(res?.data?.data?.co_active_user)
+		} catch {
+		} finally {
+			setLoading(false)
+		}
+	}
+
+	const fetchLoanDisbursedDetailsTodayCO = async () => {
+		setLoading(true)
+		try {
+			const creds = {
+				flag: "Today",
+				branch_code: getBranchCodes()[0],
+				co_id: userDetails?.emp_id,
+			}
+			const res = await axios.post(
+				`${url}/admin/co_dashboard_tot_loan_disbursed_dtls`,
+				creds
+			)
+			setDisbursedLoanDetailCountsToday({
+				data: res?.data?.data?.co_total_loan_disbursed,
+				noOfGroups: res?.data?.data?.co_total_grp_loan_disbursed,
+			})
+		} catch {
+		} finally {
+			setLoading(false)
+		}
+	}
+
+	const fetchLoanDisbursedDetailsThisMonthCO = async () => {
+		setLoading(true)
+		try {
+			const creds = {
+				flag: "Today",
+				branch_code: getBranchCodes()[0],
+				co_id: userDetails?.emp_id,
+			}
+			const res = await axios.post(
+				`${url}/admin/dashboard_tot_loan_disbursed_dtls`,
+				creds
+			)
+			setDisbursedLoanDetailCountsMonth({
+				data: res?.data?.data?.co_total_loan_disbursed,
+				noOfGroups: res?.data?.data?.co_total_grp_loan_disbursed,
+			})
+		} catch {
+		} finally {
+			setLoading(false)
+		}
+	}
+
+	const fetchLoanCollectedDetailsTodayCO = async () => {
+		setLoading(true)
+		try {
+			const creds = {
+				flag: "Today",
+				branch_code: getBranchCodes()[0],
+				co_id: userDetails?.emp_id,
+			}
+			const res = await axios.post(
+				`${url}/admin/co_dashboard_tot_loan_recov_dtls`,
+				creds
+			)
+			setCollectedLoanDetailCountsToday({
+				data: res?.data?.data?.co_total_loan_recovery,
+				noOfGroups: res?.data?.data?.co_total_grp_loan_recovery,
+			})
+		} catch {
+		} finally {
+			setLoading(false)
+		}
+	}
+
+	const fetchLoanCollectedDetailsThisMonthCO = async () => {
+		setLoading(true)
+		try {
+			const creds = {
+				flag: "Today",
+				branch_code: getBranchCodes()[0],
+				co_id: userDetails?.emp_id,
+			}
+			const res = await axios.post(
+				`${url}/admin/co_dashboard_tot_loan_recov_dtls`,
+				creds
+			)
+			setCollectedLoanDetailCountsMonth({
+				data: res?.data?.data?.co_total_loan_recovery,
+				noOfGroups: res?.data?.data?.co_total_grp_loan_recovery,
+			})
+		} catch {
+		} finally {
+			setLoading(false)
+		}
+	}
+
+	const fetchUnapprovedTxnsTotalCO = async () => {
+		setLoadingLong(true)
+		try {
+			const creds = {
+				branch_code: getBranchCodes()[0],
+				co_id: userDetails?.emp_id,
+			}
+			const res = await axios.post(
+				`${url}/admin/co_dashboard_tot_loan_unapprove_dtls`,
+				creds
+			)
+			setUnapprovedTxnsDetailCountsTotal({
+				data: res?.data?.data?.co_total_loan_unapprove,
+				noOfGroups: res?.data?.data?.co_total_group_unapprove,
+			})
+		} catch (err) {
+		} finally {
+			setLoadingLong(false)
+		}
+	}
+
+	const fetchOverdueDetails = async () => {
+		setLoading(true)
+		try {
+			const creds = {
+				flag: "D",
+				branch_code: getBranchCodes(),
+			}
+			const res = await axios.post(
+				`${url}/admin/co_dashboard_tot_loan_recov_dtls`,
+				creds
+			)
+			// setCollectedLoanDetailCountsMonth({
+			// 	data: res?.data?.data?.co_total_loan_recovery,
+			// 	noOfGroups: res?.data?.data?.co_total_grp_loan_recovery,
+			// })
 		} catch {
 		} finally {
 			setLoading(false)
@@ -433,29 +560,43 @@ export default function Dashboard() {
 
 	useEffect(() => {
 		if (branches.length) {
+			fetchDateOfOperation()
 			if (+userDetails?.id === 1) {
 				fetchCOTotalGrtDetails(grtPeriod !== "Today" ? "Month" : "Today")
-				fetchCOTotalCashRecovery(grtPeriod !== "Today" ? "Month" : "Today")
-				fetchCOTotalBankOrUPIRecovery(grtPeriod !== "Today" ? "Month" : "Today")
+				fetchActiveGroupsCO()
+				fetchUserLoggedInDetailsCO()
+				fetchLoanDisbursedDetailsTodayCO()
+				fetchLoanDisbursedDetailsThisMonthCO()
+				fetchLoanCollectedDetailsTodayCO()
+				fetchLoanCollectedDetailsThisMonthCO()
+				fetchUnapprovedTxnsTotalCO()
 			} else {
 				fetchTotalGrtDetails(grtPeriod !== "Today" ? "Month" : "Today")
+				fetchActiveGroups()
+				fetchUserLoggedInDetails()
+				fetchLoanDisbursedDetailsToday()
+				fetchLoanDisbursedDetailsThisMonth()
+				fetchLoanCollectedDetailsToday()
+				fetchLoanCollectedDetailsThisMonth()
+				fetchUnapprovedTxnsTotal()
+				// fetchUnapprovedTxnsMonth()
 			}
 		}
 	}, [grtPeriod, choosenBranch, branches])
 
-	useEffect(() => {
-		if (branches.length) {
-			fetchActiveGroups()
-			fetchUserLoggedInDetails()
-			fetchLoanDisbursedDetailsToday()
-			fetchLoanDisbursedDetailsThisMonth()
-			fetchLoanCollectedDetailsToday()
-			fetchLoanCollectedDetailsThisMonth()
-			fetchUnapprovedTxnsTotal()
-			// fetchUnapprovedTxnsMonth()
-			fetchDateOfOperation()
-		}
-	}, [choosenBranch, branches])
+	// useEffect(() => {
+	// 	if (branches.length) {
+	// 		// fetchActiveGroups()
+	// 		// fetchUserLoggedInDetails()
+	// 		// fetchLoanDisbursedDetailsToday()
+	// 		// fetchLoanDisbursedDetailsThisMonth()
+	// 		// fetchLoanCollectedDetailsToday()
+	// 		// fetchLoanCollectedDetailsThisMonth()
+	// 		// fetchUnapprovedTxnsTotal()
+	// 		// // fetchUnapprovedTxnsMonth()
+	// 		// fetchDateOfOperation()
+	// 	}
+	// }, [choosenBranch, branches])
 
 	const handleBranchChange = (e) => setChoosenBranch(e.target.value)
 	const handleGraphYearChange = (e) => setChoosenGraphYear(e.target.value)
@@ -767,6 +908,128 @@ export default function Dashboard() {
 						</div>
 					</div>
 				</div>
+				<div className="md:col-span-3 rounded-3xl bg-white shadow-md p-6 overflow-hidden">
+					{/* <h3 className="text-lg font-medium text-slate-900 py-2 rounded-full">
+						Generate Demand
+					</h3> */}
+					<div className="flex justify-between flex-row pb-5">
+						<div className="space-x-2">
+							<button
+								onClick={() => null}
+								className={`px-3 py-1 rounded-full font-medium text-sm uppercase self-center bg-purple-600 text-white transition-all hover:scale-105 active:scale-95`}
+							>
+								<AutoAwesomeOutlinedIcon fontSize="small" /> Generate Demand
+							</button>
+						</div>
+						<div className="space-x-2">
+							{[
+								"Month",
+								`${new Date().getDate()}th\n(Monthly Mode)`,
+								`${new Intl.DateTimeFormat("en-US", { weekday: "long" }).format(
+									new Date()
+								)}\n(Weekly Mode)`,
+							].map((option) => (
+								<button
+									key={option}
+									onClick={() => setGrtPeriod(option)}
+									className={`px-3 py-1 rounded-full font-medium text-sm ${
+										grtPeriod === option
+											? "bg-teal-600 text-white disabled:bg-slate-100 disabled:text-slate-600 disabled:cursor-not-allowed"
+											: "bg-slate-100 text-slate-600 disabled:bg-slate-100 disabled:text-slate-600 disabled:cursor-not-allowed"
+									}`}
+								>
+									{option}
+								</button>
+							))}
+						</div>
+					</div>
+					<div className="grid grid-cols-2 align-middle bg-white p-6 mt-5 overflow-hidden">
+						<div className="flex flex-col items-center gap-2">
+							<Spin spinning={loadingLong}>
+								<span className="text-3xl font-bold text-emerald-600 mt-4">
+									{formatINR(unapprovedTxnsDetailCountsTotal.data)}
+								</span>
+							</Spin>
+							<span className="text-sm text-slate-600">Demand Amount</span>
+						</div>
+						<div className="flex flex-col items-center gap-2">
+							<Spin spinning={loadingLong}>
+								<span className="text-3xl font-bold text-blue-600 mt-4">
+									{formatNumber(unapprovedTxnsDetailCountsTotal.noOfGroups)}
+								</span>
+							</Spin>
+							<span className="text-sm text-slate-600">Groups</span>
+						</div>
+					</div>
+				</div>
+				<div className="md:col-span-3 rounded-3xl bg-white shadow-md p-6 overflow-hidden">
+					<div className="flex justify-between pb-5 flex-row">
+						<h3 className="text-lg font-medium text-slate-900 rounded-full">
+							Overdue Demand
+						</h3>
+						<div className="space-x-2">
+							{[
+								"Month",
+								`${new Date().getDate()}th\n(Monthly Mode)`,
+								`${new Intl.DateTimeFormat("en-US", { weekday: "long" }).format(
+									new Date()
+								)}\n(Weekly Mode)`,
+							].map((option) => (
+								<button
+									key={option}
+									onClick={() => setGrtPeriod(option)}
+									className={`px-3 py-1 rounded-full font-medium text-sm ${
+										grtPeriod === option
+											? "bg-teal-600 text-white disabled:bg-slate-100 disabled:text-slate-600 disabled:cursor-not-allowed"
+											: "bg-slate-100 text-slate-600 disabled:bg-slate-100 disabled:text-slate-600 disabled:cursor-not-allowed"
+									}`}
+								>
+									{option}
+								</button>
+							))}
+						</div>
+					</div>
+					<div className="grid grid-cols-2 align-middle bg-white p-6 mt-5 overflow-hidden">
+						<div className="flex flex-col items-center gap-2">
+							<Spin spinning={loadingLong}>
+								<span className="text-3xl font-bold text-emerald-600 mt-4">
+									{formatINR(unapprovedTxnsDetailCountsTotal.data)}
+								</span>
+							</Spin>
+							<span className="text-sm text-slate-600">Overdue Amount</span>
+						</div>
+						<div className="flex flex-col items-center gap-2">
+							<Spin spinning={loadingLong}>
+								<span className="text-3xl font-bold text-blue-600 mt-4">
+									{formatNumber(unapprovedTxnsDetailCountsTotal.noOfGroups)}
+								</span>
+							</Spin>
+							<span className="text-sm text-slate-600">Groups</span>
+						</div>
+					</div>
+				</div>
+				{/* <DashboardCard
+					title="Overdue Amount"
+					left1Data={{
+						label: "This Month",
+						value: formatINR(collectedLoanDetailCountsMonth.data),
+					}}
+					left2Data={{
+						label: "Today",
+						value: formatINR(collectedLoanDetailCountsToday.data),
+					}}
+					right1Data={{
+						label: "No. of Groups",
+						value: formatNumber(collectedLoanDetailCountsMonth.noOfGroups),
+					}}
+					right2Data={{
+						label: "No. of Groups",
+						value: formatNumber(collectedLoanDetailCountsToday.noOfGroups),
+					}}
+					leftColor="#e17100"
+					rightColor="#1d293d"
+					loading={loading}
+				/> */}
 			</div>
 			{/* )} */}
 

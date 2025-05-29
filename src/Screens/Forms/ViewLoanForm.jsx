@@ -41,8 +41,8 @@ function ViewLoanForm({ groupDataArr }) {
 	const location = useLocation()
 	const { loanAppData } = location.state || {}
 	const navigate = useNavigate()
-	const userDetails  = JSON.parse(localStorage.getItem("user_details"))
-    const [count,setCount] = useState(0)
+	const userDetails = JSON.parse(localStorage.getItem("user_details"))
+	const [count, setCount] = useState(0)
 	const [groupData, setGroupData] = useState(() => [])
 
 	const [branches, setBranches] = useState(() => [])
@@ -184,12 +184,12 @@ function ViewLoanForm({ groupDataArr }) {
 					g_phone1: res?.data?.msg[0]?.phone1,
 					g_phone2: res?.data?.msg[0]?.phone2,
 					g_email: res?.data?.msg[0]?.email_id,
-					g_bank_name: res?.data?.msg[0]?.bank_name,
-					g_bank_branch: res?.data?.msg[0]?.branch_name,
+					g_bank_name: res?.data?.msg[0]?.bank_name?.trim(),
+					g_bank_branch: res?.data?.msg[0]?.branch_name?.trim(),
 					g_ifsc: res?.data?.msg[0]?.ifsc,
 					g_micr: res?.data?.msg[0]?.micr,
-					g_acc1: res?.data?.msg[0]?.acc_no1,
-					g_acc2: res?.data?.msg[0]?.acc_no2,
+					g_acc1: res?.data?.msg[0]?.acc_no1?.trim(),
+					g_acc2: res?.data?.msg[0]?.acc_no2?.trim(),
 					g_branch_name: res?.data?.msg[0]?.brn_name,
 					g_total_outstanding: res?.data?.msg[0]?.total_outstanding,
 
@@ -205,8 +205,8 @@ function ViewLoanForm({ groupDataArr }) {
 						res?.data?.msg[0]?.disb_details[0]?.disburse_amt,
 					g_disbursement_date: res?.data?.msg[0]?.disb_details[0]?.disb_dt
 						? new Date(
-							res?.data?.msg[0]?.disb_details[0]?.disb_dt
-						).toLocaleDateString("en-GB")
+								res?.data?.msg[0]?.disb_details[0]?.disb_dt
+						  ).toLocaleDateString("en-GB")
 						: "",
 					g_current_outstanding:
 						res?.data?.msg[0]?.disb_details[0]?.curr_outstanding,
@@ -689,7 +689,7 @@ function ViewLoanForm({ groupDataArr }) {
 							<div>
 								<TDInputTemplateBr
 									placeholder="SB Account"
-									type="number"
+									type="text"
 									label="SB Account"
 									name="g_acc1"
 									handleChange={formik.handleChange}
@@ -706,7 +706,7 @@ function ViewLoanForm({ groupDataArr }) {
 							<div>
 								<TDInputTemplateBr
 									placeholder="Loan Account"
-									type="number"
+									type="text"
 									label="Loan Account"
 									name="g_acc2"
 									handleChange={formik.handleChange}
@@ -727,137 +727,131 @@ function ViewLoanForm({ groupDataArr }) {
 							}}
 						/>
 						<div className="grid gap-4 sm:grid-cols-2 sm:gap-6">
-						<div className="sm:col-span-1">
-						<TDInputTemplateBr
-							placeholder="Select Mode"
-							type="text"
-							label="Mode"
-							name="b_mode"
-							formControlName={period_mode}
-							// handleChange={handleChangeDisburseDetails}
-							data={[
-								{
-									code: "Monthly",
-									name: "Monthly",
-								},
-								{
-									code: "Weekly",
-									name: "Weekly",
-								},
-							]}
-							mode={2}
-							disabled
-						// disabled={
-						// 	!disbursementDetailsData.b_scheme || disburseOrNot
-						// }
-						/>
-						</div>
-						<div className="sm:col-span-1">
-						{period_mode === "Monthly" ? (
-							<>
-								<div className="sm:col-span-6">
-									{!period_mode_val && (
-										<span
-											style={{ color: "red" }}
-											className="right-0 ant-tag ant-tag-error ant-tag-borderless text-[12.6px] my-0 css-dev-only-do-not-override-1tse2sn absolute"
-										>
-											Required!
-										</span>
-									)}
-									<TDInputTemplateBr
-										placeholder="Day of Recovery..."
-										type="number"
-										label={`Day of Recovery ${period_mode_val
-												? `(${getOrdinalSuffix(
-													period_mode_val
-												)} of every month)`
-												: ""
-											}`}
-										name="b_dayOfRecovery"
-										formControlName={
-											period_mode_val
-										}
-										handleChange={e => setPeriodModeVal(e.target.value)}
-										mode={1}
-									// disabled={
-									// 	!disbursementDetailsData?.b_scheme || disburseOrNot
-									// }
-									/>
-									{(period_mode_val < 1 ||
-										period_mode_val > 31) && (
-											<VError title={`Day should be between 1 to 31`} />
-										)}
-								</div>
-							</>
-						) : (
-							<>
-								<div className="sm:col-span-6">
-									{!period_mode_val && (
-										<span
-											style={{ color: "red" }}
-											className="right-0 ant-tag ant-tag-error ant-tag-borderless text-[12.6px] my-0 css-dev-only-do-not-override-1tse2sn absolute"
-										>
-											Required!
-										</span>
-									)}
-									<TDInputTemplateBr
-										placeholder="Select Weekday"
-										type="text"
-										label="Day of Recovery"
-										name="b_dayOfRecovery"
-										formControlName={
-											period_mode_val
-										}
-										handleChange={e => setPeriodModeVal(e.target.value)}
-										data={WEEKS}
-										mode={2}
+							<div className="sm:col-span-1">
+								<TDInputTemplateBr
+									placeholder="Select Mode"
+									type="text"
+									label="Mode"
+									name="b_mode"
+									formControlName={period_mode}
+									// handleChange={handleChangeDisburseDetails}
+									data={[
+										{
+											code: "Monthly",
+											name: "Monthly",
+										},
+										{
+											code: "Weekly",
+											name: "Weekly",
+										},
+									]}
+									mode={2}
+									disabled
 									// disabled={
 									// 	!disbursementDetailsData.b_scheme || disburseOrNot
 									// }
-									/>
-								</div>
-							</>
-						)}
-						</div>
-						<div className="sm:col-span-2 text-center">
-						<button
+								/>
+							</div>
+							<div className="sm:col-span-1">
+								{period_mode === "Monthly" ? (
+									<>
+										<div className="sm:col-span-6">
+											{!period_mode_val && (
+												<span
+													style={{ color: "red" }}
+													className="right-0 ant-tag ant-tag-error ant-tag-borderless text-[12.6px] my-0 css-dev-only-do-not-override-1tse2sn absolute"
+												>
+													Required!
+												</span>
+											)}
+											<TDInputTemplateBr
+												placeholder="Day of Recovery..."
+												type="number"
+												label={`Day of Recovery ${
+													period_mode_val
+														? `(${getOrdinalSuffix(
+																period_mode_val
+														  )} of every month)`
+														: ""
+												}`}
+												name="b_dayOfRecovery"
+												formControlName={period_mode_val}
+												handleChange={(e) => setPeriodModeVal(e.target.value)}
+												mode={1}
+												// disabled={
+												// 	!disbursementDetailsData?.b_scheme || disburseOrNot
+												// }
+											/>
+											{(period_mode_val < 1 || period_mode_val > 31) && (
+												<VError title={`Day should be between 1 to 31`} />
+											)}
+										</div>
+									</>
+								) : (
+									<>
+										<div className="sm:col-span-6">
+											{!period_mode_val && (
+												<span
+													style={{ color: "red" }}
+													className="right-0 ant-tag ant-tag-error ant-tag-borderless text-[12.6px] my-0 css-dev-only-do-not-override-1tse2sn absolute"
+												>
+													Required!
+												</span>
+											)}
+											<TDInputTemplateBr
+												placeholder="Select Weekday"
+												type="text"
+												label="Day of Recovery"
+												name="b_dayOfRecovery"
+												formControlName={period_mode_val}
+												handleChange={(e) => setPeriodModeVal(e.target.value)}
+												data={WEEKS}
+												mode={2}
+												// disabled={
+												// 	!disbursementDetailsData.b_scheme || disburseOrNot
+												// }
+											/>
+										</div>
+									</>
+								)}
+							</div>
+							<div className="sm:col-span-2 text-center">
+								<button
 									className="py-2.5 px-5 bg-teal-500 text-slate-50 rounded-full hover:bg-green-500 active:ring-2 active:ring-slate-500"
 									type="button"
 									// onClick={() => setVisible2(true)}
-									onClick={()=>{
+									onClick={() => {
 										const creds = {
-											
-												"recovery_day" : period_mode_val,
-												"modified_by" : userDetails?.emp_id,
-												"recov_day_dtls":groupData[0]?.disb_details?.map(e=>{return {loan_id:e.loan_id}})
+											recovery_day: period_mode_val,
+											modified_by: userDetails?.emp_id,
+											recov_day_dtls: groupData[0]?.disb_details?.map((e) => {
+												return { loan_id: e.loan_id }
+											}),
+										}
+										axios
+											.post(url + "/admin/change_recovery_day", creds)
+											.then((res) => {
+												if (res?.data?.suc > 0) {
+													setCount((prev) => prev + 1)
+													Message(
+														"success",
+														"Recovery day updated successfully!"
+													)
+												} else {
+													Message("error", "Error while updating!")
 												}
-												axios.post(url+'/admin/change_recovery_day',creds).then(res=>{
-													if(res?.data?.suc>0){
-														setCount(prev=>prev+1)
-														Message('success','Recovery day updated successfully!')
-
-													}
-													else{
-														Message('error','Error while updating!')
-
-													}
-												}).catch(err=>{
-													Message('error',err)
-
-												})
-										
-									}
-
-									}
+											})
+											.catch((err) => {
+												Message("error", err)
+											})
+									}}
 								>
-									Save 
+									Save
 								</button>
-						</div>
+							</div>
 						</div>
 						{/* purpose,scheme name,interest rate,period,period mode,fund name,total applied amount,total disbursement amount,disbursement date,current outstanding */}
-						<div className="text-[#DA4167] text-lg font-bold">
-							Loan Details
-						</div>
+						<div className="text-[#DA4167] text-lg font-bold">Loan Details</div>
 
 						<div>
 							<DynamicTailwindTable
