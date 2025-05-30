@@ -14,6 +14,7 @@ const DynamicTailwindTable = ({
 	disableAllCheckbox = false,
 	onRowSelectionChange = () => {},
 	indexing = false,
+	bordered = true,
 }) => {
 	const [currentPage, setCurrentPage] = useState(1)
 
@@ -109,7 +110,7 @@ const DynamicTailwindTable = ({
 	return (
 		<>
 			<div
-				className="relative overflow-auto shadow-md sm:rounded-lg mt-5 max-h-[500px]
+				className="relative overflow-auto shadow-md sm:rounded-xl mt-5 max-h-[500px]
           [&::-webkit-scrollbar]:w-1
           [&::-webkit-scrollbar-track]:rounded-full
           [&::-webkit-scrollbar-track]:bg-transparent
@@ -153,9 +154,7 @@ const DynamicTailwindTable = ({
 							return (
 								<tr
 									key={rowIndex}
-									className={
-										rowIndex % 2 === 0 ? "bg-slate-100 text-slate-900" : ""
-									}
+									className={"even:bg-slate-100 even:text-slate-900"}
 								>
 									{indexing && <td className="px-6 py-3">{globalIndex + 1}</td>}
 									{showCheckbox && (
@@ -170,7 +169,12 @@ const DynamicTailwindTable = ({
 										</td>
 									)}
 									{filteredHeadersWithIndex.map((item, colIdx) => (
-										<td key={colIdx} className="px-6 py-3">
+										<td
+											key={colIdx}
+											className={`px-6 py-3 ${
+												bordered ? "border-r-slate-200 border text-justify" : ""
+											}`}
+										>
 											{row[item.header] !== undefined
 												? formatCellValue(row[item.header], item.index)
 												: "---"}

@@ -14,6 +14,7 @@ import { routePaths } from "../../Assets/Data/Routes"
 import ArrowBackIcon from "@mui/icons-material/ArrowBack"
 import Visibility from "@mui/icons-material/Visibility"
 import VisibilityOff from "@mui/icons-material/VisibilityOff"
+import coverPhoto from "../../Assets/Images/ssvws_cover.webp"
 
 const SignInPage = () => {
 	const navigate = useNavigate()
@@ -380,7 +381,8 @@ const SignInPage = () => {
 
 				<div className="relative hidden lg:block">
 					<img
-						src="https://picsum.photos/seed/mountain/900/800"
+						// src="https://picsum.photos/seed/mountain/900/800"
+						src={coverPhoto}
 						alt="Scenic view"
 						className="absolute inset-0 w-full h-full object-cover rounded-r-3xl"
 					/>

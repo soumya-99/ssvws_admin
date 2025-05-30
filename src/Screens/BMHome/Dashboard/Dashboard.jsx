@@ -19,6 +19,7 @@ import CurrencyRupeeOutlinedIcon from "@mui/icons-material/CurrencyRupeeOutlined
 import AccountBalanceOutlinedIcon from "@mui/icons-material/AccountBalanceOutlined"
 import ListAltOutlinedIcon from "@mui/icons-material/ListAltOutlined"
 import AutoAwesomeOutlinedIcon from "@mui/icons-material/AutoAwesomeOutlined"
+import { Message } from "../../../Components/Message"
 
 const formatINR = (num) =>
 	new Intl.NumberFormat("en-IN", {
@@ -59,6 +60,8 @@ export default function Dashboard() {
 
 	const [loading, setLoading] = useState(() => false)
 	const [loadingLong, setLoadingLong] = useState(() => false)
+	const [loadingOd, setLoadingOd] = useState(() => false)
+	const [loadingDmd, setLoadingDmd] = useState(() => false)
 	const [branches, setBranches] = useState(() => [])
 	const [choosenBranch, setChoosenBranch] = useState(() =>
 		+branchId === 100 ? "100" : branchId
@@ -116,10 +119,28 @@ export default function Dashboard() {
 	// 		noOfGroups: "",
 	// 	})
 
+	// od
 	const [odFlags, setOdFlags] = useState({
-		flag: "D",
+		id: 0,
+		flag: "M",
 		recovDay: "",
-	}) // D, W, M
+	}) // M, D, W
+	const [odDetails, setOdDetails] = useState({
+		data: "",
+		noOfGroups: "",
+	})
+
+	// dmd
+	const [dmdFlags, setDmdFlags] = useState({
+		id: 0,
+		flag: "M",
+		recovDay: "",
+	}) // M, D, W
+	const [dmdDetails, setDmdDetails] = useState({
+		data: "",
+		noOfGroups: "",
+	})
+	const [demandFlag, setDemandFlag] = useState(() => 0)
 
 	const activeGrtData = grtPeriod === "Today" ? grtDataToday : grtDataMonth
 
@@ -534,23 +555,128 @@ export default function Dashboard() {
 	}
 
 	const fetchOverdueDetails = async () => {
-		setLoading(true)
+		setLoadingOd(true)
 		try {
 			const creds = {
-				flag: "D",
+				flag: odFlags.flag,
 				branch_code: getBranchCodes(),
+				recov_day: odFlags.recovDay,
 			}
-			const res = await axios.post(
-				`${url}/admin/co_dashboard_tot_loan_recov_dtls`,
-				creds
+			const res = await axios.post(`${url}/admin/dashboard_overdue_dtls`, creds)
+			setOdDetails(
+				odFlags.flag === "M"
+					? {
+							data: res?.data?.data?.total_loan_od,
+							noOfGroups: res?.data?.data?.total_overdue_groups,
+					  }
+					: odFlags.flag === "D"
+					? {
+							data: res?.data?.data?.monthly_loan_od,
+							noOfGroups: res?.data?.data?.monthly_overdue_groups,
+					  }
+					: odFlags.flag === "W"
+					? {
+							data: res?.data?.data?.weekly_loan_od,
+							noOfGroups: res?.data?.data?.weekly_overdue_groups,
+					  }
+					: {
+							data: "",
+							noOfGroups: "",
+					  }
 			)
-			// setCollectedLoanDetailCountsMonth({
-			// 	data: res?.data?.data?.co_total_loan_recovery,
-			// 	noOfGroups: res?.data?.data?.co_total_grp_loan_recovery,
-			// })
 		} catch {
 		} finally {
-			setLoading(false)
+			setLoadingOd(false)
+		}
+	}
+
+	const fetchOverdueDetailsForAllBranches = async () => {
+		setLoadingOd(true)
+		try {
+			const creds = {
+				flag: odFlags.flag,
+				branch_code: getBranchCodes(),
+				recov_day: odFlags.recovDay,
+			}
+			const res = await axios.post(
+				`${url}/admin/dashboard_overdue_amt_fr_allbrn`,
+				creds
+			)
+			setOdDetails(
+				odFlags.flag === "M"
+					? {
+							data: res?.data?.data?.total_loan_od,
+							noOfGroups: res?.data?.data?.total_overdue_groups,
+					  }
+					: odFlags.flag === "D"
+					? {
+							data: res?.data?.data?.monthly_loan_od,
+							noOfGroups: res?.data?.data?.monthly_overdue_groups,
+					  }
+					: odFlags.flag === "W"
+					? {
+							data: res?.data?.data?.weekly_loan_od,
+							noOfGroups: res?.data?.data?.weekly_overdue_groups,
+					  }
+					: {
+							data: "",
+							noOfGroups: "",
+					  }
+			)
+		} catch {
+		} finally {
+			setLoadingOd(false)
+		}
+	}
+
+	const generateDemandData = async () => {
+		setLoadingDmd(true)
+		try {
+			const creds = {
+				branch_code: getBranchCodes()[0],
+			}
+			const res = await axios.post(`${url}/admin/dashboard_generate_dmd`, creds)
+			console.log("DEMAND GEN", res?.data)
+			setDemandFlag(res?.data?.data[0]?.result?.suc)
+		} catch {
+		} finally {
+			setLoadingDmd(false)
+		}
+	}
+
+	const fetchDemandDetails = async () => {
+		setLoadingDmd(true)
+		try {
+			const creds = {
+				flag: dmdFlags.flag,
+				branch_code: getBranchCodes(),
+				recov_day: dmdFlags.recovDay,
+			}
+			const res = await axios.post(`${url}/admin/dashboard_demand_dtls`, creds)
+			setDmdDetails(
+				dmdFlags.flag === "M"
+					? {
+							data: res?.data?.data?.total_loan_dmd,
+							noOfGroups: res?.data?.data?.total_demand_groups,
+					  }
+					: dmdFlags.flag === "D"
+					? {
+							data: res?.data?.data?.monthly_loan_dmd,
+							noOfGroups: res?.data?.data?.monthly_demand_groups,
+					  }
+					: dmdFlags.flag === "W"
+					? {
+							data: res?.data?.data?.weekly_loan_dmd,
+							noOfGroups: res?.data?.data?.weekly_demand_groups,
+					  }
+					: {
+							data: "",
+							noOfGroups: "",
+					  }
+			)
+		} catch {
+		} finally {
+			setLoadingDmd(false)
 		}
 	}
 
@@ -584,19 +710,23 @@ export default function Dashboard() {
 		}
 	}, [grtPeriod, choosenBranch, branches])
 
-	// useEffect(() => {
-	// 	if (branches.length) {
-	// 		// fetchActiveGroups()
-	// 		// fetchUserLoggedInDetails()
-	// 		// fetchLoanDisbursedDetailsToday()
-	// 		// fetchLoanDisbursedDetailsThisMonth()
-	// 		// fetchLoanCollectedDetailsToday()
-	// 		// fetchLoanCollectedDetailsThisMonth()
-	// 		// fetchUnapprovedTxnsTotal()
-	// 		// // fetchUnapprovedTxnsMonth()
-	// 		// fetchDateOfOperation()
-	// 	}
-	// }, [choosenBranch, branches])
+	useEffect(() => {
+		if (branches.length) {
+			if (+choosenBranch !== 100) {
+				fetchOverdueDetails()
+			} else {
+				fetchOverdueDetailsForAllBranches()
+			}
+		}
+	}, [odFlags, choosenBranch, branches])
+
+	useEffect(() => {
+		if (branches.length) {
+			if (demandFlag === 1) {
+				fetchDemandDetails()
+			}
+		}
+	}, [dmdFlags])
 
 	const handleBranchChange = (e) => setChoosenBranch(e.target.value)
 	const handleGraphYearChange = (e) => setChoosenGraphYear(e.target.value)
@@ -915,8 +1045,15 @@ export default function Dashboard() {
 					<div className="flex justify-between flex-row pb-5">
 						<div className="space-x-2">
 							<button
-								onClick={() => null}
-								className={`px-3 py-1 rounded-full font-medium text-sm uppercase self-center bg-purple-600 text-white transition-all hover:scale-105 active:scale-95`}
+								onClick={() => {
+									if (+choosenBranch === 100) {
+										Message("warning", "Please select individual branch.")
+										return
+									}
+									generateDemandData()
+								}}
+								className={`px-3 py-1 rounded-full font-medium text-sm uppercase self-center bg-purple-600 text-white transition-all hover:scale-105 active:scale-95 disabled:bg-slate-100 disabled:text-slate-600 disabled:cursor-not-allowed`}
+								disabled={loadingDmd}
 							>
 								<AutoAwesomeOutlinedIcon fontSize="small" /> Generate Demand
 							</button>
@@ -928,15 +1065,42 @@ export default function Dashboard() {
 								`${new Intl.DateTimeFormat("en-US", { weekday: "long" }).format(
 									new Date()
 								)}\n(Weekly Mode)`,
-							].map((option) => (
+							].map((option, i) => (
 								<button
 									key={option}
-									onClick={() => setGrtPeriod(option)}
+									onClick={() =>
+										setDmdFlags(
+											i === 0
+												? {
+														id: i,
+														flag: "M",
+														recovDay: "",
+												  }
+												: i === 1
+												? {
+														id: i,
+														flag: "D",
+														recovDay: new Date().getDate(),
+												  }
+												: i === 2
+												? {
+														id: i,
+														flag: "W",
+														recovDay: new Date().getDay() + 1,
+												  }
+												: {
+														id: i,
+														flag: "",
+														recovDay: "",
+												  }
+										)
+									}
 									className={`px-3 py-1 rounded-full font-medium text-sm ${
-										grtPeriod === option
+										dmdFlags.id === i
 											? "bg-teal-600 text-white disabled:bg-slate-100 disabled:text-slate-600 disabled:cursor-not-allowed"
 											: "bg-slate-100 text-slate-600 disabled:bg-slate-100 disabled:text-slate-600 disabled:cursor-not-allowed"
 									}`}
+									disabled={demandFlag === 0}
 								>
 									{option}
 								</button>
@@ -945,17 +1109,17 @@ export default function Dashboard() {
 					</div>
 					<div className="grid grid-cols-2 align-middle bg-white p-6 mt-5 overflow-hidden">
 						<div className="flex flex-col items-center gap-2">
-							<Spin spinning={loadingLong}>
+							<Spin spinning={loadingDmd}>
 								<span className="text-3xl font-bold text-emerald-600 mt-4">
-									{formatINR(unapprovedTxnsDetailCountsTotal.data)}
+									{formatINR(dmdDetails.data)}
 								</span>
 							</Spin>
 							<span className="text-sm text-slate-600">Demand Amount</span>
 						</div>
 						<div className="flex flex-col items-center gap-2">
-							<Spin spinning={loadingLong}>
+							<Spin spinning={loadingDmd}>
 								<span className="text-3xl font-bold text-blue-600 mt-4">
-									{formatNumber(unapprovedTxnsDetailCountsTotal.noOfGroups)}
+									{formatNumber(dmdDetails.noOfGroups)}
 								</span>
 							</Spin>
 							<span className="text-sm text-slate-600">Groups</span>
@@ -974,12 +1138,38 @@ export default function Dashboard() {
 								`${new Intl.DateTimeFormat("en-US", { weekday: "long" }).format(
 									new Date()
 								)}\n(Weekly Mode)`,
-							].map((option) => (
+							].map((option, i) => (
 								<button
 									key={option}
-									onClick={() => setGrtPeriod(option)}
+									onClick={() =>
+										setOdFlags(
+											i === 0
+												? {
+														id: i,
+														flag: "M",
+														recovDay: "",
+												  }
+												: i === 1
+												? {
+														id: i,
+														flag: "D",
+														recovDay: new Date().getDate(),
+												  }
+												: i === 2
+												? {
+														id: i,
+														flag: "W",
+														recovDay: new Date().getDay() + 1,
+												  }
+												: {
+														id: i,
+														flag: "",
+														recovDay: "",
+												  }
+										)
+									}
 									className={`px-3 py-1 rounded-full font-medium text-sm ${
-										grtPeriod === option
+										odFlags.id === i
 											? "bg-teal-600 text-white disabled:bg-slate-100 disabled:text-slate-600 disabled:cursor-not-allowed"
 											: "bg-slate-100 text-slate-600 disabled:bg-slate-100 disabled:text-slate-600 disabled:cursor-not-allowed"
 									}`}
@@ -991,17 +1181,17 @@ export default function Dashboard() {
 					</div>
 					<div className="grid grid-cols-2 align-middle bg-white p-6 mt-5 overflow-hidden">
 						<div className="flex flex-col items-center gap-2">
-							<Spin spinning={loadingLong}>
+							<Spin spinning={loadingOd}>
 								<span className="text-3xl font-bold text-emerald-600 mt-4">
-									{formatINR(unapprovedTxnsDetailCountsTotal.data)}
+									{formatINR(odDetails.data)}
 								</span>
 							</Spin>
 							<span className="text-sm text-slate-600">Overdue Amount</span>
 						</div>
 						<div className="flex flex-col items-center gap-2">
-							<Spin spinning={loadingLong}>
+							<Spin spinning={loadingOd}>
 								<span className="text-3xl font-bold text-blue-600 mt-4">
-									{formatNumber(unapprovedTxnsDetailCountsTotal.noOfGroups)}
+									{formatNumber(odDetails.noOfGroups)}
 								</span>
 							</Spin>
 							<span className="text-sm text-slate-600">Groups</span>
