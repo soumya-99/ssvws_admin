@@ -386,6 +386,7 @@ function OverdueReport() {
 			// demand_date: fetchedReportDate,
 			// send_year: choosenYear,
 			// send_month: choosenMonth,
+			send_date: formatDateToYYYYMMDD(fromDate),
 			search_brn_id:
 				branchCodes?.length === 0
 					? [{ branch_code: userDetails.brn_code }]
@@ -412,11 +413,13 @@ function OverdueReport() {
 		const branchCodes = selectedOptions?.map((item, i) => {
 			return { branch_code: item.value }
 		})
+		const selectedFunds = funds?.map((item, i) => item?.fund_id)
 
 		const creds = {
 			// demand_date: fetchedReportDate,
 			// send_year: choosenYear,
 			// send_month: choosenMonth,
+			send_date: formatDateToYYYYMMDD(fromDate),
 			search_brn_id:
 				branchCodes?.length === 0
 					? [{ branch_code: userDetails.brn_code }]
@@ -424,6 +427,7 @@ function OverdueReport() {
 			period_mode: searchType3,
 			from_day: fromDay,
 			to_day: toDay,
+			fund_id: selectedFund === "F" ? selectedFunds : [selectedFund],
 		}
 		await axios
 			.post(`${url}/filter_daywise_overdue_report_fundwise`, creds)
@@ -443,11 +447,14 @@ function OverdueReport() {
 		const branchCodes = selectedOptions?.map((item, i) => {
 			return { branch_code: item.value }
 		})
+		const coCodes = selectedCOs?.map((item, i) => item?.value)
+		const allCos = cos?.map((item, i) => item?.co_id)
 
 		const creds = {
 			// demand_date: fetchedReportDate,
 			// send_year: choosenYear,
 			// send_month: choosenMonth,
+			send_date: formatDateToYYYYMMDD(fromDate),
 			search_brn_id:
 				branchCodes?.length === 0
 					? [{ branch_code: userDetails.brn_code }]
@@ -455,6 +462,12 @@ function OverdueReport() {
 			period_mode: searchType3,
 			from_day: fromDay,
 			to_day: toDay,
+			co_id:
+				coCodes?.length === 0
+					? selectedCO === "AC"
+						? allCos
+						: [selectedCO]
+					: coCodes,
 		}
 		await axios
 			.post(`${url}/filter_dayawise_overdue_report_cowise`, creds)
@@ -479,6 +492,7 @@ function OverdueReport() {
 			// demand_date: fetchedReportDate,
 			// send_year: choosenYear,
 			// send_month: choosenMonth,
+			send_date: formatDateToYYYYMMDD(fromDate),
 			search_brn_id:
 				branchCodes?.length === 0
 					? [{ branch_code: userDetails.brn_code }]

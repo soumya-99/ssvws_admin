@@ -20,6 +20,7 @@ import AccountBalanceOutlinedIcon from "@mui/icons-material/AccountBalanceOutlin
 import ListAltOutlinedIcon from "@mui/icons-material/ListAltOutlined"
 import AutoAwesomeOutlinedIcon from "@mui/icons-material/AutoAwesomeOutlined"
 import { Message } from "../../../Components/Message"
+import { getOrdinalSuffix } from "../../../Utils/ordinalSuffix"
 
 const formatINR = (num) =>
 	new Intl.NumberFormat("en-IN", {
@@ -1061,7 +1062,7 @@ export default function Dashboard() {
 						<div className="space-x-2">
 							{[
 								"Month",
-								`${new Date().getDate()}th\n(Monthly Mode)`,
+								`${getOrdinalSuffix(new Date().getDate())}\n(Monthly Mode)`,
 								`${new Intl.DateTimeFormat("en-US", { weekday: "long" }).format(
 									new Date()
 								)}\n(Weekly Mode)`,
@@ -1134,7 +1135,7 @@ export default function Dashboard() {
 						<div className="space-x-2">
 							{[
 								"Month",
-								`${new Date().getDate()}th\n(Monthly Mode)`,
+								`${getOrdinalSuffix(new Date().getDate())}\n(Monthly Mode)`,
 								`${new Intl.DateTimeFormat("en-US", { weekday: "long" }).format(
 									new Date()
 								)}\n(Weekly Mode)`,
