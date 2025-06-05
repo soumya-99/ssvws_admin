@@ -64,6 +64,7 @@ import MasterBlocks from "./Screens/Admin/Master/Blocks/MasterBlocks"
 import EditMasterBlocks from "./Screens/Admin/Master/Blocks/EditMasterBlocks"
 import MasterPurpose from "./Screens/Admin/Master/Purpose/MasterPurpose"
 import EditMasterPurpose from "./Screens/Admin/Master/Purpose/EditMasterPurpose"
+import PortfolioReport from "./Screens/Reports/PortfolioReport/PortfolioReport"
 // import A_LoanStatementMain from "./Screens/Admin/Reports/LoanStatements/A_LoanStatementMain"
 // import A_LoanTransactionsMain from "./Screens/Admin/Reports/LoanTransactions/A_LoanTransactionsMain"
 // import A_DemandReportsMain from "./Screens/Admin/Reports/DemandReports/A_DemandReportsMain"
@@ -382,6 +383,10 @@ const router = createBrowserRouter([
 							{
 								path: "overduereport",
 								element: <OverdueReport />,
+							},
+							{
+								path: "portfolioreport",
+								element: <PortfolioReport />,
 							},
 							{
 								path: "fundwisesummary",
