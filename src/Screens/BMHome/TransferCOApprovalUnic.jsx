@@ -4,7 +4,11 @@ import axios from "axios"
 import { url } from "../../Address/BaseUrl"
 import { Message } from "../../Components/Message"
 import { Spin } from "antd"
-import { CheckCircleOutlined, LoadingOutlined, PlusCircleOutlined } from "@ant-design/icons"
+import {
+	CheckCircleOutlined,
+	LoadingOutlined,
+	PlusCircleOutlined,
+} from "@ant-design/icons"
 import LoanApplicationsTableViewBr from "../../Components/LoanApplicationsTableViewBr"
 import Radiobtn from "../../Components/Radiobtn"
 import TDInputTemplateBr from "../../Components/TDInputTemplateBr"
@@ -22,9 +26,7 @@ const options = [
 	{
 		label: "Approved",
 		value: "A",
-	}
-	
-	
+	},
 ]
 
 function TransferCOApprovalUnic() {
@@ -37,11 +39,9 @@ function TransferCOApprovalUnic() {
 
 	const [radioType, setRadioType] = useState("P")
 
-
 	const [coListData, setCoListData] = useState(() => [])
 	const [selectedEmployeeId, setSelectedEmployeeId] = useState(() => null)
 
-	
 	const fetchCoList_ID = async () => {
 		setLoading(true)
 		await axios
@@ -51,8 +51,6 @@ function TransferCOApprovalUnic() {
 			.then((res) => {
 				if (res?.data?.suc === 1) {
 					setCoListData(res?.data?.msg)
-					
-					
 				} else {
 					Message("error", "No incoming loan applications found.")
 				}
@@ -65,12 +63,17 @@ function TransferCOApprovalUnic() {
 	}
 
 	const fetchCoList_CO_Shorting = async (co_Id) => {
-		console.log({
-			branch_code: userDetails?.brn_code,
-			approval_status: radioType,
-			co_id: co_Id,
-		}, 'fetchCoList____', co_Id, radioType);
-		
+		console.log(
+			{
+				branch_code: userDetails?.brn_code,
+				approval_status: radioType,
+				co_id: co_Id,
+			},
+			"fetchCoList____",
+			co_Id,
+			radioType
+		)
+
 		setLoading(true)
 		await axios
 			.post(`${url}/admin/mis_fetch_dtls_cowise`, {
@@ -100,9 +103,9 @@ function TransferCOApprovalUnic() {
 
 		await axios
 			.post(`${url}/trans_co_view`, {
-						// branch_code: userDetails?.brn_code,
-						flag: radioType
-						})
+				branch_code: [userDetails?.brn_code],
+				flag: radioType,
+			})
 			.then((res) => {
 				if (res?.data?.suc === 1) {
 					setLoanApplications(res?.data?.msg)
@@ -122,7 +125,6 @@ function TransferCOApprovalUnic() {
 		setLoading(false)
 	}
 
-
 	const onChange = (e) => {
 		console.log("radio1 checked", e)
 		setRadioType(e)
@@ -133,21 +135,14 @@ function TransferCOApprovalUnic() {
 		// fetchCoList_ID()
 	}, [])
 
-
-
-
-	
-
 	// const handleEmployeeChange = (e) => {
 	// 	// Save the emp_id of the selected employee
-		
+
 	// 	console.log(e.target.value, 'oooooooooooooooo');
 	// 	const selectedId = e.target.value
 	// 	setSelectedEmployeeId(selectedId) // Save to state
 	// 	fetchCoList_CO_Shorting(selectedId)
 	// }
-
-
 
 	const setSearch = (word) => {
 		// if (radioType === "S") {
@@ -169,9 +164,6 @@ function TransferCOApprovalUnic() {
 			)
 		)
 		// }
-
-	
-
 	}
 
 	useEffect(() => {
@@ -179,20 +171,16 @@ function TransferCOApprovalUnic() {
 		fetchCoList_ID()
 	}, [radioType])
 
-	
-		useEffect(() => {
-	
-			if (radioType === "A") {
-				fetchApprove_Tranceferco('A')
-				setSelectedEmployeeId(() => [])
-				console.log('fff', 'SSSSSSSSSSSSSSS');
-				
-			} else if (radioType === "P") {
-				fetchApprove_Tranceferco('P')
-				console.log('fff', 'RRRRRRRRRRRRRRR');
-			}
-
-		}, [radioType])
+	useEffect(() => {
+		if (radioType === "A") {
+			fetchApprove_Tranceferco("A")
+			setSelectedEmployeeId(() => [])
+			console.log("fff", "SSSSSSSSSSSSSSS")
+		} else if (radioType === "P") {
+			fetchApprove_Tranceferco("P")
+			console.log("fff", "RRRRRRRRRRRRRRR")
+		}
+	}, [radioType])
 
 	return (
 		<div>
@@ -203,8 +191,7 @@ function TransferCOApprovalUnic() {
 				className="text-blue-800 dark:text-gray-400"
 				spinning={loading}
 			>
-				<main className="px-4 h-auto my-10 mx-32" style={{marginTop:75}}>
-				
+				<main className="px-4 h-auto my-10 mx-32" style={{ marginTop: 75 }}>
 					{/* <div style={{ display: "block ruby" }}>
 					<Radiobtn
 						data={options}
@@ -227,7 +214,7 @@ function TransferCOApprovalUnic() {
 					<PlusCircleOutlined /> <spann class={`ml-2`}>Trancefer CO Form</spann>
 					</button>
 					</div> */}
-					
+
 					{/* <LoanApplicationsTableViewBr
 						flag="MIS"
 						loanAppData={loanApplications}
@@ -236,9 +223,8 @@ function TransferCOApprovalUnic() {
 					/> */}
 
 					{radioType === "P" ? (
-					<>
-							
-					{/* <div className="grid grid-cols-3 gap-5 mt-5">
+						<>
+							{/* <div className="grid grid-cols-3 gap-5 mt-5">
 								
 
 								<div>
@@ -260,21 +246,20 @@ function TransferCOApprovalUnic() {
 								</div>
 							</div> */}
 
-					<TranceferCOPending
-						flag="MIS"
-						loanAppData={loanApplications}
-						radioType={radioType}
-						title="Approve Group Transfer"
-						setSearch={(data) => setSearch(data)}
-						// fetchLoanApplicationsDate={{
-						// 	selectedEmployeeId
-						// }}
-					/>
-					</>
+							<TranceferCOPending
+								flag="MIS"
+								loanAppData={loanApplications}
+								radioType={radioType}
+								title="Approve Group Transfer"
+								setSearch={(data) => setSearch(data)}
+								// fetchLoanApplicationsDate={{
+								// 	selectedEmployeeId
+								// }}
+							/>
+						</>
 					) : radioType === "A" ? (
 						<>
-							
-					{/* <div className="grid grid-cols-3 gap-5 mt-5">
+							{/* <div className="grid grid-cols-3 gap-5 mt-5">
 								
 
 								<div>
@@ -295,25 +280,18 @@ function TransferCOApprovalUnic() {
 								</div>
 							</div> */}
 
-					<TranceferCOApprove
-						flag="MIS"
-						loanAppData={loanApplications}
-						radioType={radioType}
-						title="Approve Trancefer CO List"
-						setSearch={(data) => setSearch(data)}
-						// fetchLoanApplicationsDate={{
-						// 	selectedEmployeeId
-						// }}
-					/>
-
-
-
+							<TranceferCOApprove
+								flag="MIS"
+								loanAppData={loanApplications}
+								radioType={radioType}
+								title="Approve Trancefer CO List"
+								setSearch={(data) => setSearch(data)}
+								// fetchLoanApplicationsDate={{
+								// 	selectedEmployeeId
+								// }}
+							/>
 						</>
 					) : null}
-
-
-
-
 
 					{/* <DialogBox
 					visible={visible}

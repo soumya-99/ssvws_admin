@@ -611,7 +611,7 @@ const portfolioReportHeaderGroupwise = {
 	First_overdue_date: "First Overdue Date",
 	Overdue_transfer_date: "Overdue Transfer Date",
 	Loan_end_date: "Loan End Date",
-	Last_transaction_date: "Last Transaction Date",
+	// Last_transaction_date: "Last Transaction Date",
 }
 
 const portfolioReportHeaderMemberwise = {

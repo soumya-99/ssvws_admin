@@ -49,30 +49,25 @@ function TranceferCOPending({
 	const [loading, setLoading] = useState(() => false)
 	const [LoanGroupMember, setLoanGroupMember] = useState(() => [])
 
-
-
-	
-
-
 	const fetchLoanGroupMember = async (group_code, radioType) => {
 		console.log(group_code, "res?.data?.msg", {
-			branch_code : userDetails?.brn_code,
-			approval_status : radioType,
-			prov_grp_code : group_code
+			branch_code: userDetails?.brn_code,
+			approval_status: radioType,
+			prov_grp_code: group_code,
 		})
 
 		setLoading(true)
 		await axios
 			.post(`${url}/admin/form_fwd_bm_to_mis_mem_dtls`, {
-				branch_code : userDetails?.brn_code,
-				approval_status : radioType,
-				prov_grp_code : group_code
+				branch_code: userDetails?.brn_code,
+				approval_status: radioType,
+				prov_grp_code: group_code,
 			})
 			.then((res) => {
 				if (res?.data?.suc === 1) {
 					setLoading(false)
 					setLoanGroupMember(res?.data?.msg)
-					console.log(res?.data?.msg, "res?.data?.msg", 'sucsess')
+					console.log(res?.data?.msg, "res?.data?.msg", "sucsess")
 				} else {
 					Message("error", "No incoming loan applications found.")
 				}
@@ -83,23 +78,14 @@ function TranceferCOPending({
 			})
 	}
 
-
-
-
-
 	useEffect(() => {
 		// alert(getloanAppData)
 		// alert(radioType)
 		if (loanAppData.length > 0) {
 			setLoanAppData(loanAppData)
 		}
-		console.log(loanAppData, 'fffffffffffffffffffffffffffffffff');
-		
-	}, [loanAppData,])
-
-
-
-	
+		console.log(loanAppData, "fffffffffffffffffffffffffffffffff")
+	}, [loanAppData])
 
 	// useEffect(() => {
 	// 	if (isMounted.current) {
@@ -131,9 +117,8 @@ function TranceferCOPending({
 	useEffect(() => {
 		fetchLoanGroupMember([])
 		// setExpandedRows(null);
-		console.log(loanAppData, 'fffffffffffffffffffffffffffffffff');
-		
-	}, [fetchLoanApplicationsDate,])
+		console.log(loanAppData, "fffffffffffffffffffffffffffffffff")
+	}, [fetchLoanApplicationsDate])
 
 	const onPageChange = (event) => {
 		setCurrentPage(event.first)
@@ -145,7 +130,6 @@ function TranceferCOPending({
 		console.log(e.value, "kkkkkkkkkkkkkkkkkkkk")
 		// Perform any additional logic here, such as enabling a button or triggering another action
 		setSelectedProducts(e.value)
-		
 	}
 
 	// const goTo = (item) => {
@@ -158,58 +142,57 @@ function TranceferCOPending({
 	// 	goTo()
 	// })
 
-// 	const rowExpansionTemplate = () => {
-// 			return (
-// 				<div className="orders-subtable">
-// 					<DataTable
-// 						value={LoanGroupMember}
-// 						responsiveLayout="scroll"
-// 						tableClassName="w-full text-sm text-left rtl:text-right shadow-lg text-green-900dark:text-gray-400 table_Custome table_Custome_2nd"
-// 					>
-// 						<Column
-// 							field="form_no"
-// 							header="Form No."
-// 						></Column>
-// 						<Column field="member_code" header="Member Code"
-// 						></Column>
-// 						<Column field="client_name" header="Client Name"></Column>
-// 						<Column field="grt_date" header="GRT Date"
-// 						body={(rowData) =>
-// 							new Date(rowData?.grt_date).toLocaleDateString("en-GB")
-// 						}
-// 						></Column>
-// 						<Column
-//     field=""
-//     header="Action"
-//     body={(rowData) => (
-//         <button
-//             onClick={() => {
-//                 console.log("Selected Item:", rowData);
-//                 if (flag === "MIS") {
-//                     navigate(`/homemis/editgrtform/${rowData?.form_no}`, {
-//                         state: rowData,
-//                     });
-//                 } else if (flag === "BM") {
-//                     navigate(`/homebm/editgrtform/${rowData?.form_no}`, {
-//                         state: rowData,
-//                     });
-//                 } else {
-//                     navigate(`/homeco/editgrtform/${rowData?.form_no}`, {
-//                         state: rowData,
-//                     });
-//                 }
-//             }}
-//         >
-//             <EditOutlined className="text-md text-[#DA4167]" />
-//         </button>
-//     )}
-// />
-// 						<Column headerStyle={{ width: '4rem'}}></Column>
-// 					</DataTable>
-// 				</div>
-// 			)
-// 		}
-
+	// 	const rowExpansionTemplate = () => {
+	// 			return (
+	// 				<div className="orders-subtable">
+	// 					<DataTable
+	// 						value={LoanGroupMember}
+	// 						responsiveLayout="scroll"
+	// 						tableClassName="w-full text-sm text-left rtl:text-right shadow-lg text-green-900dark:text-gray-400 table_Custome table_Custome_2nd"
+	// 					>
+	// 						<Column
+	// 							field="form_no"
+	// 							header="Form No."
+	// 						></Column>
+	// 						<Column field="member_code" header="Member Code"
+	// 						></Column>
+	// 						<Column field="client_name" header="Client Name"></Column>
+	// 						<Column field="grt_date" header="GRT Date"
+	// 						body={(rowData) =>
+	// 							new Date(rowData?.grt_date).toLocaleDateString("en-GB")
+	// 						}
+	// 						></Column>
+	// 						<Column
+	//     field=""
+	//     header="Action"
+	//     body={(rowData) => (
+	//         <button
+	//             onClick={() => {
+	//                 console.log("Selected Item:", rowData);
+	//                 if (flag === "MIS") {
+	//                     navigate(`/homemis/editgrtform/${rowData?.form_no}`, {
+	//                         state: rowData,
+	//                     });
+	//                 } else if (flag === "BM") {
+	//                     navigate(`/homebm/editgrtform/${rowData?.form_no}`, {
+	//                         state: rowData,
+	//                     });
+	//                 } else {
+	//                     navigate(`/homeco/editgrtform/${rowData?.form_no}`, {
+	//                         state: rowData,
+	//                     });
+	//                 }
+	//             }}
+	//         >
+	//             <EditOutlined className="text-md text-[#DA4167]" />
+	//         </button>
+	//     )}
+	// />
+	// 						<Column headerStyle={{ width: '4rem'}}></Column>
+	// 					</DataTable>
+	// 				</div>
+	// 			)
+	// 		}
 
 	return (
 		<>
@@ -279,7 +262,6 @@ function TranceferCOPending({
 				transition={{ delay: 0.5, type: "spring", stiffness: 30 }}
 			>
 				<Toast ref={toast} />
-
 				{/* {ShowApprov && (
 
 				<motion.section
@@ -308,9 +290,6 @@ function TranceferCOPending({
 				</motion.section>
 
 				)} */}
-
-
-
 				<DataTable
 					value={getloanAppData?.map((item, i) => [{ ...item, id: i }]).flat()}
 					// expandedRows={expandedRows}
@@ -325,16 +304,12 @@ function TranceferCOPending({
 					// rowExpansionTemplate={rowExpansionTemplate}
 					dataKey="id"
 					paginator
-					rows={rowsPerPage }
+					rows={rowsPerPage}
 					first={currentPage}
 					onPage={onPageChange}
 					rowsPerPageOptions={[5, 10, 20]} // Add options for number of rows per page
 					tableClassName="w-full text-sm text-left rtl:text-right shadow-lg text-green-900dark:text-gray-400 table_Custome table_Custome_1st" // Apply row classes
 				>
-
-					
-
-					
 					<Column
 						header="Sl No."
 						body={(rowData) => (
@@ -342,31 +317,23 @@ function TranceferCOPending({
 						)}
 					></Column>
 					{/* <Column expander={allowExpansion} style={{ width: "3em" }} /> */}
-					<Column
-						field="group_name"
-						header="Group Name"
-					></Column>
-					
-					<Column
-						field="group_code"
-						header="Group Code"
-					></Column>
+					<Column field="group_name" header="Group Name"></Column>
+
+					<Column field="group_code" header="Group Code"></Column>
 
 					<Column
 						field="trf_date"
 						header="Transaction Date"
 						body={(rowData) =>
-						new Date(rowData?.trf_date).toLocaleDateString("en-GB")
+							new Date(rowData?.trf_date).toLocaleDateString("en-GB")
 						}
 					></Column>
 					<Column
-    field=""
-    header="Action"
-    body={(rowData) => (
-
-		<>
-		
-		{/* {rowData?.approval_status === "A" && (
+						field=""
+						header="Action"
+						body={(rowData) => (
+							<>
+								{/* {rowData?.approval_status === "A" && (
 		<button
 		onClick={() => {
 			navigate(`/homebm/trancefercofrom/${rowData?.group_code}`, {
@@ -383,57 +350,45 @@ function TranceferCOPending({
 		</button>
 		)} */}
 
-		
-		{rowData?.approval_status === "U" && (
-		<button
-		// onClick={() => {
-		// console.log("Selected Item:", rowData);
-		// // navigate(`/homebm/trancefercofrom/${rowData?.group_code}`, {
-		// // state: rowData,
-		// // });
+								{rowData?.approval_status === "U" && (
+									<button
+										// onClick={() => {
+										// console.log("Selected Item:", rowData);
+										// // navigate(`/homebm/trancefercofrom/${rowData?.group_code}`, {
+										// // state: rowData,
+										// // });
 
-		// navigate(`/homebm/trancefercofromapprove/${rowData?.group_code}`, {
-		// state: {
-		// ...rowData, // Spread existing rowData
-		// approval_status: radioType, // Explicitly include approval_status
-		// },
-		// });
+										// navigate(`/homebm/trancefercofromapprove/${rowData?.group_code}`, {
+										// state: {
+										// ...rowData, // Spread existing rowData
+										// approval_status: radioType, // Explicitly include approval_status
+										// },
+										// });
 
-		// }}
+										// }}
 
-		onClick={() => {
-			navigate(`/homebm/trancefercofromapprove/${rowData?.group_code}`, {
-			state: {
-			...rowData, // Spread existing rowData
-			approval_status: radioType,
-			from_co: rowData?.from_co // Explicitly include approval_status
-			},
-			});
-		
-			}}
-		>
-
-		<EditOutlined className="text-md text-[#DA4167]" /> 
-		
-		</button>
-		)}
-		
-		</>
-        
-    )}
-/>
-
-
-
-
-
-
+										onClick={() => {
+											navigate(
+												`/homebm/trancefercofromapprove/${rowData?.group_code}`,
+												{
+													state: {
+														...rowData, // Spread existing rowData
+														approval_status: radioType,
+														from_co: rowData?.from_co, // Explicitly include approval_status
+													},
+												}
+											)
+										}}
+									>
+										<EditOutlined className="text-md text-[#DA4167]" />
+									</button>
+								)}
+							</>
+						)}
+					/>
 				</DataTable>
 				{/* <>{JSON.stringify(getloanAppData[0], null, 2)}  // </> */}
-
 			</motion.section>
-
-			
 		</>
 	)
 }

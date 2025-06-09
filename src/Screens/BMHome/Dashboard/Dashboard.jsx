@@ -948,7 +948,7 @@ export default function Dashboard() {
 			{/* {+userDetails?.id !== 1 && ( */}
 			<div className="grid grid-cols-1 md:grid-cols-6 gap-6">
 				<DashboardCard
-					title="Loan Disbursed"
+					titleLeft="Loan Disbursed"
 					left1Data={{
 						label: "This Month",
 						value: formatINR(disbursedLoanDetailCountsMonth.data),
@@ -971,7 +971,7 @@ export default function Dashboard() {
 				/>
 
 				<DashboardCard
-					title="Loan Collected"
+					titleLeft="Loan Collected"
 					left1Data={{
 						label: "This Month",
 						value: formatINR(collectedLoanDetailCountsMonth.data),
@@ -989,6 +989,32 @@ export default function Dashboard() {
 						value: formatNumber(collectedLoanDetailCountsToday.noOfGroups),
 					}}
 					leftColor="#2563EB"
+					rightColor="#334155"
+					loading={loading}
+				/>
+
+				<DashboardCard
+					titleLeft="Unapproved Txns"
+					left1Data={{
+						label: "Unapproved",
+						value: formatINR(unapprovedTxnsDetailCountsTotal.data),
+					}}
+					left2Data={{
+						label: "No. of Groups",
+						value: formatNumber(unapprovedTxnsDetailCountsTotal.noOfGroups),
+					}}
+					titleRight="Unapproved Transfers"
+					right1Data={{
+						label: "No. of Groups",
+						// value: formatNumber(collectedLoanDetailCountsMonth.noOfGroups),
+						value: "Val 1",
+					}}
+					right2Data={{
+						label: "No. of Members",
+						value: "Val 2",
+						// value: formatNumber(collectedLoanDetailCountsToday.noOfGroups),
+					}}
+					leftColor="#009966"
 					rightColor="#334155"
 					loading={loading}
 				/>
@@ -1015,7 +1041,8 @@ export default function Dashboard() {
 					rightColor="#334155"
 					loading={loading}
 				/> */}
-				<div className="md:col-span-2 bg-white rounded-3xl shadow-md p-6 flex flex-col items-center justify-center">
+
+				{/* <div className="md:col-span-2 bg-white rounded-3xl shadow-md p-6 flex flex-col items-center justify-center">
 					<h3 className="text-lg font-medium bg-purple-100 text-purple-900 px-5 py-2 rounded-full">
 						Unapproved Transactions
 					</h3>
@@ -1038,7 +1065,8 @@ export default function Dashboard() {
 							<span className="text-sm text-slate-600">Groups</span>
 						</div>
 					</div>
-				</div>
+				</div> */}
+
 				<div className="md:col-span-3 rounded-3xl bg-white shadow-md p-6 overflow-hidden">
 					{/* <h3 className="text-lg font-medium text-slate-900 py-2 rounded-full">
 						Generate Demand

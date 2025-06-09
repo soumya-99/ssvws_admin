@@ -2,7 +2,8 @@ import { Spin } from "antd"
 import "../../Screens/BMHome/Dashboard/Dashboard.css"
 
 export default function DashboardCard({
-	title,
+	titleLeft,
+	titleRight = "",
 	left1Data,
 	left2Data,
 	right1Data,
@@ -13,7 +14,14 @@ export default function DashboardCard({
 }) {
 	return (
 		<div className="col-span-1 md:col-span-2 bg-white rounded-2xl shadow-md p-6">
-			<h2 className="text-xl font-medium text-slate-700">{title}</h2>
+			<div className="flex justify-between">
+				{titleLeft && (
+					<h2 className="text-xl font-medium text-slate-700">{titleLeft}</h2>
+				)}
+				{titleRight && (
+					<h2 className="text-xl font-medium text-slate-700">{titleRight}</h2>
+				)}
+			</div>
 			<div className="grid grid-cols-[1fr_auto_1fr] gap-4 mt-4 items-center text-slate-700">
 				<div className="w-full text-left">
 					<Spin spinning={loading}>

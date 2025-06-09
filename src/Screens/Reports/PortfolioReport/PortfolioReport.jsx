@@ -5,7 +5,6 @@ import { url } from "../../../Address/BaseUrl"
 import { Spin, Tooltip } from "antd"
 import {
 	LoadingOutlined,
-	SearchOutlined,
 	PrinterOutlined,
 	FileExcelOutlined,
 } from "@ant-design/icons"
@@ -13,17 +12,8 @@ import { RefreshOutlined, Search } from "@mui/icons-material"
 import Radiobtn from "../../../Components/Radiobtn"
 import TDInputTemplateBr from "../../../Components/TDInputTemplateBr"
 import { formatDateToYYYYMMDD } from "../../../Utils/formateDate"
-
-import { saveAs } from "file-saver"
-import * as XLSX from "xlsx"
-import { printTableOutstandingReport } from "../../../Utils/printTableOutstandingReport"
 import DynamicTailwindTable from "../../../Components/Reports/DynamicTailwindTable"
 import {
-	branchwiseOutstandingHeader,
-	cowiseOutstandingHeader,
-	fundwiseOutstandingHeader,
-	groupwiseOutstandingHeader,
-	memberwiseOutstandingHeader,
 	portfolioReportHeaderBranchwise,
 	portfolioReportHeaderCOwise,
 	portfolioReportHeaderFundwise,
@@ -208,7 +198,6 @@ function PortfolioReport() {
 		const selectedFunds = funds?.map((item, i) => item?.fund_id)
 
 		const creds = {
-			// supply_date: formatDateToYYYYMMDD(fromDate),
 			branch_code:
 				branchCodes?.length === 0 ? [userDetails?.brn_code] : branchCodes,
 			fund_id: selectedFund === "F" ? selectedFunds : [selectedFund],
@@ -270,7 +259,6 @@ function PortfolioReport() {
 		const allCos = cos?.map((item, i) => item?.co_id)
 
 		const creds = {
-			// supply_date: formatDateToYYYYMMDD(fromDate),
 			branch_code:
 				branchCodes?.length === 0 ? [userDetails?.brn_code] : branchCodes,
 			co_id:
@@ -331,14 +319,6 @@ function PortfolioReport() {
 		const branchCodes = selectedOptions?.map((item, i) => ({
 			branch_code: item?.value,
 		}))
-		// const coCodes = selectedCOs?.map((item, i) => item?.value)
-
-		// const creds = {
-		// 	supply_date: formatDateToYYYYMMDD(fromDate),
-		// 	branch_code:
-		// 		branchCodes?.length === 0 ? [userDetails?.brn_code] : branchCodes,
-		// 	co_id: coCodes?.length === 0 ? [selectedCO] : coCodes,
-		// }
 
 		const creds = {
 			from_dt: formatDateToYYYYMMDD(fromDate),
