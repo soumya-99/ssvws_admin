@@ -13,7 +13,7 @@ import axios from "axios"
 import TDInputTemplateBr from "../../../Components/TDInputTemplateBr"
 import DashboardCard from "../../../Components/Dashboard/DashboardCard"
 import { url } from "../../../Address/BaseUrl"
-import { Spin } from "antd"
+import { Empty, Spin } from "antd"
 // import { Squircle } from "@squircle-js/react"
 import CurrencyRupeeOutlinedIcon from "@mui/icons-material/CurrencyRupeeOutlined"
 import AccountBalanceOutlinedIcon from "@mui/icons-material/AccountBalanceOutlined"
@@ -114,6 +114,11 @@ export default function Dashboard() {
 			data: "",
 			noOfGroups: "",
 		})
+
+	const [unapprovedTransfers, setUnapprovedTransfers] = useState({
+		noOfMembers: "",
+		noOfGroups: "",
+	})
 	// const [unapprovedTxnsDetailCountsMonth, setUnapprovedTxnsDetailCountsMonth] =
 	// 	useState({
 	// 		data: "",
@@ -315,6 +320,24 @@ export default function Dashboard() {
 			setUnapprovedTxnsDetailCountsTotal({
 				data: res?.data?.data?.total_loan_unapprove,
 				noOfGroups: res?.data?.data?.total_group_unapprove,
+			})
+		} catch (err) {
+		} finally {
+			setLoadingLong(false)
+		}
+	}
+
+	const fetchUnapprovedTransfers = async () => {
+		setLoadingLong(true)
+		try {
+			const creds = { branch_code: getBranchCodes() }
+			const res = await axios.post(
+				`${url}/admin/show_unapproved_grp_memb_transfer`,
+				creds
+			)
+			setUnapprovedTransfers({
+				noOfGroups: res?.data?.data?.total_unapprove_group_transfer,
+				noOfMembers: res?.data?.data?.total_unapprove_member_transfer,
 			})
 		} catch (err) {
 		} finally {
@@ -706,6 +729,7 @@ export default function Dashboard() {
 				fetchLoanCollectedDetailsToday()
 				fetchLoanCollectedDetailsThisMonth()
 				fetchUnapprovedTxnsTotal()
+				fetchUnapprovedTransfers()
 				// fetchUnapprovedTxnsMonth()
 			}
 		}
@@ -893,52 +917,56 @@ export default function Dashboard() {
 								backfaceVisibility: "hidden",
 							}}
 						>
-							<div className="w-full max-h-[160px] overflow-auto">
-								<ul class="max-w-md space-y-1 text-slate-600 list-inside dark:text-slate-400">
-									{activeUsers?.map((user, i) => (
-										<>
-											<li class="flex items-center">
-												{user?.user_status === "A" ? (
-													<svg
-														class="w-3.5 h-3.5 me-2 text-green-500 dark:text-green-400 shrink-0"
-														aria-hidden="true"
-														xmlns="http://www.w3.org/2000/svg"
-														fill="currentColor"
-														viewBox="0 0 20 20"
-													>
-														<path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5Zm3.707 8.207-4 4a1 1 0 0 1-1.414 0l-2-2a1 1 0 0 1 1.414-1.414L9 10.586l3.293-3.293a1 1 0 0 1 1.414 1.414Z" />
-													</svg>
-												) : i % 3 === 0 ? (
-													<svg
-														class="w-3.5 h-3.5 me-2 text-slate-500 dark:text-slate-400 shrink-0"
-														aria-hidden="true"
-														xmlns="http://www.w3.org/2000/svg"
-														fill="currentColor"
-														viewBox="0 0 20 20"
-													>
-														<path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5Zm3.707 8.207-4 4a1 1 0 0 1-1.414 0l-2-2a1 1 0 0 1 1.414-1.414L9 10.586l3.293-3.293a1 1 0 0 1 1.414 1.414Z" />
-													</svg>
-												) : (
-													<svg
-														class="w-3.5 h-3.5 me-2 shrink-0"
-														aria-hidden="true"
-														xmlns="http://www.w3.org/2000/svg"
-														viewBox="0 0 20 20"
-													>
-														<circle cx="10" cy="10" r="9.5" fill="#ef4444" />
-														<path
-															fill="#ffffff"
-															d="M13.414 6.586a1 1 0 0 0-1.414 0L10 8.586 8 6.586a1 1 0 1 0-1.414 1.414L8.586 10l-1.999 2a1 1 0 1 0 1.414 1.414L10 11.414l2 1.999a1 1 0 0 0 1.414-1.414L11.414 10l2-2a1 1 0 0 0 0-1.414z"
-														/>
-													</svg>
-												)}
-												{user?.emp_name} - {user?.emp_id}
-											</li>
-											<hr className="border-t border-purple-200 my-2 w-3/4" />
-										</>
-									))}
-								</ul>
-							</div>
+							{activeUsers.length !== 0 ? (
+								<div className="w-full max-h-[160px] overflow-auto">
+									<ul class="max-w-md space-y-1 text-slate-600 list-inside dark:text-slate-400">
+										{activeUsers?.map((user, i) => (
+											<>
+												<li class="flex items-center">
+													{user?.user_status === "A" ? (
+														<svg
+															class="w-3.5 h-3.5 me-2 text-green-500 dark:text-green-400 shrink-0"
+															aria-hidden="true"
+															xmlns="http://www.w3.org/2000/svg"
+															fill="currentColor"
+															viewBox="0 0 20 20"
+														>
+															<path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5Zm3.707 8.207-4 4a1 1 0 0 1-1.414 0l-2-2a1 1 0 0 1 1.414-1.414L9 10.586l3.293-3.293a1 1 0 0 1 1.414 1.414Z" />
+														</svg>
+													) : i % 3 === 0 ? (
+														<svg
+															class="w-3.5 h-3.5 me-2 text-slate-500 dark:text-slate-400 shrink-0"
+															aria-hidden="true"
+															xmlns="http://www.w3.org/2000/svg"
+															fill="currentColor"
+															viewBox="0 0 20 20"
+														>
+															<path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5Zm3.707 8.207-4 4a1 1 0 0 1-1.414 0l-2-2a1 1 0 0 1 1.414-1.414L9 10.586l3.293-3.293a1 1 0 0 1 1.414 1.414Z" />
+														</svg>
+													) : (
+														<svg
+															class="w-3.5 h-3.5 me-2 shrink-0"
+															aria-hidden="true"
+															xmlns="http://www.w3.org/2000/svg"
+															viewBox="0 0 20 20"
+														>
+															<circle cx="10" cy="10" r="9.5" fill="#ef4444" />
+															<path
+																fill="#ffffff"
+																d="M13.414 6.586a1 1 0 0 0-1.414 0L10 8.586 8 6.586a1 1 0 1 0-1.414 1.414L8.586 10l-1.999 2a1 1 0 1 0 1.414 1.414L10 11.414l2 1.999a1 1 0 0 0 1.414-1.414L11.414 10l2-2a1 1 0 0 0 0-1.414z"
+															/>
+														</svg>
+													)}
+													{user?.emp_name} - {user?.emp_id}
+												</li>
+												<hr className="border-t border-purple-200 my-2 w-3/4" />
+											</>
+										))}
+									</ul>
+								</div>
+							) : (
+								<Empty />
+							)}
 						</div>
 					</div>
 				</div>
@@ -1006,13 +1034,11 @@ export default function Dashboard() {
 					titleRight="Unapproved Transfers"
 					right1Data={{
 						label: "No. of Groups",
-						// value: formatNumber(collectedLoanDetailCountsMonth.noOfGroups),
-						value: "Val 1",
+						value: formatNumber(unapprovedTransfers.noOfGroups),
 					}}
 					right2Data={{
 						label: "No. of Members",
-						value: "Val 2",
-						// value: formatNumber(collectedLoanDetailCountsToday.noOfGroups),
+						value: formatNumber(unapprovedTransfers.noOfMembers),
 					}}
 					leftColor="#009966"
 					rightColor="#334155"

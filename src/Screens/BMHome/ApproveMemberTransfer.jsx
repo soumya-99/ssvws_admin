@@ -9,7 +9,7 @@ import EmployeeMasterTable from "../../Components/Master/EmployeeMasterTable"
 import MemberTransferTable from "../../Components/Master/MemberTransferTable"
 
 function ApproveMemberTransfer() {
-  const userDetails = JSON.parse(localStorage.getItem("user_details")) || ""
+	const userDetails = JSON.parse(localStorage.getItem("user_details")) || ""
 	const [loading, setLoading] = useState(false)
 	const [masterData, setMasterData] = useState(() => [])
 	const [copyLoanApplications, setCopyLoanApplications] = useState(() => [])
@@ -21,11 +21,12 @@ function ApproveMemberTransfer() {
 		setLoading(true)
 
 		const creds = {
-			flag:"P"
+			flag: "P",
+			branch_code: [userDetails?.brn_code],
 		}
 
 		await axios
-			.post(`${url}/transfer_member_view`,creds)
+			.post(`${url}/transfer_member_view`, creds)
 			.then((res) => {
 				console.log("PPPPPPPPPPPPPPPPPPPP", res?.data)
 				if (res?.data?.suc === 1) {
@@ -94,9 +95,8 @@ function ApproveMemberTransfer() {
 							onChange(value)
 						}}
 					/> */}
-  
+
 					<MemberTransferTable
-                        
 						flag="BM"
 						loanAppData={copyLoanApplications}
 						title="Approve Member Transfer"
@@ -111,9 +111,6 @@ function ApproveMemberTransfer() {
 			</Spin>
 		</div>
 	)
-
 }
 
-
 export default ApproveMemberTransfer
-
