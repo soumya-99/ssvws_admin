@@ -158,7 +158,7 @@ function MemberLoanDetailsForm() {
 					interestEMI: res?.data?.msg[0]?.intt_emi || "",
 					totalEMI: res?.data?.msg[0]?.tot_emi || "",
 				})
-				setTnxDetails(res?.data?.msg[0]?.trans_dtls)
+				setTnxDetails(res?.data?.msg[0]?.trans_dtls || [])
 				// setMemberTxnDetailsData(
 				// 	res?.data?.msg[0]?.trans_dtls?.map((it, i) => ({
 				// 		txn_id: it?.payment_id,
@@ -615,7 +615,12 @@ function MemberLoanDetailsForm() {
 							onClick={() =>
 								exportToExcel(dataToExport, headersToExport, fileName, [0])
 							}
-							className="mt-5 justify-center items-center rounded-full text-green-900"
+							className={
+								dataToExport?.length > 0
+									? "mt-5 justify-center items-center rounded-full text-green-900"
+									: "mt-5 justify-center items-center rounded-full text-green-300"
+							}
+							disabled={dataToExport?.length === 0}
 						>
 							<FileExcelOutlined
 								style={{
@@ -634,7 +639,12 @@ function MemberLoanDetailsForm() {
 									[0]
 								)
 							}
-							className="mt-5 justify-center items-center rounded-full text-pink-600"
+							className={
+								dataToExport?.length > 0
+									? "mt-5 justify-center items-center rounded-full text-pink-600"
+									: "mt-5 justify-center items-center rounded-full text-pink-300"
+							}
+							disabled={dataToExport?.length === 0}
 						>
 							<PrinterOutlined
 								style={{
