@@ -455,13 +455,13 @@ const loanStatementHeader = {
 	tr_type: "Transaction Type",
 	debit: "Debit",
 	credit: "Credit",
-	prn_bal: "Principal Balance",
-	intt_bal: "Interest Balance",
+	// prn_bal: "Principal Balance",
+	// intt_bal: "Interest Balance",
 	total_outstanding: "Total Outstanding",
 	tr_mode: "Transaction Mode",
 	particulars: "Particulars",
 	status: "Status",
-	period_mode: "Period Mode",
+	// period_mode: "Period Mode",
 }
 
 const loanStatementHeaderGroupwise = {

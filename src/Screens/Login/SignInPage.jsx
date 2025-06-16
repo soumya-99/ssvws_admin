@@ -14,7 +14,7 @@ import { routePaths } from "../../Assets/Data/Routes"
 import ArrowBackIcon from "@mui/icons-material/ArrowBack"
 import Visibility from "@mui/icons-material/Visibility"
 import VisibilityOff from "@mui/icons-material/VisibilityOff"
-import coverPhoto from "../../Assets/Images/ssvws_cover.webp"
+import coverPhoto from "../../Assets/Images/ssvws_cover_1.jpg"
 
 const SignInPage = () => {
 	const navigate = useNavigate()
@@ -368,7 +368,7 @@ const SignInPage = () => {
 					onPressNo={() => setVisible(false)}
 				/>
 
-				<div className="absolute top-0 bottom-0 lg:left-auto lg:right-0 w-full lg:w-1/2 h-full lg:flex hidden items-center justify-center pointer-events-none z-30 rotate-180">
+				{/* <div className="absolute top-0 bottom-0 lg:left-auto lg:right-0 w-full lg:w-1/2 h-full lg:flex hidden items-center justify-center pointer-events-none z-30 rotate-180">
 					<svg
 						className="absolute inset-y-0 left-0 h-full w-full wavy-pattern text-white"
 						viewBox="0 0 200 400"
@@ -377,16 +377,15 @@ const SignInPage = () => {
 					>
 						<path d="M150,0 C100,250 200,500 150,750 S100,1000 150,1000 L300,1000 L300,0 Z" />
 					</svg>
-				</div>
+				</div> */}
 
 				<div className="relative hidden lg:block">
 					<img
-						// src="https://picsum.photos/seed/mountain/900/800"
 						src={coverPhoto}
 						alt="Scenic view"
-						className="absolute inset-0 w-full h-full object-cover rounded-r-3xl"
+						className="absolute inset-y-0 right-0 h-full w-auto object-cover rounded-r-3xl"
 					/>
-					<div className="absolute inset-0 bg-black opacity-10 rounded-r-3xl" />
+					{/* <div className="absolute inset-0 bg-white opacity-10 rounded-r-3xl" /> */}
 				</div>
 			</div>
 		</div>

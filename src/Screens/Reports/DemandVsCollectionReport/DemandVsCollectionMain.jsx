@@ -1084,7 +1084,7 @@ function DemandVsCollectionMain() {
 								pageSize={50}
 								columnTotal={[9, 16, 17, 18, 19]}
 								// colRemove={[13]}
-								dateTimeExceptionCols={[8, 13, 14]}
+								dateTimeExceptionCols={[8, 13, 14, 15]}
 								headersMap={groupwiseDemandVsCollectionHeader}
 							/>
 						</>
